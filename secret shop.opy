@@ -69,7 +69,7 @@ rule "[Teleporter C]":
 
 
 rule "[Secret Shop Power ON]":
-    @Condition newLine == 1
+    @Condition roundNumber == 1
     
     I = []
     #I.append(vect(121.74, 12.034, -65.345))
@@ -80,7 +80,7 @@ rule "[Secret Shop Power ON]":
     #I.append(vect(99.11, 14.045, -61.446))
     #I.append(vect(128.287, 15.034, -8.08))
     #I.append(vect(107.671, 12.034, -31.942))
-    J[2] = vect(500, 25, 500)
+    J[2] = hidden_vector
 
 
 rule "[Teleporter Switch]":

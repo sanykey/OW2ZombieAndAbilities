@@ -4,8 +4,8 @@ rule "[Locked Area A]":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, V[0]) < 10
-  @Condition C == 0
-  @Condition O == false
+  @Condition unlocked_locations == 0
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[0], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -17,8 +17,8 @@ rule "[Locked Area B]":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, V[1]) < 10
-  @Condition C == 1
-  @Condition O == false
+  @Condition unlocked_locations == 1
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[4], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -30,8 +30,8 @@ rule "[Locked Area C]":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, V[2]) < 15
-  @Condition C == 1
-  @Condition O == false
+  @Condition unlocked_locations == 1
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[4], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -43,8 +43,8 @@ rule "[Locked Area D]":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, V[3]) < 5
-  @Condition C == 1
-  @Condition O == false
+  @Condition unlocked_locations == 1
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[4], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -56,8 +56,8 @@ rule "[Locked Area E]":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, V[4]) < 10
-  @Condition C == 2
-  @Condition O == false
+  @Condition unlocked_locations == 2
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[5], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -69,8 +69,8 @@ rule "[Locked Area F]":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, V[5]) < 10
-  @Condition C == 2
-  @Condition O == false
+  @Condition unlocked_locations == 2
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[5], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -82,8 +82,8 @@ rule "[Locked Area G]":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, V[6]) < 10
-  @Condition C == 2
-  @Condition O == false
+  @Condition unlocked_locations == 2
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[5], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -96,7 +96,7 @@ rule "[Locked Area H]":
   @Team 1
   @Condition distance(eventPlayer, V[7]) < 4
   @Condition D == 0
-  @Condition O == false
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[7], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -109,7 +109,7 @@ rule "[Locked Area I]":
   @Team 1
   @Condition distance(eventPlayer, V[8]) < 5
   @Condition D == 0
-  @Condition O == false
+  @Condition match_is_over == false
   
   eventPlayer.applyImpulse(directionTowards(V[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -118,7 +118,7 @@ rule "[Locked Area I]":
 
 
 rule "[Next Location Setup Effects]":
-  @Condition newLine == 1
+  @Condition roundNumber == 1
   
   createEffect(getPlayers(Team.1), Effect.RING, Color.WHITE, vect(7.613, 5.326, -34.916), 1, EffectReeval.VISIBILITY)
   T.append(getLastCreatedEntity())
@@ -143,10 +143,10 @@ rule "[Unlock Next Location A]":
   @Team 1
   @Condition distance(vect(7.598, 5.461, -34.812), eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition C == 0
+  @Condition unlocked_locations == 0
   @Condition eventPlayer.money >= 2500
   
-  C = 1
+  unlocked_locations = 1
   destroyEffect(W[0])
   destroyEffect(W[1])
   destroyEffect(W[2])
@@ -163,10 +163,10 @@ rule "[Unlock Next Location B]":
   @Team 1
   @Condition distance(vect(31.805, 6.256, -62.43), eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition C == 1
+  @Condition unlocked_locations == 1
   @Condition eventPlayer.money >= 5000
   
-  C = 2
+  unlocked_locations = 2
   destroyEffect(W[3])
   destroyEffect(W[4])
   destroyEffect(W[5])
@@ -184,10 +184,10 @@ rule "[Unlock Next Location C]":
   @Team 1
   @Condition distance(vect(99.352, 14.111, -71.796), eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition C == 2
+  @Condition unlocked_locations == 2
   @Condition eventPlayer.money >= 7500
   
-  C = 3
+  unlocked_locations = 3
   D = 0
   destroyEffect(W[7])
   destroyEffect(W[8])
@@ -220,7 +220,7 @@ rule "[Unlock Next Location D]":
 
 
 rule "[Blocked Area Setup Effects]":
-  @Condition newLine == 1
+  @Condition roundNumber == 1
   
   W = []
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vect(12.505, 5.485, -40.846), 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -250,7 +250,7 @@ rule "[Blocked Area Setup Effects]":
 
 
 rule "[Blocked Area Arrays]":
-  @Condition newLine == 1
+  @Condition roundNumber == 1
   
   V = []
   V.append(vect(19, 7, -50.013))
@@ -262,3 +262,11 @@ rule "[Blocked Area Arrays]":
   V.append(vect(91.888, 22.491, -53.112))
   V.append(vect(87.651, 15, -28.387))
   V.append(vect(107.743, 12.171, -31.426))
+
+rule "Clear locked areas data when everything is open":
+  @Condition unlocked_locations == 4
+  @Condition D == 1
+  
+  W = []
+  V = []
+  U = []

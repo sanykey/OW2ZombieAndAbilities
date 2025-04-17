@@ -61,7 +61,7 @@ rule "[Buy Shields]":
   @Condition eventPlayer.money >= 7500
   @Condition eventPlayer.F == false
   @Condition distance(eventPlayer, vect(75.074, 12, -50.574)) <= 1.5
-  @Condition C >= 3
+  @Condition unlocked_locations >= 3
   
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.BLUE, eventPlayer, 2)
   getPlayers(Team.1).addHealthPool(Health.SHIELDS, 40, true)
@@ -80,7 +80,7 @@ rule "[Buy Armor]":
     @Condition distance(eventPlayer, vect(74.394, 12, -52.812)) <= 1.5
     @Condition eventPlayer.money >= 7500
     @Condition eventPlayer.F == false
-    @Condition C >= 3
+    @Condition unlocked_locations >= 3
     
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, getPlayers(Team.1), 2)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, getPlayers(Team.1), 100)

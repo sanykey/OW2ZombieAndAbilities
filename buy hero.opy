@@ -1,20 +1,21 @@
 #!mainFile "main.opy"
 
-rule "Create hero shops":
-  @Condition newLine == 1
+rule "Create hero buy positions":
+  @Condition roundNumber == 1
 
+  # [hero, buy_place_vector, price, buy_text_vector]
   heroes_shop_data = [
     [Hero.DOOMFIST, vect(12.129, 7.5, -90.424), 2500],
     [Hero.DVA, vect(-18.268, 1.312, -10.4), 0],
     # (Hero.HAZARD, vect(36.879, 14.045, -105.779), 5000],
     [Hero.JUNKER_QUEEN, vect(122.079, 12.303, -64.267), 10000],
     [Hero.MAUGA, vect(-2.191, 3.32, -38.067), 1250],
-    [Hero.ORISA, vect(122.594, 12.502, -6.823), 10000],
+    [Hero.ORISA, vect(122.424, 13.872, -6.63), 10000],
     [Hero.RAMATTRA, vect(126.145, 12.303, -16.063), 10000],
     [Hero.REINHARDT, vect(10.56, 11.5, -84.54), 2500],
     [Hero.ROADHOG, vect(12.919, 12.617, -100.131), 2500],
-    [Hero.SIGMA, vect(134.815, 12, -8.942), 10000],
-    [Hero.WINSTON, vect(59.335, 6, -72.651), 5000],
+    [Hero.SIGMA, vect(133.977, 13.916, -9.824), 10000],
+    [Hero.WINSTON, vect(59.56, 7.9, -72.899), 5000], #vect(59.335, 8.042, -72.651)
     [Hero.WRECKING_BALL, vect(55.848, 12, -78.688), 5000],
     [Hero.ZARYA, vect(129.875, 15, -36.803), 10000],
 
@@ -53,8 +54,8 @@ rule "Create hero shops":
   ]
 
   for I in range(len(heroes_shop_data)):
-    createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, heroes_shop_data[I][1], 1.7, EffectReeval.VISIBILITY)
     createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format(heroIcon(heroes_shop_data[I][0]), heroes_shop_data[I][2])), heroes_shop_data[I][1], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, heroes_shop_data[I][1], 1.7, EffectReeval.VISIBILITY)
 
 rule "Buy hero":
   @Event eachPlayer
@@ -63,7 +64,11 @@ rule "Buy hero":
   @Condition eventPlayer.F == false
 
   for I in range(len(heroes_shop_data)):
-    if distance(eventPlayer, heroes_shop_data[I][1]) <= 1.7 and eventPlayer.getCurrentHero() != heroes_shop_data[I][0]:
+    if (
+      distance(eventPlayer, heroes_shop_data[I][1]) <= 1.7 and
+      eventPlayer.getCurrentHero() != heroes_shop_data[I][0] and
+      eventPlayer.money >= heroes_shop_data[I][2]
+    ):
       eventPlayer.startForcingHero(heroes_shop_data[I][0])
       playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
       playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)

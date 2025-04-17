@@ -1,5 +1,28 @@
 #!mainFile "main.opy"
 
+rule "[Upgrade Stats Setup]":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.hasSpawned() == true
+  @Condition eventPlayer.health_stat == 0
+  
+  eventPlayer.health_stat = 100
+  eventPlayer.damage_stat = 100
+  eventPlayer.healing_stat = 100
+
+rule "[TP Spawn Room Debug]":
+  @Event eachPlayer
+  @Team 1
+  @Condition distance(eventPlayer, vect(101.397, 14.21, -110.834)) < 14
+  
+  wait(0.5)
+  if not RULE_CONDITION:
+      return
+  eventPlayer.teleport(vect(-27.412, 2, -12.564))
+  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), vect(-12.858, 3.32, -17.254)), 100000)
+  wait(0.1)
+  eventPlayer.stopFacing()
+
 rule "[Anti-Spawn Check B]":
   @Event eachPlayer
   @Team 1

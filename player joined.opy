@@ -3,7 +3,7 @@
 rule "Late Joiner Catchup [15]":
   @Event playerJoined
   @Team 1
-  @Condition newLine >= 15
+  @Condition roundNumber >= 15
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
   eventPlayer.money += 25000
@@ -23,7 +23,7 @@ rule "Late Joiner Catchup [15]":
 rule "Late Joiner Catchup [25]":
   @Event playerJoined
   @Team 1
-  @Condition newLine >= 25
+  @Condition roundNumber >= 25
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
   eventPlayer.money += 75000
@@ -34,7 +34,7 @@ rule "Late Joiner Catchup [25]":
 rule "Late Joiner Catchup [50]":
   @Event playerJoined
   @Team 1
-  @Condition newLine >= 50
+  @Condition roundNumber >= 50
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
   eventPlayer.money += 50000

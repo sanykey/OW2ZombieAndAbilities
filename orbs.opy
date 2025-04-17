@@ -1,150 +1,55 @@
 #!mainFile "main.opy"
 
-rule "[Drop] Total Mayhem":
+rule "Init vars, effects and hud for Orbs":
+  # [range_of_chance, round]
+  orbs_arr = [ 
+    [28, 1], # Total Mayhem (2.8%)
+    [78, 1], # Points Orb (5%) 28+50
+    [118, 1], # Speed Orb (4%) 28+50+40
+    [158, 1], # Freeze Orb (4%) 28+50+40+40
+    [191, 1], # Honey, I Shrunk The Team Orb (3.3%) 28+50+40+40+33
+    [224, 1], # Challenge Orb (3.3%) 28+50+40+40+33+33
+    [264, 40], # Time Distortion Sphere (4%) 28+50+40+40+33+33+40
+  ]
+
+  for I in range(len(orbs_arr)):
+    orbs_vectors_arr[I] = hidden_vector
+
+  createEffect(getPlayers(Team.1), Effect.ORB, Color.VIOLET, orbs_vectors_arr[0], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getPlayers(Team.1), Effect.ORB, Color.YELLOW, orbs_vectors_arr[1], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getPlayers(Team.1), Effect.ORB, Color.GREEN, orbs_vectors_arr[2], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getPlayers(Team.1), Effect.ORB, Color.AQUA, orbs_vectors_arr[3], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getPlayers(Team.1), Effect.ORB, Color.ROSE, orbs_vectors_arr[4], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getPlayers(Team.1), Effect.ORB, Color.ORANGE, orbs_vectors_arr[5], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getPlayers(Team.1), Effect.GOOD_AURA, Color.BLUE, orbs_vectors_arr[6], 0.7, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+
+  hudHeader([player for player in getPlayers(Team.1) if player.S[1] == 1], l"Points", HudPosition.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[2] == 1], l"Speed", HudPosition.TOP, 1, Color.GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[4] == 1], "Honey, I Shrunk The Team!", HudPosition.TOP, 1, Color.ROSE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[0] == 1], "Total Mayhem", HudPosition.TOP, 1, Color.VIOLET, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[5] == 1], l"Challenge Accepted", HudPosition.TOP, 1, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[3] == 1], l"Freezing", HudPosition.TOP, 1, Color.AQUA, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[6] == 1], "Time Distortion", HudPosition.TOP, 1, Color.BLUE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+
+rule "Bot died - drop orb chance":
   @Event playerDied
   @Team 2
-  @Slot 0
+  @Condition round_remaining_bots > 0
   
-  eventPlayer.healing_tracker = random.randint(1, 35)
-  if eventPlayer.healing_tracker != 1:
-      goto lbl_0
-  M[0] = nearestWalkablePosition(eventPlayer) + vect(0, 0.5, 0)
-  lbl_0:
-  eventPlayer.setUltCharge(0)
-  wait(0.2)
-  B -= 1
-  if B < 6:
-      goto lbl_1
-  eventPlayer.respawn()
-  lbl_1:
+  eventPlayer.orb_roll = random.randint(1, 7000)
+  if eventPlayer.orb_roll <= orbs_arr[6][0]:
+    for I in range(len(orbs_arr)):
+      if eventPlayer.orb_roll <= orbs_arr[I][0] and roundNumber >= orbs_arr[I][1]:
+        orbs_vectors_arr[I] = nearestWalkablePosition(eventPlayer) + vect(0, 0.5, 0)
+        break
 
-
-rule "[Drop] Points Orb":
-  @Event playerDied
-  @Team 2
-  @Slot 1
-  
-  eventPlayer.healing_tracker = random.randint(1, 20)
-  if eventPlayer.healing_tracker != 1:
-      goto lbl_0
-  M[1] = nearestWalkablePosition(eventPlayer) + vect(0, 0.5, 0)
-  lbl_0:
-  eventPlayer.setUltCharge(0)
-  wait(0.2)
-  B -= 1
-  if B < 6:
-      goto lbl_1
-  eventPlayer.respawn()
-  lbl_1:
-
-
-rule "[Drop] Speed Orb":
-  @Event playerDied
-  @Team 2
-  @Slot 2
-  @Condition newLine < 40
-  
-  eventPlayer.healing_tracker = random.randint(1, 25)
-  if eventPlayer.healing_tracker != 1:
-      goto lbl_0
-  M[2] = nearestWalkablePosition(eventPlayer) + vect(0, 0.5, 0)
-  lbl_0:
-  eventPlayer.setUltCharge(0)
-  wait(0.2)
-  B -= 1
-  wait(0.25)
-  if B < 6:
-      goto lbl_1
-  eventPlayer.respawn()
-  lbl_1:
-
-
-rule "[Drop] Freeze Orb":
-  @Event playerDied
-  @Team 2
-  @Slot 3
-  
-  eventPlayer.healing_tracker = random.randint(1, 25)
-  if eventPlayer.healing_tracker != 1:
-      goto lbl_0
-  M[3] = nearestWalkablePosition(eventPlayer) + vect(0, 0.5, 0)
-  lbl_0:
-  eventPlayer.setUltCharge(0)
-  wait(0.2)
-  B -= 1
-  if B < 6:
-      goto lbl_1
-  eventPlayer.respawn()
-  lbl_1:
-
-
-rule "[Drop] Honey, I Shrunk The Team Orb":
-  @Event playerDied
-  @Team 2
-  @Slot 4
-  
-  eventPlayer.healing_tracker = random.randint(1, 30)
-  if eventPlayer.healing_tracker != 1:
-      goto lbl_0
-  M[4] = nearestWalkablePosition(eventPlayer) + vect(0, 0.5, 0)
-  lbl_0:
-  eventPlayer.setUltCharge(0)
-  wait(0.2)
-  B -= 1
-  if B < 6:
-      goto lbl_1
-  eventPlayer.respawn()
-  lbl_1:
-
-
-rule "[Drop] Challenge Orb":
-  @Event playerDied
-  @Team 2
-  @Slot 5
-  
-  eventPlayer.healing_tracker = random.randint(1, 30)
-  if eventPlayer.healing_tracker != 1:
-      goto lbl_0
-  M[5] = nearestWalkablePosition(eventPlayer) + vect(0, 0.5, 0)
-  lbl_0:
-  eventPlayer.setUltCharge(0)
-  wait(0.2)
-  B -= 1
-  wait(0.25)
-  if B < 6:
-      goto lbl_1
-  eventPlayer.respawn()
-  lbl_1:
-
-rule "[Drop] Time Distortion Sphere":
-  @Event playerDied
-  @Team 2
-  @Slot 2
-  @Condition newLine > 39
-  
-  eventPlayer.healing_tracker = random.randint(1, 25)
-  if eventPlayer.healing_tracker != 1:
-      goto lbl_0
-  M[6] = nearestWalkablePosition(eventPlayer) + vect(0, 1, 0)
-  lbl_0:
-  eventPlayer.setUltCharge(0)
-  wait(0.2)
-  B -= 1
-  wait(0.25)
-  if B < 6:
-      goto lbl_1
-  eventPlayer.respawn()
-  lbl_1:
-
-
-rule "[Points Orb Effects]":
+rule "Points orb effects":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, M[1]) <= 1.5
+  @Condition distance(eventPlayer, orbs_vectors_arr[1]) <= 1.5
   @Condition getPlayers(Team.1).G[1] == false
-  @Condition newLine >= 1
-  
-  M[1] = vect(500, 25, 500)
+  @Condition roundNumber >= 1
+  orbs_vectors_arr[1] = hidden_vector
   getPlayers(Team.1).G[1] = true
   getPlayers(Team.1).S[1] = 1
   bigMessage(getAllPlayers(), "2x Points Earned -> 30 Sec")
@@ -157,15 +62,15 @@ rule "[Points Orb Effects]":
   getPlayers(Team.1).S[1] = 0
 
 
-rule "[Speed Orb Effects]":
+rule "Speed orb effects":
     @Event eachPlayer
     @Team 1
-    @Condition distance(eventPlayer, M[2]) <= 1.5
+    @Condition distance(eventPlayer, orbs_vectors_arr[2]) <= 1.5
     @Condition getPlayers(Team.1).G[2] == false
-    @Condition newLine >= 1
-    @Condition newLine < 40
+    @Condition roundNumber >= 1
+    @Condition roundNumber < 40
     
-    M[2] = vect(500, 25, 500)
+    orbs_vectors_arr[2] = hidden_vector
     getPlayers(Team.1).G[2] = true
     getPlayers(Team.1).S[2] = 1
     bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Faster", l"Speed", l"-> {0}".format(l"{0} sec".format(60))))
@@ -178,14 +83,14 @@ rule "[Speed Orb Effects]":
     getPlayers(Team.1).setMoveSpeed(100)
 
 
-rule "[Honey, I Shrunk The Team Effects]":
+rule "Honey, I Shrunk The Team Effects":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, M[4]) <= 1.5
+  @Condition distance(eventPlayer, orbs_vectors_arr[4]) <= 1.5
   @Condition getPlayers(Team.1).G[4] == false
-  @Condition newLine >= 1
+  @Condition roundNumber >= 1
   
-  M[4] = vect(500, 25, 500)
+  orbs_vectors_arr[4] = hidden_vector
   getPlayers(Team.1).G[4] = true
   getPlayers(Team.1).S[4] = 1
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.HEART), "Honey, I Shrunk The Team! ", iconString(Icon.HEART)))
@@ -202,21 +107,21 @@ rule "[Honey, I Shrunk The Team Effects]":
   getPlayers(Team.1).startScalingSize(1, false)
   getPlayers(Team.1).setJumpVerticalSpeed(100)
 
-rule "[Total Mayhem Effects]":
+rule "Total mayhem effects":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, M[0]) <= 1.5
+  @Condition distance(eventPlayer, orbs_vectors_arr[0]) <= 1.5
   @Condition getPlayers(Team.1).G[0] == false
-  @Condition newLine >= 1
+  @Condition roundNumber >= 1
   
-  M[0] = vect(500, 25, 500)
+  orbs_vectors_arr[0] = hidden_vector
   getPlayers(Team.1).G[0] = true
   getPlayers(Team.1).S[0] = 1
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.DIZZY), "Total Mayhem -> 30 Sec ", iconString(Icon.DIZZY)))
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.VIOLET, eventPlayer, 5)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 100)
   getPlayers(Team.1).setGravity(25)
-  if newLine < 50:
+  if roundNumber < 50:
       goto lbl_0
   eventPlayer.setMoveSpeed(200)
   lbl_0:
@@ -224,12 +129,12 @@ rule "[Total Mayhem Effects]":
   getPlayers(Team.1).G[0] = false
   getPlayers(Team.1).S[0] = 0
   getPlayers(Team.1).setGravity(100)
-  if newLine < 50:
+  if roundNumber < 50:
       goto lbl_1
   getPlayers(Team.1).setMoveSpeed(100)
   lbl_1:
 
-rule "[Total Mayhem Effects]":
+rule "Total Mayhem Effects":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.G[0] == true
@@ -242,14 +147,14 @@ rule "[Total Mayhem Effects]":
       goto RULE_START
 
 
-rule "[Challenge Accepted Effects]":
+rule "Challenge Accepted Effects":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, M[5]) <= 1.5
+  @Condition distance(eventPlayer, orbs_vectors_arr[5]) <= 1.5
   @Condition getPlayers(Team.1).G[5] == false
-  @Condition newLine >= 1
+  @Condition roundNumber >= 1
   
-  M[5] = vect(500, 25, 500)
+  orbs_vectors_arr[5] = hidden_vector
   getPlayers(Team.1).G[5] = true
   getPlayers(Team.1).S[5] = 1
   bigMessage(getAllPlayers(), "[Challenge? Accepted!] Invincible -> 30 Sec")
@@ -261,14 +166,14 @@ rule "[Challenge Accepted Effects]":
   getPlayers(Team.1).G[5] = false
   getPlayers(Team.1).S[5] = 0
 
-rule "[Freeze Effects]":
+rule "Freeze Effects":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, M[3]) <= 1.5
+  @Condition distance(eventPlayer, orbs_vectors_arr[3]) <= 1.5
   @Condition getPlayers(Team.1).G[3] == false
-  @Condition newLine >= 1
+  @Condition roundNumber >= 1
   
-  M[3] = vect(500, 25, 500)
+  orbs_vectors_arr[3] = hidden_vector
   getPlayers(Team.1).G[3] = true
   getPlayers(Team.1).S[3] = 1
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Freezing", l"Zone", l"-> {0}".format(l"{0} sec".format(30))))
@@ -278,7 +183,7 @@ rule "[Freeze Effects]":
   getPlayers(Team.1).G[3] = false
   getPlayers(Team.1).S[3] = 0
 
-rule "[Freeze Effects+]":
+rule "Freeze Effects+":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.G[3] == true
@@ -289,14 +194,14 @@ rule "[Freeze Effects+]":
   if RULE_CONDITION:
       goto RULE_START
 
-rule "[Time Distortion Effects]":
+rule "Time Distortion Effects":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, M[6]) <= 1.5
+  @Condition distance(eventPlayer, orbs_vectors_arr[6]) <= 1.5
   @Condition getPlayers(Team.1).G[6] == false
-  @Condition newLine > 39
+  @Condition roundNumber > 39
   
-  M[6] = vect(500, 25, 500)
+  orbs_vectors_arr[6] = hidden_vector
   getPlayers(Team.1).G[6] = true
   getPlayers(Team.1).S[6] = 1
   bigMessage(getPlayers(Team.1), l"{0} {1} {2}".format(iconString(Icon.SPIRAL), "[Time Distortion] Wibbly, Wobbly, Timey Wimey! -> 30 Sec ", iconString(Icon.SPIRAL)))
@@ -314,7 +219,7 @@ rule "[Time Distortion Effects]":
   getPlayers(Team.1).setMoveSpeed(100)
   getPlayers(Team.2).setDamageReceived(100)
 
-rule "[Buffs]: Total Mayhem Ultimate":
+rule "Buffs: Total Mayhem Ultimate":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.G[0] == true
