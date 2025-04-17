@@ -1,8 +1,8 @@
 #!mainFile "main.opy"
 settings {
     "main": {
-        "description": "Junkenstein has unleashed his horde of minions upon Adlersbrunn! Your mission is simple...survive as many waves as possible! Tips on how to play can be found in-game. [NEW]: Juno has landed!          ------------------------------------------------------------                   Special thanks and credit goes to Pug and Hannon#21462! Please support Hannon by playing their version here: [81FKK] Not Mine - Added perks",
-        "modeName": "[PvE] Zombies Unleashed (hard?)"
+        "description": "!!!Under development!!!",
+        "modeName": "[PvE] Zombies (new?)"
     },
     "lobby": {
         "allowPlayersInQueue": true,

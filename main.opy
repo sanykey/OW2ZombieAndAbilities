@@ -1,9 +1,8 @@
 #!include "settings.opy"
 #!include "variables.opy"
-#!include "debug.opy"
-
+# #!include "debug.opy"
 #!include "rounds.opy"
-#!include "3p camera.opy"
+# #!include "3p camera.opy"
 #!include "buy hero stats.opy"
 #!include "buy hero.opy"
 #!include "hero abilities.opy"
@@ -20,15 +19,15 @@
 #!include "teleports.opy"
 #!include "portal.opy"
 #!include "visuals.opy"
-#!include "utils.opy"
+# #!include "utils.opy"
 
 rule "Game init":
   roundNumber = 0
   hidden_vector = vect(500, 25, 500)
   round_remaining_bots = 0
   unlocked_locations = 0
-  T = []
-  Y = []
+  T = [] # ??
+  Y = [] # spawn points?
   match_is_over = false
-  G = vect(500, 0, 500)
+  G = vect(500, 0, 500) # ??
   zombiesflyIOnandOff = true
