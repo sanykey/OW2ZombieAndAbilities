@@ -34,6 +34,7 @@ rule "Crash Protection 40+ [OFF]":
   setSlowMotion(100)
 
 
+# todo: debug
 # rule "Disable inspector recording - debug":
 #   wait(1)
 #   disableInspector()
@@ -43,3 +44,18 @@ rule "Unlimited match time":
   @Condition match_is_over == false
   
   setMatchTime(3599)
+
+rule "Create vips list":
+  vips = ["snky"]
+
+rule "Change character for vip":
+  @Event eachPlayer
+  @Condition eventPlayer.hasSpawned() == true
+  @Condition eventPlayer.isAlive() == true
+  @Condition "{0}".format(eventPlayer) in vips == true
+  
+  wait(2)
+  eventPlayer.startForcingHero(Hero.JUNO)
+
+  eventPlayer.state_arr[0] = 4
+  smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
