@@ -77,13 +77,22 @@ rule "[Mercy Immune During Revive]":
       return
   getPlayersInRadius(eventPlayer, 10, Team.2).setStatusEffect(null, Status.STUNNED, 4)
 
-rule "[Mei] Frosty Jet Pack":
+rule "Mei frosty jet pack":
   @Event eachPlayer
   @Condition eventPlayer.getCurrentHero() == Hero.MEI
   @Condition eventPlayer.isFiringPrimaryFire() == true
   @Condition eventPlayer.isInAir() == true
   
-  eventPlayer.applyImpulse(eventPlayer.getFacingDirection(), -1.75, Relativity.TO_WORLD, Impulse.INCORPORATE_CONTRARY_MOTION)
+  eventPlayer.applyImpulse(eventPlayer.getFacingDirection(), -2, Relativity.TO_WORLD, Impulse.INCORPORATE_CONTRARY_MOTION)
   wait(0.1)
   if RULE_CONDITION:
       goto RULE_START
+
+rule "Brigitte Bash":
+  @Event playerDealtDamage
+  @Team 1
+  @Hero brigitte
+  @Condition eventPlayer.isFiringSecondaryFire() == true
+  @Condition eventAbility == Button.PRIMARY_FIRE
+  
+  victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
