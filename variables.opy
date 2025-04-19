@@ -15,6 +15,9 @@ globalvar players_ressurect_positions_arr = 38 # Array of vectors of places wher
 globalvar round_remaining_bots = 39
 globalvar orbs_vectors_arr = 40
 globalvar is_round_end = 41
+globalvar location_buy_positions_arr = 42
+globalvar vips = 43
+globalvar secret_shop_exit_vect = 44
 
 #Player variables
 
@@ -25,6 +28,17 @@ playervar damage_stat 11
 playervar healing_stat 12
 playervar zombiesfly 26
 playervar orb_roll 27 # current orb drop chance when a bot dies
+playervar is_in_secret_shop 28
+
+# todo: use enum?
+# 0: 3p camera status, number
+#   0: OFF
+#   1: Temporary OFF
+#   2: Temporary OFF higher angle
+#   3: ON
+#   4: ON higher angle
+# 1: 3p prev status, number
+playervar state_arr 29
 
 #Activated extensions
 #!extension explosionSounds
