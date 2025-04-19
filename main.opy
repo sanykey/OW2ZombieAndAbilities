@@ -1,8 +1,8 @@
 #!include "settings.opy"
 #!include "variables.opy"
-# #!include "debug.opy"
+#!include "debug.opy"
 #!include "rounds.opy"
-# #!include "3p camera.opy"
+#!include "3p camera.opy"
 #!include "buy hero stats.opy"
 #!include "buy hero.opy"
 #!include "hero abilities.opy"
@@ -19,7 +19,7 @@
 #!include "teleports.opy"
 #!include "portal.opy"
 #!include "visuals.opy"
-# #!include "utils.opy"
+#!include "utils.opy"
 
 rule "Game init":
   roundNumber = 0

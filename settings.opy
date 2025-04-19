@@ -1,8 +1,8 @@
 #!mainFile "main.opy"
 settings {
     "main": {
-        "description": "!!!Under development!!!",
-        "modeName": "[PvE] Zombies (new?)"
+        "description": "Under development",
+        "modeName": "Zombies"
     },
     "lobby": {
         "allowPlayersInQueue": true,

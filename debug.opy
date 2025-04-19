@@ -5,7 +5,7 @@ rule "[debug] Add money and health":
   @Team 1
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
-  eventPlayer.money += 100000
+  eventPlayer.money += 1000000
   eventPlayer.health_stat += 500
   eventPlayer.setMaxHealth(eventPlayer.health_stat)
   # wait(5)
