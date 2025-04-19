@@ -62,6 +62,7 @@ rule "Respawn bots":
   @Condition is_round_end == false
   @Condition roundNumber >= 1
   @Condition getNumberOfLivingPlayers(Team.2) < round_remaining_bots
+  @Condition isBotsDisabled == false
   
   wait(3, Wait.ABORT_WHEN_FALSE)
   random.choice(getDeadPlayers(Team.2)).respawn()

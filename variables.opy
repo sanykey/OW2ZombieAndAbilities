@@ -18,6 +18,7 @@ globalvar is_round_end = 41
 globalvar location_buy_positions_arr = 42
 globalvar vips = 43
 globalvar secret_shop_exit_vect = 44
+globalvar isBotsDisabled = 45
 
 #Player variables
 

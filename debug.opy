@@ -8,8 +8,30 @@ rule "[debug] Add money and health":
   eventPlayer.money += 1000000
   eventPlayer.health_stat += 500
   eventPlayer.setMaxHealth(eventPlayer.health_stat)
-  # wait(5)
-  # eventPlayer.startForcingHero(Hero.JUNO)
+
+rule "Deactivate bots (Ctrl + shift + interact)":
+  @Event eachPlayer
+  @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
+  # @Condition eventPlayer.isHoldingButton(Button.ABILITY_2) == true
+  @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  
+  if isBotsDisabled == false:
+    isBotsDisabled = true
+    round_remaining_bots += 12
+    damage(getPlayers(Team.2), getPlayers(Team.2), 99999)
+    smallMessage(eventPlayer, "Bots disabled")
+  else:
+    isBotsDisabled = false
+    smallMessage(eventPlayer, "Bots enabled")
+
+
+rule "Init":
+  isBotsDisabled = false
+  # server loading stats:
+  hudText(getPlayersInSlot(0, Team.1), getServerLoad(), getAverageServerLoad(), getPeakServerLoad(), HudPosition.LEFT, 7, Color.GREEN, Color.ORANGE, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+  # Player 1 current coordinates
+  hudSubtext(getPlayersInSlot(0, Team.1), "P1 Coords: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 10, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
 
 # rule "Teleport to shop":
