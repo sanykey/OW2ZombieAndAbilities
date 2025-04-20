@@ -131,14 +131,14 @@ rule "[Spawn Points Array B-]":
 
 rule "[Spawn Points Array C]":
   @Condition distance(vect(-22.86, 8.08, -88.854), getClosestPlayer(vect(-22.86, 8.08, -88.854), Team.1)) <= 15
-  @Condition D == 1
+  @Condition unlocked_locations == 4
   
   Y.append(vect(74.194, 17.928, -49.807))
 
 
 rule "[Spawn Points Array C-]":
   @Condition distance(vect(-22.86, 8.08, -88.854), getClosestPlayer(vect(-22.86, 8.08, -88.854), Team.1)) > 15
-  @Condition D == 1
+  @Condition unlocked_locations == 4
   
   Y.remove(vect(74.194, 17.928, -49.807))
 
