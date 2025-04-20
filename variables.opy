@@ -15,11 +15,9 @@ globalvar players_ressurect_positions_arr = 38 # Array of vectors of places wher
 globalvar round_remaining_bots = 39
 globalvar orbs_vectors_arr = 40
 globalvar is_round_end = 41
-globalvar location_buy_positions_arr = 42
 globalvar vips = 43
 globalvar secret_shop_exit_vect = 44
 globalvar isBotsDisabled = 45
-globalvar blockedAreaVectorsArr = 46
 
 globalvar debugVectsArr = 46
 globalvar debugCurrentVectNum = 47
@@ -27,6 +25,7 @@ globalvar debugCurrentVectEffectArr = 48
 globalvar test = 49
 globalvar lockedAreaVectsArrCompressed = 50
 globalvar lockedAreaVectsArr = 51
+globalvar lockedAreaEffectsArr = 52
 
 #Player variables
 

@@ -40,8 +40,6 @@ rule "Show beam and info to current debugging vector":
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
 
   debugVectsArr = []
-  # for I in range(len(location_buy_positions_arr)):
-  #   debugVectsArr[I] = location_buy_positions_arr[I][0]
   for I in range(13, 24):
     debugVectsArr[I - 13] = lockedAreaVectsArr[I]
 

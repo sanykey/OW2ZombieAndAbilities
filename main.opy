@@ -25,7 +25,6 @@ rule "Game init":
   hidden_vector = vect(500, 25, 500)
   round_remaining_bots = 0
   unlocked_locations = 0
-  T = [] # ??
   Y = [] # spawn points?
   match_is_over = false
   zombiesflyIOnandOff = true

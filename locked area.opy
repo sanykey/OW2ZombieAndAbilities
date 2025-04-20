@@ -54,13 +54,11 @@ rule "Create location buy positions":
   ])
   lockedAreaVectsArr = decompressVectors(lockedAreaVectsArrCompressed)
 
-  # Create buy location positions and effects
-  # [position_vector, price]
-  # location_buy_positions_arr = [2500, 5000, 7500, 5000]
-  T = []
-  for I in range(len(location_buy_positions_arr)):
+  # Create buy location positions and effects. lockedAreaEffectsArr [0-7] indexes
+  lockedAreaEffectsArr = []
+  for I in range(4):
     createEffect(getPlayers(Team.1), Effect.RING, Color.WHITE, lockedAreaVectsArr[I], 1, EffectReeval.VISIBILITY)
-    T.append(getLastCreatedEntity())
+    lockedAreaEffectsArr.append(getLastCreatedEntity())
     createInWorldText(
       getPlayers(Team.1),
       l"{0} {1}".format(l"Buy", l"{0}: {1}".format(l"{0} {1}".format(l"Next", l"Location"), 2500 * (I + 1))),
@@ -69,33 +67,40 @@ rule "Create location buy positions":
       Clip.SURFACES,
       WorldTextReeval.VISIBILITY
     )
-    T.append(getLastCreatedText())
+    lockedAreaEffectsArr.append(getLastCreatedText())
 
-  W = []
+  ## Create closed doorway effects. lockedAreaEffectsArr [8-19] indexes: ##
+  # doorways to Area A:
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[13], 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[14], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[15], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
+  
+  # doorways to Area B:
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[16], 3.25, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[17], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[18], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[19], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
+  
+  # doorways to Area C:
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[20], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[21], 2.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[22], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
+  
+  # doorways to Area D:
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[23], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
   createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, lockedAreaVectsArr[24], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  W.append(getLastCreatedEntity())
+  lockedAreaEffectsArr.append(getLastCreatedEntity())
 
 rule "Locked area 0":
   @Event eachPlayer
@@ -294,11 +299,13 @@ rule "Unlock next location A":
   @Condition eventPlayer.money >= 2500
   
   unlocked_locations = 1
-  destroyEffect(W[0])
-  destroyEffect(W[1])
-  destroyEffect(W[2])
-  destroyEffect(T[0])
-  destroyInWorldText(T[1])
+  # Remove closed doorway effects:
+  destroyEffect(lockedAreaEffectsArr[8])
+  destroyEffect(lockedAreaEffectsArr[9])
+  destroyEffect(lockedAreaEffectsArr[10])
+
+  destroyEffect(lockedAreaEffectsArr[0])
+  destroyInWorldText(lockedAreaEffectsArr[1])
   playEffect(getPlayers(Team.1), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
@@ -314,12 +321,14 @@ rule "Unlock next location B":
   @Condition eventPlayer.money >= 5000
   
   unlocked_locations = 2
-  destroyEffect(W[3])
-  destroyEffect(W[4])
-  destroyEffect(W[5])
-  destroyEffect(W[6])
-  destroyEffect(T[2])
-  destroyInWorldText(T[3])
+  # Remove closed doorway effects:
+  destroyEffect(lockedAreaEffectsArr[11])
+  destroyEffect(lockedAreaEffectsArr[12])
+  destroyEffect(lockedAreaEffectsArr[13])
+  destroyEffect(lockedAreaEffectsArr[14])
+
+  destroyEffect(lockedAreaEffectsArr[2])
+  destroyInWorldText(lockedAreaEffectsArr[3])
   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
@@ -335,11 +344,13 @@ rule "Unlock next location C":
   @Condition eventPlayer.money >= 7500
   
   unlocked_locations = 3
-  destroyEffect(W[7])
-  destroyEffect(W[8])
-  destroyEffect(W[9])
-  destroyEffect(T[4])
-  destroyInWorldText(T[5])
+  # Remove closed doorway effects:
+  destroyEffect(lockedAreaEffectsArr[15])
+  destroyEffect(lockedAreaEffectsArr[16])
+  destroyEffect(lockedAreaEffectsArr[17])
+
+  destroyEffect(lockedAreaEffectsArr[4])
+  destroyInWorldText(lockedAreaEffectsArr[5])
   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
@@ -352,19 +363,21 @@ rule "Unlock next location D":
   @Condition distance(lockedAreaVectsArr[3], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlocked_locations == 3
-  @Condition eventPlayer.money >= 5000
+  @Condition eventPlayer.money >= 10000
   
   unlocked_locations = 4
-  destroyEffect(W[10])
-  destroyEffect(W[11])
-  destroyEffect(T[6])
-  destroyInWorldText(T[7])
+  # Remove closed doorway effects:
+  destroyEffect(lockedAreaEffectsArr[18])
+  destroyEffect(lockedAreaEffectsArr[19])
+
+  destroyEffect(lockedAreaEffectsArr[6])
+  destroyInWorldText(lockedAreaEffectsArr[7])
   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
-  eventPlayer.money -= 5000
+  eventPlayer.money -= 10000
 
 rule "Clear locked areas data when everything is open":
   @Condition unlocked_locations == 4
-  W = []
-  lockedAreaVectsArr = []
+  lockedAreaEffectsArr = null
+  lockedAreaVectsArr = null
