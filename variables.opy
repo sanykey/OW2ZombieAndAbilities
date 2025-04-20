@@ -19,6 +19,14 @@ globalvar location_buy_positions_arr = 42
 globalvar vips = 43
 globalvar secret_shop_exit_vect = 44
 globalvar isBotsDisabled = 45
+globalvar blockedAreaVectorsArr = 46
+
+globalvar debugVectsArr = 46
+globalvar debugCurrentVectNum = 47
+globalvar debugCurrentVectEffectArr = 48
+globalvar test = 49
+globalvar lockedAreaVectsArrCompressed = 50
+globalvar lockedAreaVectsArr = 51
 
 #Player variables
 
@@ -40,6 +48,7 @@ playervar is_in_secret_shop 28
 #   4: ON higher angle
 # 1: 3p prev status, number
 playervar state_arr 29
+playervar recentDamageDealtToSlot 30
 
 #Activated extensions
 #!extension explosionSounds
