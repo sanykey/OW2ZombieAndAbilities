@@ -31,13 +31,48 @@ rule "Init":
   # server loading stats:
   hudText(getPlayersInSlot(0, Team.1), getServerLoad(), getAverageServerLoad(), getPeakServerLoad(), HudPosition.LEFT, 7, Color.GREEN, Color.ORANGE, Color.RED, HudReeval.VISIBILITY_AND_STRING)
   # Player 1 current coordinates
-  hudSubtext(getPlayersInSlot(0, Team.1), "P1 Coords: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 10, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+  hudSubtext(getPlayersInSlot(0, Team.1), "P1: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+  hudSubtext(getPlayersInSlot(0, Team.1), "Current [{0}] vect: {1}".format(debugCurrentVectNum, debugVectsArr[debugCurrentVectNum].getPosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  
+rule "Show beam and info to current debugging vector":
+  @Event eachPlayer
+  @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+
+  debugVectsArr = []
+  # for I in range(len(location_buy_positions_arr)):
+  #   debugVectsArr[I] = location_buy_positions_arr[I][0]
+  for I in range(13, 24):
+    debugVectsArr[I - 13] = lockedAreaVectsArr[I]
+
+  if debugCurrentVectNum >= len(debugVectsArr) - 1:
+    debugCurrentVectNum = 0
+    smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr)))
+  else:
+    debugCurrentVectNum += 1
+    smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr)))
+  
+  destroyEffect(debugCurrentVectEffectArr[0])
+  destroyEffect(debugCurrentVectEffectArr[1])
+  createBeam(
+    getAllPlayers(),
+    Beam.GOOD,
+    eventPlayer.getEyePosition() + vect(0, -0.25, 0),
+    debugVectsArr[debugCurrentVectNum], 
+    Color.GREEN,
+    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  )
+  debugCurrentVectEffectArr[0] = getLastCreatedEntity()
+
+  createEffect(
+    getAllPlayers(),
+    Effect.SPHERE,
+    Color.GREEN,
+    debugVectsArr[debugCurrentVectNum],
+    1,
+    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  )
+  debugCurrentVectEffectArr[1] = getLastCreatedEntity()
 
 
-# rule "Teleport to shop":
-#   @Condition roundNumber == 1
-#   # todo: debug
-#   createEffect(getAllPlayers(), Effect.SPHERE, Color.GREEN, vect(74.955, 13.858, -52.677), 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-#   createEffect(getAllPlayers(), Effect.SPHERE, Color.YELLOW, vect(75.589, 13.865, -50.533), 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-#   # wait(15)
-#   getPlayers(Team.1)[0].teleport(vect(80.335, 13.93, -72.643))
+    

@@ -78,7 +78,7 @@ rule "[Tips & Tricks]":
 
 rule "Show player damage":
   @Event eachPlayer
-  @Team 1
+  @Team 2
   
   createInWorldText(
     null if localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,

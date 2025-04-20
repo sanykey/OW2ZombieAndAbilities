@@ -16,7 +16,6 @@
 #!include "zombie events.opy"
 #!include "money.opy"
 #!include "zombie behavior.opy"
-#!include "teleports.opy"
 #!include "portal.opy"
 #!include "visuals.opy"
 #!include "utils.opy"
@@ -29,5 +28,4 @@ rule "Game init":
   T = [] # ??
   Y = [] # spawn points?
   match_is_over = false
-  G = vect(500, 0, 500) # ??
   zombiesflyIOnandOff = true

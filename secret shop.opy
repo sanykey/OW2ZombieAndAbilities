@@ -1,7 +1,7 @@
 #!mainFile "main.opy"
 
 rule "Secret room init":
-  @Condition D == 1
+  @Condition unlocked_locations == 4
   secret_shop_exit_vect = vect(113.354, 16.189, -29.761)
 
   createEffect(getAllPlayers(), Effect.RING, Color.TURQUOISE, vect(97.513, 16.972, -20.29), 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -19,7 +19,7 @@ rule "Power switch ON":
   @Condition distance(eventPlayer, vect(97.513, 16.972, -20.29)) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition K == 0
-  @Condition D == 1
+  @Condition unlocked_locations == 4
   
   destroyEffect(N[0])
   destroyInWorldText(N[1])
