@@ -75,3 +75,25 @@ rule "[Tips & Tricks]":
   setObjectiveDescription(eventPlayer, "Enraged Zombies gain Molten Core. Happy birthday!", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)
   goto RULE_START
+
+rule "Show player damage":
+  @Event eachPlayer
+  @Team 1
+  
+  createInWorldText(
+    null if localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,
+    ceil(localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()]),
+    # eventPlayer,
+    updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
+    0.7,
+    Clip.NONE,
+    WorldTextReeval.VISIBILITY_POSITION_AND_STRING
+  )
+
+rule "Player took damage":
+    @Event playerTookDamage
+    @Team 2
+    
+    attacker.recentDamageDealtToSlot[victim.getSlot()] += eventDamage
+    wait(1.5, Wait.RESTART_WHEN_TRUE)
+    attacker.recentDamageDealtToSlot[victim.getSlot()] = 0
