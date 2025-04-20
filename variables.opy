@@ -39,6 +39,7 @@ playervar isInSecretShop 28
 playervar recentDamageDealtToSlot 29
 playervar stateArr 30 # use with enum "stateI"
 playervar reviveProgress 31
+playervar recentHealingDealtToSlot 32
 
 
 #Activated extensions

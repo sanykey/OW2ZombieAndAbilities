@@ -6,8 +6,10 @@ rule "[debug] Add money and health":
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
   eventPlayer.money += 1000000
-  eventPlayer.health_stat += 500
+  eventPlayer.health_stat += 10000
   eventPlayer.setMaxHealth(eventPlayer.health_stat)
+  eventPlayer.healing_stat += 10000
+  eventPlayer.setHealingDealt(eventPlayer.healing_stat)
 
 rule "Deactivate bots (Ctrl + shift + interact)":
   @Event eachPlayer

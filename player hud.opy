@@ -76,17 +76,38 @@ rule "Show player damage":
   createInWorldText(
     null if localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,
     ceil(localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()]),
-    # eventPlayer,
     updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
     0.7,
     Clip.NONE,
     WorldTextReeval.VISIBILITY_POSITION_AND_STRING
   )
 
+rule "Show player healing":
+  @Event eachPlayer
+  @Team 1
+  
+  createInWorldText(
+    null if localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()] == 0 else localPlayer,
+    ceil(localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()]),
+    updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
+    0.7,
+    Clip.NONE,
+    WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
+    Color.LIME_GREEN
+  )
+
 rule "Player took damage":
-    @Event playerTookDamage
-    @Team 2
-    
-    attacker.recentDamageDealtToSlot[victim.getSlot()] += eventDamage
-    wait(1.5, Wait.RESTART_WHEN_TRUE)
-    attacker.recentDamageDealtToSlot[victim.getSlot()] = 0
+  @Event playerTookDamage
+  @Team 2
+  
+  attacker.recentDamageDealtToSlot[victim.getSlot()] += eventDamage
+  wait(1.5, Wait.RESTART_WHEN_TRUE)
+  attacker.recentDamageDealtToSlot[victim.getSlot()] = 0
+
+rule "Player dealt healing":
+  @Event playerDealtHealing
+  @Team 1
+  
+  eventPlayer.recentHealingDealtToSlot[healee.getSlot()] += eventHealing
+  wait(1.5, Wait.RESTART_WHEN_TRUE)
+  eventPlayer.recentHealingDealtToSlot[healee.getSlot()] = 0
