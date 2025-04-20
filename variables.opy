@@ -7,7 +7,7 @@ globalvar team_shields 30
 globalvar team_armor 31
 globalvar heroes_shop_data 32
 globalvar match_is_over 33
-globalvar unlocked_locations 34
+globalvar unlockedLocations 34
 globalvar orbs_arr = 35
 globalvar hidden_vector = 36
 globalvar player_ressurect_time_mult = 37 # resurrect time multiplier, which increases after each resurrect, but resets to zero at the start of each round
@@ -16,16 +16,14 @@ globalvar round_remaining_bots = 39
 globalvar orbs_vectors_arr = 40
 globalvar is_round_end = 41
 globalvar vips = 43
-globalvar secret_shop_exit_vect = 44
 globalvar isBotsDisabled = 45
 
 globalvar debugVectsArr = 46
 globalvar debugCurrentVectNum = 47
 globalvar debugCurrentVectEffectArr = 48
-globalvar test = 49
-globalvar lockedAreaVectsArrCompressed = 50
-globalvar lockedAreaVectsArr = 51
+globalvar vectList = 51
 globalvar lockedAreaEffectsArr = 52
+globalvar shopState = 53
 
 #Player variables
 
@@ -36,7 +34,7 @@ playervar damage_stat 11
 playervar healing_stat 12
 playervar zombiesfly 26
 playervar orb_roll 27 # current orb drop chance when a bot dies
-playervar is_in_secret_shop 28
+playervar isInSecretShop 28
 
 # todo: use enum?
 # 0: 3p camera status, number

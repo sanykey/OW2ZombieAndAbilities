@@ -41,7 +41,7 @@ rule "Show beam and info to current debugging vector":
 
   debugVectsArr = []
   for I in range(13, 24):
-    debugVectsArr[I - 13] = lockedAreaVectsArr[I]
+    debugVectsArr[I - 13] = vectList[I]
 
   if debugCurrentVectNum >= len(debugVectsArr) - 1:
     debugCurrentVectNum = 0

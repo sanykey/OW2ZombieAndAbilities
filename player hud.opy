@@ -3,29 +3,20 @@
 rule "Init hud hero icons of players and how much money they have":
   @Condition roundNumber == 1
   
-  # Rewriting code to loop causes errors
-  # for I in range(6):
-  #   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(I, Team.1).getCurrentHero()), getPlayersInSlot(I, Team.1)), getPlayersInSlot(I, Team.1).money), HudPosition.LEFT, I, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-
   hudHeader(getPlayers(Team.1), l"Round {0}".format(roundNumber), HudPosition.TOP, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
   hudHeader(getPlayers(Team.1), l"{0} {1}".format(round_remaining_bots, l"Enemies"), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 
+  # players and money
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(0, Team.1).getCurrentHero()), getPlayersInSlot(0, Team.1)), getPlayersInSlot(0, Team.1).money), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(1, Team.1).getCurrentHero()), getPlayersInSlot(1, Team.1)), getPlayersInSlot(1, Team.1).money), HudPosition.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(2, Team.1).getCurrentHero()), getPlayersInSlot(2, Team.1)), getPlayersInSlot(2, Team.1).money), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(3, Team.1).getCurrentHero()), getPlayersInSlot(3, Team.1)), getPlayersInSlot(3, Team.1).money), HudPosition.LEFT, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  
-  # todo: why = 0 here?
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(4, Team.1).getCurrentHero()), getPlayersInSlot(4, Team.1)), getPlayersInSlot(4, Team.1).money), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(5, Team.1).getCurrentHero()), getPlayersInSlot(5, Team.1)), getPlayersInSlot(5, Team.1).money), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(4, Team.1).getCurrentHero()), getPlayersInSlot(4, Team.1)), getPlayersInSlot(4, Team.1).money), HudPosition.LEFT, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(5, Team.1).getCurrentHero()), getPlayersInSlot(5, Team.1)), getPlayersInSlot(5, Team.1).money), HudPosition.LEFT, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
-rule "[Upgrade Stats HUD]":
-  @Event eachPlayer
-  @Team 1
-  @Condition N == 1
-  
+  # player HP/DAMAGE/HEALING stats
   hudHeader(eventPlayer, l"{0} : {1} : {2}".format(l"{0} {1}".format("HP", eventPlayer.health_stat), l"{0} {1}".format(l"Damage", eventPlayer.damage_stat), l"{0} {1}".format(l"Healing", eventPlayer.healing_stat)), HudPosition.TOP, -1, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
-
+  
 rule "[Player Death Message]":
   @Event playerDied
   @Team 1
