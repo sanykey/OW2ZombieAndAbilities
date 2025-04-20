@@ -57,5 +57,5 @@ rule "Change character for vip":
   wait(2)
   eventPlayer.startForcingHero(Hero.JUNO)
 
-  eventPlayer.state_arr[0] = 4
+  eventPlayer.stateArr[0] = 4
   smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")

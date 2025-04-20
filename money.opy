@@ -1,51 +1,51 @@
 #!mainFile "main.opy"
 
-rule "[Zombie Points - Elimination]":
+rule "Zombie points - elimination":
   @Event playerEarnedElimination
   @Team 1
   @Condition eventWasCriticalHit == false
   @Condition victim.getCurrentHero() == Hero.TORBJORN
   
-  eventPlayer.money += 200 * eventPlayer.H
-  smallMessage(attacker, l"{0} + {1}".format(l"", l"{0} {1}".format(200 * eventPlayer.H, l"Points")))
-  eventPlayer.startHealingOverTime(eventPlayer, 5, 30)
-  R += 200 * eventPlayer.H
+  eventPlayer.money += MONEY_FOR_ZOMBIE_KILL * eventPlayer.H
+  smallMessage(attacker, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_ZOMBIE_KILL * eventPlayer.H, "Points")))
+  teamScore += MONEY_FOR_ZOMBIE_KILL * eventPlayer.H
 
 
-rule "[Zombie Points - Critical Hit]":
+rule "Zombie points - critical hit":
   @Event playerEarnedElimination
   @Team 1
   @Condition eventWasCriticalHit == true
   @Condition victim.getCurrentHero() == Hero.TORBJORN
   
-  eventPlayer.money += 275 * eventPlayer.H
-  smallMessage(attacker, l"{0} + {1}".format(l"", l"{0} {1}".format(275 * eventPlayer.H, l"Points")))
-  eventPlayer.startHealingOverTime(eventPlayer, 5, 30)
-  R += 275 * eventPlayer.H
+  eventPlayer.money += MONEY_FOR_ZOMBIE_CRITICAL * eventPlayer.H
+  smallMessage(attacker, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_ZOMBIE_CRITICAL * eventPlayer.H, "Points")))
+  teamScore += MONEY_FOR_ZOMBIE_CRITICAL * eventPlayer.H
 
-rule "[Healing Points]":
+
+rule "Healing points":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.healing_tracker >= 120
-  
-  eventPlayer.money += 75 * eventPlayer.H
-  eventPlayer.healing_tracker = 0
-  smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(75 * eventPlayer.H, "Points")))
-  R += 75 * eventPlayer.H
+  @Condition eventPlayer.healingTracker >= HEAL_AMOUNT_FOR_MONEY
+
+  while eventPlayer.healingTracker > HEAL_AMOUNT_FOR_MONEY:
+    eventPlayer.healingTracker -= HEAL_AMOUNT_FOR_MONEY
+    eventPlayer.money += MONEY_FOR_SELF_HEALING * eventPlayer.H
+    smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_SELF_HEALING * eventPlayer.H, "Points")))
+    teamScore += MONEY_FOR_SELF_HEALING * eventPlayer.H
 
 
-rule "[Healing Amount Tracker]":
+rule "Healing amount tracker":
   @Event playerDealtHealing
   @Team 1
-  @Condition healee == eventPlayer == false
+  @Condition healee != eventPlayer
   
-  eventPlayer.healing_tracker += eventHealing
+  eventPlayer.healingTracker += eventHealing
 
 
-rule "[Self Healing Amount Tracker]":
+rule "self healing amount tracker":
   @Event playerDealtHealing
   @Team 1
-  @Condition healee == eventPlayer == true
+  @Condition healee == eventPlayer
   
-  eventPlayer.healing_tracker += eventHealing / 2
+  eventPlayer.healingTracker += eventHealing / 2
   

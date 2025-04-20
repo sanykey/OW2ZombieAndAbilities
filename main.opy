@@ -1,6 +1,17 @@
 #!include "settings.opy"
 #!include "variables.opy"
 #!include "compressed vectors.opy"
+
+rule "Game init":
+  roundNumber = 0
+  hiddenVector = vect(500, 25, 500)
+  round_remaining_bots = 0
+  unlockedLocations = 0
+  Y = [] # spawn points?
+  match_is_over = false
+  zombiesflyIOnandOff = true
+
+
 #!include "debug.opy"
 #!include "rounds.opy"
 #!include "3p camera.opy"
@@ -20,13 +31,3 @@
 #!include "portal.opy"
 #!include "visuals.opy"
 #!include "utils.opy"
-
-rule "Game init":
-  roundNumber = 0
-  hidden_vector = vect(500, 25, 500)
-  round_remaining_bots = 0
-  unlockedLocations = 0
-  Y = [] # spawn points?
-  match_is_over = false
-  zombiesflyIOnandOff = true
-  

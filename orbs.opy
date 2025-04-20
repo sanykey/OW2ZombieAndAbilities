@@ -13,7 +13,7 @@ rule "Init vars, effects and hud for Orbs":
   ]
 
   for I in range(len(orbs_arr)):
-    orbs_vectors_arr[I] = hidden_vector
+    orbs_vectors_arr[I] = hiddenVector
 
   createEffect(getPlayers(Team.1), Effect.ORB, Color.VIOLET, orbs_vectors_arr[0], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getPlayers(Team.1), Effect.ORB, Color.YELLOW, orbs_vectors_arr[1], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -49,7 +49,7 @@ rule "Points orb effects":
   @Condition distance(eventPlayer, orbs_vectors_arr[1]) <= 1.5
   @Condition getPlayers(Team.1).G[1] == false
   @Condition roundNumber >= 1
-  orbs_vectors_arr[1] = hidden_vector
+  orbs_vectors_arr[1] = hiddenVector
   getPlayers(Team.1).G[1] = true
   getPlayers(Team.1).S[1] = 1
   bigMessage(getAllPlayers(), "2x Points Earned -> 30 Sec")
@@ -70,7 +70,7 @@ rule "Speed orb effects":
     @Condition roundNumber >= 1
     @Condition roundNumber < 40
     
-    orbs_vectors_arr[2] = hidden_vector
+    orbs_vectors_arr[2] = hiddenVector
     getPlayers(Team.1).G[2] = true
     getPlayers(Team.1).S[2] = 1
     bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Faster", l"Speed", l"-> {0}".format(l"{0} sec".format(60))))
@@ -90,7 +90,7 @@ rule "Honey, I Shrunk The Team Effects":
   @Condition getPlayers(Team.1).G[4] == false
   @Condition roundNumber >= 1
   
-  orbs_vectors_arr[4] = hidden_vector
+  orbs_vectors_arr[4] = hiddenVector
   getPlayers(Team.1).G[4] = true
   getPlayers(Team.1).S[4] = 1
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.HEART), "Honey, I Shrunk The Team! ", iconString(Icon.HEART)))
@@ -114,7 +114,7 @@ rule "Total mayhem effects":
   @Condition getPlayers(Team.1).G[0] == false
   @Condition roundNumber >= 1
   
-  orbs_vectors_arr[0] = hidden_vector
+  orbs_vectors_arr[0] = hiddenVector
   getPlayers(Team.1).G[0] = true
   getPlayers(Team.1).S[0] = 1
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.DIZZY), "Total Mayhem -> 30 Sec ", iconString(Icon.DIZZY)))
@@ -154,7 +154,7 @@ rule "Challenge Accepted Effects":
   @Condition getPlayers(Team.1).G[5] == false
   @Condition roundNumber >= 1
   
-  orbs_vectors_arr[5] = hidden_vector
+  orbs_vectors_arr[5] = hiddenVector
   getPlayers(Team.1).G[5] = true
   getPlayers(Team.1).S[5] = 1
   bigMessage(getAllPlayers(), "[Challenge? Accepted!] Invincible -> 30 Sec")
@@ -173,7 +173,7 @@ rule "Freeze Effects":
   @Condition getPlayers(Team.1).G[3] == false
   @Condition roundNumber >= 1
   
-  orbs_vectors_arr[3] = hidden_vector
+  orbs_vectors_arr[3] = hiddenVector
   getPlayers(Team.1).G[3] = true
   getPlayers(Team.1).S[3] = 1
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Freezing", l"Zone", l"-> {0}".format(l"{0} sec".format(30))))
@@ -201,7 +201,7 @@ rule "Time Distortion Effects":
   @Condition getPlayers(Team.1).G[6] == false
   @Condition roundNumber > 39
   
-  orbs_vectors_arr[6] = hidden_vector
+  orbs_vectors_arr[6] = hiddenVector
   getPlayers(Team.1).G[6] = true
   getPlayers(Team.1).S[6] = 1
   bigMessage(getPlayers(Team.1), l"{0} {1} {2}".format(iconString(Icon.SPIRAL), "[Time Distortion] Wibbly, Wobbly, Timey Wimey! -> 30 Sec ", iconString(Icon.SPIRAL)))

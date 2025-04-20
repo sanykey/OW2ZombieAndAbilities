@@ -35,11 +35,11 @@ rule "Round start":
   bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))
   
   # Resurrect and heal all players
-  player_ressurect_time_mult = 0
+  playerRessurectTimeMult = 0
   getDeadPlayers(Team.1).teleport(nearestWalkablePosition(random.choice(getLivingPlayers(Team.1)) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
   getDeadPlayers(Team.1).resurrect()
   for I in range(6):
-    players_ressurect_positions_arr[I] = hidden_vector
+    playersRessurectPositionsArr[I] = hiddenVector
   wait(0.25)
   heal(getPlayers(Team.1), null, 99999)
 
@@ -89,7 +89,7 @@ rule "Match end":
   destroyAllInWorldTexts()
   wait(3)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Survived", roundNumber, l"Rounds"))
-  bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Total", l"{0}:".format(l"Score"), R))
+  bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Total", l"{0}:".format(l"Score"), teamScore))
   wait(4)
   declareTeamVictory(Team.2)
 
