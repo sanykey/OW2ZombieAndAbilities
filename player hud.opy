@@ -4,7 +4,7 @@ rule "Init hud hero icons of players and how much money they have":
   @Condition roundNumber == 1
   
   hudHeader(getPlayers(Team.1), l"Round {0}".format(roundNumber), HudPosition.TOP, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-  hudHeader(getPlayers(Team.1), l"{0} {1}".format(round_remaining_bots, l"Enemies"), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+  hudHeader(getPlayers(Team.1), l"{0} {1}".format(roundRemainingBots, l"Enemies"), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(0, Team.1).getCurrentHero()), getPlayersInSlot(0, Team.1)), getPlayersInSlot(0, Team.1).money), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(1, Team.1).getCurrentHero()), getPlayersInSlot(1, Team.1)), getPlayersInSlot(1, Team.1).money), HudPosition.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)

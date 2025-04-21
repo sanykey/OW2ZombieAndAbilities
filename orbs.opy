@@ -34,7 +34,7 @@ rule "Init vars, effects and hud for Orbs":
 rule "Bot died - drop orb chance":
   @Event playerDied
   @Team 2
-  @Condition round_remaining_bots > 0
+  @Condition roundRemainingBots > 0
   
   eventPlayer.orb_roll = random.randint(1, 7000)
   if eventPlayer.orb_roll <= orbs_arr[6][0]:

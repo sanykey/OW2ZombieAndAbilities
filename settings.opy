@@ -9,7 +9,7 @@ settings {
         "enableMatchVoiceChat": true,
         "team1Slots": 6,
         "team2Slots": 0,
-        "returnToLobby": "never",
+        "returnToLobby": "afterGame", # todo: "returnToLobby": "never",
         "swapTeamsAfterMatch": false,
         "useExperimentalUpdate": true
     },

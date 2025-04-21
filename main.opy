@@ -5,13 +5,13 @@
 rule "Game init":
   roundNumber = 0
   hiddenVector = vect(500, 25, 500)
-  round_remaining_bots = 0
+  roundRemainingBots = 0
   unlockedLocations = 0
   Y = [] # spawn points?
   match_is_over = false
   zombiesflyIOnandOff = true
 
-
+#!include "ally bot.opy"
 #!include "debug.opy"
 #!include "rounds.opy"
 #!include "3p camera.opy"

@@ -2,17 +2,17 @@
 rule "Bot died":
   @Event playerDied
   @Team 2
-  @Condition round_remaining_bots > 0
+  @Condition roundRemainingBots > 0
 
   eventPlayer.setUltCharge(0)
-  round_remaining_bots -= 1
-  if round_remaining_bots <= 0:
-    is_round_end = true
+  roundRemainingBots -= 1
+  if roundRemainingBots <= 0:
+    isRoundEnd = true
 
 rule "disable bot auto respawn":
   @Event playerJoined
   @Team 2
-  
+
   eventPlayer.disableRespawn()
 
 rule "Create bots":
@@ -27,7 +27,7 @@ rule "Create bots":
 
 
 rule "Round start":
-  @Condition round_remaining_bots <= 0
+  @Condition roundRemainingBots <= 0
   @Condition match_is_over == false
   
   roundNumber += 1
@@ -45,12 +45,12 @@ rule "Round start":
 
   wait(5)
   bigMessage(getAllPlayers(), "Starting Round!")
-  round_remaining_bots = 10 + roundNumber * 2
+  roundRemainingBots = 10 + roundNumber * 2
 
-  for I in range(12):
+  for I in range(MAX_ZOMBIES):
     getPlayersInSlot(I, Team.2).respawn()
     wait(0.25)
-  is_round_end = false
+  isRoundEnd = false
 
   getPlayers(Team.2).setMoveSpeed(35 + 5 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
   getPlayers(Team.2).setMaxHealth(80 + 15 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
@@ -59,9 +59,9 @@ rule "Round start":
   heal(getPlayers(Team.2), null, 9999)
 
 rule "Respawn bots":
-  @Condition is_round_end == false
+  @Condition isRoundEnd == false
   @Condition roundNumber >= 1
-  @Condition getNumberOfLivingPlayers(Team.2) < round_remaining_bots
+  @Condition getNumberOfLivingPlayers(Team.2) < roundRemainingBots
   @Condition isBotsDisabled == false
   
   wait(3, Wait.ABORT_WHEN_FALSE)
@@ -72,8 +72,8 @@ rule "Respawn bots":
 rule "Mark last zombie":
   @Event eachPlayer
   @Team 2
-  @Condition is_round_end == false
-  @Condition round_remaining_bots < 2
+  @Condition isRoundEnd == false
+  @Condition roundRemainingBots < 2
   @Condition getNumberOfLivingPlayers(Team.2) == 1
   @Condition eventPlayer.isAlive() == true
   

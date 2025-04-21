@@ -22,7 +22,7 @@ rule "Deactivate bots (Ctrl + shift + interact)":
   
   if isBotsDisabled == false:
     isBotsDisabled = true
-    round_remaining_bots += 12
+    roundRemainingBots += 12
     damage(getPlayers(Team.2), getPlayers(Team.2), 99999)
     smallMessage(eventPlayer, "Bots disabled")
   else:
