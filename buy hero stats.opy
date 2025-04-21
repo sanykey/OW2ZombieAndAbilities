@@ -2,7 +2,7 @@
 
 rule "Inite shop upgrades effects and text":
   @Condition roundNumber == 1
-  
+
   createEffect(getAllPlayers(), Effect.RING, Color.LIME_GREEN, vectList[vectListI.BUY_HP], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getAllPlayers(), Effect.RING, Color.RED, vectList[vectListI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getAllPlayers(), Effect.RING, Color.ORANGE, vectList[vectListI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -54,6 +54,8 @@ rule "Buy healing upgrade":
   
   eventPlayer.money -= 2500
   eventPlayer.healing_stat += 10
+  eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healing_stat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healing_stat / 500))
+
   eventPlayer.setHealingDealt(eventPlayer.healing_stat)
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, eventPlayer, 1)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, eventPlayer, 100)

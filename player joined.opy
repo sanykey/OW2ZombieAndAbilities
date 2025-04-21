@@ -46,6 +46,8 @@ rule "Late Joiner Catchup [50]":
 rule "Team Shields and Armor for Joiner":
   @Event playerJoined
   @Team 1
+
+  eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
   eventPlayer.addHealthPool(Health.SHIELDS, team_shields, true)

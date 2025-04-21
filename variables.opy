@@ -51,7 +51,6 @@ playervar recentHealingDealtToSlot 32
 #!define MONEY_FOR_ZOMBIE_KILL 200
 #!define MONEY_FOR_ZOMBIE_CRITICAL 275
 #!define MONEY_FOR_HEALING 100
-#!define MONEY_FOR_SELF_HEALING 75
 #!define HEAL_AMOUNT_FOR_MONEY 120
 #!define MAX_PLAYERS 6
 #!define MAX_ZOMBIES 12
@@ -64,3 +63,6 @@ enum stateI:
   # 3: ON
   # 4: ON higher angle
   CAMERA_3P_PREV = 1 # like as CAMERA_3P
+  HEALING_TRACKER = 2
+  HEALING_TRACKER_THRESHOLD = 3
+  HEALING_RESULT = 4
