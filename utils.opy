@@ -41,7 +41,7 @@ rule "Crash Protection 40+ [OFF]":
 
 rule "Unlimited match time":
   @Condition getMatchTime() < 10
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   setMatchTime(3599)
 
@@ -55,7 +55,7 @@ rule "Change character for vip":
   @Condition "{0}".format(eventPlayer) in vips == true
   
   wait(2)
-  eventPlayer.startForcingHero(Hero.JUNO)
+  eventPlayer.startForcingHero(Hero.ASHE)
 
   eventPlayer.stateArr[0] = 4
   smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")

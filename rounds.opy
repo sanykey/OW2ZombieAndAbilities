@@ -28,7 +28,7 @@ rule "Create bots":
 
 rule "Round start":
   @Condition roundRemainingBots <= 0
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   roundNumber += 1
   destroyIcon(J[21]) # remove last zombie marker
@@ -84,7 +84,7 @@ rule "Match end":
   @Condition all([player.isDead() for player in getPlayers(Team.1)]) == true
   @Condition getPlayers(Team.1).hasSpawned() == true
   
-  match_is_over = true
+  matchIsOver = true
   destroyAllEffects()
   destroyAllInWorldTexts()
   wait(3)

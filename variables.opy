@@ -6,7 +6,7 @@ globalvar zombiesflyIOnandOff 26
 globalvar team_shields 30
 globalvar team_armor 31
 globalvar heroes_shop_data 32
-globalvar match_is_over 33
+globalvar matchIsOver 33
 globalvar unlockedLocations 34
 globalvar orbs_arr 35
 globalvar hiddenVector 36
@@ -30,18 +30,22 @@ globalvar temp_1 55
 #Player variables
 
 playervar money 0
-playervar healingTracker 34
 playervar health_stat 10
 playervar damage_stat 11
 playervar healing_stat 12
 playervar zombiesfly 26
 playervar orb_roll 27 # current orb drop chance when a bot dies
 playervar isInSecretShop 28
-playervar recentDamageDealtToSlot 29
+
 playervar stateArr 30 # use with enum "stateI"
 playervar reviveProgress 31
-playervar recentHealingDealtToSlot 32
-playervar isTargetInLos 33
+playervar isTargetInLos 32
+playervar recentStackedHealingDealtToSlot 33
+playervar healingTracker 34
+playervar recentHealingDealtToSlot 35
+
+playervar recentDamageDealtToSlot 29
+playervar recentStackedDamageDealtToSlot 36
 
 
 #Activated extensions
@@ -53,7 +57,7 @@ playervar isTargetInLos 33
 #!define MONEY_FOR_ZOMBIE_KILL 200
 #!define MONEY_FOR_ZOMBIE_CRITICAL 275
 #!define MONEY_FOR_HEALING 100
-#!define HEAL_AMOUNT_FOR_MONEY 120
+#!define HEAL_AMOUNT_FOR_MONEY 200
 #!define MAX_PLAYERS 6
 #!define MAX_ZOMBIES 12
 #!define ALLY_BOT_PLAYER_SLOT 7

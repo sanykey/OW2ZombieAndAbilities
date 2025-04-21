@@ -1,4 +1,7 @@
 #!mainFile "main.opy"
+
+# settings.heroes.allTeams.general.passiveHealthRegen false is not working. You must manually enter this parameter = "Disabled"
+
 settings {
     "main": {
         "description": "Under development",
@@ -9,7 +12,7 @@ settings {
         "enableMatchVoiceChat": true,
         "team1Slots": 6,
         "team2Slots": 0,
-        "returnToLobby": "afterGame", # todo: "returnToLobby": "never",
+        "returnToLobby": "afterGame",
         "swapTeamsAfterMatch": false,
         "useExperimentalUpdate": true
     },
@@ -30,7 +33,7 @@ settings {
         },
         "general": {
             "gamemodeStartTrigger": "immediately",
-            "heroLimit": "off",
+            "heroLimit": "off"
         }
     },
     "heroes": {
@@ -47,7 +50,6 @@ settings {
             "torbjorn": {
                 "ammoClipSize%": 150,
                 "damageDealt%": 180,
-                "damageReceived%": 90,
                 "enableAbility1": false,
                 "healingReceived%": 40,
                 "health%": 200,
@@ -66,6 +68,7 @@ settings {
                 "dva"
             ],
             "general": {
+                "passiveHealthRegen": false,
                 "ultGen%": 50,
                 "combatUltGen%": 50,
                 "passiveUltGen%": 50

@@ -7,16 +7,12 @@ rule "Change 3p Camera state":
 
   eventPlayer.stateArr[1] = eventPlayer.stateArr[0]
   if eventPlayer.stateArr[0] == 3:
-    smallMessage(eventPlayer, l"{0}: {1}".format("ON", eventPlayer.stateArr[0]))
     eventPlayer.startCamera(eventPlayer + worldVector(vect(-0.1, 0.8, -0.3), eventPlayer, Transform.ROTATION) + Vector.UP * 1.25 + eventPlayer.getFacingDirection() * -1.7, eventPlayer + eventPlayer.getFacingDirection() * 60)
     return
 
   if eventPlayer.stateArr[0] == 4:
-    smallMessage(eventPlayer, l"{0}: {1}".format("ON HA", eventPlayer.stateArr[0]))
     eventPlayer.startCamera(eventPlayer + worldVector(vect(-0.3, 1, -0.5), eventPlayer, Transform.ROTATION) + Vector.UP * 1.45 + eventPlayer.getFacingDirection() * -1.9, eventPlayer + eventPlayer.getFacingDirection() * 60)
     return
-
-  smallMessage(eventPlayer, l"{0}: {1}".format("OFF", eventPlayer.stateArr[0]))
   eventPlayer.stopCamera()
 
 rule "Enable 3P Camera (Interact + R)":

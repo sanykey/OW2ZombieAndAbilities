@@ -56,7 +56,7 @@ rule "Locked area 0":
   @Team 1
   @Condition distance(eventPlayer, vectList[4]) < 10
   @Condition unlockedLocations == 0
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[4], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -69,7 +69,7 @@ rule "Locked area 1":
   @Team 1
   @Condition distance(eventPlayer, vectList[5]) < 10
   @Condition unlockedLocations == 1
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -82,7 +82,7 @@ rule "Locked area 2":
   @Team 1
   @Condition distance(eventPlayer, vectList[6]) < 15
   @Condition unlockedLocations == 1
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -95,7 +95,7 @@ rule "Locked area 3":
   @Team 1
   @Condition distance(eventPlayer, vectList[7]) < 5
   @Condition unlockedLocations == 1
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -108,7 +108,7 @@ rule "Locked area 4":
   @Team 1
   @Condition distance(eventPlayer, vectList[8]) < 10
   @Condition unlockedLocations == 2
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -121,7 +121,7 @@ rule "Locked area 5":
   @Team 1
   @Condition distance(eventPlayer, vectList[9]) < 10
   @Condition unlockedLocations == 2
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -134,7 +134,7 @@ rule "Locked area 6":
   @Team 1
   @Condition distance(eventPlayer, vectList[10]) < 10
   @Condition unlockedLocations == 2
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -147,7 +147,7 @@ rule "Locked area 7":
   @Team 1
   @Condition distance(eventPlayer, vectList[11]) < 4
   @Condition unlockedLocations != 4
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[11], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -160,7 +160,7 @@ rule "Locked area 8":
   @Team 1
   @Condition distance(eventPlayer, vectList[12]) < 5
   @Condition unlockedLocations != 4
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.applyImpulse(directionTowards(vectList[12], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)

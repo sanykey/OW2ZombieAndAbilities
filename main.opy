@@ -8,7 +8,7 @@ rule "Game init":
   roundRemainingBots = 0
   unlockedLocations = 0
   Y = [] # spawn points?
-  match_is_over = false
+  matchIsOver = false
   zombiesflyIOnandOff = true
 
 #!include "ally bot.opy"

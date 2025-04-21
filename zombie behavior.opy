@@ -3,7 +3,7 @@
 rule "[Bots Move Toward Players]":
   @Event eachPlayer
   @Team 2
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
@@ -11,7 +11,7 @@ rule "[Bots Move Toward Players]":
 rule "[Bots Face Nearest Players]":
   @Event eachPlayer
   @Team 2
-  @Condition match_is_over == false
+  @Condition matchIsOver == false
   
   eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted([player for player in getLivingPlayers(Team.1) if player.T == 0], lambda i: distance(eventPlayer, i)))[0]).getEyePosition()), 400)
   eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), (getClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.T == 0], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()), Relativity.TO_WORLD)
@@ -102,7 +102,7 @@ rule "[Bots Under Player Impulse]":
     @Event eachPlayer
     @Team 2
     @Condition eventPlayer.getVerticalFacingAngle() < -70
-    @Condition match_is_over == false
+    @Condition matchIsOver == false
     @Condition getClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false
     
     eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)

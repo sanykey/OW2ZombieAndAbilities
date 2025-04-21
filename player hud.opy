@@ -74,21 +74,32 @@ rule "Show player damage":
   @Team 2
   
   createInWorldText(
-    null if localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,
-    ceil(localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()]),
+    null if localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,
+    "{0} +{1}".format(ceil(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()]), localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()]),
     updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
     0.7,
     Clip.NONE,
     WorldTextReeval.VISIBILITY_POSITION_AND_STRING
   )
 
+rule "Player took damage":
+  @Event playerTookDamage
+  @Team 2
+  
+  attacker.recentStackedDamageDealtToSlot[victim.getSlot()] += eventDamage
+  attacker.recentDamageDealtToSlot[victim.getSlot()] = eventDamage
+  wait(1.5, Wait.RESTART_WHEN_TRUE)
+
+  # If one bot is attacked by multiple players, the damage indicator breaks, so we reset it to zero for all players
+  getPlayers(Team.1).recentStackedDamageDealtToSlot[victim.getSlot()] = 0
+
 rule "Show player healing":
   @Event eachPlayer
   @Team 1
   
   createInWorldText(
-    null if localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()] == 0 else localPlayer,
-    ceil(localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()]),
+    null if localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()] == 0 else localPlayer,
+    "{0} +{1}".format(ceil(localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()]), localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()]),
     updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
     0.7,
     Clip.NONE,
@@ -96,18 +107,13 @@ rule "Show player healing":
     Color.LIME_GREEN
   )
 
-rule "Player took damage":
-  @Event playerTookDamage
-  @Team 2
-  
-  attacker.recentDamageDealtToSlot[victim.getSlot()] += eventDamage
-  wait(1.5, Wait.RESTART_WHEN_TRUE)
-  attacker.recentDamageDealtToSlot[victim.getSlot()] = 0
-
-rule "Player dealt healing":
-  @Event playerDealtHealing
+rule "Player received damage":
+  @Event playerReceivedHealing
   @Team 1
-  
-  eventPlayer.recentHealingDealtToSlot[healee.getSlot()] += eventHealing
+
+  healer.recentStackedHealingDealtToSlot[healee.getSlot()] += eventHealing
+  healer.recentHealingDealtToSlot[healee.getSlot()] = eventHealing
   wait(1.5, Wait.RESTART_WHEN_TRUE)
-  eventPlayer.recentHealingDealtToSlot[healee.getSlot()] = 0
+
+  # If one player is healed by multiple players, the healing indicator breaks, so we reset it to zero for all players
+  getPlayers(Team.1).recentStackedHealingDealtToSlot[healee.getSlot()] = 0
