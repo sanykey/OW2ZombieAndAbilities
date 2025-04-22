@@ -1,226 +1,123 @@
 #!mainFile "main.opy"
 
-rule "Create revive effects":
-  for I in range(MAX_PLAYERS):
-    playersRessurectPositionsArr[I] = hiddenVector
+def disablePlayer():
+  @Name "Subroutine: Disable Player"
+  
+  eventPlayer.startForcingThrottle(0, 0, 0, 0, 0, 0)
+  eventPlayer.setPrimaryFireEnabled(false)
+  eventPlayer.setSecondaryFireEnabled(false)
+  eventPlayer.setAbility1Enabled(false)
+  eventPlayer.setAbility2Enabled(false)
+  eventPlayer.setMeleeEnabled(false)
+  eventPlayer.setJumpEnabled(false)
+  eventPlayer.setCrouchEnabled(false)
+  eventPlayer.disallowButton(Button.ULTIMATE)
 
-  createEffect(getAllPlayers(), Effect.RING, Color.YELLOW, playersRessurectPositionsArr[0], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, playersRessurectPositionsArr[0], getPlayersInSlot(0, Team.1).reviveProgress, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.YELLOW, playersRessurectPositionsArr[1], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, playersRessurectPositionsArr[1], getPlayersInSlot(1, Team.1).reviveProgress, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.YELLOW, playersRessurectPositionsArr[2], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, playersRessurectPositionsArr[2], getPlayersInSlot(2, Team.1).reviveProgress, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.YELLOW, playersRessurectPositionsArr[3], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, playersRessurectPositionsArr[3], getPlayersInSlot(3, Team.1).reviveProgress, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.YELLOW, playersRessurectPositionsArr[4], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, playersRessurectPositionsArr[4], getPlayersInSlot(4, Team.1).reviveProgress, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.YELLOW, playersRessurectPositionsArr[5], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, playersRessurectPositionsArr[5], getPlayersInSlot(5, Team.1).reviveProgress, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+def enablePlayer():
+  @Name "Subroutine: Enable Player"
+  
+  eventPlayer.stopForcingThrottle()
+  eventPlayer.setPrimaryFireEnabled(true)
+  eventPlayer.setSecondaryFireEnabled(true)
+  eventPlayer.setAbility1Enabled(true)
+  eventPlayer.setAbility2Enabled(true)
+  eventPlayer.setMeleeEnabled(true)
+  eventPlayer.setJumpEnabled(true)
+  eventPlayer.setCrouchEnabled(true)
+  eventPlayer.allowButton(Button.ULTIMATE)
 
-rule "Player death":
+
+rule "Team 1 (Death): Start Camera, Set is Downed, Revive Timer, Knocked down, Death Cam target":
   @Event playerDied
   @Team 1
+
   
-  playersRessurectPositionsArr[eventPlayer.getSlot()] = nearestWalkablePosition(eventPlayer)
-  bigMessage(getPlayers(Team.1), l"{0} {1}".format(eventPlayer, l"{0}!".format("is down and needs reviving")))
-  smallMessage(eventPlayer, "Please wait for a teammate to revive you or for all zombies to be slayed this round.")
+  if not eventPlayer.downedStartTime:
+    eventPlayer.disableMessages()
+    pause3PCamera()
+    smallMessage(getAllPlayers(), "{0} was downed!".format(eventPlayer))
+    # eventPlayer.deathCamTarget = eventPlayer.getEyePosition() + 1000 * directionFromAngles(eventPlayer.getHorizontalFacingAngle(), 0)
+    # eventPlayer.startCamera((raycast(eventPlayer.spectated_player.getEyePosition(), eventPlayer.spectated_player.getEyePosition() - (6.25 * directionTowards(eventPlayer.spectated_player.getEyePosition(), eventPlayer.deathCamTarget) if eventPlayer.deathCamTarget else 8.25 * directionFromAngles(eventPlayer.spectated_player.getHorizontalFacingAngle(), 20)), null, null, false).getHitPosition()) + (0.25 * (directionTowards(eventPlayer.spectated_player.getEyePosition(), eventPlayer.deathCamTarget) if eventPlayer.deathCamTarget else directionFromAngles(eventPlayer.spectated_player.getHorizontalFacingAngle(), 20))), eventPlayer.spectated_player.getEyePosition(), 10 if eventPlayer.deathCamTarget else 20)
+    eventPlayer.downedStartTime = getTotalTimeElapsed()
+    eventPlayer.reviveTimer = 0
+    disablePlayer()
+    
+  if eventWasEnvironment:
+    eventPlayer.teleport(nearestWalkablePosition(eventPlayer))
 
+  eventPlayer.resurrect()
+  eventPlayer.clearStatusEffect(Status.PHASED_OUT)
+  eventPlayer.setStatusEffect(null, Status.INVINCIBLE, INFINITE)
+  eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITE)
+  wait(0.05, Wait.RESTART_WHEN_TRUE)
+  eventPlayer.setHealth(1)
+  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITE)
 
-rule "Revive player 0":
+rule "Revive, check player in radius, unset is downed":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[0]) <= 4
-  @Condition eventPlayer != getPlayersInSlot(0, Team.1)
-  @Condition eventPlayer.isAlive() == true
+  @Condition eventPlayer.downedStartTime == true
+  @Condition eventPlayer.downedStartTime + 1 < getTotalTimeElapsed()
   
-  chaseOverTime(getPlayersInSlot(0, Team.1).reviveProgress, 4, 2 + playerRessurectTimeMult * 2)
-  wait(2 + playerRessurectTimeMult * 2, Wait.ABORT_WHEN_FALSE)
-  getPlayersInSlot(0, Team.1).teleport(eventPlayer)
-  getPlayersInSlot(0, Team.1).resurrect()
-  playerRessurectTimeMult += 1
-  playEffect(getAllPlayers(), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.YELLOW, playersRessurectPositionsArr[0], 100)
-  playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.YELLOW, getPlayersInSlot(0, Team.1), 10)
-  playersRessurectPositionsArr[0] = hiddenVector
-  eventPlayer.money += MONEY_FOR_REVIVE * eventPlayer.H
-  smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_REVIVE * eventPlayer.H, l"Points")))
-  teamScore += MONEY_FOR_REVIVE * eventPlayer.H
-  heal(getPlayersInSlot(0, Team.1), null, 100000)
-  getPlayersInSlot(0, Team.1).startHealingOverTime(eventPlayer, 30, 150)
+  eventPlayer.revivers = [player for player in combatants if not player.downedStartTime and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3 and isInLoS(eventPlayer, player)]
+  if eventPlayer.revivers == []:
+      eventPlayer.reviveTimer = 0
+  else:
+      eventPlayer.reviveTimer += REVIVE_TIMER_TICK
+      if eventPlayer.reviveTimer >= 100:
+          smallMessage(getAllPlayers(), "{0} has been revived!".format(eventPlayer))
+          eventPlayer.downedStartTime = 0
+  wait(0.2)
+  if ruleCondition:
+      loop()
 
 
-rule "Cancel revive player 0":
+rule "Team 1: Player gets up":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[0]) > 4
-  @Condition eventPlayer != getPlayersInSlot(0, Team.1)
+  @Condition eventPlayer.downedStartTime == false
   
-  getPlayersInSlot(0, Team.1).reviveProgress = 0
-  stopChasingVariable(getPlayersInSlot(0, Team.1).reviveProgress)
+  if not eventPlayer.isCombatant:
+      return
+  eventPlayer.enableMessages()
+  eventPlayer.stopCamera()
+  playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
+  eventPlayer.setHealth(INFINITE)
+  # eventPlayer.spectated_player = eventPlayer
+  eventPlayer.revivers = []
+  eventPlayer.clearStatusEffect(Status.KNOCKED_DOWN)
+  eventPlayer.clearStatusEffect(Status.INVINCIBLE)
+  enablePlayer()
+  unpause3PCamera()
+  wait(2.5, Wait.ABORT_WHEN_FALSE)
+  if not ruleCondition:
+      return
+  eventPlayer.clearStatusEffect(Status.PHASED_OUT)
+  if eventPlayer.getSlot() < ALLY_BOT_PLAYER_SLOT:
+      return
+  eventPlayer.communicate(Comms.READY)
 
 
-rule "Revive player 1":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[1]) <= 4
-  @Condition eventPlayer != getPlayersInSlot(1, Team.1)
-  @Condition eventPlayer.isAlive() == true
+
+
+# rule "Select next spectated Player when event player is downed":
+#   @Event eachPlayer
+#   @Team 1
+#   @Condition eventPlayer.downedStartTime == true
+#   @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
   
-  chaseOverTime(getPlayersInSlot(1, Team.1).reviveProgress, 4, 2 + playerRessurectTimeMult * 2)
-  wait(2 + playerRessurectTimeMult * 2, Wait.ABORT_WHEN_FALSE)
-  getPlayersInSlot(1, Team.1).teleport(eventPlayer)
-  getPlayersInSlot(1, Team.1).resurrect()
-  playerRessurectTimeMult += 1
-  playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.YELLOW, playersRessurectPositionsArr[1], 10)
-  playEffect(getAllPlayers(), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, getPlayersInSlot(1, Team.1), 100)
-  playersRessurectPositionsArr[1] = hiddenVector
-  eventPlayer.money += MONEY_FOR_REVIVE * eventPlayer.H
-  smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_REVIVE * eventPlayer.H, l"Points")))
-  teamScore += MONEY_FOR_REVIVE * eventPlayer.H
-  heal(getPlayersInSlot(1, Team.1), null, 100000)
-  getPlayersInSlot(1, Team.1).startHealingOverTime(eventPlayer, 30, 150)
+#   if eventPlayer.downedStartTime + 0.5 >= getTotalTimeElapsed():
+#       return
+#   eventPlayer.deathCamTarget = null
+#   eventPlayer.spectated_player = combatants[(combatants.index(eventPlayer.spectated_player) + 1) % combatants_count]
+#   wait(0.25)
 
 
-rule "Cancel revive player 1":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[1]) > 4
-  @Condition eventPlayer != getPlayersInSlot(1, Team.1)
-  
-  getPlayersInSlot(1, Team.1).reviveProgress = 0
-  stopChasingVariable(getPlayersInSlot(1, Team.1).reviveProgress)
-
-
-rule "Revive player 2":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[2]) <= 4
-  @Condition eventPlayer != getPlayersInSlot(2, Team.1)
-  @Condition eventPlayer.isAlive() == true
-  
-  chaseOverTime(getPlayersInSlot(2, Team.1).reviveProgress, 4, 2 + playerRessurectTimeMult * 2)
-  wait(2 + playerRessurectTimeMult * 2, Wait.ABORT_WHEN_FALSE)
-  getPlayersInSlot(2, Team.1).teleport(eventPlayer)
-  getPlayersInSlot(2, Team.1).resurrect()
-  playerRessurectTimeMult += 1
-  playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.YELLOW, playersRessurectPositionsArr[2], 10)
-  playEffect(getAllPlayers(), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, getPlayersInSlot(2, Team.1), 100)
-  playersRessurectPositionsArr[2] = hiddenVector
-  eventPlayer.money += MONEY_FOR_REVIVE * eventPlayer.H
-  smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_REVIVE * eventPlayer.H, l"Points")))
-  teamScore += MONEY_FOR_REVIVE * eventPlayer.H
-  heal(getPlayersInSlot(2, Team.1), null, 100000)
-  getPlayersInSlot(2, Team.1).startHealingOverTime(eventPlayer, 30, 150)
-
-
-rule "Cancel revive player 2":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[2]) > 4
-  @Condition eventPlayer != getPlayersInSlot(2, Team.1)
-  
-  getPlayersInSlot(2, Team.1).reviveProgress = 0
-  stopChasingVariable(getPlayersInSlot(2, Team.1).reviveProgress)
-
-
-rule "Revive player 3":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[3]) <= 4
-  @Condition eventPlayer != getPlayersInSlot(3, Team.1)
-  @Condition eventPlayer.isAlive() == true
-  
-  chaseOverTime(getPlayersInSlot(3, Team.1).reviveProgress, 4, 2 + playerRessurectTimeMult * 2)
-  wait(2 + playerRessurectTimeMult * 2, Wait.ABORT_WHEN_FALSE)
-  getPlayersInSlot(3, Team.1).teleport(eventPlayer)
-  getPlayersInSlot(3, Team.1).resurrect()
-  playerRessurectTimeMult += 1
-  playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.YELLOW, playersRessurectPositionsArr[3], 10)
-  playEffect(getAllPlayers(), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, getPlayersInSlot(3, Team.1), 100)
-  playersRessurectPositionsArr[3] = hiddenVector
-  eventPlayer.money += MONEY_FOR_REVIVE * eventPlayer.H
-  smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_REVIVE * eventPlayer.H, l"Points")))
-  teamScore += MONEY_FOR_REVIVE * eventPlayer.H
-  heal(getPlayersInSlot(3, Team.1), null, 100000)
-  getPlayersInSlot(3, Team.1).startHealingOverTime(eventPlayer, 30, 150)
-
-
-rule "Cancel revive player 3":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[3]) > 4
-  @Condition eventPlayer != getPlayersInSlot(3, Team.1)
-  
-  getPlayersInSlot(3, Team.1).reviveProgress = 0
-  stopChasingVariable(getPlayersInSlot(3, Team.1).reviveProgress)
-
-
-rule "Revive player 4":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[4]) <= 4
-  @Condition eventPlayer != getPlayersInSlot(4, Team.1)
-  @Condition eventPlayer.isAlive() == true
-  
-  chaseOverTime(getPlayersInSlot(4, Team.1).reviveProgress, 4, 2 + playerRessurectTimeMult * 2)
-  wait(2 + playerRessurectTimeMult * 2, Wait.ABORT_WHEN_FALSE)
-  getPlayersInSlot(4, Team.1).teleport(eventPlayer)
-  getPlayersInSlot(4, Team.1).resurrect()
-  playerRessurectTimeMult += 1
-  playEffect(getPlayers(Team.1), DynamicEffect.RING_EXPLOSION, Color.YELLOW, playersRessurectPositionsArr[4], 10)
-  playEffect(getPlayers(Team.1), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, getPlayersInSlot(4, Team.1), 100)
-  playersRessurectPositionsArr[4] = hiddenVector
-  eventPlayer.money += MONEY_FOR_REVIVE * eventPlayer.H
-  smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_REVIVE * eventPlayer.H, l"Points")))
-  teamScore += MONEY_FOR_REVIVE * eventPlayer.H
-  heal(getPlayersInSlot(4, Team.1), null, 100000)
-  getPlayersInSlot(4, Team.1).startHealingOverTime(eventPlayer, 30, 150)
-
-
-rule "Cancel revive player 4":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[4]) > 4
-  @Condition eventPlayer != getPlayersInSlot(4, Team.1)
-  
-  getPlayersInSlot(4, Team.1).reviveProgress = 0
-  stopChasingVariable(getPlayersInSlot(4, Team.1).reviveProgress)
-
-
-rule "Revive player 5":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[5]) <= 4
-  @Condition eventPlayer != getPlayersInSlot(5, Team.1)
-  @Condition eventPlayer.isAlive() == true
-  
-  chaseOverTime(getPlayersInSlot(5, Team.1).reviveProgress, 4, 2 + playerRessurectTimeMult * 2)
-  wait(2 + playerRessurectTimeMult * 2, Wait.ABORT_WHEN_FALSE)
-  getPlayersInSlot(5, Team.1).teleport(eventPlayer)
-  getPlayersInSlot(5, Team.1).resurrect()
-  playerRessurectTimeMult += 1
-  playEffect(getPlayers(Team.1), DynamicEffect.RING_EXPLOSION, Color.YELLOW, playersRessurectPositionsArr[5], 10)
-  playEffect(getPlayers(Team.1), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, getPlayersInSlot(5, Team.1), 100)
-  playersRessurectPositionsArr[5] = hiddenVector
-  eventPlayer.money += MONEY_FOR_REVIVE * eventPlayer.H
-  smallMessage(eventPlayer, l"{0} + {1}".format(l"", l"{0} {1}".format(MONEY_FOR_REVIVE * eventPlayer.H, l"Points")))
-  teamScore += MONEY_FOR_REVIVE * eventPlayer.H
-  heal(getPlayersInSlot(5, Team.1), null, 100000)
-  getPlayersInSlot(5, Team.1).startHealingOverTime(eventPlayer, 30, 150)
-
-
-rule "Cancel revive player 5":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, playersRessurectPositionsArr[5]) > 4
-  @Condition eventPlayer != getPlayersInSlot(5, Team.1)
-  
-  getPlayersInSlot(5, Team.1).reviveProgress = 0
-  stopChasingVariable(getPlayersInSlot(5, Team.1).reviveProgress)
-
-
-rule "Player respawn & move revive":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.isAlive() == true
-  
-  playersRessurectPositionsArr[eventPlayer.getSlot()] = hiddenVector
+# rule "Spectated player does not exist anymore. Set spectated player = event player":
+#     @Event eachPlayer
+#     @Team 1
+#     @Condition eventPlayer.downedStartTime == true
+#     @Condition eventPlayer.spectated_player.is_combatant == false
+#     @Condition eventPlayer.spectated_player.getTeam() != Team.2
+    
+#     eventPlayer.spectated_player = eventPlayer

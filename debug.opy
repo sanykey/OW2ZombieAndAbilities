@@ -3,15 +3,16 @@
 rule "[debug] Add money and health":
   @Event playerJoined
   @Team 1
+  @Slot 0
   
-  waitUntil(eventPlayer.hasSpawned(), 99999)
+  waitUntil(eventPlayer.hasSpawned(), INFINITE)
   eventPlayer.money += 1000000
-  eventPlayer.health_stat += 10000
-  eventPlayer.setMaxHealth(eventPlayer.health_stat)
+  eventPlayer.healthStat += 10000
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
 
-  # eventPlayer.healing_stat += 10000
-  # eventPlayer.setHealingDealt(eventPlayer.healing_stat)
-  # eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healing_stat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healing_stat / 500))
+  # eventPlayer.healingStat += 10000
+  # eventPlayer.setHealingDealt(eventPlayer.healingStat)
+  # eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
 
 rule "Deactivate bots (Ctrl + shift + interact)":
   @Event eachPlayer
@@ -23,11 +24,20 @@ rule "Deactivate bots (Ctrl + shift + interact)":
   if isBotsDisabled == false:
     isBotsDisabled = true
     roundRemainingBots += 12
-    damage(getPlayers(Team.2), getPlayers(Team.2), 99999)
+    damage(getPlayers(Team.2), getPlayers(Team.2), INFINITE)
     smallMessage(eventPlayer, "Bots disabled")
   else:
     isBotsDisabled = false
     smallMessage(eventPlayer, "Bots enabled")
+
+
+rule "Just die":
+  @Event eachPlayer
+  @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
+  @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  
+  damage(eventPlayer, eventPlayer, INFINITE)
 
 
 rule "Init":

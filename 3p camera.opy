@@ -1,5 +1,24 @@
 #!mainFile "main.opy"
 
+def pause3PCamera():
+  @Name "Subroutine: Pause 3P Camera"
+  if eventPlayer.stateArr[0] == 3:
+    eventPlayer.stateArr[0] = 1
+  else:
+    if eventPlayer.stateArr[0] == 4:
+      eventPlayer.stateArr[0] = 2
+
+def unpause3PCamera():
+  @Name "Subroutine: Unpause 3P Camera"
+
+  if eventPlayer.stateArr[0] == 1:
+    eventPlayer.stateArr[0] = 3
+    return
+
+  if eventPlayer.stateArr[0] == 2:
+    eventPlayer.stateArr[0] = 4
+
+
 rule "Change 3p Camera state":
   @Event eachPlayer
   @Team 1
@@ -20,6 +39,7 @@ rule "Enable 3P Camera (Interact + R)":
   @Team 1
   @Condition eventPlayer.isHoldingButton(Button.RELOAD) == true
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Condition eventPlayer.downedStartTime == false
   
   wait(2, Wait.ABORT_WHEN_FALSE)
   eventPlayer.stateArr[0] = 0
@@ -41,22 +61,9 @@ rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
   @Condition eventPlayer.isFiringSecondaryFire() == true # @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
   @Condition (eventPlayer.getCurrentHero() == Hero.WIDOWMAKER or eventPlayer.getCurrentHero() == Hero.ASHE or eventPlayer.getCurrentHero() == Hero.ANA) == true
 
-  if eventPlayer.stateArr[0] == 3:
-    eventPlayer.stateArr[0] = 1
-  else:
-    if eventPlayer.stateArr[0] == 4:
-      eventPlayer.stateArr[0] = 2
-    else:
-      return
-
-  waitUntil(eventPlayer.isFiringSecondaryFire() == false, 99999)
-
-  if eventPlayer.stateArr[0] == 1:
-    eventPlayer.stateArr[0] = 3
-    return
-
-  if eventPlayer.stateArr[0] == 2:
-    eventPlayer.stateArr[0] = 4
+  pause3PCamera()
+  waitUntil(eventPlayer.isFiringSecondaryFire() == false, INFINITE)
+  unpause3PCamera()
 
 
 rule "Disable 3P Camera":
@@ -77,29 +84,9 @@ rule "Pause 3P camera during emote":
   @Condition eventPlayer.stateArr[0] > 2
   @Condition eventPlayer.isCommunicatingEmote() == true
 
-  if eventPlayer.stateArr[0] == 3:
-    eventPlayer.stateArr[0] = 1
-  else:
-    if eventPlayer.stateArr[0] == 4:
-      eventPlayer.stateArr[0] = 2
-    else:
-      return
-
-  waitUntil(eventPlayer.isCommunicatingEmote() == false, 99999)
-
-  if eventPlayer.stateArr[0] == 1:
-    eventPlayer.stateArr[0] = 3
-    return
-  if eventPlayer.stateArr[0] == 2:
-    eventPlayer.stateArr[0] = 4
-
-
-rule "Stop 3P Camera On Death":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.isDead() == true
-  
-  eventPlayer.stateArr[0] = 0
+  pause3PCamera()
+  waitUntil(eventPlayer.isCommunicatingEmote() == false, INFINITE)
+  unpause3PCamera()
 
 rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
   @Event eachPlayer
@@ -108,18 +95,6 @@ rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
   @Condition eventPlayer.isUsingUltimate() == true
   @Condition (eventPlayer.getCurrentHero() == Hero.BASTION or eventPlayer.getCurrentHero() == Hero.JUNKRAT) == true
   
-  if eventPlayer.stateArr[0] == 3:
-    eventPlayer.stateArr[0] = 1
-  else:
-    if eventPlayer.stateArr[0] == 4:
-      eventPlayer.stateArr[0] = 2
-    else:
-      return
-
-  waitUntil(eventPlayer.isUsingUltimate() == false, 99999)
-
-  if eventPlayer.stateArr[0] == 1:
-    eventPlayer.stateArr[0] = 3
-    return
-  if eventPlayer.stateArr[0] == 2:
-    eventPlayer.stateArr[0] = 4
+  pause3PCamera()
+  waitUntil(eventPlayer.isUsingUltimate() == false, INFINITE)
+  unpause3PCamera()

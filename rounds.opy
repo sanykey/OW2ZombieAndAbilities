@@ -35,11 +35,11 @@ rule "Round start":
   bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))
   
   # Resurrect and heal all players
-  playerRessurectTimeMult = 0
-  getDeadPlayers(Team.1).teleport(nearestWalkablePosition(random.choice(getLivingPlayers(Team.1)) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
-  getDeadPlayers(Team.1).resurrect()
-  for I in range(6):
-    playersRessurectPositionsArr[I] = hiddenVector
+  temp1 = [player for player in combatants if not player.downedStartTime]
+  temp2 = [player for player in combatants if player.downedStartTime]
+  temp2.teleport(nearestWalkablePosition(random.choice(temp1) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
+  temp2.downedStartTime = 0
+  
   wait(0.25)
   heal(getPlayers(Team.1), null, 99999)
 
@@ -99,12 +99,3 @@ rule "[Bot Anti-Spawn Check A]":
   @Condition eventPlayer.isInSpawnRoom() == true
   
   eventPlayer.teleport(random.choice(Y))
-
-rule "[Disable Spawn Room Hero Swap]":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.hasSpawned() == true
-  
-  eventPlayer.disableRespawn()
-  eventPlayer.F = false
-  eventPlayer.H = 1

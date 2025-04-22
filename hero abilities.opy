@@ -42,18 +42,6 @@ rule "[Buff To Cassidy Ultimate]":
   wait(0.02)
   eventPlayer.getPlayersInViewAngle(Team.2, 90).setStatusEffect(null, Status.ROOTED, 2.5)
 
-rule "Mercy Buff [Healing Points]":
-  @Event eachPlayer
-  @Team 1
-  @Hero mercy
-  @Condition eventPlayer.isAlive() == true
-  
-  damage(getPlayersInRadius(eventPlayer, 15, Team.2), eventPlayer, 1)
-  wait(10)
-  if RULE_CONDITION:
-      goto RULE_START
-
-
 rule "[Sombra] Hack+":
     @Event eachPlayer
     @Team 2

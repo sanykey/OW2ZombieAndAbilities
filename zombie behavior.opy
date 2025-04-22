@@ -1,6 +1,6 @@
 #!mainFile "main.opy"
 
-rule "[Bots Move Toward Players]":
+rule "Bots move toward players":
   @Event eachPlayer
   @Team 2
   @Condition matchIsOver == false
@@ -8,13 +8,13 @@ rule "[Bots Move Toward Players]":
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
 
-rule "[Bots Face Nearest Players]":
+rule "Bots face nearest players":
   @Event eachPlayer
   @Team 2
   @Condition matchIsOver == false
   
-  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted([player for player in getLivingPlayers(Team.1) if player.T == 0], lambda i: distance(eventPlayer, i)))[0]).getEyePosition()), 400)
-  eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), (getClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.T == 0], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()), Relativity.TO_WORLD)
+  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted([player for player in getLivingPlayers(Team.1) if player.downedStartTime == false], lambda i: distance(eventPlayer, i)))[0]).getEyePosition()), 400)
+  eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), (getClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.downedStartTime == false], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()), Relativity.TO_WORLD)
 
 
 rule "Bots Unstuck [A]":
@@ -69,7 +69,7 @@ rule "Bots Unstuck [E]":
     eventPlayer.teleport(random.choice(Y))
 
 
-rule "Bots Attack Near Player":
+rule "Bots attack near player":
     @Event eachPlayer
     @Team 2
     @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
@@ -79,7 +79,7 @@ rule "Bots Attack Near Player":
     eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
 
 
-rule "[Bots Don't Attack Near Player]":
+rule "Bots don't attack near player":
     @Event eachPlayer
     @Team 2
     @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == false
@@ -87,7 +87,7 @@ rule "[Bots Don't Attack Near Player]":
     eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
 
 
-rule "[Bots Use Ultimate At 100%]":
+rule "Bots use ultimate at 100%":
     @Event eachPlayer
     @Team 2
     @Condition eventPlayer.getUltCharge() == 100
@@ -98,7 +98,7 @@ rule "[Bots Use Ultimate At 100%]":
         goto RULE_START
 
 
-rule "[Bots Under Player Impulse]":
+rule "Bots under player impulse":
     @Event eachPlayer
     @Team 2
     @Condition eventPlayer.getVerticalFacingAngle() < -70
@@ -111,7 +111,7 @@ rule "[Bots Under Player Impulse]":
     wait(1)
     eventPlayer.forceButtonPress(Button.ABILITY_1)
 
-rule "[Bots Safety A]":
+rule "Bots safety A":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(73.557, -8, -84.315)) < 15
@@ -119,7 +119,7 @@ rule "[Bots Safety A]":
     eventPlayer.applyImpulse(Vector.UP, 23, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety B]":
+rule "Bots safety B":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(95.242, -8, -89.781)) < 15
@@ -127,7 +127,7 @@ rule "[Bots Safety B]":
     eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety C]":
+rule "Bots safety C":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(117.06, -2.181, -85.971)) < 15
@@ -135,7 +135,7 @@ rule "[Bots Safety C]":
     eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety D]":
+rule "Bots safety D":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(55.486, 1.618, -37.515)) < 15
@@ -143,7 +143,7 @@ rule "[Bots Safety D]":
     eventPlayer.applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety E]":
+rule "Bots safety E":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(46.004, -7.45, -14.713)) < 15
@@ -151,7 +151,7 @@ rule "[Bots Safety E]":
     eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety F]":
+rule "Bots safety F":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(31.594, -7.571, 3.942)) < 15
@@ -159,7 +159,7 @@ rule "[Bots Safety F]":
     eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety G]":
+rule "Bots safety G":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(38.556, -7.571, -2.741)) < 15
@@ -167,7 +167,7 @@ rule "[Bots Safety G]":
     eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety H]":
+rule "Bots safety H":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(38.556, -30.571, -2.741)) < 30
@@ -175,7 +175,7 @@ rule "[Bots Safety H]":
     eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety I]":
+rule "Bots safety I":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(-22.025, -0.631, -59.645)) < 12
@@ -183,7 +183,7 @@ rule "[Bots Safety I]":
     eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Bots Safety J]":
+rule "Bots safety J":
     @Event eachPlayer
     @Team 2
     @Condition distance(eventPlayer, vect(-6.388, -4.792, -109.846)) < 16
@@ -191,7 +191,7 @@ rule "[Bots Safety J]":
     eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 
-rule "[Zombies Fly Faster]":
+rule "zombies fly faster":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.zombiesfly == true
@@ -204,7 +204,7 @@ rule "[Zombies Fly Faster]":
   if RULE_CONDITION:
       goto RULE_START
 
-rule "[Zombies LoS Teleport]":
+rule "Zombies loS teleport":
   @Event eachPlayer
   @Team 2
   @Hero torbjorn
@@ -246,7 +246,7 @@ rule "[Zombies LoS Teleport]":
       goto RULE_START
 
 
-rule "[TP Zombies - Unstuck]":
+rule "TP zombies - unstuck":
   (getPlayersInRadius(vect(3.091, 2.247, -17.704), 10, Team.2, LosCheck.SURFACES)).teleport(vect(1.132, 20.089, -19.823))
   (getPlayersInRadius(vect(-12.378, 5.097, -34.259), 5, Team.2)).teleport(vect(0.101, 23.998, -44.359))
   (getPlayersInRadius(vect(-1.145, 3.667, -39.316), 6, Team.2, LosCheck.SURFACES)).teleport(vect(-0.261, 22.204, -44.404))
@@ -286,7 +286,7 @@ rule "[TP Zombies - Unstuck]":
   goto RULE_START
 
 
-rule "[Anti-Fall Debug]":
+rule "anti-fall debug":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive() == true
@@ -298,7 +298,7 @@ rule "[Anti-Fall Debug]":
       goto RULE_START
 
 
-rule "[TP Dead Zombies]":
+rule "TP Dead Zombies":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isDead() == true
@@ -314,7 +314,7 @@ rule "[TP Dead Zombies]":
       goto RULE_START
 
 
-rule "[TP Zombies - Out Of Map Safety]":
+rule "TP zombies - out of map safety":
   @Event playerTookDamage
   @Team 2
   @Condition eventPlayer.isAlive() == true
@@ -352,7 +352,7 @@ rule "[TP Zombies - Out Of Map Safety]":
   eventPlayer.teleport(nearestWalkablePosition(eventPlayer))
 
 
-rule "[Bot] Unstuck Impulse":
+rule "Bot Unstuck Impulse":
   (getPlayersInRadius(vect(17.097, 10.74, -40.957), 2.5, Team.2)).applyImpulse(Vector.UP, 10, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   (getPlayersInRadius(vect(-11.16, 4.025, -34.68), 3, Team.2)).applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   (getPlayersInRadius(vect(-9.9, 0.939, -18.942), 3, Team.2)).applyImpulse(Vector.UP, 10, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
@@ -404,13 +404,3 @@ rule "[Bot] Unstuck Impulse":
   goto RULE_START
 
 
-rule "[Bot - Anti Fall]":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isAlive() == true
-  @Condition distance(eventPlayer, vect(0, 0, 0)) < 2.5
-  
-  eventPlayer.applyImpulse(Vector.UP, 100, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
-  wait(1)
-  if RULE_CONDITION:
-      goto RULE_START

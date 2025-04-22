@@ -1,15 +1,5 @@
 #!mainFile "main.opy"
 
-rule "[Upgrade Stats Setup]":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.hasSpawned() == true
-  @Condition eventPlayer.health_stat == 0
-  
-  eventPlayer.health_stat = 100
-  eventPlayer.damage_stat = 100
-  eventPlayer.healing_stat = 100
-
 rule "[TP Spawn Room Debug]":
   @Event eachPlayer
   @Team 1

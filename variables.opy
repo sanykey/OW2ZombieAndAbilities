@@ -10,8 +10,6 @@ globalvar matchIsOver 33
 globalvar unlockedLocations 34
 globalvar orbs_arr 35
 globalvar hiddenVector 36
-globalvar playerRessurectTimeMult 37 # resurrect time multiplier, which increases after each resurrect, but resets to zero at the start of each round
-globalvar playersRessurectPositionsArr 38 # Array of vectors of places where you can resurrect a dead player
 globalvar roundRemainingBots 39
 globalvar orbs_vectors_arr 40
 globalvar isRoundEnd 41
@@ -25,14 +23,17 @@ globalvar vectList 51
 globalvar lockedAreaEffectsArr 52
 globalvar shopState 53
 globalvar teamScore 54
-globalvar temp_1 55
+globalvar temp1 55
+globalvar temp2 56
+globalvar combatants 57
+globalvar combatantsCount 58
 
 #Player variables
 
 playervar money 0
-playervar health_stat 10
-playervar damage_stat 11
-playervar healing_stat 12
+playervar healthStat 10
+playervar damageStat 11
+playervar healingStat 12
 playervar zombiesfly 26
 playervar orb_roll 27 # current orb drop chance when a bot dies
 playervar isInSecretShop 28
@@ -47,12 +48,20 @@ playervar recentHealingDealtToSlot 35
 playervar recentDamageDealtToSlot 29
 playervar recentStackedDamageDealtToSlot 36
 
+playervar downedStartTime 37
+playervar reviveTimer 38
+playervar deathCamTarget 39
+playervar isCombatant 40
+playervar revivers 41
+playervar targetPlayer 42
+
 
 #Activated extensions
 #!extension explosionSounds
 #!extension playMoreEffects
 #!extension spawnMoreDummyBots
 
+#!define INFINITE 99999
 #!define MONEY_FOR_REVIVE 300
 #!define MONEY_FOR_ZOMBIE_KILL 200
 #!define MONEY_FOR_ZOMBIE_CRITICAL 275
@@ -61,6 +70,7 @@ playervar recentStackedDamageDealtToSlot 36
 #!define MAX_PLAYERS 6
 #!define MAX_ZOMBIES 12
 #!define ALLY_BOT_PLAYER_SLOT 7
+#!define REVIVE_TIMER_TICK 2
 
 enum stateI:
   CAMERA_3P = 0 # number

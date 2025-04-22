@@ -3,9 +3,11 @@
 rule "Init hud hero icons of players and how much money they have":
   @Condition roundNumber == 1
   
+  # round
   hudHeader(getPlayers(Team.1), l"Round {0}".format(roundNumber), HudPosition.TOP, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
   hudHeader(getPlayers(Team.1), l"{0} {1}".format(roundRemainingBots, l"Enemies"), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 
+  # players list and money
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(0, Team.1).getCurrentHero()), getPlayersInSlot(0, Team.1)), getPlayersInSlot(0, Team.1).money), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(1, Team.1).getCurrentHero()), getPlayersInSlot(1, Team.1)), getPlayersInSlot(1, Team.1).money), HudPosition.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(2, Team.1).getCurrentHero()), getPlayersInSlot(2, Team.1)), getPlayersInSlot(2, Team.1).money), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
@@ -13,14 +15,33 @@ rule "Init hud hero icons of players and how much money they have":
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(4, Team.1).getCurrentHero()), getPlayersInSlot(4, Team.1)), getPlayersInSlot(4, Team.1).money), HudPosition.LEFT, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(5, Team.1).getCurrentHero()), getPlayersInSlot(5, Team.1)), getPlayersInSlot(5, Team.1).money), HudPosition.LEFT, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
+  # revive
+  hudSubtext(
+    [player for player in combatants if player.downedStartTime],
+    "Waiting for revival. Press {0} to spectate the next player.".format(inputBindingString(Button.JUMP)),
+    HudPosition.TOP,
+    -70,
+    Color.YELLOW,
+    HudReeval.VISIBILITY_AND_STRING
+  )
+  progressBarHud(
+    localPlayer if (localPlayer.reviveTimer if localPlayer.downedStartTime else any([localPlayer in player.revivers for player in combatants])) else [],
+    localPlayer.reviveTimer if localPlayer.downedStartTime else ((sorted([player for player in combatants if localPlayer in player.revivers], lambda i: i.reviveTimer)).last()).reviveTimer,
+    "You are being revived" if localPlayer.downedStartTime else "Reviving {0}".format("{0} Teammates".format(len([player for player in combatants if localPlayer in player.revivers])) if len([player for player in combatants if localPlayer in player.revivers]) > 1 else ([player for player in combatants if localPlayer in player.revivers])[0]),
+    HudPosition.TOP,
+    100,
+    Color.SKY_BLUE
+  )
+
+
 rule "Show HP, Damage and Healing upgrades":
   @Event eachPlayer
   @Team 1
   hudHeader(
     eventPlayer,
-    l"{0} : {1} : {2}".format(l"{0} {1}".format("HP", eventPlayer.health_stat),
-    l"{0} {1}".format(l"Damage", eventPlayer.damage_stat),
-    l"{0} {1}".format(l"Healing", eventPlayer.healing_stat)),
+    l"{0} : {1} : {2}".format(l"{0} {1}".format("HP", eventPlayer.healthStat),
+    l"{0} {1}".format(l"Damage", eventPlayer.damageStat),
+    l"{0} {1}".format(l"Healing", eventPlayer.healingStat)),
     HudPosition.TOP,
     -1,
     Color.BLUE,
@@ -58,8 +79,6 @@ rule "[Tips & Tricks]":
   setObjectiveDescription(eventPlayer, "If you hear \"Molten Core\" look for the red puddles. Stand in them to increase your damage! Honest..", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)
   setObjectiveDescription(eventPlayer, "Revive a teammate by standing on the Yellow Circle where they died.", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
-  wait(15)
-  setObjectiveDescription(eventPlayer, "Mercy's revive has been amplified to grant her temporary immunity. Your guardian angel has arrived!", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)
   setObjectiveDescription(eventPlayer, "Spare points? Give your whole team a buff with permanent Shields/Armor. Friendship is the best ship!", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)

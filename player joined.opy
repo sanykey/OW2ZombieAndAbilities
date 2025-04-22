@@ -1,6 +1,44 @@
 #!mainFile "main.opy"
+def updateCombatants():
+  @Name "Subroutine: Update Combatants"
+  
+  combatants = [player for player in getPlayers(Team.1) if player.isCombatant]
+  combatantsCount = len(combatants)
 
-rule "Starting Spawn Location for players":
+rule "Create vips list":
+  vips = ["snky"]
+  
+
+rule "Disable spawn room hero swap":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.hasSpawned() == true
+  
+  eventPlayer.isCombatant = true
+  eventPlayer.disableRespawn()
+  updateCombatants()
+
+  if eventPlayer.healthStat == 0:
+    eventPlayer.healthStat = 100
+    eventPlayer.damageStat = 100
+    eventPlayer.healingStat = 100
+
+  # revive effects
+  createEffect(getAllPlayers() if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
+  createIcon(getAllPlayers().exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY, Color.YELLOW)
+
+  eventPlayer.F = false
+  eventPlayer.H = 1
+
+  # Change character for vip players
+  if "{0}".format(eventPlayer) in vips == true:
+    wait(2)
+    eventPlayer.startForcingHero(Hero.ASHE)
+    eventPlayer.stateArr[0] = 4
+    smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
+
+
+rule "Starting spawn location for players":
   @Event eachPlayer
   @Team 1
   @Hero dva
@@ -11,8 +49,8 @@ rule "Starting Spawn Location for players":
   eventPlayer.disableGamemodeHud()
   eventPlayer.disableHeroHud()
   wait(0.3)
-  eventPlayer.setStatusEffect(null, Status.ROOTED, 9999)
-  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 9999)
+  eventPlayer.setStatusEffect(null, Status.ROOTED, INFINITE)
+  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITE)
   eventPlayer.disallowButton(Button.PRIMARY_FIRE + Button.SECONDARY_FIRE + Button.ABILITY_1 + Button.ABILITY_2 + Button.ULTIMATE + Button.INTERACT + Button.JUMP + Button.CROUCH + Button.MELEE)
   eventPlayer.startFacing(Vector.RIGHT, 100000, Relativity.TO_PLAYER)
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.VIOLET, eventPlayer, 2)
@@ -34,15 +72,15 @@ rule "Starting Spawn Location for players":
   eventPlayer.enablePlayerCollision()
 
 
-rule "Late Joiner Catchup [15]":
+rule "Late joiner catchup [15]":
   @Event playerJoined
   @Team 1
   @Condition roundNumber >= 15
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
   eventPlayer.money += 25000
-  eventPlayer.health_stat += 200
-  eventPlayer.setMaxHealth(eventPlayer.health_stat)
+  eventPlayer.healthStat += 200
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
   wait(0.064)
   heal(eventPlayer, null, 99999)
   eventPlayer.setDamageReceived(25)
@@ -54,35 +92,35 @@ rule "Late Joiner Catchup [15]":
   eventPlayer.setDamageReceived(85)
   smallMessage(eventPlayer, "Your damage reduction buff has now ended. Good luck!")
 
-rule "Late Joiner Catchup [25]":
+rule "Late joiner catchup [25]":
   @Event playerJoined
   @Team 1
   @Condition roundNumber >= 25
   
   waitUntil(eventPlayer.hasSpawned(), 99999)
   eventPlayer.money += 75000
-  eventPlayer.health_stat += 500
-  eventPlayer.setMaxHealth(eventPlayer.health_stat)
+  eventPlayer.healthStat += 500
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
 
 
-rule "Late Joiner Catchup [50]":
+rule "Late joiner catchup [50]":
   @Event playerJoined
   @Team 1
   @Condition roundNumber >= 50
   
-  waitUntil(eventPlayer.hasSpawned(), 99999)
+  waitUntil(eventPlayer.hasSpawned(), INFINITE)
   eventPlayer.money += 50000
-  eventPlayer.health_stat += 1250
-  eventPlayer.setMaxHealth(eventPlayer.health_stat)
+  eventPlayer.healthStat += 1250
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
   wait(1.5)
-  heal(eventPlayer, null, 99999)
+  heal(eventPlayer, null, INFINITE)
 
-rule "Team Shields and Armor for Joiner":
+rule "Team shields and armor for joiner":
   @Event playerJoined
   @Team 1
 
   eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
   
-  waitUntil(eventPlayer.hasSpawned(), 99999)
+  waitUntil(eventPlayer.hasSpawned(), INFINITE)
   eventPlayer.addHealthPool(Health.SHIELDS, team_shields, true)
   eventPlayer.addHealthPool(Health.ARMOR, team_armor, true)

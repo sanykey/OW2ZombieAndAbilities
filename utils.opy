@@ -45,17 +45,4 @@ rule "Unlimited match time":
   
   setMatchTime(3599)
 
-rule "Create vips list":
-  vips = ["snky"]
 
-rule "Change character for vip":
-  @Event eachPlayer
-  @Condition eventPlayer.hasSpawned() == true
-  @Condition eventPlayer.isAlive() == true
-  @Condition "{0}".format(eventPlayer) in vips == true
-  
-  wait(2)
-  eventPlayer.startForcingHero(Hero.ASHE)
-
-  eventPlayer.stateArr[0] = 4
-  smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")

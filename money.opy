@@ -28,8 +28,6 @@ rule "Healing points":
   @Condition eventPlayer.stateArr[stateI.HEALING_TRACKER] >= eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] 
 
   eventPlayer.stateArr[stateI.HEALING_RESULT] = floor(eventPlayer.stateArr[stateI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING * eventPlayer.H
-  smallMessage(eventPlayer, "Heal count {0} {1}".format(floor(eventPlayer.stateArr[stateI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING * eventPlayer.H, eventPlayer.stateArr[stateI.HEALING_TRACKER]))
-  
   eventPlayer.money += eventPlayer.stateArr[stateI.HEALING_RESULT]
   smallMessage(eventPlayer, "{0} {1}".format(eventPlayer.stateArr[stateI.HEALING_RESULT], "points for healing"))
   teamScore += eventPlayer.stateArr[stateI.HEALING_RESULT]

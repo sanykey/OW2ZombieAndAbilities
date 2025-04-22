@@ -1,5 +1,6 @@
 #!include "settings.opy"
 #!include "variables.opy"
+#!include "utils.opy"
 #!include "compressed vectors.opy"
 
 rule "Game init":
@@ -11,6 +12,7 @@ rule "Game init":
   matchIsOver = false
   zombiesflyIOnandOff = true
 
+#!include "player joined.opy"
 #!include "ally bot.opy"
 #!include "debug.opy"
 #!include "rounds.opy"
@@ -20,14 +22,13 @@ rule "Game init":
 #!include "hero abilities.opy"
 #!include "locked area.opy"
 #!include "orbs.opy"
-#!include "player joined.opy"
 #!include "player spawn.opy"
 #!include "player revive.opy"
 #!include "secret shop.opy"
-#!include "player hud.opy"
+#!include "hud.opy"
 #!include "zombie events.opy"
 #!include "money.opy"
 #!include "zombie behavior.opy"
 #!include "portal.opy"
 #!include "visuals.opy"
-#!include "utils.opy"
+#!include "heroes abilities/mercy.opy"

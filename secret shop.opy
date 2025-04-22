@@ -131,5 +131,5 @@ rule "Auto heal secret shop":
   @Condition distance(eventPlayer, vectList[vectListI.SHOP_HEAL_AREA]) < 12
 
   wait(1)
-  heal(eventPlayer, null, 99999)
+  heal(eventPlayer, null, INFINITE)
   wait(2)
