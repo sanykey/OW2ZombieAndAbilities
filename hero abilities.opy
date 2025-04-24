@@ -1,16 +1,5 @@
 #!mainFile "main.opy"
 
-rule "[Sigma] Vacuum Succ":
-  @Event eachPlayer
-  @Team 1
-  @Hero sigma
-  @Condition eventPlayer.isUsingAbility1() == true
-  
-  eventPlayer.getPlayersInViewAngle(Team.2, 45).setStatusEffect(null, Status.KNOCKED_DOWN, 2.5)
-  eventPlayer.startHealingOverTime(eventPlayer, 3, 100)
-  wait(3)
-  eventPlayer.stopAllHealingOverTime()
-
 rule "[Symmetra] Photon Barrier+":
   @Event eachPlayer
   @Team 1

@@ -40,7 +40,7 @@ rule "Enraged Zombies [50]":
     wait(1)
     eventPlayer.startScalingSize(1.5, false)
     eventPlayer.setDamageReceived(85)
-    eventPlayer.startHealingOverTime(eventPlayer, 9999, 150)
+    eventPlayer.startHealingOverTime(eventPlayer, INFINITY, 150)
 
 
 rule "Enraged Zombies [50]":

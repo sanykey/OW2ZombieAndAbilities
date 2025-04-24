@@ -1,5 +1,5 @@
-#!include "settings.opy"
 #!include "variables.opy"
+#!include "settings.opy"
 #!include "utils.opy"
 #!include "compressed vectors.opy"
 
@@ -28,7 +28,9 @@ rule "Game init":
 #!include "hud.opy"
 #!include "zombie events.opy"
 #!include "money.opy"
-#!include "zombie behavior.opy"
+# #!include "zombie behavior.opy"
 #!include "portal.opy"
 #!include "visuals.opy"
+#!include "heroes abilities/all.opy"
 #!include "heroes abilities/mercy.opy"
+#!include "heroes abilities/widowmaker.opy"

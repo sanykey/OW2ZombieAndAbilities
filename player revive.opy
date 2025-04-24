@@ -47,11 +47,11 @@ rule "Team 1 (Death): Start Camera, Set is Downed, Revive Timer, Knocked down, D
 
   eventPlayer.resurrect()
   eventPlayer.clearStatusEffect(Status.PHASED_OUT)
-  eventPlayer.setStatusEffect(null, Status.INVINCIBLE, INFINITE)
-  eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITE)
+  eventPlayer.setStatusEffect(null, Status.INVINCIBLE, INFINITY)
+  eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITY)
   wait(0.05, Wait.RESTART_WHEN_TRUE)
   eventPlayer.setHealth(1)
-  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITE)
+  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITY)
 
 rule "Revive, check player in radius, unset is downed":
   @Event eachPlayer
@@ -82,7 +82,7 @@ rule "Team 1: Player gets up":
   eventPlayer.enableMessages()
   eventPlayer.stopCamera()
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
-  eventPlayer.setHealth(INFINITE)
+  eventPlayer.setHealth(INFINITY)
   # eventPlayer.spectated_player = eventPlayer
   eventPlayer.revivers = []
   eventPlayer.clearStatusEffect(Status.KNOCKED_DOWN)

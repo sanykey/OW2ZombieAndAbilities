@@ -25,17 +25,17 @@ rule "Zombie points - critical hit":
 rule "Healing points":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.stateArr[stateI.HEALING_TRACKER] >= eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] 
+  @Condition eventPlayer.state[SI.HEALING_TRACKER] >= eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] 
 
-  eventPlayer.stateArr[stateI.HEALING_RESULT] = floor(eventPlayer.stateArr[stateI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING * eventPlayer.H
-  eventPlayer.money += eventPlayer.stateArr[stateI.HEALING_RESULT]
-  smallMessage(eventPlayer, "{0} {1}".format(eventPlayer.stateArr[stateI.HEALING_RESULT], "points for healing"))
-  teamScore += eventPlayer.stateArr[stateI.HEALING_RESULT]
-  eventPlayer.stateArr[stateI.HEALING_TRACKER] = 0
+  eventPlayer.state[SI.HEALING_RESULT] = floor(eventPlayer.state[SI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING * eventPlayer.H
+  eventPlayer.money += eventPlayer.state[SI.HEALING_RESULT]
+  smallMessage(eventPlayer, "{0} {1}".format(eventPlayer.state[SI.HEALING_RESULT], "points for healing"))
+  teamScore += eventPlayer.state[SI.HEALING_RESULT]
+  eventPlayer.state[SI.HEALING_TRACKER] = 0
 
 rule "Healing amount tracker":
   @Event playerDealtHealing
   @Team 1
   
   # healing yourself gives less points
-  eventPlayer.stateArr[stateI.HEALING_TRACKER] += eventHealing / 3 if healee == eventPlayer else  eventHealing
+  eventPlayer.state[SI.HEALING_TRACKER] += eventHealing / 3 if healee == eventPlayer else  eventHealing

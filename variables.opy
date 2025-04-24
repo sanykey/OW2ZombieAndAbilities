@@ -25,12 +25,14 @@ globalvar shopState 53
 globalvar teamScore 54
 globalvar temp1 55
 globalvar temp2 56
+globalvar temp3 59
+globalvar temp4 60
 globalvar combatants 57
 globalvar combatantsCount 58
 
 #Player variables
 
-playervar money 0
+
 playervar healthStat 10
 playervar damageStat 11
 playervar healingStat 12
@@ -38,7 +40,7 @@ playervar zombiesfly 26
 playervar orb_roll 27 # current orb drop chance when a bot dies
 playervar isInSecretShop 28
 
-playervar stateArr 30 # use with enum "stateI"
+playervar state 30 # use with enum "SI"
 playervar reviveProgress 31
 playervar isTargetInLos 32
 playervar recentStackedHealingDealtToSlot 33
@@ -54,14 +56,25 @@ playervar deathCamTarget 39
 playervar isCombatant 40
 playervar revivers 41
 playervar targetPlayer 42
-
+playervar talents 43
+playervar abilityCharges 44
+playervar abilityCountdown 45
+playervar abilityActive 48
+playervar HUDs 46
+playervar temp1 47
+playervar temp2 52
+playervar revealed 49
+playervar widowmakerChargeShot 50
+playervar money 51
 
 #Activated extensions
 #!extension explosionSounds
+#!extension kineticExplosionEffects
 #!extension playMoreEffects
 #!extension spawnMoreDummyBots
+#!extension projectiles
 
-#!define INFINITE 99999
+#!define INFINITY 99999
 #!define MONEY_FOR_REVIVE 300
 #!define MONEY_FOR_ZOMBIE_KILL 200
 #!define MONEY_FOR_ZOMBIE_CRITICAL 275
@@ -71,8 +84,9 @@ playervar targetPlayer 42
 #!define MAX_ZOMBIES 12
 #!define ALLY_BOT_PLAYER_SLOT 7
 #!define REVIVE_TIMER_TICK 2
+#!define ZOMBIE_BASE_MOVE_SPEED 70
 
-enum stateI:
+enum SI:
   CAMERA_3P = 0 # number
   # 0: OFF
   # 1: Temporary OFF
@@ -83,3 +97,24 @@ enum stateI:
   HEALING_TRACKER = 2
   HEALING_TRACKER_THRESHOLD = 3
   HEALING_RESULT = 4
+  WIDOWMAKER_SHOT_CHARGE = 5
+  RAYCAST_CALIBRATION_EYE_POSITION_Y = 6
+  RAYCAST_CALIBRATION_FACING_DIRECTION_Y = 7
+
+# for playervar talents
+enum TI:
+  WIDOWMAKER_PARTY_FAMOURS = 0
+  WIDOWMAKER_FALLING_STARS = 1
+  WIDOWMAKER_SILK_WEB = 2
+  WIDOWMAKER_FELT_MORE_ALIVE = 3
+  WIDOWMAKER_BRAISER_DE_SOIE = 4
+
+# for playervar HUDs
+enum HI:
+  REVEALED_ICON = 0
+  WALLHACK_HEADSHOT_ZONE = 1
+  DEBUG = 2
+  DEBUG2 = 3
+  DEBUG3 = 4
+  DEBUG4 = 4
+  DEBUG5 = 5

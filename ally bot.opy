@@ -55,7 +55,7 @@ rule "Ally bot: Start / Stop Shooting":
   @Condition (eventPlayer.isTargetInLos and not eventPlayer.isMoving()) == true
   
   eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
-  waitUntil(not (eventPlayer.isTargetInLos and not eventPlayer.isMoving()), INFINITE)
+  waitUntil(not (eventPlayer.isTargetInLos and not eventPlayer.isMoving()), INFINITY)
   eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
   
 # todo: debug

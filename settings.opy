@@ -54,7 +54,7 @@ settings {
                 "healingReceived%": 40,
                 "health%": 200,
                 "jumpVerticalSpeed%": 120,
-                "movementSpeed%": 70,
+                "movementSpeed%": ZOMBIE_BASE_MOVE_SPEED,
                 "enableAbility2": false,
                 "projectileSpeed%": 0,
                 "combatUltGen%": 10,

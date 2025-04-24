@@ -5,14 +5,20 @@ rule "[debug] Add money and health":
   @Team 1
   @Slot 0
   
-  waitUntil(eventPlayer.hasSpawned(), INFINITE)
+  waitUntil(eventPlayer.hasSpawned(), INFINITY)
   eventPlayer.money += 1000000
   eventPlayer.healthStat += 10000
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
 
+  eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
+  eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
+  eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] = true
+  eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] = true
+  eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] = true
+
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
-  # eventPlayer.stateArr[stateI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
+  # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
 
 rule "Deactivate bots (Ctrl + shift + interact)":
   @Event eachPlayer
@@ -24,7 +30,7 @@ rule "Deactivate bots (Ctrl + shift + interact)":
   if isBotsDisabled == false:
     isBotsDisabled = true
     roundRemainingBots += 12
-    damage(getPlayers(Team.2), getPlayers(Team.2), INFINITE)
+    damage(getPlayers(Team.2), getPlayers(Team.2), INFINITY)
     smallMessage(eventPlayer, "Bots disabled")
   else:
     isBotsDisabled = false
@@ -37,7 +43,7 @@ rule "Just die":
   @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
-  damage(eventPlayer, eventPlayer, INFINITE)
+  damage(eventPlayer, eventPlayer, INFINITY)
 
 
 rule "Init":
@@ -47,49 +53,182 @@ rule "Init":
   # server loading stats:
   hudText(getPlayersInSlot(0, Team.1), getServerLoad(), getAverageServerLoad(), getPeakServerLoad(), HudPosition.LEFT, 7, Color.GREEN, Color.ORANGE, Color.RED, HudReeval.VISIBILITY_AND_STRING)
   # Player 1 current coordinates
-  hudSubtext(getPlayersInSlot(0, Team.1), "P1: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "Current [{0}] vect: {1}".format(debugCurrentVectNum, debugVectsArr[debugCurrentVectNum].getPosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "P1: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "Current [{0}] vect: {1}".format(debugCurrentVectNum, debugVectsArr[debugCurrentVectNum].getPosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
 
-  hudSubtext(getPlayersInSlot(0, Team.1), "Healing {0} < {1}".format(getPlayersInSlot(0, Team.1).stateArr[stateI.HEALING_TRACKER] ,getPlayersInSlot(0, Team.1).stateArr[stateI.HEALING_TRACKER_THRESHOLD]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "Healing {0} < {1}".format(getPlayersInSlot(0, Team.1).state[SI.HEALING_TRACKER] ,getPlayersInSlot(0, Team.1).state[SI.HEALING_TRACKER_THRESHOLD]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "WidowShotCharge: {0}".format(getPlayersInSlot(0, Team.1).widowmakerChargeShot), HudPosition.TOP, 9, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
   
-rule "Show beam and info to current debugging vector":
+# rule "Show beam and info to current debugging vector":
+#   @Event eachPlayer
+#   @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+
+#   debugVectsArr = []
+#   for I in range(13, 24):
+#     debugVectsArr[I - 13] = vectList[I]
+
+#   if debugCurrentVectNum >= len(debugVectsArr) - 1:
+#     debugCurrentVectNum = 0
+#     smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr)))
+#   else:
+#     debugCurrentVectNum += 1
+#     smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr)))
+  
+#   destroyEffect(debugCurrentVectEffectArr[0])
+#   destroyEffect(debugCurrentVectEffectArr[1])
+#   createBeam(
+#     getAllPlayers(),
+#     Beam.GOOD,
+#     eventPlayer.getEyePosition() + vect(0, -0.25, 0),
+#     debugVectsArr[debugCurrentVectNum], 
+#     Color.GREEN,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )
+#   debugCurrentVectEffectArr[0] = getLastCreatedEntity()
+
+#   createEffect(
+#     getAllPlayers(),
+#     Effect.SPHERE,
+#     Color.GREEN,
+#     debugVectsArr[debugCurrentVectNum],
+#     1,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )
+#   debugCurrentVectEffectArr[1] = getLastCreatedEntity()
+
+
+# rule "Debug: scope raycast calibration init":
+#   getPlayersInSlot(0, Team.1).state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y] = -0.03
+#   getPlayersInSlot(0, Team.1).state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y] = -0.045
+
+#   hudSubtext(getPlayersInSlot(0, Team.1), "getEyePosition y: {0}".format(getPlayersInSlot(0, Team.1).state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y] * 10) , HudPosition.TOP, 9, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+#   hudSubtext(getPlayersInSlot(0, Team.1), "getFacingDirection y: {0}".format(getPlayersInSlot(0, Team.1).state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y] * 10) , HudPosition.TOP, 9, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+
+
+# rule "Debug: scope raycast calibration change":
+#   @Event eachPlayer
+#   @Slot 0
+#   @Team 1
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true and (
+#     eventPlayer.isHoldingButton(Button.JUMP) or eventPlayer.isHoldingButton(Button.CROUCH) or eventPlayer.isHoldingButton(Button.PRIMARY_FIRE) or eventPlayer.isHoldingButton(Button.SECONDARY_FIRE
+#   )
+#   )
+
+#   if (eventPlayer.isHoldingButton(Button.JUMP)):
+#     eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y] += 0.005
+#   elif (eventPlayer.isHoldingButton(Button.CROUCH)):
+#     eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y] -= 0.005
+#   elif (eventPlayer.isHoldingButton(Button.PRIMARY_FIRE)):
+#     eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y] += 0.005
+#   elif (eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)):
+#     eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y] -= 0.005
+
+# rule "Debug: scope raycast calibration shoot":
+#   @Event eachPlayer
+#   @Slot 0
+#   @Team 1
+#   @Condition eventPlayer.isFiringPrimaryFire() == true
+
+#   destroyEffect(eventPlayer.HUDs[HI.DEBUG])
+#   destroyEffect(eventPlayer.HUDs[HI.DEBUG2])
+#   destroyEffect(eventPlayer.HUDs[HI.DEBUG3])
+
+#   temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
+
+#   createBeam(
+#     getAllPlayers(),
+#     Beam.BAD,
+#     eventPlayer.getEyePosition(),
+#     raycast(
+#       temp1,
+#       temp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
+# ,
+#       getAllPlayers(),
+#       eventPlayer,
+#       true
+#     ).getHitPosition(),
+#     Color.GREEN,
+#     EffectReeval.COLOR
+#   )
+#   eventPlayer.HUDs[HI.DEBUG] = getLastCreatedEntity()
+
+#   createBeam(
+#     getAllPlayers(),
+#     Beam.BAD,
+#     eventPlayer.getEyePosition(),
+#     raycast(
+#       eventPlayer.getEyePosition(),
+#       eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 200,
+#       getAllPlayers(),
+#       eventPlayer,
+#       true
+#     ).getHitPosition(),
+#     Color.RED,
+#     EffectReeval.COLOR
+#   )
+#   eventPlayer.HUDs[HI.DEBUG2] = getLastCreatedEntity()
+
+#   createEffect(
+#     getAllPlayers(),
+#     Effect.SPHERE,
+#     Color.GREEN,
+#     raycast(
+#       temp1,
+#       temp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
+# ,
+#       getAllPlayers(),
+#       eventPlayer,
+#       true
+#     ).getHitPosition(),
+#     0.1,
+#     EffectReeval.VISIBILITY_AND_COLOR
+#   )
+#   eventPlayer.HUDs[HI.DEBUG3] = getLastCreatedEntity()
+
+
+# rule "Debug: persistent dot":
+#   @Event eachPlayer
+#   @Slot 0
+#   @Team 1
+
+#   destroyEffect(eventPlayer.HUDs[HI.DEBUG4])
+#   temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
+
+#   createEffect(
+#     getAllPlayers(),
+#     Effect.SPHERE,
+#     Color.BLUE,
+#     raycast(
+#       temp1,
+#       temp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
+# ,
+#       getAllPlayers(),
+#       eventPlayer,
+#       true
+#     ).getHitPosition(),
+#     0.1,
+#     EffectReeval.VISIBILITY_AND_COLOR
+#   )
+
+
+#   eventPlayer.HUDs[HI.DEBUG4] = getLastCreatedEntity()
+
+#   wait(0.02)
+#   loop()
+
+rule "In Aim":
   @Event eachPlayer
-  @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Slot 0
+  @Team 1
 
-  debugVectsArr = []
-  for I in range(13, 24):
-    debugVectsArr[I - 13] = vectList[I]
-
-  if debugCurrentVectNum >= len(debugVectsArr) - 1:
-    debugCurrentVectNum = 0
-    smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr)))
-  else:
-    debugCurrentVectNum += 1
-    smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr)))
-  
-  destroyEffect(debugCurrentVectEffectArr[0])
-  destroyEffect(debugCurrentVectEffectArr[1])
-  createBeam(
-    getAllPlayers(),
-    Beam.GOOD,
-    eventPlayer.getEyePosition() + vect(0, -0.25, 0),
-    debugVectsArr[debugCurrentVectNum], 
-    Color.GREEN,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  hudSubtext(
+    getPlayersInSlot(0, Team.1),
+    "in Aim: {0}".format(eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 3)),
+    HudPosition.TOP,
+    9,
+    Color.WHITE,
+    HudReeval.VISIBILITY_AND_STRING
   )
-  debugCurrentVectEffectArr[0] = getLastCreatedEntity()
 
-  createEffect(
-    getAllPlayers(),
-    Effect.SPHERE,
-    Color.GREEN,
-    debugVectsArr[debugCurrentVectNum],
-    1,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
-  debugCurrentVectEffectArr[1] = getLastCreatedEntity()
-
-
-    
