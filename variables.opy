@@ -66,6 +66,7 @@ playervar temp2 52
 playervar revealed 49
 playervar widowmakerChargeShot 50
 playervar money 51
+playervar raycast 53
 
 #Activated extensions
 #!extension explosionSounds
@@ -85,6 +86,8 @@ playervar money 51
 #!define ALLY_BOT_PLAYER_SLOT 7
 #!define REVIVE_TIMER_TICK 2
 #!define ZOMBIE_BASE_MOVE_SPEED 70
+#!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
+#!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
 
 enum SI:
   CAMERA_3P = 0 # number
@@ -108,6 +111,7 @@ enum TI:
   WIDOWMAKER_SILK_WEB = 2
   WIDOWMAKER_FELT_MORE_ALIVE = 3
   WIDOWMAKER_BRAISER_DE_SOIE = 4
+  WIDOWMAKER_PHANTOM_BULLETS = 5
 
 # for playervar HUDs
 enum HI:
@@ -118,3 +122,17 @@ enum HI:
   DEBUG3 = 4
   DEBUG4 = 4
   DEBUG5 = 5
+
+enum RI:
+  A = 1
+  B = 2
+  C = 3
+  DISC = 4
+  XPXS = 5
+  YPYS - 6
+  ZPYS - 7
+  RADIUS = 8
+  SPHERE_POS = 9
+  FACING_DIRECTION = 10
+  RESULT = 11
+  SQRT_RESULT = 12

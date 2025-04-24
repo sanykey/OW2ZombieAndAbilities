@@ -1,5 +1,50 @@
 #!mainFile "../main.opy"
 
+def sqrtNewton():
+  @Name "Subroutine: Calculate square root"
+  eventPlayer.raycast[RI.SQRT_RESULT] = eventPlayer.raycast[RI.DISC] / 2
+  for temp1 in range(5):
+    eventPlayer.raycast[RI.SQRT_RESULT] = (eventPlayer.raycast[RI.SQRT_RESULT] + (eventPlayer.raycast[RI.DISC] / eventPlayer.raycast[RI.SQRT_RESULT])) / 2
+
+def rayIntersectionsWithSphere():
+  @Name "Subroutine: Сalculate the intersections of the ray with the sphere"
+
+  eventPlayer.raycast[RI.RESULT] = false
+  eventPlayer.raycast[RI.A] = (
+    (eventPlayer.raycast[RI.FACING_DIRECTION].x * eventPlayer.raycast[RI.FACING_DIRECTION].x) +
+    (eventPlayer.raycast[RI.FACING_DIRECTION].y * eventPlayer.raycast[RI.FACING_DIRECTION].y) +
+    (eventPlayer.raycast[RI.FACING_DIRECTION].z * eventPlayer.raycast[RI.FACING_DIRECTION].z)
+  )
+
+  eventPlayer.raycast[RI.XPXS] = eventPlayer.getEyePosition().x - eventPlayer.raycast[RI.SPHERE_POS].x
+  eventPlayer.raycast[RI.YPYS] = eventPlayer.getEyePosition().y - eventPlayer.raycast[RI.SPHERE_POS].y
+  eventPlayer.raycast[RI.ZPYS] = eventPlayer.getEyePosition().z - eventPlayer.raycast[RI.SPHERE_POS].z
+
+  eventPlayer.raycast[RI.B] = 2 * (
+    (eventPlayer.raycast[RI.FACING_DIRECTION].x * eventPlayer.raycast[RI.XPXS]) +
+    (eventPlayer.raycast[RI.FACING_DIRECTION].y * eventPlayer.raycast[RI.YPYS]) + 
+    (eventPlayer.raycast[RI.FACING_DIRECTION].z * eventPlayer.raycast[RI.ZPYS])
+  )
+
+  eventPlayer.raycast[RI.C] = (
+    (eventPlayer.raycast[RI.XPXS] * eventPlayer.raycast[RI.XPXS]) +
+    (eventPlayer.raycast[RI.YPYS] * eventPlayer.raycast[RI.YPYS]) +
+    (eventPlayer.raycast[RI.ZPYS] * eventPlayer.raycast[RI.ZPYS]) -
+    (eventPlayer.raycast[RI.RADIUS] * eventPlayer.raycast[RI.RADIUS])
+  )
+
+  eventPlayer.raycast[RI.DISC] = (eventPlayer.raycast[RI.B] * eventPlayer.raycast[RI.B]) - (4 * eventPlayer.raycast[RI.A] * eventPlayer.raycast[RI.C])
+
+  if eventPlayer.raycast[RI.DISC] < 0:
+    return
+  
+  sqrtNewton()
+
+  if (((eventPlayer.raycast[RI.B] * -1) - eventPlayer.raycast[RI.SQRT_RESULT]) / (2 * eventPlayer.raycast[RI.A])) >= 0:
+    eventPlayer.raycast[RI.RESULT] = true
+  elif (((eventPlayer.raycast[RI.B] * -1) + eventPlayer.raycast[RI.SQRT_RESULT]) / (2 * eventPlayer.raycast[RI.A])) >= 0:
+    eventPlayer.raycast[RI.RESULT] = true
+
 # Party Favours: Gain a second hook charge
 rule "[Widowmaker] Party Favours":
   @Event eachPlayer
@@ -69,11 +114,11 @@ rule "[Widowmaker] Falling stars":
   @Condition eventPlayer.getSpeed() >= 20
   
   while eventPlayer.isUsingAbility1():
-    createProjectile(Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE, eventPlayer, null, Vector.UP, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 60, 1, 4, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND, 0, 10, 3, 0, 0, 35)
+    createProjectile(Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE, eventPlayer, null, Vector.UP, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 4, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND, 0, 10, 3, 0, 0, 35)
     wait(0.15)
   for eventPlayer.temp1 in range(4):
     wait(0.05)
-    createProjectile(Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE, eventPlayer, null, Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.temp1 * 90, 0)), Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 60, 1, 3, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND, 0, 8, 3, 0, 0, 45)
+    createProjectile(Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE, eventPlayer, null, Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.temp1 * 90, 0)), Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 3, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND, 0, 8, 3, 0, 0, 45)
 
 # Silk web: When grappling hook ends, temporarily latch onto any nearby walls
 rule "[Widowmaker] Silk web":
@@ -98,114 +143,94 @@ rule "[Widowmaker] Silk web":
   playEffect(eventPlayer, DynamicEffect.DOOMFIST_RISING_UPPERCUT_IMPACT_SOUND, Color.WHITE, eventPlayer.getPosition(), 75)
 
 
-rule "[Widowmaker] Aiming through walls":
+# You have to calculate the direction before you shoot. If you do it during the shot, the recoil from the shot can affect the counts
+rule "[Widowmaker] Phantom bullets - Aiming through walls":
   @Event eachPlayer
   @Hero widowmaker
+  @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == false
-  @Condition eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 4) == true
+  @Condition eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(Team.2), 4) == true
 
-  temp1 = eventPlayer.getPlayerClosestToReticle(Team.2)
-  temp2 = raycast(
-    eventPlayer.getEyePosition(),
-    eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 200,
-    getAllPlayers(),
-    eventPlayer,
-    true
-  ).getHitPosition()
-
-  temp3 = eventPlayer.getEyePosition() + (normalize(temp2 - eventPlayer.getEyePosition()) * distance(eventPlayer.getEyePosition(), temp1.getEyePosition()))
-
+  eventPlayer.raycast[RI.FACING_DIRECTION] = eventPlayer.getFacingDirection()
   wait(0.016)
   if (
-    eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 3) == false or
-    eventPlayer.isFiringSecondaryFire() == false
+    eventPlayer.isFiringSecondaryFire() == false or
+    eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(Team.2), 4) == false
   ):
-    temp1 = false
-    temp2 = false
-    temp3 = false
+    eventPlayer.raycast[RI.FACING_DIRECTION] = false
     return
 
-  if (eventPlayer.isFiringPrimaryFire() == false):
-    loop()
+  if (eventPlayer.isFiringPrimaryFire() == true):
+    return
+  loop()
 
-rule "[Widowmaker] Widow ult dmg through walls":
+rule "[Widowmaker] Phantom bullets - damage through walls":
   @Event eachPlayer
   @Hero widowmaker
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == true
-  # @Condition eventPlayer.isUsingUltimate() == true
-  # @Condition eventPlayer.isFiringPrimaryFire() == true
-  # @Condition eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 2.5) == true
+  @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
+  @Condition eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(Team.2), 4) == true
 
   eventPlayer.setUltCharge(100)
-
   destroyEffect(eventPlayer.HUDs[HI.DEBUG])
   destroyEffect(eventPlayer.HUDs[HI.DEBUG2])
   destroyEffect(eventPlayer.HUDs[HI.DEBUG3])
-  destroyEffect(eventPlayer.HUDs[HI.DEBUG4])
-  destroyEffect(eventPlayer.HUDs[HI.DEBUG5])
 
-  if temp1 == false:
-    return
+  if eventPlayer.raycast[RI.FACING_DIRECTION] == false:
+    smallMessage(eventPlayer, "FAIL")
 
+  temp1 = eventPlayer.getPlayerClosestToReticle(Team.2)
+
+  createBeam(
+    getAllPlayers(),
+    Beam.BAD,
+    eventPlayer.getEyePosition(),
+    eventPlayer.getEyePosition() + eventPlayer.raycast[RI.FACING_DIRECTION] * 200,
+    Color.BLUE,
+    EffectReeval.VISIBILITY_AND_COLOR
+  )
+  eventPlayer.HUDs[HI.DEBUG] = getLastCreatedEntity()
+  wait(0.016)
+  createEffect(
+    getAllPlayers(),
+    Effect.SPHERE,
+    Color.YELLOW,
+    temp1.getPosition() + vect(0, 0.6, 0),
+    ZOMBIE_BODY_HITBOX_RADIUS,
+    EffectReeval.VISIBILITY_AND_COLOR
+  )
+  eventPlayer.HUDs[HI.DEBUG2] = getLastCreatedEntity()
+  wait(0.016)
   createEffect(
     getAllPlayers(),
     Effect.SPHERE,
     Color.RED,
     temp1.getEyePosition() + (temp1.getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
-    0.15,
-    EffectReeval.VISIBILITY_AND_COLOR
-  )
-  eventPlayer.HUDs[HI.DEBUG4] = getLastCreatedEntity()
-  wait(0.016)
-  # createEffect(
-  #   getAllPlayers(),
-  #   Effect.SPHERE,
-  #   Color.GREEN,
-  #   temp1.getPosition() + vect(0, 0.6, 0),
-  #   0.7,
-  #   EffectReeval.VISIBILITY_AND_COLOR
-  # )
-  # eventPlayer.HUDs[HI.DEBUG5] = getLastCreatedEntity()
-  # wait(0.016)
-
-  if distance(temp3, temp1.getEyePosition() + (temp1.getFacingDirection() + vect(0, 0, -0.5)) * 0.25) <= 0.15:
-    smallMessage(eventPlayer, "HEADSHOT!")
-  elif distance(temp3, temp1.getPosition() + vect(0, 0.6, 0)) <= 0.7:
-    smallMessage(eventPlayer, "SHOT!")
-
-  createEffect(
-    getAllPlayers(),
-    Effect.SPHERE,
-    Color.YELLOW,
-    temp2,
-    0.1,
-    EffectReeval.VISIBILITY_AND_COLOR
-  )
-  eventPlayer.HUDs[HI.DEBUG] = getLastCreatedEntity()
-  wait(0.016)
-
-  createEffect(
-    getAllPlayers(),
-    Effect.SPHERE,
-    Color.BLUE,
-    temp3,
-    0.1,
-    EffectReeval.VISIBILITY_AND_COLOR
-  )
-  eventPlayer.HUDs[HI.DEBUG2] = getLastCreatedEntity()
-
-  wait(0.016)
-  createBeam(
-    getAllPlayers(),
-    Beam.BAD,
-    eventPlayer.getEyePosition(),
-    temp3,
-    Color.BLUE,
+    ZOMBIE_HEAD_HITBOX_RADIUS,
     EffectReeval.VISIBILITY_AND_COLOR
   )
   eventPlayer.HUDs[HI.DEBUG3] = getLastCreatedEntity()
+
+
+  eventPlayer.raycast[RI.SPHERE_POS] = temp1.getEyePosition() + (temp1.getFacingDirection() + vect(0, 0, -0.5)) * 0.25 # headshot shpere
+  eventPlayer.raycast[RI.RADIUS] = ZOMBIE_HEAD_HITBOX_RADIUS
+  rayIntersectionsWithSphere()
+
+  if eventPlayer.raycast[RI.RESULT] == true:
+    smallMessage(eventPlayer, "HEAD SHOT!")
+    return
+
+  eventPlayer.raycast[RI.SPHERE_POS] = temp1.getPosition() + vect(0, 0.6, 0) # player center shpere
+  eventPlayer.raycast[RI.RADIUS] = ZOMBIE_BODY_HITBOX_RADIUS
+  rayIntersectionsWithSphere()
+
+  if eventPlayer.raycast[RI.RESULT] == true:
+    smallMessage(eventPlayer, "BODY SHOT!")
+    return
+
+  smallMessage(eventPlayer, "MISS!")
 
   damage(
     eventPlayer.getPlayerClosestToReticle(Team.2),
