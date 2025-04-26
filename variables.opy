@@ -55,9 +55,6 @@ playervar isCombatant 40
 playervar revivers 41
 playervar targetPlayer 42
 playervar talents 43
-playervar abilityCharges 44
-playervar abilityCountdown 45
-playervar abilityActive 48
 playervar HUDs 46
 playervar temp1 47
 playervar temp2 52
@@ -75,6 +72,8 @@ playervar talentState 55
 #!extension spawnMoreDummyBots
 #!extension projectiles
 
+#!setupTags
+
 #!define INFINITY 99999
 #!define MONEY_FOR_REVIVE 300
 #!define MONEY_FOR_ZOMBIE_KILL 200
@@ -90,6 +89,7 @@ playervar talentState 55
 #!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
 #!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
 
+#!define ABILITI_TEXT_INTEND "                                                                                             "
 enum SI:
   CAMERA_3P = 0 # number
   # 0: OFF
@@ -123,6 +123,7 @@ enum HI:
   PLAYER_LIST_STATUS_TEXT = 8
   WIDOWMAKER_PHANTOM_BULLET_HIT = 9
   WIDOWMAKER_PARTY_FAMOURS = 10
+  WIDOWMAKER_PHANTOM_BULLET_CHARGE = 11
   DEBUG = 3
   DEBUG2 = 4
   DEBUG3 = 5

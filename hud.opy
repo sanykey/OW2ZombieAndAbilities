@@ -25,6 +25,18 @@ rule "Init hud hero icons of players and how much money they have":
     Color.SKY_BLUE
   )
 
+  #push down hud texts for abilities
+  hudSubtext(
+    getAllPlayers(),
+    "
+    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+    ",
+    HudPosition.TOP,
+    1,
+    Color.WHITE,
+    HudReeval.VISIBILITY_AND_STRING
+  )
+
 
 rule "Players list, upgrades and money":
   @Event eachPlayer

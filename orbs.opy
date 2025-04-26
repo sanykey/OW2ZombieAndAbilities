@@ -23,13 +23,13 @@ rule "Init vars, effects and hud for Orbs":
   createEffect(getPlayers(Team.1), Effect.ORB, Color.ORANGE, orbs_vectors_arr[5], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getPlayers(Team.1), Effect.GOOD_AURA, Color.BLUE, orbs_vectors_arr[6], 0.7, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
 
-  hudHeader([player for player in getPlayers(Team.1) if player.S[1] == 1], l"Points", HudPosition.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-  hudHeader([player for player in getPlayers(Team.1) if player.S[2] == 1], l"Speed", HudPosition.TOP, 1, Color.GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-  hudHeader([player for player in getPlayers(Team.1) if player.S[4] == 1], "Honey, I Shrunk The Team!", HudPosition.TOP, 1, Color.ROSE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-  hudHeader([player for player in getPlayers(Team.1) if player.S[0] == 1], "Total Mayhem", HudPosition.TOP, 1, Color.VIOLET, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-  hudHeader([player for player in getPlayers(Team.1) if player.S[5] == 1], l"Challenge Accepted", HudPosition.TOP, 1, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-  hudHeader([player for player in getPlayers(Team.1) if player.S[3] == 1], l"Freezing", HudPosition.TOP, 1, Color.AQUA, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-  hudHeader([player for player in getPlayers(Team.1) if player.S[6] == 1], "Time Distortion", HudPosition.TOP, 1, Color.BLUE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[1] == 1], l"Points", HudPosition.RIGHT, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[2] == 1], l"Speed", HudPosition.RIGHT, 1, Color.GREEN, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[4] == 1], "Honey, I Shrunk The Team!", HudPosition.RIGHT, 1, Color.ROSE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[0] == 1], "Total Mayhem", HudPosition.RIGHT, 1, Color.VIOLET, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[5] == 1], l"Challenge Accepted", HudPosition.RIGHT, 1, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[3] == 1], l"Freezing", HudPosition.RIGHT, 1, Color.AQUA, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+  hudHeader([player for player in getPlayers(Team.1) if player.S[6] == 1], "Time Distortion", HudPosition.RIGHT, 1, Color.BLUE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
 
 rule "Bot died - drop orb chance":
   @Event playerDied
