@@ -22,6 +22,12 @@ rule "Disable spawn room hero swap":
     eventPlayer.damageStat = 100
     eventPlayer.healingStat = 100
 
+  eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
+
+  waitUntil(eventPlayer.hasSpawned(), INFINITY)
+  eventPlayer.addHealthPool(Health.SHIELDS, team_shields, true)
+  eventPlayer.addHealthPool(Health.ARMOR, team_armor, true)
+
   # revive effects
   createEffect(getAllPlayers() if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
   createIcon(getAllPlayers().exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY, Color.YELLOW)
@@ -71,7 +77,7 @@ rule "Starting spawn location for players":
   eventPlayer.enablePlayerCollision()
 
 
-rule "Late joiner catchup [15]":
+rule "Late joiner catchup after round 15, 25, 50":
   @Event playerJoined
   @Team 1
   @Condition roundNumber >= 15
@@ -91,35 +97,21 @@ rule "Late joiner catchup [15]":
   eventPlayer.setDamageReceived(85)
   smallMessage(eventPlayer, "Your damage reduction buff has now ended. Good luck!")
 
-rule "Late joiner catchup [25]":
-  @Event playerJoined
-  @Team 1
-  @Condition roundNumber >= 25
+  # Late joiner catchup [25]
+  if roundNumber >= 25:
+    eventPlayer.money += 75000
+    eventPlayer.healthStat += 500
+    eventPlayer.setMaxHealth(eventPlayer.healthStat)
+
+  # "Late joiner catchup [50]"
+  if roundNumber >= 50:
+    eventPlayer.money += 50000
+    eventPlayer.healthStat += 1250
+    eventPlayer.setMaxHealth(eventPlayer.healthStat)
+
+
+rule "All Teams: Player left Match, Scale Damage":
+  @Event playerLeft
   
-  waitUntil(eventPlayer.hasSpawned(), 99999)
-  eventPlayer.money += 75000
-  eventPlayer.healthStat += 500
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
-
-
-rule "Late joiner catchup [50]":
-  @Event playerJoined
-  @Team 1
-  @Condition roundNumber >= 50
-  
-  waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.money += 50000
-  eventPlayer.healthStat += 1250
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
-  wait(1.5)
-  heal(eventPlayer, null, INFINITY)
-
-rule "Team shields and armor for joiner":
-  @Event playerJoined
-  @Team 1
-
-  eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
-  
-  waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.addHealthPool(Health.SHIELDS, team_shields, true)
-  eventPlayer.addHealthPool(Health.ARMOR, team_armor, true)
+  updateCombatants()
+  destroyHudText(eventPlayer.HUDs[eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT]])
