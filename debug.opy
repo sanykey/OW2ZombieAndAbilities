@@ -7,8 +7,8 @@ rule "[debug] Add money and health":
   
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
   eventPlayer.money += 1000000
-  eventPlayer.healthStat += 10000
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  # eventPlayer.healthStat += 10000
+  # eventPlayer.setMaxHealth(eventPlayer.healthStat)
 
   eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
   eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
@@ -16,13 +16,20 @@ rule "[debug] Add money and health":
   eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] = true
   eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] = true
   eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] = true
+  eventPlayer.talents[TI.WIDOWMAKER_TRACKER_VENOM] = true
+
+  # eventPlayer.damageStat = 10000
+  # eventPlayer.setDamageDealt(eventPlayer.damageStat)
 
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
 
+
 rule "Deactivate bots (Ctrl + shift + interact)":
   @Event eachPlayer
+  @Team 1
+  @Slot 0
   @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
   # @Condition eventPlayer.isHoldingButton(Button.ABILITY_2) == true
   @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
@@ -38,13 +45,15 @@ rule "Deactivate bots (Ctrl + shift + interact)":
     smallMessage(eventPlayer, "Bots enabled")
 
 
-rule "Just die":
-  @Event eachPlayer
-  @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
-  @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+# rule "Just die":
+#   @Event eachPlayer
+#   @Team 1
+#   @Slot 0
+#   @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
+#   @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
-  damage(eventPlayer, eventPlayer, INFINITY)
+#   damage(eventPlayer, eventPlayer, INFINITY)
 
 
 rule "Init":
@@ -60,14 +69,14 @@ rule "Init":
   # hudSubtext(getPlayersInSlot(0, Team.1), "Healing {0} < {1}".format(getPlayersInSlot(0, Team.1).state[SI.HEALING_TRACKER] ,getPlayersInSlot(0, Team.1).state[SI.HEALING_TRACKER_THRESHOLD]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
   # hudSubtext(getPlayersInSlot(0, Team.1), "WidowShotCharge: {0}".format(getPlayersInSlot(0, Team.1).widowmakerChargeShot), HudPosition.TOP, 9, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
-  hudSubtext(getPlayersInSlot(0, Team.1), "Player getEyePosition: {0}".format(getPlayersInSlot(0, Team.1).getEyePosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "victum sphere pos: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.SPHERE_POS]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "Facing direction: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.FACING_DIRECTION]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "A: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.A] * 1000), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "B: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.B] * 1000), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "C: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.C] * 1000), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "DISC: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.DISC]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-  hudSubtext(getPlayersInSlot(0, Team.1), "DIST SQRT: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.SQRT_RESULT]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "Player getEyePosition: {0}".format(getPlayersInSlot(0, Team.1).getEyePosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "victum sphere pos: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.SPHERE_POS]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "Facing direction: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.FACING_DIRECTION]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "A: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.A] * 1000), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "B: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.B] * 1000), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "C: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.C] * 1000), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "DISC: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.DISC]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+  # hudSubtext(getPlayersInSlot(0, Team.1), "DIST SQRT: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.SQRT_RESULT]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
 
   
 # rule "Show beam and info to current debugging vector":
@@ -228,17 +237,17 @@ rule "Init":
 #   wait(0.02)
 #   loop()
 
-rule "In Aim":
-  @Event eachPlayer
-  @Slot 0
-  @Team 1
+# rule "In Aim":
+#   @Event eachPlayer
+#   @Slot 0
+#   @Team 1
 
-  hudSubtext(
-    getPlayersInSlot(0, Team.1),
-    "in Aim: {0}".format(eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 3)),
-    HudPosition.TOP,
-    9,
-    Color.WHITE,
-    HudReeval.VISIBILITY_AND_STRING
-  )
+#   hudSubtext(
+#     getPlayersInSlot(0, Team.1),
+#     "in Aim: {0}".format(eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 3)),
+#     HudPosition.TOP,
+#     9,
+#     Color.WHITE,
+#     HudReeval.VISIBILITY_AND_STRING
+#   )
 
