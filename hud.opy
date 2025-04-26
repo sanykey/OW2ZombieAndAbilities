@@ -7,14 +7,6 @@ rule "Init hud hero icons of players and how much money they have":
   hudHeader(getPlayers(Team.1), l"Round {0}".format(roundNumber), HudPosition.TOP, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
   hudHeader(getPlayers(Team.1), l"{0} {1}".format(roundRemainingBots, l"Enemies"), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
 
-  # players list and money
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(0, Team.1).getCurrentHero()), getPlayersInSlot(0, Team.1)), getPlayersInSlot(0, Team.1).money), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(1, Team.1).getCurrentHero()), getPlayersInSlot(1, Team.1)), getPlayersInSlot(1, Team.1).money), HudPosition.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(2, Team.1).getCurrentHero()), getPlayersInSlot(2, Team.1)), getPlayersInSlot(2, Team.1).money), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(3, Team.1).getCurrentHero()), getPlayersInSlot(3, Team.1)), getPlayersInSlot(3, Team.1).money), HudPosition.LEFT, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(4, Team.1).getCurrentHero()), getPlayersInSlot(4, Team.1)), getPlayersInSlot(4, Team.1).money), HudPosition.LEFT, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-  hudHeader(getPlayers(Team.1), l"{0}: {1}".format(l"{0} {1}".format(heroIcon(getPlayersInSlot(5, Team.1).getCurrentHero()), getPlayersInSlot(5, Team.1)), getPlayersInSlot(5, Team.1).money), HudPosition.LEFT, 5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-
   # revive
   hudSubtext(
     [player for player in combatants if player.downedStartTime],
@@ -34,19 +26,33 @@ rule "Init hud hero icons of players and how much money they have":
   )
 
 
-rule "Show HP, Damage and Healing upgrades":
+rule "Players list, upgrades and money":
   @Event eachPlayer
   @Team 1
-  hudHeader(
-    eventPlayer,
-    l"{0} : {1} : {2}".format(l"{0} {1}".format("HP", eventPlayer.healthStat),
-    l"{0} {1}".format(l"Damage", eventPlayer.damageStat),
-    l"{0} {1}".format(l"Healing", eventPlayer.healingStat)),
-    HudPosition.TOP,
-    -1,
-    Color.BLUE,
-    HudReeval.VISIBILITY_AND_STRING
+
+  if eventPlayer.getSlot() > 5:
+    return
+
+  hudText(
+    getPlayers(Team.1) if eventPlayer else null,
+    heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
+    "{0} {1}%, {2} {3}%, {4} {5}%".format(
+      iconString(Icon.FIRE),
+      eventPlayer.damageStat,
+      iconString(Icon.HEART),
+      eventPlayer.healthStat,
+      iconString(Icon.PLUS),
+      eventPlayer.healingStat
+    ),
+    "{0}: ${1}".format(eventPlayer, eventPlayer.money),
+    HudPosition.LEFT,
+    0,
+    Color.BLUE if eventPlayer.getHealth() >= eventPlayer.getMaxHealth() / 2 else Color.RED,
+    Color.WHITE,
+    Color.WHITE,
+    HudReeval.VISIBILITY_STRING_AND_COLOR
   )
+  eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT] = getLastCreatedText()
   
 
 rule "[Tips & Tricks]":
@@ -94,7 +100,8 @@ rule "Show player damage":
   
   createInWorldText(
     null if localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,
-    "{0} +{1}".format(ceil(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()]), localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()]),
+
+    "{0}".format(round(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()])) if localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()] == localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()] else "{0} +{1}".format(round(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()]), round(localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()])),
     updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
     0.7,
     Clip.NONE,
@@ -118,7 +125,7 @@ rule "Show player healing":
   
   createInWorldText(
     null if localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()] == 0 else localPlayer,
-    "{0} +{1}".format(ceil(localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()]), localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()]),
+    ("{0} +{1}").format(round(localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()]), round(localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()])),
     updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
     0.7,
     Clip.NONE,

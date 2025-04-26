@@ -25,8 +25,6 @@ globalvar shopState 53
 globalvar teamScore 54
 globalvar temp1 55
 globalvar temp2 56
-globalvar temp3 59
-globalvar temp4 60
 globalvar combatants 57
 globalvar combatantsCount 58
 
@@ -63,10 +61,12 @@ playervar abilityActive 48
 playervar HUDs 46
 playervar temp1 47
 playervar temp2 52
+playervar temp3 54
 playervar revealed 49
 playervar widowmakerChargeShot 50
 playervar money 51
 playervar raycast 53
+playervar talentState 55
 
 #Activated extensions
 #!extension explosionSounds
@@ -88,6 +88,7 @@ playervar raycast 53
 #!define ZOMBIE_BASE_MOVE_SPEED 70
 #!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
 #!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
+#!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
 
 enum SI:
   CAMERA_3P = 0 # number
@@ -112,16 +113,21 @@ enum TI:
   WIDOWMAKER_FELT_MORE_ALIVE = 3
   WIDOWMAKER_BRAISER_DE_SOIE = 4
   WIDOWMAKER_PHANTOM_BULLETS = 5
+  WIDOWMAKER_TRACKER_VENOM = 6
 
 # for playervar HUDs
 enum HI:
   REVEALED_ICON = 0
   WALLHACK_HEADSHOT_ZONE = 1
-  DEBUG = 2
-  DEBUG2 = 3
-  DEBUG3 = 4
-  DEBUG4 = 4
-  DEBUG5 = 5
+  WALLHACK_SHOT = 2
+  PLAYER_LIST_STATUS_TEXT = 8
+  WIDOWMAKER_PHANTOM_BULLET_HIT = 9
+  WIDOWMAKER_PARTY_FAMOURS = 10
+  DEBUG = 3
+  DEBUG2 = 4
+  DEBUG3 = 5
+  DEBUG4 = 6
+  DEBUG5 = 7
 
 enum RI:
   A = 1
@@ -136,3 +142,5 @@ enum RI:
   FACING_DIRECTION = 10
   RESULT = 11
   SQRT_RESULT = 12
+  T1 = 13
+  T2 = 14
