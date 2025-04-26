@@ -1,5 +1,7 @@
 #!mainFile "../main.opy"
 
+
+
 rule "Revealed zombies":
   @Event eachPlayer
   @Team 2
@@ -8,12 +10,12 @@ rule "Revealed zombies":
   if eventPlayer.HUDs[HI.REVEALED_ICON] == false:
     createInWorldText(
       getAllPlayers(),
-      "X",
-      eventPlayer + vect(0, 0.5, 0),
-      0.5,
+      "o",
+      eventPlayer.getEyePosition() + (eventPlayer.getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
+      0.6,
       Clip.NONE,
       WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
-      Color.LIGHT_RED
+      Color.TEAM_2
     )
     eventPlayer.HUDs[HI.REVEALED_ICON] = getLastCreatedText()
   eventPlayer.startForcingOutlineFor(getAllPlayers(), true, Color.VIOLET, OutlineVisibility.OCCLUDED)
