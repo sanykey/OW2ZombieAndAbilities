@@ -6,6 +6,41 @@ enum WIDOWMAKER_SI:
   PF_COOLDOWN = 2
   PF_CHARGES = 3
 
+rule "[Widowmaker] Talent texts":
+  @Event eachPlayer
+  @Hero widowmaker
+
+  
+  eventPlayer.talentText[0] = "{} <fgA686ABFF>Widowmaker</fg>:\n".format(heroIcon(Hero.WIDOWMAKER))
+  # Baiser De Soie
+  eventPlayer.talentText[1] = "- {} Any shots reveals the position of enemies\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE))
+  # Felt More Alive"
+  eventPlayer.talentText[2] = "- {}  Gain smoother aerial scoping\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2))
+  # Phantom bullets
+  eventPlayer.talentText[3] = "- {}  Fully charged shots with scope pierce through walls and enemies\n".format(abilityIconString(Hero.TRACER, Button.ABILITY_2))
+  # Tracker Venom
+  eventPlayer.talentText[4] = "- {}  Venom mine is now slowing and reveal enemies hit\n".format(iconString(Icon.POISON_2))
+  # Falling stars
+  eventPlayer.talentText[5] = "- {}  Drop venom grenades behind while grappling\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1))
+  # Party Favours
+  eventPlayer.talentText[6] = "- {}  Gain a second hook charge\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1))
+  # Silk web
+  eventPlayer.talentText[7] = "- {}  When grappling hook ends (Hold Ctrl), temporarily latch onto any nearby walls\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1))
+
+  eventPlayer.talentText[0] = "{}{}{}{}{}{}{}{}".format(
+    eventPlayer.talentText[0],
+    eventPlayer.talentText[1],
+    eventPlayer.talentText[2],
+    eventPlayer.talentText[3],
+    eventPlayer.talentText[4],
+    eventPlayer.talentText[5],
+    eventPlayer.talentText[6],
+    eventPlayer.talentText[7]
+  )
+
+  waitUntil(not eventPlayer.getHero() == Hero.WIDOWMAKER, INFINITY)
+  eventPlayer.talentText[0] = ""
+
 # Party Favours: Gain a second hook charge
 rule "[Widowmaker] Party Favours":
   @Event eachPlayer
@@ -90,7 +125,7 @@ rule "[Widowmaker] Silk web":
   @Condition eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] == true
   
   waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
-  if not eventPlayer.isHoldingButton(Button.ABILITY_1):
+  if not eventPlayer.isHoldingButton(Button.CROUCH):
     return
   if eventPlayer.getAltitude() < 1:
     return
@@ -254,7 +289,7 @@ rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
   
   victim.revealed = 10 + getTotalTimeElapsed()
 
-  eventPlayer.setMoveSpeed(30)
+  eventPlayer.setMoveSpeed(25)
   wait(5)
   eventPlayer.setMoveSpeed(ZOMBIE_BASE_MOVE_SPEED)
 
@@ -262,7 +297,6 @@ rule "[Widowmaker] Baiser De Soie":
   @Event playerDealtDamage
   @Hero widowmaker
   @Condition eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] == true
-  @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventAbility == Button.PRIMARY_FIRE
 
   victim.revealed = 10 + getTotalTimeElapsed()
