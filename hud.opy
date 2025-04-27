@@ -25,6 +25,19 @@ rule "Init hud hero icons of players and how much money they have":
     Color.SKY_BLUE
   )
 
+  createInWorldText(
+    localPlayer,
+    localPlayer.talentText[0],
+    updateEveryFrame(localPlayer.getEyePosition() + (100 * (-2.5 * worldVector(Vector.RIGHT, localPlayer, Transform.ROTATION) + ((-0.1 - 1) * (directionFromAngles(horizontalAngleOfDirection(localPlayer.getFacingDirection()), verticalAngleOfDirection(localPlayer.getFacingDirection()) - 100))) + 3 * localPlayer.getFacingDirection()))),
+    1.1,
+    Clip.NONE,
+    WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR,
+    Color.WHITE,
+    SpecVisibility.ALWAYS
+  )
+
+
+
   #push down hud texts for abilities
   hudSubtext(
     getAllPlayers(),
