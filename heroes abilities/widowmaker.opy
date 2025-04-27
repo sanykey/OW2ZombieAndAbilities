@@ -17,7 +17,7 @@ rule "[Widowmaker] Party Favours":
     eventPlayer,
     null,
     "{0}{1} Next Charge in: {2}s".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1), floor(eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN])),
-    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□ □", "<fgFFFFFFFF>■</fg> □", "<fgFFFFFFFF>■</fg> <fgFFFFFFFF>■</fg>"][eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES]]),
+    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES]]),
     HudPosition.TOP,
     2.5,
     null,
@@ -42,18 +42,20 @@ rule "[Widowmaker] Party Favours - Deplete hook charge":
   if not eventPlayer.getAbilityCooldown(Button.ABILITY_1):
     return
 
-  eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] -= 1
-  eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0.5)
+  if eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] > 0:
+    eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] -= 1
+    eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
 
 
 rule "[Widowmaker] Party Favours - Recharge hook ":
   @Event eachPlayer
   @Hero widowmaker
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
-  @Condition eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] < 2
+  @Condition eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] < 1
+  @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
   
   wait(0.4, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN] = 10
+  eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN] = 12
   while eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN] > 0:
     wait(1)
     eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN] -= 1
@@ -64,20 +66,6 @@ rule "[Widowmaker] Party Favours - Recharge hook ":
   wait(0.25)
   if ruleCondition:
     loop()
-
-
-rule "[Widowmaker] Party Favours - Availability":
-  @Event eachPlayer
-  @Hero widowmaker
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
-  @Condition eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] <= 0
-  
-  eventPlayer.setAbility1Enabled(false)
-  waitUntil(eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] != 0, INFINITY)
-  eventPlayer.setAbility1Enabled(true)
-  wait(0.25)
-  if ruleCondition:
-      loop()
 
 # Falling stars: 
 rule "[Widowmaker] Falling stars":
