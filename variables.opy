@@ -64,6 +64,7 @@ playervar widowmakerChargeShot 50
 playervar money 51
 playervar raycast 53
 playervar talentState 55
+playervar talentText 56
 
 #Activated extensions
 #!extension explosionSounds
