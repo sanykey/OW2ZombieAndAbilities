@@ -1,5 +1,18 @@
 #!mainFile "main.opy"
 
+rule "Warning icon for zombies ":
+  @Event eachPlayer
+  @Team 2
+
+  # bot target warning icon (flashing)
+  createIcon(
+    [player for player in combatants if eventPlayer.isAlive() and distance(eventPlayer, player) < 5 and not player.isInViewAngle(eventPlayer.getPosition(), 55)],
+    eventPlayer,
+    Icon.WARNING,
+    IconReeval.VISIBILITY_POSITION_AND_COLOR,
+    Color.RED if (((ceil(getTotalTimeElapsed() * (4 if distance(eventPlayer.getPosition(), localPlayer.getPosition()) > 10 else 8))) % 2) == 0) else Color.YELLOW
+  )
+
 rule "Bots move toward players":
   @Event eachPlayer
   @Team 2

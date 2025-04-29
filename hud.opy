@@ -36,8 +36,6 @@ rule "Init hud hero icons of players and how much money they have":
     SpecVisibility.ALWAYS
   )
 
-
-
   #push down hud texts for abilities
   hudSubtext(
     getAllPlayers(),
@@ -158,7 +156,7 @@ rule "Show player healing":
     Color.LIME_GREEN
   )
 
-rule "Player received damage":
+rule "Player received healing":
   @Event playerReceivedHealing
   @Team 1
 
