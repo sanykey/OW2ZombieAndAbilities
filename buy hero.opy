@@ -63,7 +63,7 @@ rule "Create hero buy positions":
     heroesList[I] = temp1
 
   for I in range(len(heroesList)):
-    heroesShopData[I] = [heroesList[I], vectList[I + vectListI.BUY_HERO_OFFSET], random.randint(5000, 15000)]
+    heroesShopData[I] = [heroesList[I], vectList[I + vectListI.BUY_HERO_OFFSET], random.randint(2500, 15000)]
 
     createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format(heroIcon(heroesShopData[I][0]), heroesShopData[I][2])), heroesShopData[I][1], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, heroesShopData[I][1], 1.7, EffectReeval.VISIBILITY)
