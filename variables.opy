@@ -5,7 +5,7 @@ globalvar roundNumber 0
 globalvar zombiesflyIOnandOff 26
 globalvar team_shields 30
 globalvar team_armor 31
-globalvar heroes_shop_data 32
+globalvar heroesShopData 32
 globalvar matchIsOver 33
 globalvar unlockedLocations 34
 globalvar orbs_arr 35
@@ -28,6 +28,7 @@ globalvar temp2 56
 globalvar combatants 57
 globalvar combatantsCount 58
 globalvar zombieStats 59
+globalvar heroesList 60
 
 #Player variables
 
