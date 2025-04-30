@@ -43,12 +43,12 @@ rule "Round start":
   temp2.teleport(nearestWalkablePosition(random.choice(temp1) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
   temp2.downedStartTime = 0
 
-  zombieStats[ZI.SPEED_STAT] = 40 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
+  zombieStats[ZI.SPEED_STAT] = 50 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   zombieStats[ZI.DAMAGE_STAT] = 40 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   zombieStats[ZI.HP_STAT] = 235 + 15 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   
   wait(0.25)
-  heal(getPlayers(Team.1), null, 99999)
+  heal(getPlayers(Team.1), null, INFINITY)
 
   wait(5)
   bigMessage(getAllPlayers(), "Starting Round!")
@@ -58,18 +58,18 @@ rule "Round start":
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
-  for I in range(MAX_ZOMBIES):
-    getPlayersInSlot(I, Team.2).respawn()
+  for zombieRespawnI in range(MAX_ZOMBIES):
+    getPlayersInSlot(zombieRespawnI, Team.2).respawn()
     wait(0.25)
-  isRoundEnd = false
 
-  wait(0.25)
+  isRoundEnd = false
   heal(getPlayers(Team.2), null, 9999)
 
 rule "Respawn bots":
   @Condition isRoundEnd == false
   @Condition roundNumber >= 1
   @Condition getNumberOfLivingPlayers(Team.2) < roundRemainingBots
+  @Condition getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES
   @Condition isBotsDisabled == false
   
   wait(3, Wait.ABORT_WHEN_FALSE)

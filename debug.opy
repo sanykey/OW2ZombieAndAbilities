@@ -5,8 +5,8 @@ rule "[debug] Add money and health":
   @Team 1
   @Slot 0
   
-  waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.money += 1000000
+  # waitUntil(eventPlayer.hasSpawned(), INFINITY)
+  # eventPlayer.money += 1000000
   # eventPlayer.healthStat += 10000
   # eventPlayer.setMaxHealth(eventPlayer.healthStat)
   # eventPlayer.startForcingHero(Hero.WIDOWMAKER)
@@ -75,9 +75,9 @@ rule "Init":
 #   @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
 #   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
 
-#   debugVectsArr = []
-#   for I in range(13, 24):
-#     debugVectsArr[I - 13] = vectList[I]
+#   debugVectsArr = [vect(73.557, -8, -84.315)]
+#   # for I in range(13, 24):
+#   #   debugVectsArr[I - 13] = vectList[I]
 
 #   if debugCurrentVectNum >= len(debugVectsArr) - 1:
 #     debugCurrentVectNum = 0

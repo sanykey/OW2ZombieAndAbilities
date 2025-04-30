@@ -307,9 +307,9 @@ rule "[Widowmaker] Baiser De Soie":
   @Hero widowmaker
   @Condition eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] == true
   @Condition eventAbility == Button.PRIMARY_FIRE
+  @Condition eventAbility == Button.SECONDARY_FIRE
 
   victim.revealed = 10 + getTotalTimeElapsed()
-
 
 rule "[Widowmaker] Phantom bullets - Charge":
   @Event eachPlayer

@@ -29,6 +29,7 @@ globalvar combatants 57
 globalvar combatantsCount 58
 globalvar zombieStats 59
 globalvar heroesList 60
+globalvar zombieRespawnI 61
 
 #Player variables
 
@@ -91,6 +92,7 @@ playervar talentText 56
 #!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
 #!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
 #!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
+#!define ZOMBIE_FALL_DAMAGE 100
 
 #!define ABILITI_TEXT_INTEND "                                                                                             "
 enum SI:
@@ -107,6 +109,9 @@ enum SI:
   WIDOWMAKER_SHOT_CHARGE = 5
   IS_TALENTS_HUD_OPENNED = 6
   TALENTS_COUNT = 7
+  LAST_CC_ATTACKER = 8
+  LAST_CC_ATTACK_TIME = 9
+  LAST_CC_WAS_IN_AIR = 10
 
 # for playervar talents
 enum TI:
@@ -153,3 +158,4 @@ enum ZI: # for globalvar zombieStats
   SPEED_STAT = 0
   DAMAGE_STAT = 1
   HP_STAT = 2
+  ZOMBIE_RESPAWN_I = 3

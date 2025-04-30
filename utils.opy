@@ -34,10 +34,9 @@ rule "Crash Protection 40+ [OFF]":
   setSlowMotion(100)
 
 
-# todo: debug
-# rule "Disable inspector recording - debug":
-#   wait(1)
-#   disableInspector()
+rule "Disable inspector recording - debug":
+  wait(1)
+  disableInspector()
 
 rule "Unlimited match time":
   @Condition getMatchTime() < 10

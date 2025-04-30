@@ -2,13 +2,13 @@
 rule "Create location buy positions":
   # init vectors
     B = compress([
-    # Effects for purchase access to locked areas [0-3]
+    # Effects for purchase access to locked areas [0-3] len =4
     vect(7.613, 5.326, -34.916),
     vect(31.577, 6.126, -62.399),
     vect(99.296, 13.977, -72.064),
     vect(86.651, 14.036, -32.931),
 
-    # Areas in doorways that push away approaching players when the doorway is not yet open [4-12] 
+    # Areas in doorways that push away approaching players when the doorway is not yet open [4-12] len = 9
     vect(19, 7, -50.013),
     vect(40.631, 8.265, -77.59),
     vect(51.561, 8.095, -58.373),
@@ -19,7 +19,7 @@ rule "Create location buy positions":
     vect(87.651, 15, -28.387),
     vect(107.743, 12.171, -31.426),
 
-    # Effects for forbidden zones in doorways [13-24]
+    # Effects for forbidden zones in doorways [13-24] len = 12
     vect(12.505, 5.485, -40.846),
     vect(22.609, 6.314, -45.045),
     vect(20.011, 6.314, -40.406),
@@ -33,7 +33,7 @@ rule "Create location buy positions":
     vect(107.37, 12.166, -33.617),
     vect(87.614, 14.166, -29.335),
 
-    # Large zones that teleport the player away from themselves if the player manages to pass through a forbidden doorway [25-30]
+    # Large zones that teleport the player away from themselves if the player manages to pass through a forbidden doorway [25-30] len = 6
     vect(13.044, 9.697, -73.344),
     vect(52.662, 9.768, -31.962),
     vect(59.416, 19.498, -77.513),
@@ -41,7 +41,7 @@ rule "Create location buy positions":
     vect(104.593, 16, -22.372),
     vect(89.614, 18, -19.296),
 
-    # Places where players are teleported to if players try to enter forbidden areas [31-36]
+    # Places where players are teleported to if players try to enter forbidden areas [31-36] len = 6
     vect(13.466, 4.35, -34.792),
     vect(27.294, 6.507, -25.489),
     vect(25.171, 6.554, -64.938),
@@ -49,7 +49,7 @@ rule "Create location buy positions":
     vect(106.979, 12.171, -37.458),
     vect(86.536, 14.171, -37.365),
 
-    # Shop [37-48]
+    # Shop [37-48] len = 12
     vect(113.354, 16.189, -29.761), # Exit shop teleport to
     vect(97.513, 16.972, -20.29), # Connect shop
     vect(90.42, 17.169, -17.775), # Arrow to shop connector
@@ -63,18 +63,17 @@ rule "Create location buy positions":
     vect(123.312, 10.5, -27.364), # SHOP_TELEPORTER_TEXT
     vect(123.312, 9.176, -27.364), # SHOP_TELEPORTER_RING
 
-    # Buy hero stats [49-53]
+    # Buy hero stats [49-53] len = 5
     vect(-31.204, 7.849, -87.474), # BUY_HP
     vect(-26.235, 7.812, -90.938), # BUY_DAMAGE
     vect(-27.198, 7.849, -96.303), # BUY_HEALING
-
     vect(74.955, 13.858, -52.677), # BUY_TEAM_ARMOR
     vect(75.589, 13.865, -50.533), # BUY_TEAM_SHIELDS
 
     # Buy dva [54]
     vect(-18.268, 1.312, -10.4),
 
-    # Buy hero [55-95]
+    # Buy hero [55-94] len = 40
     vect(12.129, 7.5, -90.424),
     vect(122.079, 12.303, -64.267),
     vect(-2.191, 3.32, -38.067),
@@ -114,7 +113,19 @@ rule "Create location buy positions":
     vect(-16.322, 3.247, -31.226),
     vect(102.662, 10.882, -91.232),
     vect(130.268, 12, -57.335),
-    vect(-1.751, 7.814, -71.73)
+    vect(-1.751, 7.814, -71.73),
+
+    # Bots anti fall safety [95-104] len = 10
+    vect(73.557, -8, -84.315),
+    vect(95.242, -8, -89.781),
+    vect(117.06, -2.181, -85.971),
+    vect(55.486, 1.618, -37.515),
+    vect(46.004, -7.45, -14.713),
+    vect(31.594, -7.571, 3.942),
+    vect(38.556, -7.571, -2.741),
+    vect(38.556, -30.571, -2.741), # [7] < 30
+    vect(-22.025, -0.631, -59.645), # [8] < 12
+    vect(-6.388, -4.792, -109.846) # [9] < 16
   ])
   vectList = decompressVectors(B)
   B = null
@@ -146,3 +157,6 @@ rule "Create location buy positions":
 
     BUY_DVA = 54
     BUY_HERO_OFFSET = 55
+
+    BOTS_ANTI_FALL_OFFSET = 95
+    BOTS_ANTI_FALL_LEN = 10

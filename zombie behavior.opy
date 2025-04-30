@@ -31,178 +31,133 @@ rule "Bots face nearest players":
 
 
 rule "Bots Unstuck [A]":
-    @Event eachPlayer
-    @Team 2
-    @Condition eventPlayer.getSpeed() < 0.25
-    @Condition eventPlayer.isAlive() == true
-    
-    eventPlayer.forceButtonPress(Button.JUMP)
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.getSpeed() < 0.25
+  @Condition eventPlayer.isAlive() == true
+
+  eventPlayer.forceButtonPress(Button.JUMP)
 
 
 rule "Bots Unstuck [B]":
-    @Event eachPlayer
-    @Team 2
-    @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
-    @Condition eventPlayer.isAlive() == true
-    
-    eventPlayer.money += 1
-    wait(15, Wait.ABORT_WHEN_FALSE)
-    if eventPlayer.getSpeed() <= 0.5:
-        goto lbl_0
-    eventPlayer.money = 0
-    lbl_0:
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
+  @Condition eventPlayer.isAlive() == true
+
+  eventPlayer.money += 1
+  wait(15, Wait.ABORT_WHEN_FALSE)
+  if eventPlayer.getSpeed() <= 0.5:
+    goto lbl_0
+  eventPlayer.money = 0
+  lbl_0:
 
 
 rule "Bots Unstuck [C]":
-    @Event eachPlayer
-    @Team 2
-    @Condition eventPlayer.money >= 5
-    @Condition getPlayersInRadius(eventPlayer, 8, Team.1) == false
-    @Condition eventPlayer.isAlive() == true
-    
-    eventPlayer.teleport(random.choice(Y))
-    eventPlayer.money = 0
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.money >= 5
+  @Condition getPlayersInRadius(eventPlayer, 8, Team.1) == false
+  @Condition eventPlayer.isAlive() == true
+
+  eventPlayer.teleport(random.choice(Y))
+  eventPlayer.money = 0
 
 
 rule "Bots Unstuck [D]":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, getClosestPlayer(eventPlayer, Team.1)) <= 8
-    
-    eventPlayer.money = 0
+  @Event eachPlayer
+  @Team 2
+  @Condition distance(eventPlayer, getClosestPlayer(eventPlayer, Team.1)) <= 8
+
+  eventPlayer.money = 0
 
 
 rule "Bots Unstuck [E]":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer.getEyePosition(), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 100, null, eventPlayer, false).getHitPosition()) < 1
-    @Condition eventPlayer.isAlive() == true
-    
-    wait(8, Wait.ABORT_WHEN_FALSE)
-    eventPlayer.teleport(random.choice(Y))
+  @Event eachPlayer
+  @Team 2
+  @Condition distance(eventPlayer.getEyePosition(), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 100, null, eventPlayer, false).getHitPosition()) < 1
+  @Condition eventPlayer.isAlive() == true
+
+  wait(8, Wait.ABORT_WHEN_FALSE)
+  eventPlayer.teleport(random.choice(Y))
 
 
 rule "Bots attack near player":
-    @Event eachPlayer
-    @Team 2
-    @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
-    @Condition Hero.TORBJORN == true
-    
-    eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
-    eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
+  @Event eachPlayer
+  @Team 2
+  @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
+  @Condition Hero.TORBJORN == true
+
+  eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
+  eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
 
 
 rule "Bots don't attack near player":
-    @Event eachPlayer
-    @Team 2
-    @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == false
-    
-    eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
+  @Event eachPlayer
+  @Team 2
+  @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == false
+
+  eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
 
 
 rule "Bots use ultimate at 100%":
-    @Event eachPlayer
-    @Team 2
-    @Condition eventPlayer.getUltCharge() == 100
-    
-    eventPlayer.forceButtonPress(Button.ULTIMATE)
-    wait(1, Wait.ABORT_WHEN_FALSE)
-    if RULE_CONDITION:
-        goto RULE_START
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.getUltCharge() == 100
+
+  eventPlayer.forceButtonPress(Button.ULTIMATE)
+  wait(1, Wait.ABORT_WHEN_FALSE)
+  if RULE_CONDITION:
+    goto RULE_START
 
 
 rule "Bots under player impulse":
-    @Event eachPlayer
-    @Team 2
-    @Condition eventPlayer.getVerticalFacingAngle() < -70
-    @Condition matchIsOver == false
-    @Condition getClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false
-    
-    eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    wait(0.5)
-    eventPlayer.applyImpulse(Vector.UP, 18, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    wait(1)
-    eventPlayer.forceButtonPress(Button.ABILITY_1)
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.getVerticalFacingAngle() < -70
+  @Condition matchIsOver == false
+  @Condition getClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false
 
-rule "Bots safety A":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(73.557, -8, -84.315)) < 15
-    
-    eventPlayer.applyImpulse(Vector.UP, 23, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  wait(0.5)
+  eventPlayer.applyImpulse(Vector.UP, 18, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  wait(1)
+  eventPlayer.forceButtonPress(Button.ABILITY_1)
 
+rule "Bots antifall safety and fall damage after cc damage from players":
+  @Event eachPlayer
+  @Team 2
 
-rule "Bots safety B":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(95.242, -8, -89.781)) < 15
-    
-    eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] == true:
+    if (eventPlayer.isInAir() == false and eventPlayer.state[SI.LAST_CC_WAS_IN_AIR] == true):
+      eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
+    else:
+      eventPlayer.state[SI.LAST_CC_WAS_IN_AIR] = eventPlayer.isInAir()
 
+  for eventPlayer.temp1 in range(vectListI.BOTS_ANTI_FALL_LEN):
+    if eventPlayer.temp1 == 7:
+      eventPlayer.temp2 = 30
+    elif eventPlayer.temp1 == 8:
+      eventPlayer.temp2 = 12
+    elif eventPlayer.temp1 == 9:
+      eventPlayer.temp2 = 16
+    else:
+      eventPlayer.temp2 = 15
 
-rule "Bots safety C":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(117.06, -2.181, -85.971)) < 15
-    
-    eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+    if distance(eventPlayer, vectList[eventPlayer.temp1 + vectListI.BOTS_ANTI_FALL_OFFSET]) <= eventPlayer.temp2:
+      # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
+      if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] >= getTotalTimeElapsed():
+        # If the bot has less health than the expected damage, then just let the bot fall down
+        if eventPlayer.getHealth() > ZOMBIE_FALL_DAMAGE * (eventPlayer.state[SI.LAST_CC_ATTACKER].damageStat / 100):
+          damage(eventPlayer, eventPlayer.state[SI.LAST_CC_ATTACKER], ZOMBIE_FALL_DAMAGE)
+          eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+          eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
 
-
-rule "Bots safety D":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(55.486, 1.618, -37.515)) < 15
-    
-    eventPlayer.applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-
-rule "Bots safety E":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(46.004, -7.45, -14.713)) < 15
-    
-    eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-
-rule "Bots safety F":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(31.594, -7.571, 3.942)) < 15
-    
-    eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-
-rule "Bots safety G":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(38.556, -7.571, -2.741)) < 15
-    
-    eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-
-rule "Bots safety H":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(38.556, -30.571, -2.741)) < 30
-    
-    eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-
-rule "Bots safety I":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(-22.025, -0.631, -59.645)) < 12
-    
-    eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-
-rule "Bots safety J":
-    @Event eachPlayer
-    @Team 2
-    @Condition distance(eventPlayer, vect(-6.388, -4.792, -109.846)) < 16
-    
-    eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
+      else:
+        eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  
+  wait(0.1)
+  loop()
 
 rule "zombies fly faster":
   @Event eachPlayer
@@ -297,18 +252,6 @@ rule "TP zombies - unstuck":
   (getPlayersInRadius(vect(123.839, 23.192, -25.383), 6, Team.2)).teleport(vect(127.364, 20.743, -14.823))
   wait(3)
   goto RULE_START
-
-
-rule "anti-fall debug":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isAlive() == true
-  @Condition distance(eventPlayer, vect(0, 0, 0)) < 2.5
-  
-  eventPlayer.applyImpulse(Vector.UP, 100, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
-  wait(1)
-  if RULE_CONDITION:
-      goto RULE_START
 
 
 rule "TP Dead Zombies":
@@ -415,5 +358,3 @@ rule "Bot Unstuck Impulse":
   (getPlayersInRadius(vect(59.01, 19.048, -85.711), 1.5, Team.2)).applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(3)
   goto RULE_START
-
-
