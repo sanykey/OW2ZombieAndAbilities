@@ -6,9 +6,9 @@ rule "Inite shop upgrades effects and text":
   createEffect(getAllPlayers(), Effect.RING, Color.LIME_GREEN, vectList[vectListI.BUY_HP], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getAllPlayers(), Effect.RING, Color.RED, vectList[vectListI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getAllPlayers(), Effect.RING, Color.ORANGE, vectList[vectListI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(getAllPlayers(), "HP (+25%) | 2500 ", vectList[vectListI.BUY_HP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.LIME_GREEN)
-  createInWorldText(getAllPlayers(), "Damage (+20%) | 2500", vectList[vectListI.BUY_DAMAGE], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED)
-  createInWorldText(getAllPlayers(), "Healing Dealt (+15%) | 2500", vectList[vectListI.BUY_HEALING], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
+  createInWorldText(getAllPlayers(), "HP (+15%) | 2500 ", vectList[vectListI.BUY_HP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.LIME_GREEN)
+  createInWorldText(getAllPlayers(), "Damage (+10%) | 2500", vectList[vectListI.BUY_DAMAGE], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED)
+  createInWorldText(getAllPlayers(), "Healing Dealt (+10%) | 2500", vectList[vectListI.BUY_HEALING], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
 
   createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[vectListI.BUY_TEAM_ARMOR], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format("+50 Armor [Team]", 12500 + null)), vectList[vectListI.BUY_TEAM_ARMOR], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
@@ -23,7 +23,7 @@ rule "Buy damage upgrade":
   @Condition eventPlayer.money >= 2500
   
   eventPlayer.money -= 2500
-  eventPlayer.damageStat += 15
+  eventPlayer.damageStat += 10
   eventPlayer.setDamageDealt(eventPlayer.damageStat)
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.RED, eventPlayer, 100)
@@ -37,12 +37,12 @@ rule "Buy health upgrade":
   @Condition eventPlayer.money >= 2500
   
   eventPlayer.money -= 2500
-  eventPlayer.healthStat += 20
+  eventPlayer.healthStat += 15
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.LIME_GREEN, eventPlayer, 1)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.LIME_GREEN, eventPlayer, 100)
-  wait(0.25)
-  heal(eventPlayer, null, 99999)
+  wait(1, Wait.RESTART_WHEN_TRUE)
+  heal(eventPlayer, null, INFINITY)
 
 
 rule "Buy healing upgrade":
@@ -75,7 +75,7 @@ rule "Buy team shields":
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.BLUE, getPlayers(Team.1), 100)
   eventPlayer.money -= 7500
   wait(0.25)
-  heal(getLivingPlayers(Team.1), null, 99999)
+  heal(getLivingPlayers(Team.1), null, INFINITY)
   team_shields += 40
 
 
@@ -94,5 +94,5 @@ rule "Buy team armor":
     getPlayers(Team.1).addHealthPool(Health.ARMOR, 40, true)
     eventPlayer.money -= 7500
     wait(0.25)
-    heal(getLivingPlayers(Team.1), null, 99999)
+    heal(getLivingPlayers(Team.1), null, INFINITY)
     team_armor += 40
