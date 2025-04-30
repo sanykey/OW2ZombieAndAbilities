@@ -48,13 +48,9 @@ settings {
         },
         "team2": {
             "torbjorn": {
-                "ammoClipSize%": 150,
-                "damageDealt%": 180,
                 "enableAbility1": false,
-                "healingReceived%": 40,
-                "health%": 200,
+                "healingReceived%": 10,
                 "jumpVerticalSpeed%": 120,
-                "movementSpeed%": ZOMBIE_BASE_MOVE_SPEED,
                 "enableAbility2": false,
                 "projectileSpeed%": 0,
                 "combatUltGen%": 10,

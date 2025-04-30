@@ -8,8 +8,9 @@ enum WIDOWMAKER_SI:
 
 rule "[Widowmaker] Talent texts":
   @Event eachPlayer
-  @Hero widowmaker
+  @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
 
+  eventPlayer.state[SI.TALENTS_COUNT] = 7
   
   eventPlayer.talentText[0] = "{} <fgA686ABFF>Widowmaker</fg>:\n".format(heroIcon(Hero.WIDOWMAKER))
   # Baiser De Soie
@@ -38,15 +39,15 @@ rule "[Widowmaker] Talent texts":
     eventPlayer.talentText[7]
   )
 
-  waitUntil(not eventPlayer.getHero() == Hero.WIDOWMAKER, INFINITY)
+  waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
   eventPlayer.talentText[0] = ""
 
 # Party Favours: Gain a second hook charge
 rule "[Widowmaker] Party Favours":
   @Event eachPlayer
-  @Hero widowmaker
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
-  @Condition eventPlayer.isCombatant == true
+  @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
   
   hudText(
     eventPlayer,
@@ -60,11 +61,11 @@ rule "[Widowmaker] Party Favours":
     Color.VIOLET
   )
   eventPlayer.HUDs[HI.WIDOWMAKER_PARTY_FAMOURS] = getLastCreatedText()
-
   eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] = 1
-  waitUntil(not eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] or not eventPlayer.isCombatant or not eventPlayer.getHero() == Hero.WIDOWMAKER, INFINITY)
+
+  waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
+  smallMessage(eventPlayer, "DONE!")
   destroyHudText(eventPlayer.HUDs[HI.WIDOWMAKER_PARTY_FAMOURS])
-  eventPlayer.setAbility1Enabled(true)
 
 
 rule "[Widowmaker] Party Favours - Deplete hook charge":
@@ -289,9 +290,9 @@ rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
   
   victim.revealed = 10 + getTotalTimeElapsed()
 
-  eventPlayer.setMoveSpeed(25)
+  eventPlayer.setMoveSpeed(zombieStats[ZI.SPEED_STAT] / 2)
   wait(5)
-  eventPlayer.setMoveSpeed(ZOMBIE_BASE_MOVE_SPEED)
+  eventPlayer.setMoveSpeed(zombieStats[ZI.SPEED_STAT])
 
 rule "[Widowmaker] Baiser De Soie":
   @Event playerDealtDamage

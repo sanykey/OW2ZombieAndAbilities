@@ -27,6 +27,7 @@ globalvar temp1 55
 globalvar temp2 56
 globalvar combatants 57
 globalvar combatantsCount 58
+globalvar zombieStats 59
 
 #Player variables
 
@@ -103,8 +104,8 @@ enum SI:
   HEALING_TRACKER_THRESHOLD = 3
   HEALING_RESULT = 4
   WIDOWMAKER_SHOT_CHARGE = 5
-  RAYCAST_CALIBRATION_EYE_POSITION_Y = 6
-  RAYCAST_CALIBRATION_FACING_DIRECTION_Y = 7
+  IS_TALENTS_HUD_OPENNED = 6
+  TALENTS_COUNT = 7
 
 # for playervar talents
 enum TI:
@@ -146,3 +147,8 @@ enum RI:
   SQRT_RESULT = 12
   T1 = 13
   T2 = 14
+
+enum ZI: # for globalvar zombieStats
+  SPEED_STAT = 0
+  DAMAGE_STAT = 1
+  HP_STAT = 2

@@ -24,6 +24,9 @@ rule "Create bots":
   for I in range(12):
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(Y))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
+  getPlayers(Team.2).setMoveSpeed(zombieStats[ZI.SPEED_STAT])
+  getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
+  getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
 
 rule "Round start":
@@ -39,6 +42,10 @@ rule "Round start":
   temp2 = [player for player in combatants if player.downedStartTime]
   temp2.teleport(nearestWalkablePosition(random.choice(temp1) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
   temp2.downedStartTime = 0
+
+  zombieStats[ZI.SPEED_STAT] = 40 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
+  zombieStats[ZI.DAMAGE_STAT] = 40 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
+  zombieStats[ZI.HP_STAT] = 235 + 15 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   
   wait(0.25)
   heal(getPlayers(Team.1), null, 99999)
@@ -47,14 +54,15 @@ rule "Round start":
   bigMessage(getAllPlayers(), "Starting Round!")
   roundRemainingBots = 10 + roundNumber * 2
 
+  getPlayers(Team.2).setMoveSpeed(zombieStats[ZI.SPEED_STAT])
+  getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
+  getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
+
   for I in range(MAX_ZOMBIES):
     getPlayersInSlot(I, Team.2).respawn()
     wait(0.25)
   isRoundEnd = false
 
-  getPlayers(Team.2).setMoveSpeed(35 + 5 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
-  getPlayers(Team.2).setMaxHealth(80 + 15 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
-  getPlayers(Team.2).setDamageDealt(20 + 8 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
   wait(0.25)
   heal(getPlayers(Team.2), null, 9999)
 

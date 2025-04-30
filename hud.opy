@@ -5,7 +5,26 @@ rule "Init hud hero icons of players and how much money they have":
   
   # round
   hudHeader(getPlayers(Team.1), l"Round {0}".format(roundNumber), HudPosition.TOP, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
-  hudHeader(getPlayers(Team.1), l"{0} {1}".format(roundRemainingBots, l"Enemies"), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+
+  hudText(
+    localPlayer,
+    heroIcon(Hero.TORBJORN),
+    "<fgC80013FF>{0}{1}</fg>, <fgA0E81BFF>{2}{3}</fg>, <fg00E697FF>{4}{5}</fg>".format(
+      iconString(Icon.FIRE),
+      zombieStats[ZI.DAMAGE_STAT],
+      iconString(Icon.HEART),
+      zombieStats[ZI.HP_STAT],
+      iconString(Icon.ARROW_RIGHT),
+      zombieStats[ZI.SPEED_STAT]
+    ),
+    "{0} Enemies".format(roundRemainingBots),
+    HudPosition.RIGHT,
+    1,
+    Color.WHITE,
+    Color.WHITE,
+    Color.WHITE,
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )
 
   # revive
   hudSubtext(
@@ -25,8 +44,9 @@ rule "Init hud hero icons of players and how much money they have":
     Color.SKY_BLUE
   )
 
+  # Hero talents description
   createInWorldText(
-    localPlayer,
+    localPlayer if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true else null,
     localPlayer.talentText[0],
     updateEveryFrame(localPlayer.getEyePosition() + (100 * (-2.5 * worldVector(Vector.RIGHT, localPlayer, Transform.ROTATION) + ((-0.1 - 1) * (directionFromAngles(horizontalAngleOfDirection(localPlayer.getFacingDirection()), verticalAngleOfDirection(localPlayer.getFacingDirection()) - 100))) + 3 * localPlayer.getFacingDirection()))),
     1.1,
@@ -48,6 +68,53 @@ rule "Init hud hero icons of players and how much money they have":
     HudReeval.VISIBILITY_AND_STRING
   )
 
+  hudText(
+    localPlayer,
+    null,
+    "Hold {0} + {1} to view hero info".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)),
+    null,
+    HudPosition.LEFT,
+    0,
+    null,
+    rgb(241, 134, 39),
+    null,
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )
+
+  # createInWorldText(
+  #   localPlayer,
+  #   "Hold {0} + {1} to view hero info".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)),
+  #   updateEveryFrame(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 120 + normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()),
+  #   localPlayer.getFacingDirection())) * 34 + normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * 0),
+  #   1,
+  #   Clip.NONE,
+  #   WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, 
+  #   rgb(241, 134, 39)
+  # )
+
+
+rule "Open hero talents info hud":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Condition eventPlayer.isHoldingButton(Button.MELEE) == false
+  @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE) == false
+  @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE) == false
+  @Condition eventPlayer.isHoldingButton(Button.RELOAD) == false
+  @Condition eventPlayer.isHoldingButton(Button.JUMP) == false
+  
+  wait(1.5, Wait.ABORT_WHEN_FALSE)
+  eventPlayer.disableHeroHud()
+  eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = true
+
+rule "Close hero talents info hud":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  eventPlayer.enableHeroHud()
+  eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
+
 
 rule "Players list, upgrades and money":
   @Event eachPlayer
@@ -59,17 +126,19 @@ rule "Players list, upgrades and money":
   hudText(
     getPlayers(Team.1) if eventPlayer else null,
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
-    "{0} {1}%, {2} {3}%, {4} {5}%".format(
+    "<fgC80013FF>{0}{1}</fg>, <fgA0E81BFF>{2}{3}</fg>, <fgEC9900FF>{4}{5}</fg>,{6}{7}".format(
       iconString(Icon.FIRE),
       eventPlayer.damageStat,
       iconString(Icon.HEART),
       eventPlayer.healthStat,
       iconString(Icon.PLUS),
-      eventPlayer.healingStat
+      eventPlayer.healingStat,
+      iconString(Icon.DIAMOND),
+      eventPlayer.state[SI.TALENTS_COUNT]
     ),
     "{0}: ${1}".format(eventPlayer, eventPlayer.money),
     HudPosition.LEFT,
-    0,
+    1,
     Color.BLUE if eventPlayer.getHealth() >= eventPlayer.getMaxHealth() / 2 else Color.RED,
     Color.WHITE,
     Color.WHITE,
