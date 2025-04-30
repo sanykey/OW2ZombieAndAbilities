@@ -71,7 +71,11 @@ rule "Init hud hero icons of players and how much money they have":
   hudText(
     localPlayer,
     null,
-    "Hold {0} + {1} to view hero info".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)),
+    "" if localPlayer.state[SI.TALENTS_COUNT] == false else (
+      "Hold {0} + {1} to view hero info".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)) if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == false else (
+        "Press {0} to close hero info".format(inputBindingString(Button.INTERACT))
+      )
+    ),
     null,
     HudPosition.LEFT,
     0,

@@ -38,7 +38,7 @@ rule "Disable spawn room hero swap":
   # Change character for vip players
   if "{0}".format(eventPlayer) in vips == true:
     wait(2)
-    eventPlayer.startForcingHero(Hero.WIDOWMAKER)
+    eventPlayer.startForcingHero(Hero.JUNO)
     eventPlayer.state[0] = 4
     smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
 

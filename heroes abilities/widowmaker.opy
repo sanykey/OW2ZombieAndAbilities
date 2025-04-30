@@ -10,7 +10,15 @@ rule "[Widowmaker] Talent texts":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
 
+  # todo: debug
   eventPlayer.state[SI.TALENTS_COUNT] = 7
+  eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
+  eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
+  eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] = true
+  eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] = true
+  eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] = true
+  eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] = true
+  eventPlayer.talents[TI.WIDOWMAKER_TRACKER_VENOM] = true
   
   eventPlayer.talentText[0] = "{} <fgA686ABFF>Widowmaker</fg>:\n".format(heroIcon(Hero.WIDOWMAKER))
   # Baiser De Soie

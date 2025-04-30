@@ -3,25 +3,15 @@
 rule "[debug] Add money and health":
   @Event playerJoined
   @Team 1
-  # @Slot 0
+  @Slot 0
   
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
   eventPlayer.money += 1000000
   # eventPlayer.healthStat += 10000
   # eventPlayer.setMaxHealth(eventPlayer.healthStat)
-
-  eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
-  eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
-  eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] = true
-  eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] = true
-  eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] = true
-  eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] = true
-  eventPlayer.talents[TI.WIDOWMAKER_TRACKER_VENOM] = true
-  eventPlayer.startForcingHero(Hero.WIDOWMAKER)
-
+  # eventPlayer.startForcingHero(Hero.WIDOWMAKER)
   # eventPlayer.damageStat = 10000
   # eventPlayer.setDamageDealt(eventPlayer.damageStat)
-
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
