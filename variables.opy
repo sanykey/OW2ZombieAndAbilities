@@ -78,6 +78,10 @@ playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
 #!extension spawnMoreDummyBots
 #!extension projectiles
 
+# for DVA's Slide ability
+#!extension buffStatusEffects
+#!extension buffAndDebuffSounds
+
 #!setupTags
 
 #!define INFINITY 99999
@@ -95,7 +99,7 @@ playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
 #!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
 #!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
 #!define ZOMBIE_FALL_DAMAGE 100
-#!define HEALPATH_OVERTIME_DURATION 20
+#!define AUTO_HEALING_OVERTIME_DURATION 20
 
 #!define ABILITI_TEXT_INTEND "                                                                                             "
 enum SI:
@@ -121,7 +125,7 @@ enum SI:
   DAMAGE_STAT = 14
   HEALING_STAT = 15
   LAST_DAMAGE_TIME = 16
-  LAST_HEALTHPACK_TIME = 17
+  START_AUTO_HEAL_TIME = 17
 
 # for playervar talents
 enum TI:

@@ -113,6 +113,8 @@ rule "Zombie took damage":
   @Team 1
 
   eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
+  wait(15, Wait.RESTART_WHEN_TRUE)
+  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()
 
 # [Hacked Healthpack/Sombra Healing Detector](https://workshop.codes/EF7H3)
 rule "HealthPack":
@@ -120,22 +122,23 @@ rule "HealthPack":
   @Team 1
   @Condition eventWasHealthPack == true
 
-  eventPlayer.state[SI.LAST_HEALTHPACK_TIME] = getTotalTimeElapsed()
+  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()
   eventPlayer.setMoveSpeed(150)
   wait(5, Wait.ABORT_WHEN_FALSE)
   eventPlayer.setMoveSpeed(100)
 
 
-rule "StartHealingOverTime after HealthPack":
+rule "Start auto healing overеime":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[SI.LAST_HEALTHPACK_TIME] + HEALPATH_OVERTIME_DURATION > getTotalTimeElapsed()
+  @Condition eventPlayer.state[SI.START_AUTO_HEAL_TIME] + AUTO_HEALING_OVERTIME_DURATION > getTotalTimeElapsed()
 
-  eventPlayer.startHealingOverTime(eventPlayer, HEALPATH_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthStat / 100) - 20) / 5))
+  eventPlayer.startHealingOverTime(eventPlayer, AUTO_HEALING_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthStat / 100) - 20) / 5))
 
   waitUntil(
     eventPlayer.state[SI.LAST_DAMAGE_TIME] + 0.1 > getTotalTimeElapsed() or
-    eventPlayer.state[SI.LAST_HEALTHPACK_TIME] + HEALPATH_OVERTIME_DURATION < getTotalTimeElapsed(),
+    eventPlayer.state[SI.START_AUTO_HEAL_TIME] + AUTO_HEALING_OVERTIME_DURATION < getTotalTimeElapsed(),
     INFINITY
   )
+  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = false
   eventPlayer.stopAllHealingOverTime()
