@@ -6,7 +6,7 @@ rule "[debug] Add money and health":
   @Slot 0
   
   # waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.money += 1000000
+  # eventPlayer.money += 1000000
   # eventPlayer.healthStat += 10000
   # eventPlayer.setMaxHealth(eventPlayer.healthStat)
   # eventPlayer.startForcingHero(Hero.WIDOWMAKER)
@@ -22,13 +22,11 @@ rule "Deactivate bots (Ctrl + shift + interact)":
   @Team 1
   @Slot 0
   @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
-  # @Condition eventPlayer.isHoldingButton(Button.ABILITY_2) == true
   @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
   if isBotsDisabled == false:
     isBotsDisabled = true
-    roundRemainingBots += 12
     damage(getPlayers(Team.2), getPlayers(Team.2), INFINITY)
     smallMessage(eventPlayer, "Bots disabled")
   else:
