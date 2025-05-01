@@ -10,6 +10,7 @@
 
 rule "[Sombra] Init":
   @Event eachPlayer
+  @Team 1
   @Condition eventPlayer.getHero() == Hero.SOMBRA
 
   wait(1) # waiting for the previous hero to clear hero data
@@ -19,32 +20,37 @@ rule "[Sombra] Init":
   eventPlayer.talentText[0] = ""
 
 
+rule "[Sombra] Invisible detect":
+  @Event eachPlayer
+  @Team 1
+  @Hero sombra
+  @Condition eventPlayer.isUsingAbility2() == true
+  
+  wait(0.8, Wait.ABORT_WHEN_FALSE)
+  eventPlayer.state[SI.IS_INVISIBLE] = true
+  smallMessage(getAllPlayers(), "Invis start!")
+  waitUntil(eventPlayer.isFiringPrimaryFire() or eventPlayer.isUsingAbility1() or eventPlayer.isMeleeing(), 5)
+  eventPlayer.state[SI.IS_INVISIBLE] = false
+  smallMessage(getAllPlayers(), "Invis end!")
+
+rule "[Sombre] Stop invisible when hacking":
+  @Event eachPlayer
+  @Team 1
+  @Hero sombra
+  @Condition eventPlayer.isFiringSecondaryFire() == true
+
+
+
 rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.hasStatusEffect(Status.HACKED) == true
-  eventPlayer.setDamageReceived(150)
-  eventPlayer.state[SI.HACKED] = true
+  eventPlayer.setDamageReceived(130)
+  eventPlayer.state[SI.HACKED] = true # for money
   waitUntil(eventPlayer.hasStatus(Status.HACKED) == false, INFINITY)
   eventPlayer.setDamageReceived(100)
   wait(0.1, Wait.RESTART_WHEN_TRUE)
   eventPlayer.state[SI.HACKED] = false
-
-# rule "Team 1 Sombra: Stealth (Invisibility 1, detectable), end after 20 seconds":
-#   @Event eachPlayer
-#   @Team 1
-#   @Hero sombra
-#   @Condition eventPlayer.isUsingAbility1() == true
-  
-#   wait(0.8, Wait.ABORT_WHEN_FALSE)
-#   eventPlayer.is_invisible = 1
-#   for eventPlayer.sombra_stealth_timer in range(100, 0, -0.48):
-#     waitUntil(not eventPlayer.isUsingAbility1(), 0.096)
-#     if not eventPlayer.isUsingAbility1():
-#         break
-#   if eventPlayer.isUsingAbility1():
-#     eventPlayer.forceButtonPress(Button.ABILITY_1)
-#   eventPlayer.is_invisible = false
 
 # From "Heat Street PvE Talents" (KFVAY)
 # rule "[Sombra] Stack Overflow":
@@ -69,17 +75,18 @@ rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
 #   eventPlayer.Ability_Active = false
 
 # # From "Heat Street PvE Talents" (KFVAY)
-# rule "[Sombra] Stack Overflow - melee":
-#   @Event playerDealtKnockback
-#   @Team 1
-#   @Hero sombra
-#   @Condition eventPlayer.Talent1 == true
-#   @Condition eventPlayer.Ability_Active == true
-#   @Condition eventAbility == Button.MELEE
+rule "[Sombra] melee from invisible":
+  @Event playerDealtKnockback
+  @Team 1
+  @Hero sombra
+  @Condition eventPlayer.state[SI.IS_INVISIBLE] == true
+  @Condition eventAbility == Button.MELEE
   
-#   victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
-#   damage(victim, eventPlayer, 40)
-#   playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
+  victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
+  damage(victim, eventPlayer, 40)
+  playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
+  smallMessage(eventPlayer, "{0} points".format(25 * eventPlayer.H))
+  eventPlayer.money += 25 * eventPlayer.H
 
 # # From "Heat Street PvE Talents" (KFVAY)
 # rule "[Sombra] Cyberattack":

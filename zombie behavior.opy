@@ -26,8 +26,24 @@ rule "Bots face nearest players":
   @Team 2
   @Condition matchIsOver == false
   
-  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted([player for player in getLivingPlayers(Team.1) if player.isAlive()], lambda i: distance(eventPlayer, i)))[0]).getEyePosition()), 400)
-  eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), (getClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.isAlive()], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()), Relativity.TO_WORLD)
+  eventPlayer.startFacing(
+    directionTowards(
+      eventPlayer.getEyePosition(),
+      ((
+        sorted(
+          [player for player in getLivingPlayers(Team.1) if player.isAlive()],
+          lambda i: distance(eventPlayer, i) + (
+            10 if not isInLoS(eventPlayer, i) else 0
+          ) + (
+            50 if i.state[SI.IS_INVISIBLE] and (distance(eventPlayer, i) > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
+          )
+        )
+      )[0]).getEyePosition()
+    ), 400
+  )
+
+  # eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), (getClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.isAlive()], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()), Relativity.TO_WORLD)
+
 
 
 rule "Bots Unstuck [A]":

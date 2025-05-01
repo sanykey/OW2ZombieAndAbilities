@@ -112,6 +112,8 @@ rule "Zombie took damage":
   @Event playerTookDamage
   @Team 1
 
+  eventPlayer.state[SI.IS_INVISIBLE] = false # sombra's invisible off
+
   eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
   wait(15, Wait.RESTART_WHEN_TRUE)
   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()

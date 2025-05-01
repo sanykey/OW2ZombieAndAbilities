@@ -127,6 +127,7 @@ enum SI:
   HEALING_STAT = 15
   LAST_DAMAGE_TIME = 16
   START_AUTO_HEAL_TIME = 17
+  IS_INVISIBLE = 18
 
 # for playervar talents
 enum TI:
