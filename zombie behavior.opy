@@ -6,7 +6,7 @@ rule "Warning icon for zombies ":
 
   # bot target warning icon (flashing)
   createIcon(
-    [player for player in combatants if eventPlayer.isAlive() and distance(eventPlayer, player) < 5 and not player.isInViewAngle(eventPlayer.getPosition(), 55)],
+    [player for player in combatants if eventPlayer.isAlive() and distance(eventPlayer, player) < 10 and not player.isInViewAngle(eventPlayer.getPosition(), 55)],
     eventPlayer,
     Icon.WARNING,
     IconReeval.VISIBILITY_POSITION_AND_COLOR,
