@@ -76,7 +76,7 @@ rule "Speed orb effects":
     bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Faster", l"Speed", l"-> {0}".format(l"{0} sec".format(60))))
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.GREEN, eventPlayer, 5)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 100)
-    getPlayers(Team.1).setMoveSpeed(200)
+    getPlayers(Team.1).setMoveSpeed(150)
     wait(60)
     getPlayers(Team.1).G[2] = false
     getPlayers(Team.1).S[2] = 0
@@ -99,7 +99,7 @@ rule "Honey, I Shrunk The Team Effects":
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 5)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 100)
   wait(0.15)
-  getPlayers(Team.1).setJumpVerticalSpeed(300)
+  getPlayers(Team.1).setJumpVerticalSpeed(100)
   wait(60)
   getPlayers(Team.1).G[4] = false
   getPlayers(Team.1).S[4] = 0
@@ -120,7 +120,6 @@ rule "Total mayhem effects":
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.DIZZY), "Total Mayhem -> 30 Sec ", iconString(Icon.DIZZY)))
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.VIOLET, eventPlayer, 5)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 100)
-  getPlayers(Team.1).setGravity(25)
   if roundNumber < 50:
       goto lbl_0
   eventPlayer.setMoveSpeed(200)
@@ -128,7 +127,6 @@ rule "Total mayhem effects":
   wait(30)
   getPlayers(Team.1).G[0] = false
   getPlayers(Team.1).S[0] = 0
-  getPlayers(Team.1).setGravity(100)
   if roundNumber < 50:
       goto lbl_1
   getPlayers(Team.1).setMoveSpeed(100)
