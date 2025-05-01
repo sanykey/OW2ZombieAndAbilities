@@ -50,6 +50,7 @@ playervar recentHealingDealtToSlot 35
 
 playervar recentDamageDealtToSlot 29
 playervar recentStackedDamageDealtToSlot 36
+playervar damageAssitsToSlot 58
 
 playervar downedStartTime 37
 playervar reviveTimer 38
@@ -68,6 +69,7 @@ playervar money 51
 playervar raycast 53
 playervar talentState 55
 playervar talentText 56
+playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
 
 #Activated extensions
 #!extension explosionSounds

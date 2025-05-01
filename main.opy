@@ -13,7 +13,7 @@ rule "Game init":
   zombiesflyIOnandOff = true
 
 #!include "player joined.opy"
-# #!include "ally bot.opy"
+#!include "ally bot.opy"
 #!include "debug.opy"
 #!include "rounds.opy"
 #!include "3p camera.opy"
@@ -26,6 +26,7 @@ rule "Game init":
 #!include "player revive.opy"
 #!include "secret shop.opy"
 #!include "hud.opy"
+#!include "damage.opy"
 #!include "zombie events.opy"
 #!include "money.opy"
 #!include "zombie behavior.opy"

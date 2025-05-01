@@ -42,6 +42,7 @@ rule "Round start":
   temp2 = [player for player in combatants if player.downedStartTime]
   temp2.teleport(nearestWalkablePosition(random.choice(temp1) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
   temp2.downedStartTime = 0
+  temp2.resurrect()
 
   zombieStats[ZI.SPEED_STAT] = 50 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   zombieStats[ZI.DAMAGE_STAT] = 40 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
