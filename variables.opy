@@ -95,6 +95,7 @@ playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
 #!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
 #!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
 #!define ZOMBIE_FALL_DAMAGE 100
+#!define HEALPATH_OVERTIME_DURATION 20
 
 #!define ABILITI_TEXT_INTEND "                                                                                             "
 enum SI:
@@ -116,6 +117,11 @@ enum SI:
   LAST_CC_WAS_IN_AIR = 10
   HACKED = 11 # status to get money from killed hacked zombies
   MONEY_RECEIVED = 12 # money received
+  HP_STAT = 13
+  DAMAGE_STAT = 14
+  HEALING_STAT = 15
+  LAST_DAMAGE_TIME = 16
+  LAST_HEALTHPACK_TIME = 17
 
 # for playervar talents
 enum TI:

@@ -1,6 +1,6 @@
 #!mainFile "main.opy"
 
-rule "Zombie player took damage":
+rule "Zombie took damage":
   @Event playerTookDamage
   @Team 2
 
@@ -106,3 +106,36 @@ rule "Zombie player took damage":
 
   # save damage stats for money
   victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed()
+
+
+rule "Zombie took damage":
+  @Event playerTookDamage
+  @Team 1
+
+  eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
+
+# [Hacked Healthpack/Sombra Healing Detector](https://workshop.codes/EF7H3)
+rule "HealthPack":
+  @Event playerReceivedHealing
+  @Team 1
+  @Condition eventWasHealthPack == true
+
+  eventPlayer.state[SI.LAST_HEALTHPACK_TIME] = getTotalTimeElapsed()
+  eventPlayer.setMoveSpeed(150)
+  wait(5, Wait.ABORT_WHEN_FALSE)
+  eventPlayer.setMoveSpeed(100)
+
+
+rule "StartHealingOverTime after HealthPack":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.state[SI.LAST_HEALTHPACK_TIME] + HEALPATH_OVERTIME_DURATION > getTotalTimeElapsed()
+
+  eventPlayer.startHealingOverTime(eventPlayer, HEALPATH_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthStat / 100) - 20) / 5))
+
+  waitUntil(
+    eventPlayer.state[SI.LAST_DAMAGE_TIME] + 0.1 > getTotalTimeElapsed() or
+    eventPlayer.state[SI.LAST_HEALTHPACK_TIME] + HEALPATH_OVERTIME_DURATION < getTotalTimeElapsed(),
+    INFINITY
+  )
+  eventPlayer.stopAllHealingOverTime()

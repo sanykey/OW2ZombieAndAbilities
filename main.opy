@@ -26,7 +26,7 @@ rule "Game init":
 #!include "player revive.opy"
 #!include "secret shop.opy"
 #!include "hud.opy"
-#!include "damage.opy"
+#!include "damage and healing.opy"
 #!include "zombie events.opy"
 #!include "money.opy"
 #!include "zombie behavior.opy"
