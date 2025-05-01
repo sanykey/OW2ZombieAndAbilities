@@ -31,14 +31,6 @@ rule "[Buff To Cassidy Ultimate]":
   wait(0.02)
   eventPlayer.getPlayersInViewAngle(Team.2, 90).setStatusEffect(null, Status.ROOTED, 2.5)
 
-rule "[Sombra] Hack+":
-    @Event eachPlayer
-    @Team 2
-    @Condition eventPlayer.hasStatusEffect(Status.HACKED) == true
-    
-    eventPlayer.setStatusEffect(null, Status.STUNNED, 2.5)
-    smallMessage(getPlayersOnHero(Hero.SOMBRA, Team.1), "Hack+ Activated: Stun")
-
 rule "[Mercy Immune During Revive]":
   @Event eachPlayer
   @Team 1

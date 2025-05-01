@@ -6,7 +6,7 @@ rule "[debug] Add money and health":
   @Slot 0
   
   # waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  # eventPlayer.money += 1000000
+  eventPlayer.money += 1000000
   # eventPlayer.healthStat += 10000
   # eventPlayer.setMaxHealth(eventPlayer.healthStat)
   # eventPlayer.startForcingHero(Hero.WIDOWMAKER)

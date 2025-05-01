@@ -114,6 +114,8 @@ enum SI:
   LAST_CC_ATTACKER = 8
   LAST_CC_ATTACK_TIME = 9
   LAST_CC_WAS_IN_AIR = 10
+  HACKED = 11 # status to get money from killed hacked zombies
+  MONEY_RECEIVED = 12 # money received
 
 # for playervar talents
 enum TI:

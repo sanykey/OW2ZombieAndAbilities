@@ -36,3 +36,4 @@ rule "Game init":
 #!include "heroes abilities/mercy.opy"
 #!include "heroes abilities/widowmaker.opy"
 #!include "heroes abilities/juno.opy"
+#!include "heroes abilities/sombra.opy"

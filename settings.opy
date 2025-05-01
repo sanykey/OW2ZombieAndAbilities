@@ -17,14 +17,6 @@ settings {
         "useExperimentalUpdate": true
     },
     "gamemodes": {
-        "ctf": {
-            "enabled": false,
-            "flagDroppedLockTime": 8,
-            "flagPickupTime": 5,
-            "flagReturnTime": 1,
-            "gameLengthInMn": 15,
-            "scoreToWin": 9
-        },
         "skirmish": {
             "enabledMaps": [
                 "eichenwaldeHalloween"
@@ -40,7 +32,7 @@ settings {
         "team1": {
             "dva": {
                 "damageReceived%": 85,
-                "movementSpeed%": 150,
+                "movementSpeed%": 125,
                 "projectileSpeed%": 500,
                 "spawnWithoutMech": true,
                 "enableUlt": false
@@ -60,14 +52,14 @@ settings {
             }
         },
         "allTeams": {
-            "enabledHeroes": [
-                "dva"
-            ],
+            # "enabledHeroes": [
+            #     "dva"
+            # ],
             "general": {
                 "passiveHealthRegen": false,
-                "ultGen%": 50,
-                "combatUltGen%": 50,
-                "passiveUltGen%": 50
+                "ultGen%": 30,
+                "combatUltGen%": 30,
+                "passiveUltGen%": 30
             }
         }
     }

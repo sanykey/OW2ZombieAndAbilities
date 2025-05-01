@@ -103,6 +103,6 @@ rule "Zombie player took damage":
           victim.state[SI.LAST_CC_ATTACK_TIME] = 5 + getTotalTimeElapsed()
           victim.state[SI.LAST_CC_WAS_IN_AIR] = victim.isInAir()
           break
-    
+
   # save damage stats for money
   victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed()

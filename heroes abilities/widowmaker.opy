@@ -10,6 +10,7 @@ rule "[Widowmaker] Talent texts":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
 
+  wait(1) # waiting for the previous hero to clear hero data
   # todo: debug
   eventPlayer.state[SI.TALENTS_COUNT] = 7
   eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
@@ -46,6 +47,7 @@ rule "[Widowmaker] Talent texts":
     eventPlayer.talentText[6],
     eventPlayer.talentText[7]
   )
+  
 
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
   eventPlayer.state[SI.TALENTS_COUNT] = 0
