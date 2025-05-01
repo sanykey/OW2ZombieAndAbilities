@@ -70,6 +70,7 @@ playervar raycast 53
 playervar talentState 55
 playervar talentText 56
 playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
+playervar abilityCD 59
 
 #Activated extensions
 #!extension explosionSounds

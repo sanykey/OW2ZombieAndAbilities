@@ -60,6 +60,22 @@ def rayIntersectionsWithSphere():
     eventPlayer.getEyePosition().z + eventPlayer.raycast[RI.C] * eventPlayer.raycast[RI.FACING_DIRECTION].z
   )
 
+
+rule "Chase abilityCD":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.abilityCD == true
+  
+  chaseAtRate(eventPlayer.abilityCD, 0, 1)
+  waitUntil(not eventPlayer.abilityCD, INFINITY)
+  eventPlayer.abilityCD = false
+  stopChasingVariable(eventPlayer.abilityCD)
+  wait()
+  if ruleCondition:
+    loop()
+
+
+
 rule "Revealed zombies":
   @Event eachPlayer
   @Team 2

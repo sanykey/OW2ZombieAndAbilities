@@ -33,6 +33,7 @@ rule "Game init":
 #!include "portal.opy"
 #!include "visuals.opy"
 #!include "heroes abilities/all.opy"
+#!include "heroes abilities/dva.opy"
 #!include "heroes abilities/mercy.opy"
 #!include "heroes abilities/widowmaker.opy"
 #!include "heroes abilities/juno.opy"
