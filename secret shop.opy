@@ -91,7 +91,6 @@ rule "Teleport players to secret shop":
   @Team 1
   @Condition distance(eventPlayer, vectList[vectListI.ENTER_SHOP_TELEPORT_FROM]) <= 5
   @Condition shopState[shopStateI.STATUS] == 2
-  @Condition eventPlayer.F == false
   @Condition eventPlayer.isInSecretShop == false
   
   eventPlayer.isInSecretShop = true

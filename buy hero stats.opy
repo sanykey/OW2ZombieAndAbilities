@@ -65,7 +65,6 @@ rule "Buy team shields":
   @Team 1
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 7500
-  @Condition eventPlayer.F == false
   @Condition distance(eventPlayer, vectList[vectListI.BUY_TEAM_SHIELDS]) <= 1.5
   @Condition unlockedLocations >= 3
   
@@ -85,7 +84,6 @@ rule "Buy team armor":
     @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
     @Condition distance(eventPlayer, vectList[vectListI.BUY_TEAM_ARMOR]) <= 1.5
     @Condition eventPlayer.money >= 7500
-    @Condition eventPlayer.F == false
     @Condition unlockedLocations >= 3
 
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, getPlayers(Team.1), 2)

@@ -77,7 +77,6 @@ rule "Buy hero":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition eventPlayer.F == false
 
   for I in range(len(heroesShopData)):
     if (

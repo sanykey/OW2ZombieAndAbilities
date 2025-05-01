@@ -32,13 +32,12 @@ rule "Disable spawn room hero swap":
   createEffect(getAllPlayers() if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
   createIcon(getAllPlayers().exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY, Color.YELLOW)
 
-  eventPlayer.F = false
   eventPlayer.H = 1
 
   # Change character for vip players
   if "{0}".format(eventPlayer) in vips == true:
     wait(2)
-    eventPlayer.startForcingHero(Hero.JUNO)
+    eventPlayer.startForcingHero(Hero.SOMBRA)
     eventPlayer.state[0] = 4
     smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
 
@@ -82,12 +81,12 @@ rule "Late joiner catchup after round 15, 25, 50":
   @Team 1
   @Condition roundNumber >= 15
   
-  waitUntil(eventPlayer.hasSpawned(), 99999)
+  waitUntil(eventPlayer.hasSpawned(), INFINITY)
   eventPlayer.money += 25000
   eventPlayer.healthStat += 200
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
   wait(0.064)
-  heal(eventPlayer, null, 99999)
+  heal(eventPlayer, null, INFINITY)
   eventPlayer.setDamageReceived(25)
   wait(10)
   smallMessage(eventPlayer, "Welcome! A Late Joiner Buff has been activated!")
