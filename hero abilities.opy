@@ -31,21 +31,6 @@ rule "[Buff To Cassidy Ultimate]":
   wait(0.02)
   eventPlayer.getPlayersInViewAngle(Team.2, 90).setStatusEffect(null, Status.ROOTED, 2.5)
 
-rule "[Mercy Immune During Revive]":
-  @Event eachPlayer
-  @Team 1
-  @Hero mercy
-  @Condition eventPlayer.isUsingAbility2() == true
-  
-  eventPlayer.setStatusEffect(null, Status.UNKILLABLE, 4)
-  playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.YELLOW, eventPlayer, 100)
-  playEffect(getPlayers(Team.1), DynamicEffect.GOOD_EXPLOSION, Color.YELLOW, eventPlayer, 5)
-  smallMessage(eventPlayer, "Temporarily Immune (4s) | Heroes Never Die!")
-  wait(1.7)
-  if not RULE_CONDITION:
-      return
-  getPlayersInRadius(eventPlayer, 10, Team.2).setStatusEffect(null, Status.STUNNED, 4)
-
 rule "Mei frosty jet pack":
   @Event eachPlayer
   @Condition eventPlayer.getCurrentHero() == Hero.MEI
