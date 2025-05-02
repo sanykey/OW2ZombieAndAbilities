@@ -50,7 +50,18 @@ rule "Init":
   
   isBotsDisabled = false
   # server loading stats:
-  hudText(getPlayersInSlot(0, Team.1), getServerLoad(), getAverageServerLoad(), getPeakServerLoad(), HudPosition.RIGHT, 7, Color.GREEN, Color.ORANGE, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+  hudText(
+    getPlayersInSlot(0, Team.1),
+    getServerLoad(),
+    getAverageServerLoad(),
+    getPeakServerLoad(),
+    HudPosition.RIGHT,
+    -1,
+    Color.GREEN,
+    Color.ORANGE,
+    Color.RED,
+    HudReeval.VISIBILITY_AND_STRING
+  )
   # Player 1 current coordinates
   # hudSubtext(getPlayersInSlot(0, Team.1), "P1: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
   # hudSubtext(getPlayersInSlot(0, Team.1), "Current [{0}] vect: {1}".format(debugCurrentVectNum, debugVectsArr[debugCurrentVectNum].getPosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
