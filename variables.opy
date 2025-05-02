@@ -91,7 +91,7 @@ playervar abilityCD 59
 #!define MONEY_FOR_ZOMBIE_CRITICAL 275
 #!define MONEY_FOR_HEALING 100
 #!define HEAL_AMOUNT_FOR_MONEY 200
-#!define MAX_PLAYERS 6
+#!define MAX_PLAYERS 5
 #!define MAX_ZOMBIES 8
 #!define ALLY_BOT_PLAYER_SLOT 7
 #!define REVIVE_TIMER_TICK 5
@@ -102,6 +102,7 @@ playervar abilityCD 59
 #!define ZOMBIE_FALL_DAMAGE 100
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
+#!define ZOMBIE_SPEED 80
 
 # Sombra
 #!define MONEY_FOR_KILL_HACKED 30
@@ -179,7 +180,6 @@ enum RI:
   T2 = 14
 
 enum ZI: # for globalvar zombieStats
-  SPEED_STAT = 0
-  DAMAGE_STAT = 1
-  HP_STAT = 2
-  ZOMBIE_RESPAWN_I = 3
+  DAMAGE_STAT = 0
+  HP_STAT = 1
+  ZOMBIE_RESPAWN_I = 2

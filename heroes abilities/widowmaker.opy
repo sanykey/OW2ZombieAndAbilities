@@ -292,9 +292,9 @@ rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
   
   victim.revealed = REVEAL_DURATION + getTotalTimeElapsed()
 
-  eventPlayer.setMoveSpeed(zombieStats[ZI.SPEED_STAT] / 3)
+  eventPlayer.setMoveSpeed(ZOMBIE_SPEED / 3)
   wait(5)
-  eventPlayer.setMoveSpeed(zombieStats[ZI.SPEED_STAT])
+  eventPlayer.setMoveSpeed(ZOMBIE_SPEED)
 
 rule "[Widowmaker] Baiser De Soie":
   @Event playerDealtDamage

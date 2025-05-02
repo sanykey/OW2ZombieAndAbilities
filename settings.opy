@@ -32,7 +32,7 @@ settings {
         "team1": {
             "dva": {
                 "damageReceived%": 85,
-                "movementSpeed%": 125,
+                "movementSpeed%": 110,
                 "projectileSpeed%": 500,
                 "spawnWithoutMech": true,
                 "enableUlt": false
@@ -42,7 +42,9 @@ settings {
             "torbjorn": {
                 "enableAbility1": false,
                 "healingReceived%": 10,
-                "jumpVerticalSpeed%": 120,
+                "jumpVerticalSpeed%": 150,
+                "movementGravity%": 80,
+                "movementSpeed%": ZOMBIE_SPEED,
                 "enableAbility2": false,
                 "projectileSpeed%": 0,
                 "combatUltGen%": 10,

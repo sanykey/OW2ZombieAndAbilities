@@ -27,7 +27,6 @@ rule "Create bots":
   for I in range(MAX_ZOMBIES):
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(Y))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
-  getPlayers(Team.2).setMoveSpeed(zombieStats[ZI.SPEED_STAT])
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
@@ -47,10 +46,9 @@ rule "Round start":
   temp2.downedStartTime = 0
   temp2.resurrect()
 
-  zombieStats[ZI.SPEED_STAT] = 50 + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
-  zombieStats[ZI.DAMAGE_STAT] = 40 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
-  zombieStats[ZI.HP_STAT] = 235 + 15 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
-  
+  zombieStats[ZI.HP_STAT] = (200 + 10 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
+  zombieStats[ZI.DAMAGE_STAT] = (20 + 8 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
+
   wait(0.25)
   heal(getPlayers(Team.1), null, INFINITY)
 
@@ -58,7 +56,6 @@ rule "Round start":
   bigMessage(getAllPlayers(), "Starting Round!")
   roundRemainingBots = 10 + roundNumber * 2
 
-  getPlayers(Team.2).setMoveSpeed(zombieStats[ZI.SPEED_STAT])
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 

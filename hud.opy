@@ -18,13 +18,11 @@ rule "Init hud hero icons of players and how much money they have":
   hudText(
     localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     heroIcon(Hero.TORBJORN),
-    "<fgC80013FF>{0}{1}</fg>, <fgA0E81BFF>{2}{3}</fg>, <fg00E697FF>{4}{5}</fg>".format(
+    "<fgC80013FF>{0}{1}</fg>, <fgA0E81BFF>{2}{3}</fg>".format(
       iconString(Icon.FIRE),
       zombieStats[ZI.DAMAGE_STAT],
       iconString(Icon.HEART),
-      zombieStats[ZI.HP_STAT],
-      iconString(Icon.ARROW_RIGHT),
-      zombieStats[ZI.SPEED_STAT]
+      zombieStats[ZI.HP_STAT]
     ),
     "{0} Enemies".format(roundRemainingBots),
     HudPosition.RIGHT,
