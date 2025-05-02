@@ -35,22 +35,14 @@ rule "Crash Protection 40+ [OFF]":
 
 rule "shop ServerLoad info":
   @Condition roundNumber == 1
-  
-  isBotsDisabled = false
-  # server loading stats:
-  hudText(
+  hudSubheader(
     getPlayersInSlot(0, Team.1),
-    getServerLoad(),
-    getAverageServerLoad(),
-    getPeakServerLoad(),
+    "Server load: {0} / AVG: {1}/ Max: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()),
     HudPosition.RIGHT,
     -1,
-    Color.GREEN,
-    Color.ORANGE,
-    Color.RED,
-    HudReeval.VISIBILITY_AND_STRING
+    rgb(255, 280 - getAverageServerLoad(), 0),
+    HudReeval.VISIBILITY_STRING_AND_COLOR
   )
-
 
 rule "Disable inspector recording - debug":
   wait(1)

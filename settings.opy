@@ -10,7 +10,7 @@ settings {
     "lobby": {
         "allowPlayersInQueue": true,
         "enableMatchVoiceChat": true,
-        "team1Slots": 6,
+        "team1Slots": MAX_PLAYERS,
         "team2Slots": 0,
         "returnToLobby": "afterGame",
         "swapTeamsAfterMatch": false,

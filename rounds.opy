@@ -19,12 +19,12 @@ rule "disable bot auto respawn":
   eventPlayer.disableRespawn()
 
 rule "Create bots":
-  @Condition getNumberOfPlayers(Team.2) < 12
+  @Condition getNumberOfPlayers(Team.2) < MAX_ZOMBIES
   @Condition getPlayers(Team.1).hasSpawned() == true
   @Condition roundNumber == 1
   
   wait(1)
-  for I in range(12):
+  for I in range(MAX_ZOMBIES):
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(Y))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
   getPlayers(Team.2).setMoveSpeed(zombieStats[ZI.SPEED_STAT])
@@ -47,7 +47,7 @@ rule "Round start":
   temp2.downedStartTime = 0
   temp2.resurrect()
 
-  zombieStats[ZI.SPEED_STAT] = 50 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
+  zombieStats[ZI.SPEED_STAT] = 50 + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   zombieStats[ZI.DAMAGE_STAT] = 40 + 2 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   zombieStats[ZI.HP_STAT] = 235 + 15 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   

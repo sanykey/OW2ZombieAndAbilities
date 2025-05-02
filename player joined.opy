@@ -35,11 +35,11 @@ rule "Disable spawn room hero swap":
   eventPlayer.H = 1
 
   # Change character for vip players
-  if "{0}".format(eventPlayer) in vips == true:
-    wait(2)
-    eventPlayer.startForcingHero(Hero.SOMBRA)
-    eventPlayer.state[0] = 4
-    smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
+  # if "{0}".format(eventPlayer) in vips == true:
+  #   wait(2)
+  #   eventPlayer.startForcingHero(Hero.SOMBRA)
+  #   eventPlayer.state[0] = 4
+  #   smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
 
 
 rule "Starting spawn location for players":
