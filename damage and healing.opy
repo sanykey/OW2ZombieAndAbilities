@@ -112,7 +112,10 @@ rule "Zombie took damage":
   @Event playerTookDamage
   @Team 1
 
-  eventPlayer.state[SI.IS_INVISIBLE] = false # sombra's invisible off
+  # sombra's invisible off
+  if eventPlayer.state[SI.IS_INVISIBLE] == true:
+    eventPlayer.setStatusEffect(null, Status.HACKED, 0.01)
+    eventPlayer.state[SI.IS_INVISIBLE] = false 
 
   eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
   wait(15, Wait.RESTART_WHEN_TRUE)
