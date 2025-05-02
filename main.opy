@@ -13,7 +13,7 @@ rule "Game init":
   zombiesflyIOnandOff = true
 
 #!include "player joined.opy"
-#!include "ally bot.opy"
+# #!include "ally bot.opy"
 #!include "debug.opy"
 #!include "rounds.opy"
 #!include "3p camera.opy"

@@ -63,7 +63,17 @@ rule "Create hero buy positions":
     heroesList[I] = temp1
 
   for I in range(len(heroesList)):
-    heroesShopData[I] = [heroesList[I], vectList[I + vectListI.BUY_HERO_OFFSET], random.randint(2500, 15000)]
+    heroesShopData[I] = [
+      heroesList[I],
+      vectList[I + vectListI.BUY_HERO_OFFSET],
+      floor((
+        random.randint(1000, 5000) if I < 6 else (
+          random.randint(2500, 7500) if I < 13 else (
+            random.randint(5000, 10000) if I < 26 else random.randint(7500, 15000)
+          )
+        )
+      ) / 100) * 100
+    ]
 
     createInWorldText(
       localPlayer,

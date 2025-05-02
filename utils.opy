@@ -33,6 +33,24 @@ rule "Crash Protection 40+ [OFF]":
   wait(2, Wait.ABORT_WHEN_FALSE)
   setSlowMotion(100)
 
+rule "shop ServerLoad info":
+  @Condition roundNumber == 1
+  
+  isBotsDisabled = false
+  # server loading stats:
+  hudText(
+    getPlayersInSlot(0, Team.1),
+    getServerLoad(),
+    getAverageServerLoad(),
+    getPeakServerLoad(),
+    HudPosition.RIGHT,
+    -1,
+    Color.GREEN,
+    Color.ORANGE,
+    Color.RED,
+    HudReeval.VISIBILITY_AND_STRING
+  )
+
 
 rule "Disable inspector recording - debug":
   wait(1)
