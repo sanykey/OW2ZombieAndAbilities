@@ -15,9 +15,27 @@ rule "[Sombra] Init":
 
   wait(1) # waiting for the previous hero to clear hero data
   eventPlayer.state[SI.TALENTS_COUNT] = 2
+
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 1
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg765dbdFF>Sombra</fg>:\n
+  <TX C0000000000A6B6> <fg765dbdFF>Stealth:</fg>
+      - Enemies will see you if you get too close in their line of sight (you can approach from behind undetected).
+      - A melee stuns enemies and steals ${}\n\n
+  {} <fg765dbdFF>Hack:</fg>
+      - Allies and Sombra deal an additional 30% damage to hacked targets
+      - Killing hacked enemies gives attackers an extra ${} and ${} for the rest of allies\n\n
+  About vanilla Perks:
+      - Minor <fg765dbdFF>Uncripted upload</fg> is useless, doesn't work in this mode
+  ".format(
+    heroIcon(Hero.SOMBRA),
+    SOMBRA_STEAL_MONEY,
+    abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE),
+    MONEY_FOR_KILL_HACKED,
+    MONEY_FOR_KILL_HACKED_TEAM
+  )
+
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)
   eventPlayer.state[SI.TALENTS_COUNT] = 0
-  eventPlayer.talentText[0] = ""
 
 
 rule "[Sombra] Invisible detect":
@@ -28,17 +46,14 @@ rule "[Sombra] Invisible detect":
   
   wait(0.8, Wait.ABORT_WHEN_FALSE)
   eventPlayer.state[SI.IS_INVISIBLE] = true
-  smallMessage(getAllPlayers(), "Invis start!")
   waitUntil(eventPlayer.isFiringPrimaryFire() or eventPlayer.isUsingAbility1() or eventPlayer.isMeleeing(), 5)
   eventPlayer.state[SI.IS_INVISIBLE] = false
-  smallMessage(getAllPlayers(), "Invis end!")
 
 rule "[Sombre] Stop invisible when hacking":
   @Event eachPlayer
   @Team 1
   @Hero sombra
   @Condition eventPlayer.isFiringSecondaryFire() == true
-
 
 
 rule "[Sombra] Extra damage to hacked enemy (for all teammates)":

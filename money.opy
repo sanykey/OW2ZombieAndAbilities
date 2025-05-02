@@ -8,7 +8,7 @@ rule "Zombie points - elimination":
   # Money for kill. Critical hit, melee or hacked victim give more money
   eventPlayer.state[SI.MONEY_RECEIVED] = (
     (MONEY_FOR_ZOMBIE_CRITICAL if eventWasCriticalHit == true or eventAbility == Button.MELEE else MONEY_FOR_ZOMBIE_KILL) +
-    (30 if victim.state[SI.HACKED] == true else 0)
+    (MONEY_FOR_KILL_HACKED if victim.state[SI.HACKED] == true else 0)
   ) * eventPlayer.H
 
   smallMessage(eventPlayer, "{0} points".format(eventPlayer.state[SI.MONEY_RECEIVED]))
@@ -19,6 +19,7 @@ rule "Zombie points - elimination":
   eventPlayer.temp1 = [player for player in getLivingPlayers(Team.1) if victim.damageAssitsToSlot[player.getSlot()] < getTotalTimeElapsed() ]
 
   for eventPlayer.temp2 in range(len(eventPlayer.temp1)):
+    # todo: MONEY_FOR_KILL_HACKED_TEAM
     smallMessage(eventPlayer.temp1[eventPlayer.temp2], "{0} points".format((60 if victim.state[SI.HACKED] == true else 50) * eventPlayer.H))
     eventPlayer.temp1[eventPlayer.temp2].money += (60 if victim.state[SI.HACKED] == true else 50) * eventPlayer.H
 

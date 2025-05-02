@@ -101,6 +101,12 @@ playervar abilityCD 59
 #!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
 #!define ZOMBIE_FALL_DAMAGE 100
 #!define AUTO_HEALING_OVERTIME_DURATION 20
+#!define REVEAL_DURATION 10
+
+# Sombra
+#!define MONEY_FOR_KILL_HACKED 30
+#!define MONEY_FOR_KILL_HACKED_TEAM 10
+#!define SOMBRA_STEAL_MONEY 25
 
 #!define ABILITI_TEXT_INTEND "                                                                                             "
 enum SI:
@@ -128,6 +134,8 @@ enum SI:
   LAST_DAMAGE_TIME = 16
   START_AUTO_HEAL_TIME = 17
   IS_INVISIBLE = 18
+  HERO_INFO_TEXT = 19
+  HERO_INFO_VERTICAL_FIX = 20
 
 # for playervar talents
 enum TI:

@@ -15,10 +15,13 @@ rule "[DVA] Init":
 
   # Slide ability hud:
   hudText(
-    eventPlayer,
+    eventPlayer if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     null,
-    "{0}{1} Slide: {2}".format(
-      ABILITI_TEXT_INTEND, abilityIconString(Hero.TRACER, Button.ABILITY_1), ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>ready</fg>"
+    "{}{} Slide ({}): {}".format(
+      ABILITI_TEXT_INTEND,
+      abilityIconString(Hero.TRACER, Button.ABILITY_1),
+      inputBindingString(Button.ABILITY_1),
+      ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>ready</fg>"
     ),
     null,
     HudPosition.TOP,
@@ -28,6 +31,22 @@ rule "[DVA] Init":
     null
   )
   eventPlayer.talentState[DVA_SI.SLIDE_HUD] = getLastCreatedText()
+
+  wait(1) # waiting for the previous hero to clear hero data
+  eventPlayer.state[SI.TALENTS_COUNT] = 1
+
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 1
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fged93c7FF>DVA</fg>:\n
+  {} {}Slide{}: 
+      - Start sliding in the direction you're moving. Press Jump to trigger a high-jump.\n\n
+  About vanilla Perks:
+      - All perks are useless.
+  ".format(
+    heroIcon(Hero.DVA),
+    abilityIconString(Hero.TRACER, Button.ABILITY_1),
+    "<fged93c7FF>",
+    "</fg>"
+  )
 
   waitUntil(eventPlayer.getHero() != Hero.DVA, INFINITY)
   eventPlayer.setMaxHealth(eventPlayer.healthStat)

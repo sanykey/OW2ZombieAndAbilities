@@ -21,37 +21,29 @@ rule "[Widowmaker] Talent texts":
   eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] = true
   eventPlayer.talents[TI.WIDOWMAKER_TRACKER_VENOM] = true
   
-  eventPlayer.talentText[0] = "{} <fgA686ABFF>Widowmaker</fg>:\n".format(heroIcon(Hero.WIDOWMAKER))
-  # Baiser De Soie
-  eventPlayer.talentText[1] = "- {} Any shots reveals the position of enemies\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE))
-  # Felt More Alive"
-  eventPlayer.talentText[2] = "- {}  Gain smoother aerial scoping\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2))
-  # Phantom bullets
-  eventPlayer.talentText[3] = "- {}  Fully charged shots with scope pierce through walls and enemies\n".format(abilityIconString(Hero.TRACER, Button.ABILITY_2))
-  # Tracker Venom
-  eventPlayer.talentText[4] = "- {}  Venom mine is now slowing and reveal enemies hit\n".format(iconString(Icon.POISON_2))
-  # Falling stars
-  eventPlayer.talentText[5] = "- {}  Drop venom grenades behind while grappling\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1))
-  # Party Favours
-  eventPlayer.talentText[6] = "- {}  Gain a second hook charge\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1))
-  # Silk web
-  eventPlayer.talentText[7] = "- {}  When grappling hook ends (Hold Ctrl), temporarily latch onto any nearby walls\n".format(abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1))
-
-  eventPlayer.talentText[0] = "{}{}{}{}{}{}{}{}".format(
-    eventPlayer.talentText[0],
-    eventPlayer.talentText[1],
-    eventPlayer.talentText[2],
-    eventPlayer.talentText[3],
-    eventPlayer.talentText[4],
-    eventPlayer.talentText[5],
-    eventPlayer.talentText[6],
-    eventPlayer.talentText[7]
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgA686ABFF>Widowmaker</fg>:\n
+  {} <fgA686ABFF>Widow's Kiss:</fg>
+      - Scoped shots reveals enemies ({} seconds)
+      - Fully charged scoped shots pierce through walls and enemies (only 1 enemy)
+      - Gain smoother aerial scoping\n\n
+  {} <fgA686ABFF>Grappling Hook:</fg>
+      - Gain a second hook charge
+      - Drop venom grenades behind while grappling
+      - Hold crouch button when grappling hook ends: temporarily latch onto any nearby walls\n\n
+  {} <fgA686ABFF>Venom Mine:</fg>
+      - Slowing and reveal ({} seconds) enemies hit 
+  ".format(
+    heroIcon(Hero.WIDOWMAKER),
+    abilityIconString(Hero.WIDOWMAKER, Button.PRIMARY_FIRE),
+    REVEAL_DURATION,
+    abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1),
+    abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2),
+    REVEAL_DURATION
   )
-  
 
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
   eventPlayer.state[SI.TALENTS_COUNT] = 0
-  eventPlayer.talentText[0] = ""
 
 # Party Favours: Gain a second hook charge
 rule "[Widowmaker] Party Favours":
@@ -60,9 +52,9 @@ rule "[Widowmaker] Party Favours":
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
   
   hudText(
-    eventPlayer,
+    eventPlayer if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     null,
-    "{0}{1} Next Charge in: {2}s".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1), floor(eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN])),
+    "{0}{1} Next Charge in: {2}".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1), floor(eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN])),
     "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES]]),
     HudPosition.TOP,
     2.5,
@@ -298,7 +290,7 @@ rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
   @Condition attacker.talents[TI.WIDOWMAKER_TRACKER_VENOM] == true
   @Condition eventAbility == Button.ABILITY_2
   
-  victim.revealed = 10 + getTotalTimeElapsed()
+  victim.revealed = REVEAL_DURATION + getTotalTimeElapsed()
 
   eventPlayer.setMoveSpeed(zombieStats[ZI.SPEED_STAT] / 3)
   wait(5)
@@ -311,7 +303,7 @@ rule "[Widowmaker] Baiser De Soie":
   @Condition eventAbility == Button.PRIMARY_FIRE
   @Condition eventAbility == Button.SECONDARY_FIRE
 
-  victim.revealed = 10 + getTotalTimeElapsed()
+  victim.revealed = REVEAL_DURATION + getTotalTimeElapsed()
 
 rule "[Widowmaker] Phantom bullets - Charge":
   @Event eachPlayer
