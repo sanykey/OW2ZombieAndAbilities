@@ -53,8 +53,13 @@ rule "[Sombre] Stop invisible when hacking":
   @Event eachPlayer
   @Team 1
   @Hero sombra
-  @Condition eventPlayer.isFiringSecondaryFire() == true
-
+  @Condition (
+    eventPlayer.isFiringSecondaryFire() and
+    eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(Team.2), 8) and
+    isInLoS(eventPlayer, eventPlayer.getPlayerClosestToReticle(Team.2)) and
+    distance(eventPlayer, eventPlayer.getPlayerClosestToReticle(Team.2)) <= 15 
+  )
+  eventPlayer.state[SI.IS_INVISIBLE] = false
 
 rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
   @Event eachPlayer
