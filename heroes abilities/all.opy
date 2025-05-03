@@ -101,11 +101,10 @@ rule "Revealed zombies":
   eventPlayer.HUDs[HI.REVEALED_ICON] = false
   eventPlayer.stopForcingOutlineFor(getAllPlayers())
 
-rule "[Ramattra, Reinhardt, Sigma, Winston] Damage barrier":
+rule "[Ramattra][Reinhardt][Sigma][Winston] Damage barrier":
   @Event eachPlayer
   @Team 1
-  @Hero sigma
-  @Condition eventPlayer.heroState[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
 
   if eventPlayer.state[SI.BARRIER_DAMAGE_STACK]:
     createProjectile(

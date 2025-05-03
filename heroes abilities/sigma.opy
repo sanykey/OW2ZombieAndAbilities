@@ -45,7 +45,7 @@ rule "[Ramattra] init":
   #   getPlayersInSlot(0, Team.1),
   #   Effect.SPHERE,
   #   Color.GREEN,
-  #   eventPlayer.temp1,
+  #   eventPlayer.abilityPosition,
   #   0.05,
   #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   # )
@@ -67,37 +67,37 @@ rule "[Ramattra] init":
   @Condition updateEveryFrame(eventPlayer.isFiringSecondaryFire()) == true
 
   smallMessage(eventPlayer, "Start")
-  eventPlayer.heroState[SI.BARRIER_ACTIVE] = true
-  eventPlayer.temp1 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2.25, null, eventPlayer, true).getHitPosition()
+  eventPlayer.state[SI.BARRIER_ACTIVE] = true
+  eventPlayer.abilityPosition = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2.25, null, eventPlayer, true).getHitPosition()
   eventPlayer.heroState[SIGMA_I.BARRIER_FD] = eventPlayer.getFacingDirection()
 
-  createEffect(getAllPlayers(), Effect.GOOD_AURA, Color.WHITE, eventPlayer.temp1, 3.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getAllPlayers(), Effect.GOOD_AURA, Color.WHITE, eventPlayer.abilityPosition, 3.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   eventPlayer.heroState[SIGMA_I.TMP_EFFECT] = getLastCreatedEntity()
 
-  chaseAtRate(eventPlayer.temp1, raycast(eventPlayer.temp1, eventPlayer.temp1 + evalOnce(eventPlayer.getFacingDirection()), null, eventPlayer, true).getHitPosition() + evalOnce(eventPlayer.getFacingDirection()) * -0.01, 20)
+  chaseAtRate(eventPlayer.abilityPosition, raycast(eventPlayer.abilityPosition, eventPlayer.abilityPosition + evalOnce(eventPlayer.getFacingDirection()), null, eventPlayer, true).getHitPosition() + evalOnce(eventPlayer.getFacingDirection()) * -0.01, 20)
 
   waitUntil(not eventPlayer.isFiringSecondaryFire(), 99999)
-  stopChasingVariable(eventPlayer.temp1)
+  stopChasingVariable(eventPlayer.abilityPosition)
 
   # calculate position for barier damaging
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.temp1
+  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilityPosition
   smallMessage(eventPlayer, "Stop")
 
   waitUntil(updateEveryFrame(eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE)) != null, 99999)
   smallMessage(eventPlayer, "End")
-  eventPlayer.heroState[SI.BARRIER_ACTIVE] = false
+  eventPlayer.state[SI.BARRIER_ACTIVE] = false
   destroyEffect(eventPlayer.heroState[SIGMA_I.TMP_EFFECT])
 
 rule "[Sigma] Barrier Effect":
   @Event eachPlayer
   @Team 1
   @Hero sigma
-  @Condition eventPlayer.heroState[SI.BARRIER_ACTIVE] == true
+  @Condition eventPlayer.state[SI.BARRIER_ACTIVE] == true
   
-  eventPlayer.heroState[SIGMA_I.BARRIER_AFFECTED_P] = [player for player in getPlayersInRadius(eventPlayer.temp1, 3.5, Team.2) if player.isAlive()]
+  eventPlayer.heroState[SIGMA_I.BARRIER_AFFECTED_P] = [player for player in getPlayersInRadius(eventPlayer.abilityPosition, 3.5, Team.2) if player.isAlive()]
 
   # calculate position for barier damaging
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.temp1 + Vector.UP * 1.8
+  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilityPosition + Vector.UP * 1.8
   eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = eventPlayer.heroState[SIGMA_I.BARRIER_FD]
 
   # calculate damage to barrier
