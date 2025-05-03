@@ -50,6 +50,8 @@ rule "[DVA] Init":
 
   waitUntil(eventPlayer.getHero() != Hero.DVA, INFINITY)
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
   destroyHudText(eventPlayer.heroState[DVA_SI.SLIDE_HUD])
 
 

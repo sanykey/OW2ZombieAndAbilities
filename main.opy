@@ -38,7 +38,7 @@ rule "Game init":
 #!include "heroes abilities/widowmaker.opy"
 #!include "heroes abilities/juno.opy"
 #!include "heroes abilities/sombra.opy"
-#!include "heroes abilities/reinhard.opy"
+#!include "heroes abilities/reinhardt.opy"
 #!include "heroes abilities/winston.opy"
 #!include "heroes abilities/ramattra.opy"
 #!include "heroes abilities/sigma.opy"

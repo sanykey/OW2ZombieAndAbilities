@@ -9,6 +9,21 @@ rule "[Reinhard] init":
   @Team 1
   @Hero reinhardt
 
+  wait(1) # waiting for the previous hero to clear hero data
+  eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg94a1a5FF>Reinhardt</fg>:\n
+  {} {}Barrier field{}:
+      - Pushes back enemies and takes damage because of it.
+  ".format(
+    heroIcon(Hero.REINHARDT),
+    abilityIconString(Hero.REINHARDT, Button.SECONDARY_FIRE),
+    "<fg94a1a5FF>",
+    "</fg>"
+  )
+
+  waitUntil(eventPlayer.getHero() != Hero.REINHARDT, INFINITY)
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
 
 
 rule "[Reinhard] Damage barrier when pushing enemies every 0.5 sec":

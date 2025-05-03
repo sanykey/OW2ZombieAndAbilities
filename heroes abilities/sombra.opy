@@ -11,7 +11,7 @@
 rule "[Sombra] Init":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.getHero() == Hero.SOMBRA
+  @Hero sombra
 
   wait(1) # waiting for the previous hero to clear hero data
   eventPlayer.state[SI.TALENTS_COUNT] = 2

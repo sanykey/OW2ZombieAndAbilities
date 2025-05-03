@@ -35,7 +35,6 @@ settings {
             # },
             "dva": {
                 "damageReceived%": 85,
-                "movementSpeed%": 110,
                 "projectileSpeed%": 500,
                 "spawnWithoutMech": true,
                 "enableUlt": false

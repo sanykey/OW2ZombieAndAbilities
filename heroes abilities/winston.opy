@@ -9,14 +9,20 @@ rule "[Winston] init":
   @Team 1
   @Hero winston
 
-  # createEffect(
-  #   getPlayersInSlot(0, Team.1),
-  #   Effect.SPHERE,
-  #   Color.AQUA,
-  #   eventPlayer.abilityProjectile,
-  #   6,
-  #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  # )
+  wait(1) # waiting for the previous hero to clear hero data
+  eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fga0a9baFF>Winston</fg>:\n
+  {} {}Barrier projector</fg>:
+      - Pushes enemies outside and takes damage because of it.
+  ".format(
+    heroIcon(Hero.WINSTON),
+    abilityIconString(Hero.WINSTON, Button.ABILITY_2),
+    "<fga0a9baFF>"
+  )
+
+  waitUntil(eventPlayer.getHero() != Hero.WINSTON, INFINITY)
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
 
 
 rule "[Winston] Create barrier and save position":

@@ -8,7 +8,7 @@ enum WIDOWMAKER_SI:
 
 rule "[Widowmaker] Talent texts":
   @Event eachPlayer
-  @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
+  @Hero widowmaker
 
   wait(1) # waiting for the previous hero to clear hero data
   # todo: debug

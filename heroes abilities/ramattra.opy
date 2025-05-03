@@ -18,6 +18,22 @@ rule "[Ramattra] init":
   @Team 1
   @Hero ramattra
 
+  wait(1) # waiting for the previous hero to clear hero data
+  eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg9d8cd0FF>Rammatra</fg>:\n
+  {} {}Void barrier{}:
+      - Pushes back enemies and takes damage because of it.
+  ".format(
+    heroIcon(Hero.RAMATTRA),
+    abilityIconString(Hero.RAMATTRA, Button.SECONDARY_FIRE),
+    "<fg9d8cd0FF>",
+    "</fg>"
+  )
+
+  waitUntil(eventPlayer.getHero() != Hero.RAMATTRA, INFINITY)
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
+
   # hudHeader(
   #   eventPlayer,
   #   "CD: {}, Using:{}, Res:{}, Ch: {}".format(

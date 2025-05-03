@@ -10,6 +10,23 @@ rule "[Ramattra] init":
   @Team 1
   @Hero sigma 
 
+  wait(1) # waiting for the previous hero to clear hero data
+  eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg94a0a5FF>Winston</fg>:\n
+  {} {}Experimental barrier{}:
+      - Pushes back enemies when stationary and takes damage because of it.
+      - Pushes enemies back during barrier flight. Takes increased damage.
+  ".format(
+    heroIcon(Hero.SIGMA),
+    abilityIconString(Hero.SIGMA, Button.SECONDARY_FIRE),
+    "<fg94a0a5FF>",
+    "</fg>"
+  )
+
+  waitUntil(eventPlayer.getHero() != Hero.SIGMA, INFINITY)
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
+
   # todo: debug
   # hudHeader(
   #   eventPlayer,
