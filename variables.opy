@@ -68,8 +68,9 @@ playervar widowmakerChargeShot 50
 playervar money 51
 playervar raycast 53
 playervar talentState 55
-playervar talentText 56
 playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
+playervar abilityProjectile 60
+playervar abilityPosition 61
 playervar abilityCD 59
 
 #Activated extensions
@@ -103,6 +104,11 @@ playervar abilityCD 59
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
 #!define ZOMBIE_SPEED 80
+#!define BARRIER_DMG_RESIST_MULT 2
+
+# vanilla hero constants
+#!define WINSTON_BARRIER_HP 650
+#!define TORBJORN_HAMMER_BASE_DMG 70
 
 # Sombra
 #!define MONEY_FOR_KILL_HACKED 30

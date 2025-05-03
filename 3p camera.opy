@@ -98,3 +98,14 @@ rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
   pause3PCamera()
   waitUntil(eventPlayer.isUsingUltimate() == false, INFINITY)
   unpause3PCamera()
+
+rule "Pause 3P camera during rein shild hold":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.state[0] > 2
+  @Condition eventPlayer.getCurrentHero() == Hero.REINHARDT
+  @Condition eventPlayer.isFiringSecondaryFire()
+
+  pause3PCamera()
+  waitUntil(not eventPlayer.isFiringSecondaryFire(), INFINITY)
+  unpause3PCamera()

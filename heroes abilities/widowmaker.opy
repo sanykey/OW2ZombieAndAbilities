@@ -66,7 +66,6 @@ rule "[Widowmaker] Party Favours":
   eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] = 1
 
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
-  smallMessage(eventPlayer, "DONE!")
   destroyHudText(eventPlayer.HUDs[HI.WIDOWMAKER_PARTY_FAMOURS])
 
 

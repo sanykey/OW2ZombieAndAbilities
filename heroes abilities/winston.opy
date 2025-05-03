@@ -1,0 +1,116 @@
+#!mainFile "../main.opy"
+
+enum WINSTON_I:
+  BARRIER_DAMAGE_STACK = 0
+  BARRIER_ACTIVE = 1
+
+rule "[Winston] init":
+  @Event eachPlayer
+  @Team 1
+  @Hero winston
+
+  # createEffect(
+  #   getPlayersInSlot(0, Team.1),
+  #   Effect.SPHERE,
+  #   Color.AQUA,
+  #   eventPlayer.abilityProjectile,
+  #   6,
+  #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  # )
+
+
+rule "[Winston] Create barrier and save position":
+  @Event eachPlayer
+  @Team 1
+  @Hero winston
+  @Condition eventPlayer.isUsingAbility2()
+
+  eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE] = true
+  eventPlayer.abilityTemp1 = false
+  eventPlayer.abilityProjectile = eventPlayer.getEyePosition()
+  eventPlayer.abilityPosition = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + Vector.DOWN * 50, null, getAllPlayers(), false).getHitPosition()
+
+  chaseAtRate(eventPlayer.abilityTemp1, 10000, 9.8)
+  chaseAtRate(
+    eventPlayer.abilityProjectile,
+    eventPlayer.abilityPosition,
+    eventPlayer.abilityTemp1
+  )
+
+  waitUntil(eventPlayer.abilityProjectile == eventPlayer.abilityPosition, 12)
+  wait(0.1)
+
+  waitUntil(
+    isInLoS(
+      eventPlayer.abilityProjectile + Vector.UP * 4.9,
+      eventPlayer.abilityProjectile + Vector.UP * 5.1,
+      BarrierLos.BLOCKED_BY_ALL_BARRIERS
+    ) and isInLoS(
+      eventPlayer.abilityProjectile + Vector.LEFT * 4.9,
+      eventPlayer.abilityProjectile + Vector.LEFT * 5.1,
+      BarrierLos.BLOCKED_BY_ALL_BARRIERS
+    ) and isInLoS(
+      eventPlayer.abilityProjectile + Vector.RIGHT * 4.9,
+      eventPlayer.abilityProjectile + Vector.RIGHT * 5.1,
+      BarrierLos.BLOCKED_BY_ALL_BARRIERS
+    ) and isInLoS(
+      eventPlayer.abilityProjectile + Vector.FORWARD * 4.9,
+      eventPlayer.abilityProjectile + Vector.FORWARD * 5.1,
+      BarrierLos.BLOCKED_BY_ALL_BARRIERS
+    ) and isInLoS(
+      eventPlayer.abilityProjectile + Vector.BACKWARD * 4.9,
+      eventPlayer.abilityProjectile + Vector.BACKWARD * 5.1,
+      BarrierLos.BLOCKED_BY_ALL_BARRIERS
+    ),
+    11.9
+  )
+
+  eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE] = false
+
+
+rule "[Winston] Barrier push enemies":
+  @Event eachPlayer
+  @Team 1
+  @Hero winston
+  @Condition eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE]
+
+  eventPlayer.temp1 = getPlayersInRadius(eventPlayer.abilityProjectile, 6, Team.2)
+
+  for eventPlayer.temp2 in range(len(eventPlayer.temp1)):
+    eventPlayer.temp1[eventPlayer.temp2].applyImpulse(normalize(eventPlayer.temp1[eventPlayer.temp2].getPosition() - eventPlayer.abilityProjectile + vect(0, 0.5, 0.866)), 12 - distance(eventPlayer.abilityProjectile, eventPlayer.temp1[eventPlayer.temp2]), Relativity.TO_WORLD)
+
+  eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / 5
+
+  wait(0.1)
+  if ruleCondition:
+    loop()
+
+rule "[Winston] Damage barrier when pushing enemies every 0.5 sec":
+  @Event eachPlayer
+  @Team 1
+  @Hero winston
+  @Condition eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE]
+
+  if eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK]:
+    createProjectile(
+      Projectile.ORISA_FUSION_DRIVER, # proj type
+      null, # owner
+      eventPlayer.abilityProjectile + Vector.UP * 5.5, # start position
+      normalize(eventPlayer.abilityProjectile - (eventPlayer.abilityProjectile + Vector.UP * 5.5)) , # direction
+      Relativity.TO_WORLD, # position relative to
+      ModifyHealth.DAMAGE, # damage or heal
+      Team.ALL, # affectedTeam
+      eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK], # damage
+      0, # damageScalar? for AOE?
+      0, # AOE radius
+      DynamicEffect.BAD_EXPLOSION, # explosionEffect
+      DynamicEffect.EXPLOSION_SOUND, # explosionSound
+      0, # oversize
+      100, # speed
+      5 # lifetime
+    )
+    eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK] = 0
+
+  wait(0.5)
+  if ruleCondition:
+      loop()
