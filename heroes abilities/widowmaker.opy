@@ -54,8 +54,8 @@ rule "[Widowmaker] Party Favours":
   hudText(
     eventPlayer if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     null,
-    "{0}{1} Next Charge in: {2}".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1), floor(eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN])),
-    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES]]),
+    "{0}{1} Next Charge in: {2}".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1), floor(eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN])),
+    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES]]),
     HudPosition.TOP,
     2.5,
     null,
@@ -63,7 +63,7 @@ rule "[Widowmaker] Party Favours":
     Color.VIOLET
   )
   eventPlayer.HUDs[HI.WIDOWMAKER_PARTY_FAMOURS] = getLastCreatedText()
-  eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] = 1
+  eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] = 1
 
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
   destroyHudText(eventPlayer.HUDs[HI.WIDOWMAKER_PARTY_FAMOURS])
@@ -79,8 +79,8 @@ rule "[Widowmaker] Party Favours - Deplete hook charge":
   if not eventPlayer.getAbilityCooldown(Button.ABILITY_1):
     return
 
-  if eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] > 0:
-    eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] -= 1
+  if eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] > 0:
+    eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] -= 1
     eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
 
 
@@ -88,16 +88,16 @@ rule "[Widowmaker] Party Favours - Recharge hook ":
   @Event eachPlayer
   @Hero widowmaker
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
-  @Condition eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] < 1
+  @Condition eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] < 1
   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
   
   wait(0.4, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN] = 12
-  while eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN] > 0:
+  eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN] = 12
+  while eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN] > 0:
     wait(1)
-    eventPlayer.talentState[WIDOWMAKER_SI.PF_COOLDOWN] -= 1
+    eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN] -= 1
 
-  eventPlayer.talentState[WIDOWMAKER_SI.PF_CHARGES] += 1
+  eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] += 1
   if ruleCondition:
     loop()
   wait(0.25)
@@ -132,7 +132,7 @@ rule "[Widowmaker] Silk web":
   if eventPlayer.getAltitude() < 1:
     return
 
-  eventPlayer.talentState[WIDOWMAKER_SI.SILK_WEB] = true
+  eventPlayer.heroState[WIDOWMAKER_SI.SILK_WEB] = true
   eventPlayer.applyImpulse(eventPlayer.getVelocity(), -0.01, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   eventPlayer.setGravity(0)
   eventPlayer.startForcingThrottle(0, 0, 0, 0, 0, 0)
@@ -140,7 +140,7 @@ rule "[Widowmaker] Silk web":
   waitUntil(eventPlayer.isHoldingButton(Button.JUMP) or true in [eventPlayer.hasStatus(Status.HACKED), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.STUNNED)], 10)
   eventPlayer.setGravity(100)
   eventPlayer.stopForcingThrottle()
-  eventPlayer.talentState[WIDOWMAKER_SI.SILK_WEB] = false
+  eventPlayer.heroState[WIDOWMAKER_SI.SILK_WEB] = false
   playEffect(eventPlayer, DynamicEffect.DOOMFIST_RISING_UPPERCUT_IMPACT_SOUND, Color.WHITE, eventPlayer.getPosition(), 75)
 
 
@@ -151,7 +151,7 @@ rule "[Widowmaker] Phantom bullets headshot hud":
   @Condition eventPlayer.isCombatant == true
 
   createInWorldText(
-    eventPlayer if eventPlayer.talentState[WIDOWMAKER_SI.LAST_HEADSHOT] > getTotalTimeElapsed() else null,
+    eventPlayer if eventPlayer.heroState[WIDOWMAKER_SI.LAST_HEADSHOT] > getTotalTimeElapsed() else null,
     "X headshot",
     updateEveryFrame(localPlayer.getEyePosition() + (100 * (0 * worldVector(Vector.RIGHT, localPlayer, Transform.ROTATION) + ((-0.1 - 0.2) * (directionFromAngles(horizontalAngleOfDirection(localPlayer.getFacingDirection()), verticalAngleOfDirection(localPlayer.getFacingDirection()) - 190))) + 3 * localPlayer.getFacingDirection()))),
     0.9,
@@ -240,7 +240,7 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
           300
         )
         eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
-        eventPlayer.talentState[WIDOWMAKER_SI.LAST_HEADSHOT] = 0.5 + getTotalTimeElapsed() # for headshot message
+        eventPlayer.heroState[WIDOWMAKER_SI.LAST_HEADSHOT] = 0.5 + getTotalTimeElapsed() # for headshot message
       else:
 
         eventPlayer.raycast[RI.SPHERE_POS] = eventPlayer.temp2[eventPlayer.temp1].getPosition() + vect(0, 0.6, 0) # player center shpere
@@ -276,7 +276,7 @@ rule "[Widowmaker] Felt More Alive":
   @Condition eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] == true
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isInAir() == true
-  @Condition eventPlayer.talentState[WIDOWMAKER_SI.SILK_WEB] == false
+  @Condition eventPlayer.heroState[WIDOWMAKER_SI.SILK_WEB] == false
   
   wait(0.333, Wait.ABORT_WHEN_FALSE)
   eventPlayer.setGravity(30)

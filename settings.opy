@@ -30,6 +30,9 @@ settings {
     },
     "heroes": {
         "team1": {
+            # "ramattra": {
+            #     "secondaryFireCooldown%": 0
+            # },
             "dva": {
                 "damageReceived%": 85,
                 "movementSpeed%": 110,

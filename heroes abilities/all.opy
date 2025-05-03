@@ -100,3 +100,33 @@ rule "Revealed zombies":
   destroyInWorldText(eventPlayer.HUDs[HI.REVEALED_ICON])
   eventPlayer.HUDs[HI.REVEALED_ICON] = false
   eventPlayer.stopForcingOutlineFor(getAllPlayers())
+
+rule "[Ramattra, Reinhardt, Sigma, Winston] Damage barrier":
+  @Event eachPlayer
+  @Team 1
+  @Hero sigma
+  @Condition eventPlayer.heroState[SI.BARRIER_ACTIVE]
+
+  if eventPlayer.state[SI.BARRIER_DAMAGE_STACK]:
+    createProjectile(
+      Projectile.ORISA_FUSION_DRIVER, # proj type
+      null, # owner
+      eventPlayer.state[SI.BARRIER_DAMAGE_FROM], # start position
+      eventPlayer.state[SI.BARRIER_DAMAGE_DIR] , # direction
+      Relativity.TO_WORLD, # position relative to
+      ModifyHealth.DAMAGE, # damage or heal
+      Team.ALL, # affectedTeam
+      eventPlayer.state[SI.BARRIER_DAMAGE_STACK], # damage
+      0, # damageScalar? for AOE?
+      0, # AOE radius
+      DynamicEffect.BAD_EXPLOSION, # explosionEffect
+      DynamicEffect.EXPLOSION_SOUND, # explosionSound
+      0, # oversize
+      100, # speed
+      5 # lifetime
+    )
+    eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = 0
+
+  wait(0.5)
+  if ruleCondition:
+      loop()

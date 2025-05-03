@@ -17,7 +17,7 @@ rule "[Reinhard] Damage barrier when pushing enemies every 0.5 sec":
   @Hero reinhardt
   @Condition eventPlayer.isFiringSecondaryFire()
 
-  if eventPlayer.talentState[RAINHARD_SI.SHIELD_DAMAGE_STACK]:
+  if eventPlayer.heroState[RAINHARD_SI.SHIELD_DAMAGE_STACK]:
     eventPlayer.temp1 = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
     eventPlayer.temp2 = normalize(eventPlayer.getEyePosition() - eventPlayer.temp1)
 
@@ -29,7 +29,7 @@ rule "[Reinhard] Damage barrier when pushing enemies every 0.5 sec":
       Relativity.TO_WORLD, # position relative to
       ModifyHealth.DAMAGE, # damage or heal
       Team.ALL, # affectedTeam
-      eventPlayer.talentState[RAINHARD_SI.SHIELD_DAMAGE_STACK], # damage
+      eventPlayer.heroState[RAINHARD_SI.SHIELD_DAMAGE_STACK], # damage
       0, # damageScalar? for AOE?
       0, # AOE radius
       DynamicEffect.BAD_EXPLOSION, # explosionEffect
@@ -38,7 +38,7 @@ rule "[Reinhard] Damage barrier when pushing enemies every 0.5 sec":
       100, # speed
       5 # lifetime
     )
-    eventPlayer.talentState[RAINHARD_SI.SHIELD_DAMAGE_STACK] = 0
+    eventPlayer.heroState[RAINHARD_SI.SHIELD_DAMAGE_STACK] = 0
 
   wait(0.5)
   if ruleCondition:
@@ -56,7 +56,7 @@ rule "[Reinhard] Barrier push enemies":
   )
   eventPlayer.temp1.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
 
-  eventPlayer.talentState[RAINHARD_SI.SHIELD_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / BARRIER_DMG_RESIST_MULT
+  eventPlayer.heroState[RAINHARD_SI.SHIELD_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / BARRIER_DMG_RESIST_MULT
 
   wait(0.1)
   if ruleCondition:

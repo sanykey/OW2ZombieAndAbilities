@@ -25,7 +25,7 @@ rule "[Winston] Create barrier and save position":
   @Hero winston
   @Condition eventPlayer.isUsingAbility2()
 
-  eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE] = true
+  eventPlayer.heroState[WINSTON_I.BARRIER_ACTIVE] = true
   eventPlayer.abilityTemp1 = false
   eventPlayer.abilityProjectile = eventPlayer.getEyePosition()
   eventPlayer.abilityPosition = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + Vector.DOWN * 50, null, getAllPlayers(), false).getHitPosition()
@@ -65,21 +65,21 @@ rule "[Winston] Create barrier and save position":
     11.9
   )
 
-  eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE] = false
+  eventPlayer.heroState[WINSTON_I.BARRIER_ACTIVE] = false
 
 
 rule "[Winston] Barrier push enemies":
   @Event eachPlayer
   @Team 1
   @Hero winston
-  @Condition eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE]
+  @Condition eventPlayer.heroState[WINSTON_I.BARRIER_ACTIVE]
 
   eventPlayer.temp1 = getPlayersInRadius(eventPlayer.abilityProjectile, 6, Team.2)
 
   for eventPlayer.temp2 in range(len(eventPlayer.temp1)):
     eventPlayer.temp1[eventPlayer.temp2].applyImpulse(normalize(eventPlayer.temp1[eventPlayer.temp2].getPosition() - eventPlayer.abilityProjectile + vect(0, 0.5, 0.866)), 12 - distance(eventPlayer.abilityProjectile, eventPlayer.temp1[eventPlayer.temp2]), Relativity.TO_WORLD)
 
-  eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / 5
+  eventPlayer.heroState[WINSTON_I.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / 5
 
   wait(0.1)
   if ruleCondition:
@@ -89,9 +89,9 @@ rule "[Winston] Damage barrier when pushing enemies every 0.5 sec":
   @Event eachPlayer
   @Team 1
   @Hero winston
-  @Condition eventPlayer.talentState[WINSTON_I.BARRIER_ACTIVE]
+  @Condition eventPlayer.heroState[WINSTON_I.BARRIER_ACTIVE]
 
-  if eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK]:
+  if eventPlayer.heroState[WINSTON_I.BARRIER_DAMAGE_STACK]:
     createProjectile(
       Projectile.ORISA_FUSION_DRIVER, # proj type
       null, # owner
@@ -100,7 +100,7 @@ rule "[Winston] Damage barrier when pushing enemies every 0.5 sec":
       Relativity.TO_WORLD, # position relative to
       ModifyHealth.DAMAGE, # damage or heal
       Team.ALL, # affectedTeam
-      eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK], # damage
+      eventPlayer.heroState[WINSTON_I.BARRIER_DAMAGE_STACK], # damage
       0, # damageScalar? for AOE?
       0, # AOE radius
       DynamicEffect.BAD_EXPLOSION, # explosionEffect
@@ -109,7 +109,7 @@ rule "[Winston] Damage barrier when pushing enemies every 0.5 sec":
       100, # speed
       5 # lifetime
     )
-    eventPlayer.talentState[WINSTON_I.BARRIER_DAMAGE_STACK] = 0
+    eventPlayer.heroState[WINSTON_I.BARRIER_DAMAGE_STACK] = 0
 
   wait(0.5)
   if ruleCondition:

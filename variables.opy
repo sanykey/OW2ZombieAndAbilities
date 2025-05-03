@@ -63,11 +63,13 @@ playervar HUDs 46
 playervar temp1 47
 playervar temp2 52
 playervar temp3 54
+playervar temp4 62
+playervar temp5 63
 playervar revealed 49
 playervar widowmakerChargeShot 50
 playervar money 51
 playervar raycast 53
-playervar talentState 55
+playervar heroState 55
 playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
 playervar abilityProjectile 60
 playervar abilityPosition 61
@@ -143,6 +145,10 @@ enum SI:
   IS_INVISIBLE = 18
   HERO_INFO_TEXT = 19
   HERO_INFO_VERTICAL_FIX = 20
+  BARRIER_DAMAGE_FROM = 21
+  BARRIER_DAMAGE_DIR = 22
+  BARRIER_DAMAGE_STACK = 23
+  BARRIER_ACTIVE = 24
 
 # for playervar talents
 enum TI:
