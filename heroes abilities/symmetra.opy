@@ -4,7 +4,6 @@
 # - [Shield Tracking](https://workshop.codes/XQG9N)
 
 #!define SYM_ULT_DURATION 12
-#!define SYM_ULT_INIT_DAMAGE 250
 
 rule "[Symmetra] init":
   @Event eachPlayer
@@ -16,14 +15,13 @@ rule "[Symmetra] init":
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg91bbd1FF>Symmetra</fg>:\n
   {} {}Photon barrier{}:
     - Pushes back enemies and takes damage on contact.
-    - Deals {} damage to nearby enemies upon deployment.
+    - On deployment, deals damage to nearby enemies equal to 50% of their maximum health..
     - If the barrier malfunctions, a message will appear and your ultimate charge will be refunded.
   ".format(
     heroIcon(Hero.SYMMETRA),
     abilityIconString(Hero.SYMMETRA, Button.ULTIMATE),
     "<fg91bbd1FF>",
-    "</fg>",
-    SYM_ULT_INIT_DAMAGE
+    "</fg>"
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SYMMETRA, INFINITY)
@@ -33,15 +31,13 @@ rule "[Symmetra] init":
 
 # variables:
 # abilPos0: Barrier position
-# abilPos4: Barrier position without height
+# abilPos1: Barrier position without height
 # abilPos2: Barrier checker position A
 # abilPos3: Barrier checker position B
 # temp1: Calc. (Sym position or Barrier position) + height for Barrier checker positions
 # temp2: Player position when ult started
 # temp3: Barrier direction. boolean: false = Sideways, true = Forward
-# abilDir1: Barrier direction vector
-# abilDir2: Player FacingDirection when ult started
-# abilDir3: Barrier direction perpendicular vector
+# abilDir1: Barrier direction perpendicular vector
 # abilTemp1: For the first range check from players to deal damage to them
 rule "[Symmetra] Create barrier (ultimate)":
   @Event eachPlayer
@@ -50,8 +46,8 @@ rule "[Symmetra] Create barrier (ultimate)":
   @Condition eventPlayer.getUltCharge() == 100
   @Condition eventPlayer.isHoldingButton(Button.ULTIMATE) == true
 
-  eventPlayer.temp3 = true
-  eventPlayer.abilPos0 = false
+  eventPlayer.temp3 = true # Barrier direction. boolean: false = Sideways, true = Forward
+  eventPlayer.abilPos0 = false # Barrier position
 
   while true:
     waitUntil(not eventPlayer.isHoldingButton(Button.ULTIMATE), 99999)
@@ -81,42 +77,31 @@ rule "[Symmetra] Create barrier (ultimate)":
       eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 25, null, eventPlayer, true
     ).getHitPosition() + vect(0, 0.01, 0), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 25, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0) - vect(0, 3, 0), null, eventPlayer, true
   ).getHitPosition()
-  eventPlayer.abilPos4 = vect(eventPlayer.abilPos0.x, 0, eventPlayer.abilPos0.z) # Barrier position without height
+  eventPlayer.abilPos1 = vect(eventPlayer.abilPos0.x, 0, eventPlayer.abilPos0.z) # Barrier position without height
 
-  eventPlayer.abilDir3 = normalize(crossProduct( # Barrier direction perpendicular vector
+  eventPlayer.abilDir1 = normalize(crossProduct( # Barrier direction perpendicular vector
     worldVector( # get barrier direction vector
       Vector.LEFT if eventPlayer.temp3 == false else Vector.FORWARD, eventPlayer, Transform.ROTATION
     ), 
     Vector.UP
   ))
 
-  eventPlayer.abilDir2 = vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)
   eventPlayer.temp2 = eventPlayer.getEyePosition()
   wait(0.65) # Waiting for the game to create a barrier
 
   # Create barrier checker and damager positions:
   eventPlayer.temp1 = ((eventPlayer.temp2 if eventPlayer.temp3 else eventPlayer.abilPos0) + Vector.UP * 45) 
-
-  if eventPlayer.temp3:
-    eventPlayer.abilPos2 = eventPlayer.temp1 + normalize(crossProduct(Vector.UP, eventPlayer.abilDir2)) * 0.2
-    eventPlayer.abilPos3 = eventPlayer.temp1 + normalize(crossProduct(eventPlayer.abilDir2, Vector.UP)) * 0.2
-  else:
-    eventPlayer.abilPos2 = eventPlayer.temp1 + eventPlayer.abilDir2 * 1.5
-    eventPlayer.abilPos3 = eventPlayer.temp1 + eventPlayer.abilDir2 * -1.5
+  eventPlayer.abilPos2 = eventPlayer.temp1 + eventPlayer.abilDir1 * (0.2 if eventPlayer.temp3 else 1.5)
+  eventPlayer.abilPos3 = eventPlayer.temp1 + eventPlayer.abilDir1 * (-0.2 if eventPlayer.temp3 else -1.5)
 
   if (
     isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.BLOCKED_BY_ALL_BARRIERS) or
     not isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.PASS_THROUGH_BARRIERS)
   ):
-    # try again:
-    # smallMessage(eventPlayer, "try again!")
+    # Perhaps the roof blocked the view between the barrier check vectors. Try setting the vectors much lower
     eventPlayer.temp1 = ((eventPlayer.temp2 if eventPlayer.temp3 else eventPlayer.abilPos0) + Vector.UP * 1.5) 
-    if eventPlayer.temp3:
-      eventPlayer.abilPos2 = eventPlayer.temp1 + normalize(crossProduct(Vector.UP, eventPlayer.abilDir2)) * 0.2
-      eventPlayer.abilPos3 = eventPlayer.temp1 + normalize(crossProduct(eventPlayer.abilDir2, Vector.UP)) * 0.2
-    else:
-      eventPlayer.abilPos2 = eventPlayer.temp1 + eventPlayer.abilDir2 * 0.2
-      eventPlayer.abilPos3 = eventPlayer.temp1 + eventPlayer.abilDir2 * -0.2
+    eventPlayer.abilPos2 = eventPlayer.temp1 + eventPlayer.abilDir1 * 0.2
+    eventPlayer.abilPos3 = eventPlayer.temp1 + eventPlayer.abilDir1 * -0.2
     if (
       isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.BLOCKED_BY_ALL_BARRIERS) or
       not isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.PASS_THROUGH_BARRIERS)
@@ -155,13 +140,13 @@ rule "[Symmetra] Barrier push enemies":
 
   for eventPlayer.I in range(len(eventPlayer.list)):
     eventPlayer.temp1 = dotProduct( # distance between player and barrier
-      vect(eventPlayer.list[eventPlayer.I].getPosition().x, 0, eventPlayer.list[eventPlayer.I].getPosition().z) - eventPlayer.abilPos4,
-      eventPlayer.abilDir3
+      vect(eventPlayer.list[eventPlayer.I].getPosition().x, 0, eventPlayer.list[eventPlayer.I].getPosition().z) - eventPlayer.abilPos1,
+      eventPlayer.abilDir1
     )
 
     # get players to push from barrier
     if abs(eventPlayer.temp1) < 3:
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * 4 # Multiplication by 4 due to wait(0.4)
+      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * 3 # Multiplication by 3 due to wait(0.3)
 
       if eventPlayer.temp1 > 0:
         eventPlayer.list2.append(eventPlayer.list[eventPlayer.I])
@@ -171,83 +156,75 @@ rule "[Symmetra] Barrier push enemies":
 
   if (len(eventPlayer.list2)):
     eventPlayer.list2.applyImpulse(
-      eventPlayer.abilDir3 + vect(0, 0.2679, 0),
-      6,
+      eventPlayer.abilDir1 + vect(0, 0.2679, 0),
+      7,
       Relativity.TO_WORLD
     )
-
-    if eventPlayer.abilTemp1:
-      damage(eventPlayer.list2, eventPlayer, SYM_ULT_INIT_DAMAGE)
     wait(0.016)
-
   if (len(eventPlayer.list3)):
     eventPlayer.list3.applyImpulse(
-      eventPlayer.abilDir3 * -1 + vect(0, 0.2679, 0),
-      6,
+      eventPlayer.abilDir1 * -1 + vect(0, 0.2679, 0),
+      7,
       Relativity.TO_WORLD
     )
-    if eventPlayer.abilTemp1:
-      damage(eventPlayer.list3, eventPlayer, SYM_ULT_INIT_DAMAGE)
 
-  eventPlayer.abilTemp1 = false
-  wait(0.4) # Higher values cause enemies to pass through the barrier
+  # damage enemies on barrier deployment
+  if eventPlayer.abilTemp1:
+    eventPlayer.abilTemp1 = false
+    eventPlayer.list2.append(eventPlayer.list3)
+    for eventPlayer.I in range(len(eventPlayer.list2)):
+      # todo: optimize?
+      damage(eventPlayer.list2[eventPlayer.I], eventPlayer, ceil(eventPlayer.list2[eventPlayer.I].getMaxHealth() / 2))
+  
+  wait(0.3) # Higher values cause enemies to pass through the barrier
   if ruleCondition:
       loop()
 
 
-rule "[Symmetra] debug":
-  @Event eachPlayer
-  @Team 1
-  @Hero symmetra
+# rule "[Symmetra] debug":
+#   @Event eachPlayer
+#   @Team 1
+#   @Hero symmetra
 
-  hudHeader(
-    eventPlayer,
-    "DIR: {}, Active: {}, USING ULT: {}
-    ".format(
-      eventPlayer.temp3,
-      eventPlayer.state[SI.BARRIER_ACTIVE],
-      eventPlayer.isUsingUltimate()
-    ),
-    HudPosition.TOP,
-    0,
-    Color.WHITE,
-    HudReeval.VISIBILITY_AND_STRING,
-    SpecVisibility.ALWAYS
-  )
+#   hudHeader(
+#     eventPlayer,
+#     "DIR: {}, Active: {}, USING ULT: {}
+#     ".format(
+#       eventPlayer.temp3,
+#       eventPlayer.state[SI.BARRIER_ACTIVE],
+#       eventPlayer.isUsingUltimate()
+#     ),
+#     HudPosition.TOP,
+#     0,
+#     Color.WHITE,
+#     HudReeval.VISIBILITY_AND_STRING,
+#     SpecVisibility.ALWAYS
+#   )
 
-  # debug:
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.LIGHT_RED,
-    eventPlayer.abilPos0,
-    0.4,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
+#   # debug:
+#   createEffect(
+#     getPlayersInSlot(0, Team.1),
+#     Effect.SPHERE,
+#     Color.LIGHT_RED,
+#     eventPlayer.abilPos0,
+#     0.4,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )
 
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.BLUE,
-    eventPlayer.abilPos1,
-    0.4,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
+#   createEffect(
+#     getPlayersInSlot(0, Team.1),
+#     Effect.SPHERE,
+#     Color.RED,
+#     eventPlayer.abilPos2,
+#     0.05,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )
 
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.RED,
-    eventPlayer.abilPos2,
-    0.05,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
-
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.RED,
-    eventPlayer.abilPos3,
-    0.05,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
+#   createEffect(
+#     getPlayersInSlot(0, Team.1),
+#     Effect.SPHERE,
+#     Color.RED,
+#     eventPlayer.abilPos3,
+#     0.05,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )

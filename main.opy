@@ -42,3 +42,4 @@ rule "Game init":
 #!include "heroes abilities/winston.opy"
 #!include "heroes abilities/ramattra.opy"
 #!include "heroes abilities/sigma.opy"
+#!include "heroes abilities/symmetra.opy"
