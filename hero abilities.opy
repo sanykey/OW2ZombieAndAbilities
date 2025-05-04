@@ -1,16 +1,5 @@
 #!mainFile "main.opy"
 
-rule "[Symmetra] Photon Barrier+":
-  @Event eachPlayer
-  @Team 1
-  @Hero symmetra
-  @Condition eventPlayer.isUsingUltimate() == true
-  
-  smallMessage(getAllPlayers(), "[Photon Barrier+] 50% Damage Reduction (12s)")
-  getPlayers(Team.1).setDamageReceived(50)
-  wait(12)
-  getPlayers(Team.1).setDamageReceived(100)
-
 rule "[Echo - Freeze Beam]":
   @Event playerDealtDamage
   @Team 1
