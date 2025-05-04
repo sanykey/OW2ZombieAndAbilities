@@ -14,8 +14,9 @@ rule "[Ramattra] init":
   eventPlayer.state[SI.TALENTS_COUNT] = 1
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg94a0a5FF>Winston</fg>:\n
   {} {}Experimental barrier{}:
-      - Pushes back enemies when stationary and takes damage because of it.
-      - Pushes enemies back during barrier flight. Takes increased damage.
+      - Pushes back enemies when stationary, taking damage on contact.
+      - Pushes enemies back while flying, but takes increased damage during flight.
+      - HP upgrades do not increase the barrier's health, but reduce the damage it receives.
   ".format(
     heroIcon(Hero.SIGMA),
     abilityIconString(Hero.SIGMA, Button.SECONDARY_FIRE),
@@ -86,6 +87,7 @@ rule "[Ramattra] init":
   waitUntil(updateEveryFrame(eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE)) != null, 99999)
   smallMessage(eventPlayer, "End")
   eventPlayer.state[SI.BARRIER_ACTIVE] = false
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
   destroyEffect(eventPlayer.heroState[SIGMA_I.TMP_EFFECT])
 
 rule "[Sigma] Barrier Effect":

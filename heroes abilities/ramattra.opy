@@ -1,7 +1,6 @@
 #!mainFile "../main.opy"
 
 enum RAMMATTRA_I:
-  BARRIER_ACTIVE = 0
   BARRIER_CENTER = 1
   BARRIER_CHECK_BACK = 2
   BARRIER_CHECK_FORWARD = 3
@@ -11,7 +10,6 @@ enum RAMMATTRA_I:
   BARRIER_RIGHT_FORWARD = 7
   BARRIER_PUSH_DIRECTION = 8
   BARRIER_PUSH_BACK_DIRECTION = 9
-  BARRIER_DAMAGE_STACK = 10
 
 rule "[Ramattra] init":
   @Event eachPlayer
@@ -111,7 +109,6 @@ rule "[Ramattra] Barrier up":
 
   waitUntil(not eventPlayer.isFiringSecondaryFire(), 99999)
   if eventPlayer.isHoldingButton(Button.PRIMARY_FIRE):
-    smallMessage(eventPlayer, "shield cancel")
     return
 
   eventPlayer.temp1 = raycast(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0) - vect(0, 3, 0), null, eventPlayer, true).getHitPosition()
@@ -169,14 +166,17 @@ rule "[Ramattra] Barrier up":
         return
 
   smallMessage(eventPlayer, "Barrier UP")
-  eventPlayer.heroState[RAMMATTRA_I.BARRIER_ACTIVE] = true
+  eventPlayer.state[SI.BARRIER_ACTIVE] = true
+
+  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD]
+  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK] - eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD])
 
 
 rule "[Ramattra] Barrier push enemies":
   @Event eachPlayer
   @Team 1
   @Hero ramattra
-  @Condition eventPlayer.heroState[RAMMATTRA_I.BARRIER_ACTIVE]
+  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
 
   eventPlayer.temp1 = getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_RIGHT_BACK], 3, Team.2)
   eventPlayer.temp2 = [player for player in getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.temp1]
@@ -201,7 +201,7 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
 
-  eventPlayer.heroState[RAMMATTRA_I.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100))
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100))
 
   wait(0.1)
   if ruleCondition:
@@ -211,7 +211,7 @@ rule "[Ramattra] Check is barrier exists":
   @Event eachPlayer
   @Team 1
   @Hero ramattra
-  @Condition eventPlayer.heroState[RAMMATTRA_I.BARRIER_ACTIVE]
+  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
   
   waitUntil(
     isInLoS(
@@ -221,35 +221,6 @@ rule "[Ramattra] Check is barrier exists":
     ),
     10
   )
-  eventPlayer.heroState[RAMMATTRA_I.BARRIER_ACTIVE] = false
-  smallMessage(eventPlayer, "shield down!")
-
-rule "[Ramattra] Damage barrier when pushing enemies every 0.5 sec":
-  @Event eachPlayer
-  @Team 1
-  @Hero ramattra
-  @Condition eventPlayer.heroState[RAMMATTRA_I.BARRIER_ACTIVE]
-
-  if eventPlayer.heroState[RAMMATTRA_I.BARRIER_DAMAGE_STACK]:
-    createProjectile(
-      Projectile.ORISA_FUSION_DRIVER, # proj type
-      null, # owner
-      eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD], # start position
-      normalize(eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK] - eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD]) , # direction
-      Relativity.TO_WORLD, # position relative to
-      ModifyHealth.DAMAGE, # damage or heal
-      Team.ALL, # affectedTeam
-      eventPlayer.heroState[RAMMATTRA_I.BARRIER_DAMAGE_STACK], # damage
-      0, # damageScalar? for AOE?
-      0, # AOE radius
-      DynamicEffect.BAD_EXPLOSION, # explosionEffect
-      DynamicEffect.EXPLOSION_SOUND, # explosionSound
-      0, # oversize
-      100, # speed
-      5 # lifetime
-    )
-    eventPlayer.heroState[RAMMATTRA_I.BARRIER_DAMAGE_STACK] = 0
-
-  wait(0.5)
-  if ruleCondition:
-      loop()
+  smallMessage(eventPlayer, "Barrier down!")
+  eventPlayer.state[SI.BARRIER_ACTIVE] = false
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false

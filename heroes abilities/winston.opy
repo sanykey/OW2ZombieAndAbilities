@@ -70,6 +70,7 @@ rule "[Winston] Create barrier and save position":
   )
 
   eventPlayer.state[SI.BARRIER_ACTIVE] = false
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
 
 
 rule "[Winston] Barrier push enemies":
