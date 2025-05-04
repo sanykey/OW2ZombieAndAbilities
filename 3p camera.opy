@@ -34,26 +34,27 @@ rule "Change 3p Camera state":
     return
   eventPlayer.stopCamera()
 
-rule "Enable 3P Camera (Interact + R)":
+rule "Switch 3P Camera (INTERACT + CROUCH)":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.RELOAD) == true
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition eventPlayer.downedStartTime == false
-  
-  wait(2, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.state[0] = 0
-  wait(0.5)
-  eventPlayer.state[0] = 3
+  @Condition eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)
+
+  waitUntil(not (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)), HERO_INFO_HOLD_DURATION)
+
+  # The player has called up the hero information window, the camera does not need to be changed
+  if (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)): 
+    return
+
+  if eventPlayer.state[SI.CAMERA_3P] == 0:
+    eventPlayer.state[SI.CAMERA_3P] = 3
+    smallMessage(eventPlayer, "3P Camera [ON]")
+  elif eventPlayer.state[SI.CAMERA_3P] == 3:
+    eventPlayer.state[SI.CAMERA_3P] = 4
+    smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
+  else:
+    eventPlayer.state[SI.CAMERA_3P] = 0
+    smallMessage(eventPlayer, "3P Camera [OFF]")
   playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
-  smallMessage(eventPlayer, "3P Camera [ON]")
-  smallMessage(eventPlayer, "Hold for a higher angle")
-  wait(3)
-  if not RULE_CONDITION:
-      return
-  eventPlayer.state[0] = 4
-  playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
-  smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
 
 rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
   @Event eachPlayer
@@ -64,19 +65,6 @@ rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
   pause3PCamera()
   waitUntil(eventPlayer.isFiringSecondaryFire() == false, INFINITY)
   unpause3PCamera()
-
-
-rule "Disable 3P Camera":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  
-  wait(2, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.state[0] = 0
-  eventPlayer.stopCamera()
-  playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
-  smallMessage(eventPlayer, "3P Camera [OFF]")
 
 rule "Pause 3P camera during emote":
   @Event eachPlayer
@@ -93,13 +81,17 @@ rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
   @Team 1
   @Condition eventPlayer.state[0] > 2
   @Condition eventPlayer.isUsingUltimate() == true
-  @Condition (eventPlayer.getCurrentHero() == Hero.BASTION or eventPlayer.getCurrentHero() == Hero.JUNKRAT) == true
+  @Condition (
+    eventPlayer.getCurrentHero() == Hero.BASTION or
+    eventPlayer.getCurrentHero() == Hero.JUNKRAT or
+    eventPlayer.getCurrentHero() == Hero.DOOMFIST
+  ) == true
   
   pause3PCamera()
   waitUntil(eventPlayer.isUsingUltimate() == false, INFINITY)
   unpause3PCamera()
 
-rule "Pause 3P camera during rein shild hold":
+rule "Pause 3P camera during rein barrier hold":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.state[0] > 2

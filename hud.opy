@@ -118,6 +118,7 @@ rule "Open hero talents info hud":
 rule "Close hero talents info hud":
   @Event eachPlayer
   @Team 1
+  @Condition eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   eventPlayer.enableHeroHud()
   eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
