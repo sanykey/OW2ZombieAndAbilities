@@ -59,10 +59,11 @@ rule "Round start":
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
-  if isBotsDisabled == false:
-    for zombieRespawnI in range(MAX_ZOMBIES):
-      getPlayersInSlot(zombieRespawnI, Team.2).respawn()
-      wait(0.25)
+  for zombieRespawnI in range(MAX_ZOMBIES):
+    if isBotsDisabled == false:
+      break
+    getPlayersInSlot(zombieRespawnI, Team.2).respawn()
+    wait(0.25)
 
   isRoundEnd = false
   heal(getPlayers(Team.2), null, 9999)
