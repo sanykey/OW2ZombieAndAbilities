@@ -28,15 +28,15 @@ rule "[Winston] Create barrier and save position":
   @Condition eventPlayer.isUsingAbility2()
 
   eventPlayer.state[SI.BARRIER_ACTIVE] = true
-  eventPlayer.abilityTemp1 = false
+  eventPlayer.abilTemp1 = false
   eventPlayer.abilityProjectile = eventPlayer.getEyePosition()
   eventPlayer.abilityPosition = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + Vector.DOWN * 50, null, getAllPlayers(), false).getHitPosition()
 
-  chaseAtRate(eventPlayer.abilityTemp1, 10000, 9.8)
+  chaseAtRate(eventPlayer.abilTemp1, 10000, 9.8)
   chaseAtRate(
     eventPlayer.abilityProjectile,
     eventPlayer.abilityPosition,
-    eventPlayer.abilityTemp1
+    eventPlayer.abilTemp1
   )
 
   waitUntil(eventPlayer.abilityProjectile == eventPlayer.abilityPosition, 12)
