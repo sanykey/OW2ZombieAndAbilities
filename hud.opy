@@ -111,14 +111,13 @@ rule "Open hero talents info hud":
   @Condition eventPlayer.isHoldingButton(Button.RELOAD) == false
   @Condition eventPlayer.isHoldingButton(Button.JUMP) == false
   
-  wait(0.5, Wait.ABORT_WHEN_FALSE)
+  wait(HERO_INFO_HOLD_DURATION, Wait.ABORT_WHEN_FALSE)
   eventPlayer.disableHeroHud()
   eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = true
 
 rule "Close hero talents info hud":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   eventPlayer.enableHeroHud()
   eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
@@ -168,7 +167,7 @@ rule "[Tips & Tricks]":
   wait(15)
   setObjectiveDescription(eventPlayer, "Tanks have a permanent 15% Damage Reduction passive!", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)
-  setObjectiveDescription(eventPlayer, "You can enable 3P Camera by pressing and holding [{0}] [{1}] together. Hold [{0}] [{2}] together to turn it off.".format(buttonString(Button.INTERACT), buttonString(Button.RELOAD), buttonString(Button.JUMP)), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
+  setObjectiveDescription(eventPlayer, "You can switch 3P Camera by pressing [{0}] [{1}] together.".format(buttonString(Button.INTERACT), buttonString(Button.RELOAD), buttonString(Button.JUMP)), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)
   setObjectiveDescription(eventPlayer, "Struggling to find the secret room? It's somewhere in the castle! When the power is stable look on the floor...", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)

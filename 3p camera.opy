@@ -39,10 +39,16 @@ rule "Switch 3P Camera (INTERACT + CROUCH)":
   @Team 1
   @Condition eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)
 
-  waitUntil(not (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)), HERO_INFO_HOLD_DURATION)
+  waitUntil(
+    (
+      not (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)) or 
+      eventPlayer.isHoldingButton(Button.MELEE)
+    ),
+    HERO_INFO_HOLD_DURATION
+  )
 
   # The player has called up the hero information window, the camera does not need to be changed
-  if (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)): 
+  if (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT) or eventPlayer.isHoldingButton(Button.MELEE)): 
     return
 
   if eventPlayer.state[SI.CAMERA_3P] == 0:

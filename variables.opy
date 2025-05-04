@@ -15,7 +15,6 @@ globalvar orbs_vectors_arr 40
 globalvar isRoundEnd 41
 globalvar vips 43
 globalvar isBotsDisabled 45
-
 globalvar debugVectsArr 46
 globalvar debugCurrentVectNum 47
 globalvar debugCurrentVectEffectArr 48
@@ -40,18 +39,15 @@ playervar healingStat 12
 playervar zombiesfly 26
 playervar orb_roll 27 # current orb drop chance when a bot dies
 playervar isInSecretShop 28
-
 playervar state 30 # use with enum "SI"
 playervar reviveProgress 31
 playervar isTargetInLos 32
 playervar recentStackedHealingDealtToSlot 33
 playervar healingTracker 34
 playervar recentHealingDealtToSlot 35
-
 playervar recentDamageDealtToSlot 29
 playervar recentStackedDamageDealtToSlot 36
 playervar damageAssitsToSlot 58
-
 playervar downedStartTime 37
 playervar reviveTimer 38
 playervar deathCamTarget 39
@@ -70,10 +66,24 @@ playervar widowmakerChargeShot 50
 playervar money 51
 playervar raycast 53
 playervar heroState 55
-playervar abilityTemp1 57 # temp var use for loops with "wait" per hero
+playervar abilTemp1 57 # temp var use for loops with "wait" per hero
 playervar abilityProjectile 60
 playervar abilityPosition 61
 playervar abilityCD 59
+
+playervar abilPos0 64
+playervar abilPos1 65
+playervar abilPos2 66
+playervar abilPos3 67
+playervar abilPos4 68
+
+playervar abilDir0 69
+playervar abilDir1 70
+playervar abilDir2 72
+playervar abilDir3 76
+playervar list 73
+playervar list2 74
+playervar list3 75
 
 #Activated extensions
 #!extension explosionSounds
@@ -107,6 +117,7 @@ playervar abilityCD 59
 #!define REVEAL_DURATION 10
 #!define ZOMBIE_SPEED 80
 #!define BARRIER_DMG_RESIST_MULT 2
+#!define HERO_INFO_HOLD_DURATION 0.5
 
 # vanilla hero constants
 #!define WINSTON_BARRIER_HP 650
