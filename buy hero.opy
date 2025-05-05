@@ -1,8 +1,6 @@
 #!mainFile "main.opy"
 
 rule "Create hero buy positions":
-  @Condition roundNumber == 1
-
   heroesList = [ # 41
     # tanks - 12
     Hero.DOOMFIST,

@@ -1,8 +1,6 @@
 #!mainFile "main.opy"
 
 rule "Create location buy positions":
-  @Condition roundNumber == 1
-  
   # Create buy location positions and effects. lockedAreaEffectsArr [0-7] indexes
   lockedAreaEffectsArr = []
   for I in range(4):

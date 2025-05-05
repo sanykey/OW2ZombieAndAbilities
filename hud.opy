@@ -1,8 +1,6 @@
 #!mainFile "main.opy"
 
 rule "Init hud hero icons of players and how much money they have":
-  @Condition roundNumber == 1
-  
   # round
   hudHeader(
     localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
@@ -71,10 +69,21 @@ rule "Init hud hero icons of players and how much money they have":
 
   # push down hud texts for abilities
   hudSubtext(
-    localPlayer,
+    localPlayer if isGameStarted else null,
     "
     \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
     ",
+    HudPosition.TOP,
+    1,
+    Color.WHITE,
+    HudReeval.VISIBILITY_AND_STRING
+  )
+  # delayed start
+  hudHeader(
+    localPlayer if not isGameStarted else null,
+    "\n\u2001{0}\n\n\u2001Press {1} to Start\u2001\n".format(
+      "Zombie survival", inputBindingString(Button.INTERACT)
+    ), 
     HudPosition.TOP,
     1,
     Color.WHITE,

@@ -1,8 +1,6 @@
 #!mainFile "main.opy"
 
 rule "Inite shop upgrades effects and text":
-  @Condition roundNumber == 1
-
   createEffect(getAllPlayers(), Effect.RING, Color.LIME_GREEN, vectList[vectListI.BUY_HP], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getAllPlayers(), Effect.RING, Color.RED, vectList[vectListI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createEffect(getAllPlayers(), Effect.RING, Color.ORANGE, vectList[vectListI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)

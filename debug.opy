@@ -75,7 +75,6 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
 
 
 # rule "Init":
-#   @Condition roundNumber == 1
 #   Player 1 current coordinates
 #   hudSubtext(getPlayersInSlot(0, Team.1), "P1: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 #   hudSubtext(getPlayersInSlot(0, Team.1), "Current [{0}] vect: {1}".format(debugCurrentVectNum, debugVectsArr[debugCurrentVectNum].getPosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
@@ -93,7 +92,6 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
 #   hudSubtext(getPlayersInSlot(0, Team.1), "DIST SQRT: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.SQRT_RESULT]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
 
 # rule "Create debbugginh vectors list":
-#   @Condition roundNumber == 1
 
 #   debugVectsArr = []
 #   for I in range(vectListI.BUY_HERO_OFFSET, vectListI.BUY_HERO_OFFSET + BUY_HERO_LEN):

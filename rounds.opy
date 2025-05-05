@@ -1,4 +1,14 @@
 #!mainFile "main.opy"
+
+rule "Waiting for players ready":
+  @Event eachPlayer
+  @Team 1
+  @Condition isGameStarted == false
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+
+  smallMessage(getAllPlayers(), "START!")
+  isGameStarted = true
+
 rule "Bot died":
   @Event playerDied
   @Team 2
@@ -19,9 +29,9 @@ rule "disable bot auto respawn":
   eventPlayer.disableRespawn()
 
 rule "Create bots":
+  @Condition isGameStarted == true
   @Condition getNumberOfPlayers(Team.2) < MAX_ZOMBIES
   @Condition getPlayers(Team.1).hasSpawned() == true
-  @Condition roundNumber == 1
   
   wait(1)
   for I in range(MAX_ZOMBIES):
@@ -32,6 +42,7 @@ rule "Create bots":
 
 
 rule "Round start":
+  @Condition isGameStarted == true
   @Condition roundRemainingBots <= 0
   @Condition matchIsOver == false
   

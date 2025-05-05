@@ -1,8 +1,6 @@
 #!mainFile "main.opy"
 
 rule "World Effects":
-  @Condition roundNumber == 1
-
   # "<3" room icons
   createInWorldText(getPlayers(Team.1), iconString(Icon.HEART), vect(139, 12, -18.3), 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY)
   createInWorldText(getPlayers(Team.1), iconString(Icon.HEART), vect(114, 12, -11.6), 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY)

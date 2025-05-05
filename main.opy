@@ -11,6 +11,7 @@ rule "Game init":
   Y = [] # spawn points?
   matchIsOver = false
   zombiesflyIOnandOff = true
+  isGameStarted = false
 
 #!include "player joined.opy"
 # #!include "ally bot.opy"
