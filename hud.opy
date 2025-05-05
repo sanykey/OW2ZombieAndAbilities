@@ -167,7 +167,14 @@ rule "[Tips & Tricks]":
   wait(15)
   setObjectiveDescription(eventPlayer, "Tanks have a permanent 15% Damage Reduction passive!", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)
-  setObjectiveDescription(eventPlayer, "You can switch 3P Camera by pressing [{0}] [{1}] together.".format(buttonString(Button.INTERACT), buttonString(Button.RELOAD), buttonString(Button.JUMP)), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
+  setObjectiveDescription(
+    eventPlayer,
+    "You can switch 3P Camera by pressing {0} + {1}.".format(
+      buttonString(Button.INTERACT),
+      buttonString(Button.CROUCH)
+    ),
+    HudReeval.VISIBILITY_SORT_ORDER_AND_STRING
+  )
   wait(15)
   setObjectiveDescription(eventPlayer, "Struggling to find the secret room? It's somewhere in the castle! When the power is stable look on the floor...", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   wait(15)

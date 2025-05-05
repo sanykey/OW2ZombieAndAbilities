@@ -129,3 +129,22 @@ rule "[Ramattra][Reinhardt][Sigma][Winston] Damage barrier":
   wait(0.5)
   if ruleCondition:
       loop()
+
+
+rule "Slowed zombies":
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.state[SI.CHANGED_SPEED_TIME] > getTotalTimeElapsed()
+  @Condition (
+    not eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] or
+    eventPlayer.state[SI.CHANGED_SPEED_TIME] < eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV]
+  )
+  smallMessage(getAllPlayers(), "SLOW!! {}".format(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT]))
+  eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
+  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_TIME]
+  waitUntil(eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
+  smallMessage(getAllPlayers(), "STOP SLOW")
+  eventPlayer.setMoveSpeed(ZOMBIE_SPEED)
+  eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
+  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED
+  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = false

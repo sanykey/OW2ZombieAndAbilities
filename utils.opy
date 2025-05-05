@@ -34,12 +34,11 @@ rule "Crash Protection 40+ [OFF]":
   setSlowMotion(100)
 
 rule "shop ServerLoad info":
-  @Condition roundNumber == 1
   hudSubheader(
-    getPlayersInSlot(0, Team.1),
+    localPlayer if localPlayer == hostPlayer else false,
     "Server load: {0} / AVG: {1}/ Max: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()),
     HudPosition.RIGHT,
-    -1,
+    -5,
     rgb(255, 280 - getAverageServerLoad(), 0),
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )

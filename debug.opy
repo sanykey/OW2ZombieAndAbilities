@@ -1,15 +1,34 @@
 #!mainFile "main.opy"
 
-rule "[debug] Add money and health":
+rule "[debug] Init":
+  hudText(
+    localPlayer,
+    null,
+    "The server is running in development mode.
+    The mod is not ready yet.",
+    null,
+    HudPosition.RIGHT,
+    -10,
+    null,
+    rgb(241, 134, 39),
+    null,
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )
+
+rule "[debug] User init":
   @Event playerJoined
   @Team 1
-  @Slot 0
+  # @Slot 0
   
   # waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  # eventPlayer.money += 1000000
-  # eventPlayer.healthStat += 200
-  # eventPlayer.setMaxHealth(eventPlayer.healthStat)
-  # eventPlayer.startForcingHero(Hero.WIDOWMAKER)
+  eventPlayer.state[0] = 4
+  eventPlayer.money += 1000000
+
+  if eventPlayer == hostPlayer:
+    eventPlayer.startForcingHero(Hero.MAUGA)
+
+  eventPlayer.healthStat += 500
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
   # eventPlayer.damageStat = 10000
   # eventPlayer.setDamageDealt(eventPlayer.damageStat)
   # eventPlayer.healingStat += 10000
@@ -17,10 +36,20 @@ rule "[debug] Add money and health":
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
 
 
-rule "Deactivate bots (Ctrl + shift + interact)":
+
+
+rule "[debug] Charge ultimate":
   @Event eachPlayer
   @Team 1
-  @Slot 0
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  
+  eventPlayer.setUltCharge(100)
+
+
+rule "[debug] Deactivate bots (Ctrl + shift + interact)":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer == hostPlayer
   @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
   @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true

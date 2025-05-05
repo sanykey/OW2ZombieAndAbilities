@@ -29,6 +29,7 @@ globalvar combatantsCount 58
 globalvar zombieStats 59
 globalvar heroesList 60
 globalvar zombieRespawnI 61
+globalvar isGameStarted = 62
 
 #Player variables
 
@@ -160,6 +161,9 @@ enum SI:
   BARRIER_DAMAGE_DIR = 22
   BARRIER_DAMAGE_STACK = 23
   BARRIER_ACTIVE = 24
+  CHANGED_SPEED_TIME = 25
+  CHANGED_SPEED_AMOUNT = 26
+  CHANGED_SPEED_AMOUNT_PREV = 27
 
 # for playervar talents
 enum TI:
