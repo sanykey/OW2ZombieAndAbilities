@@ -68,7 +68,6 @@ playervar raycast
 playervar heroState
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar abilityProjectile
-playervar abilityPosition
 playervar abilityCD
 
 playervar abilPos0
@@ -104,6 +103,7 @@ playervar list3
 #!define REVEAL_DURATION 10
 #!define ZOMBIE_SPEED 80
 #!define HERO_INFO_HOLD_DURATION 0.5
+#!define LAST_CC_ATTACK_DURATION 5
 
 # vanilla hero constants
 #!define WINSTON_BARRIER_HP 650

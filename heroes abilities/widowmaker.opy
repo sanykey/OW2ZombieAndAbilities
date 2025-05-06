@@ -12,7 +12,7 @@ rule "[Widowmaker] Talent texts":
 
   wait(1) # waiting for the previous hero to clear hero data
   # todo: debug
-  eventPlayer.state[SI.TALENTS_COUNT] = 7
+  eventPlayer.state[SI.TALENTS_COUNT] = 8
   eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
   eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
   eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] = true
@@ -20,30 +20,33 @@ rule "[Widowmaker] Talent texts":
   eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] = true
   eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] = true
   eventPlayer.talents[TI.WIDOWMAKER_TRACKER_VENOM] = true
-  
+
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgA686ABFF>Widowmaker</fg>:\n
-  {} <fgA686ABFF>Widow's Kiss:</fg>
-      - Scoped shots reveals enemies ({} seconds)
-      - Fully charged scoped shots pierce through walls and enemies (only 1 enemy)
-      - Gain smoother aerial scoping\n\n
-  {} <fgA686ABFF>Grappling Hook:</fg>
-      - Gain a second hook charge
-      - Drop venom grenades behind while grappling
-      - Hold crouch button when grappling hook ends: temporarily latch onto any nearby walls\n\n
-  {} <fgA686ABFF>Venom Mine:</fg>
-      - Slowing and reveal ({} seconds) enemies hit 
+  {} <fgA686ABFF>Widow's Kiss</fg>:
+      - Scoped shots reveals enemies ({} seconds).
+      - Fully charged scoped shots pierce through walls and one enemy.
+      - Improved aerial scoping control.\n\n
+  {} <fgA686ABFF>Grappling Hook</fg>:
+      - Gain a second hook charge.
+      - Drop venom grenades while grappling.
+      - Hold the crouch button at the end of a grapple to briefly cling to nearby walls.\n\n
+  {} <fgA686ABFF>Venom Mine</fg>:
+      - Slows and reveals enemies hit for {} seconds.\n\n
+  {} <fgA686ABFF>Infra sight</fg>:
+      - Allows shots to pierce through multiple enemies and walls.
   ".format(
     heroIcon(Hero.WIDOWMAKER),
     abilityIconString(Hero.WIDOWMAKER, Button.PRIMARY_FIRE),
     REVEAL_DURATION,
     abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1),
     abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2),
-    REVEAL_DURATION
+    REVEAL_DURATION,
+    abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE)
   )
 
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
-  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  clearHeroInfo()
 
 # Party Favours: Gain a second hook charge
 rule "[Widowmaker] Party Favours":
@@ -217,8 +220,10 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
   eventPlayer.temp2 = [player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()]
 
   for eventPlayer.temp1 in range(len(eventPlayer.temp2)):
-    if eventPlayer.temp3 == true:
+    # If eventPlayer.temp3 == true, it means there's already been a hit through a wall or an enemy. Cancel damage to others if no ultimates are present
+    if eventPlayer.temp3 and eventPlayer.isUsingUltimate(): 
       break
+
     if raycast(
       eventPlayer.getEyePosition(),
       eventPlayer.getEyePosition() + eventPlayer.raycast[RI.FACING_DIRECTION] * 200,
@@ -238,7 +243,8 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
           eventPlayer,
           300
         )
-        eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
+        if not eventPlayer.temp3:
+          eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
         eventPlayer.heroState[WIDOWMAKER_SI.LAST_HEADSHOT] = 0.5 + getTotalTimeElapsed() # for headshot message
       else:
 
@@ -252,7 +258,8 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
             eventPlayer,
             120
           )
-          eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
+          if not eventPlayer.temp3:
+            eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
 
 
   if eventPlayer.temp3 == true:

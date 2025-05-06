@@ -12,17 +12,18 @@ rule "[Winston] init":
   wait(1) # waiting for the previous hero to clear hero data
   eventPlayer.state[SI.TALENTS_COUNT] = 1
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fga0a9baFF>Winston</fg>:\n
-  {} {}Barrier projector</fg>:
-      - Pushes enemies outside and takes damage because of it.
+  {} {}Barrier projector{}:
+      - Pushes out enemies and takes damage on contact.
+      - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.
   ".format(
     heroIcon(Hero.WINSTON),
     abilityIconString(Hero.WINSTON, Button.ABILITY_2),
-    "<fga0a9baFF>"
+    "<fga0a9baFF>",
+    "</fg>"
   )
 
   waitUntil(eventPlayer.getHero() != Hero.WINSTON, INFINITY)
-  eventPlayer.state[SI.TALENTS_COUNT] = 0
-  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
+  clearHeroInfo()
 
 # abilPos0: current Barrier projectile position
 # abilPos1: Barrier projectile drop location
@@ -93,7 +94,14 @@ rule "[Winston] Barrier push enemies":
   eventPlayer.list = getPlayersInRadius(eventPlayer.abilPos0, 6, Team.2)
 
   for eventPlayer.I in range(len(eventPlayer.list)):
-    eventPlayer.list[eventPlayer.I].applyImpulse(normalize(eventPlayer.list[eventPlayer.I].getPosition() - eventPlayer.abilPos0 + vect(0, 0.5, 0.866)), 12 - distance(eventPlayer.abilPos0, eventPlayer.list[eventPlayer.I]), Relativity.TO_WORLD)
+    eventPlayer.list[eventPlayer.I].applyImpulse(
+      normalize(eventPlayer.list[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0), 15 - distance(eventPlayer.abilPos0, eventPlayer.list[eventPlayer.I]), Relativity.TO_WORLD
+    )
+
+  # save information about bots being pushed to account for damage when falling down
+  eventPlayer.list.state[SI.LAST_CC_ATTACKER] = eventPlayer
+  eventPlayer.list.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list.state[SI.LAST_CC_WAS_IN_AIR] = false
 
   eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
 

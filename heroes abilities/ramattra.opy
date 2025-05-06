@@ -22,7 +22,8 @@ rule "[Ramattra] init":
   eventPlayer.state[SI.TALENTS_COUNT] = 1
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg9d8cd0FF>Rammatra</fg>:\n
   {} {}Void barrier{}:
-      - Pushes back enemies and takes damage because of it.
+      - Pushes back enemies and takes damage on contact.
+      - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.
   ".format(
     heroIcon(Hero.RAMATTRA),
     abilityIconString(Hero.RAMATTRA, Button.SECONDARY_FIRE),
@@ -31,8 +32,7 @@ rule "[Ramattra] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.RAMATTRA, INFINITY)
-  eventPlayer.state[SI.TALENTS_COUNT] = 0
-  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
+  clearHeroInfo()
 
   # hudHeader(
   #   eventPlayer,
@@ -179,12 +179,15 @@ rule "[Ramattra] Barrier push enemies":
   @Hero ramattra
   @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
 
-  eventPlayer.temp1 = getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_RIGHT_BACK], 3, Team.2)
-  eventPlayer.temp2 = [player for player in getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.temp1]
-  eventPlayer.temp1.append(eventPlayer.temp2)
+  eventPlayer.list = getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_RIGHT_BACK], 3, Team.2)
+  eventPlayer.list.append([player for player in getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list])
 
+  # save information about bots being pushed to account for damage when falling down
+  eventPlayer.list.state[SI.LAST_CC_ATTACKER] = eventPlayer
+  eventPlayer.list.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list.state[SI.LAST_CC_WAS_IN_AIR] = false
 
-  [player for player in eventPlayer.temp1 if (
+  [player for player in eventPlayer.list if (
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK]) > 
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD])
   )].applyImpulse(
@@ -193,7 +196,7 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
   wait(0.016)
-  [player for player in eventPlayer.temp1 if (
+  [player for player in eventPlayer.list if (
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK]) < 
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD])
   )].applyImpulse(
@@ -202,7 +205,7 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
 
   wait(RAM_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

@@ -11,7 +11,22 @@ rule "[Mauga] init":
   @Team 1
   @Hero mauga
 
+  eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg9d8cd0FF>Mauga</fg>:\n
+  {} {}Cage fight{}:
+    - Slows enemies within the ability’s radius by 75%.
+    - Pushes back enemies outside the barrier and takes damage on contact.
+    - If the barrier malfunctions, a message will appear and your ultimate charge will be refunded.
+  ".format(
+    heroIcon(Hero.MAUGA),
+    abilityIconString(Hero.MAUGA, Button.ULTIMATE),
+    "<fg9d8cd0FF>",
+    "</fg>"
+  )
+
   waitUntil(eventPlayer.getHero() != Hero.MAUGA, INFINITY)
+  clearHeroInfo()
+
 
 rule "[Mauga] Create barrier (ultimate)":
   @Event eachPlayer
@@ -91,21 +106,12 @@ rule "[Mauga] Create barrier (ultimate)":
     wait(0.2)
     eventPlayer.setUltCharge(100)
     return
-  
-  # push players inside to center when ult starting
-  eventPlayer.list = getPlayersInRadius(eventPlayer.abilPos0, 10, Team.2)
-  for eventPlayer.I in range(len(eventPlayer.list)):
-    eventPlayer.list[eventPlayer.I].applyImpulse(
-      normalize(
-        eventPlayer.abilPos0 - eventPlayer.list[eventPlayer.I].getPosition() + vect(0, 0.2679, 0)
-      ),
-      20,
-      Relativity.TO_WORLD
-    )
 
   # keep the position without height, for more accurate calculations in the cylindrical barrier:
   eventPlayer.abilPos1 = vect(eventPlayer.abilPos0.x, false, eventPlayer.abilPos0.z) 
   eventPlayer.state[SI.BARRIER_ACTIVE] = true
+  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.temp2
+  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.temp3 - eventPlayer.temp2)
 
 rule "[Mauga] Barrier push enemies":
   @Event eachPlayer
@@ -129,6 +135,12 @@ rule "[Mauga] Barrier push enemies":
         Relativity.TO_WORLD
       )
       eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
+
+      # save information about bots being pushed to account for damage when falling down
+      eventPlayer.list[eventPlayer.I].state[SI.LAST_CC_ATTACKER] = eventPlayer
+      eventPlayer.list[eventPlayer.I].state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+      eventPlayer.list[eventPlayer.I].state[SI.LAST_CC_WAS_IN_AIR] = false
+
     else: # slow down players inside barrier
       eventPlayer.list[eventPlayer.I].state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 0.5
       eventPlayer.list[eventPlayer.I].state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 4

@@ -1,5 +1,9 @@
 #!mainFile "../main.opy"
 
+def clearHeroInfo():
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
+
 def sqrtNewton():
   @Name "Subroutine: Calculate square root"
   eventPlayer.raycast[RI.SQRT_RESULT] = eventPlayer.raycast[RI.DISC] / 2
@@ -139,11 +143,9 @@ rule "Slowed zombies":
     not eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] or
     eventPlayer.state[SI.CHANGED_SPEED_TIME] < eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV]
   )
-  smallMessage(getAllPlayers(), "SLOW!! {}".format(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT]))
   eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_TIME]
   waitUntil(eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
-  smallMessage(getAllPlayers(), "STOP SLOW")
   eventPlayer.setMoveSpeed(ZOMBIE_SPEED)
   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED

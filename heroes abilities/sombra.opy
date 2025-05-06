@@ -35,7 +35,7 @@ rule "[Sombra] Init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)
-  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  clearHeroInfo()
 
 
 rule "[Sombra] Invisible detect":
@@ -93,20 +93,6 @@ rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
 #   eventPlayer.Damage_Dealt -= 50
 #   destroyEffect(eventPlayer.Effects__[1])
 #   eventPlayer.Ability_Active = false
-
-# # From "Heat Street PvE Talents" (KFVAY)
-rule "[Sombra] melee from invisible":
-  @Event playerDealtKnockback
-  @Team 1
-  @Hero sombra
-  @Condition eventPlayer.state[SI.IS_INVISIBLE] == true
-  @Condition eventAbility == Button.MELEE
-  
-  victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
-  damage(victim, eventPlayer, 40)
-  playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
-  smallMessage(eventPlayer, "{0} points".format(25 * eventPlayer.H))
-  eventPlayer.money += 25 * eventPlayer.H
 
 # # From "Heat Street PvE Talents" (KFVAY)
 # rule "[Sombra] Cyberattack":

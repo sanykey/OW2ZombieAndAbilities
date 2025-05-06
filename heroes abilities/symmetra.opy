@@ -26,8 +26,7 @@ rule "[Symmetra] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SYMMETRA, INFINITY)
-  eventPlayer.state[SI.TALENTS_COUNT] = 0
-  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
+  clearHeroInfo()
 
 
 # variables:
@@ -169,10 +168,16 @@ rule "[Symmetra] Barrier push enemies":
       Relativity.TO_WORLD
     )
 
+
+  eventPlayer.list2.append(eventPlayer.list3)
+  # save information about bots being pushed to account for damage when falling down
+  eventPlayer.list2.state[SI.LAST_CC_ATTACKER] = eventPlayer
+  eventPlayer.list2.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list2.state[SI.LAST_CC_WAS_IN_AIR] = false
+
   # damage enemies on barrier deployment
   if eventPlayer.abilTemp1:
     eventPlayer.abilTemp1 = false
-    eventPlayer.list2.append(eventPlayer.list3)
     for eventPlayer.I in range(len(eventPlayer.list2)):
       # todo: optimize?
       damage(eventPlayer.list2[eventPlayer.I], eventPlayer, ceil(eventPlayer.list2[eventPlayer.I].getMaxHealth() / 2))
