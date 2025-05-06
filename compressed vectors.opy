@@ -19,7 +19,7 @@ rule "Create location buy positions":
     vect(87.651, 15, -28.387),
     vect(107.743, 12.171, -31.426),
 
-    # Effects for forbidden zones in doorways [13-24] len = 12
+    # Effects for forbidden zones in doorways [13-24] (vectListI.LOCKED_AREA_EFFECTS_OFFSET), len = 12 (LOCKED_AREA_EFFECTS_LEN). 
     vect(12.505, 5.485, -40.846),
     vect(22.609, 6.314, -45.045),
     vect(20.011, 6.314, -40.406),
@@ -135,12 +135,15 @@ rule "Create location buy positions":
   B = null
 
 #!define BUY_HERO_LEN 40
+#!define LOCKED_AREA_EFFECTS_LEN 12
 
   enum vectListI:
     BUY_LOCATION_A = 0
     BUY_LOCATION_B = 1
     BUY_LOCATION_C = 2
     BUY_LOCATION_D = 3
+
+    LOCKED_AREA_EFFECTS_OFFSET = 13
 
     EXIT_SHOP_TELEPORT_TO = 37
     CONNECT_SHOP = 38

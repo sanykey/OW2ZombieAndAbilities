@@ -17,37 +17,9 @@ rule "Create location buy positions":
     lockedAreaEffectsArr.append(getLastCreatedText())
 
   ## Create closed doorway effects. lockedAreaEffectsArr [8-19] indexes: ##
-  # doorways to Area A:
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[13], 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[14], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[15], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  
-  # doorways to Area B:
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[16], 3.25, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[17], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[18], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[19], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  
-  # doorways to Area C:
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[20], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[21], 2.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[22], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  
-  # doorways to Area D:
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[23], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
-  createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, vectList[24], 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  lockedAreaEffectsArr.append(getLastCreatedEntity())
+  for I in range(vectListI.LOCKED_AREA_EFFECTS_OFFSET, vectListI.LOCKED_AREA_EFFECTS_OFFSET + LOCKED_AREA_EFFECTS_LEN):
+    createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, evalOnce(vectList[I]), 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    lockedAreaEffectsArr.append(getLastCreatedEntity())
 
 rule "Locked area 0":
   @Event eachPlayer
