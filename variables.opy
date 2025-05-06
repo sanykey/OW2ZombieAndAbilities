@@ -103,7 +103,6 @@ playervar list3
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
 #!define ZOMBIE_SPEED 80
-#!define BARRIER_DMG_RESIST_MULT 2
 #!define HERO_INFO_HOLD_DURATION 0.5
 
 # vanilla hero constants

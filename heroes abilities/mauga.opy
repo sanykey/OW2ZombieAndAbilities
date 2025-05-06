@@ -3,6 +3,8 @@
 #!define MAU_INNER_CHECK_RADIUS 7.2
 #!define MAU_OUTER_CHECK_RADIUS 8.2
 #!define MAU_ULT_DURATION 8
+#!define MAU_BARRIER_PUSH_ENENT_WAIT 0.3
+
 
 rule "[Mauga] init":
   @Event eachPlayer
@@ -33,7 +35,6 @@ rule "[Mauga] Create barrier (ultimate)":
     eventPlayer.temp3 = 1.26 - (1.85 - eventPlayer.temp2)
   else:
     eventPlayer.temp3 = 1.26
-  # smallMessage(eventPlayer, "dist: {} core:{}".format(eventPlayer.temp2, eventPlayer.temp3))
 
 
   eventPlayer.abilPos0 = raycast(
@@ -44,14 +45,14 @@ rule "[Mauga] Create barrier (ultimate)":
     true
   ).getHitPosition()
 
-  smallMessage(eventPlayer, "dist: {}".format(distance(
-    eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3
-  )))
+  # smallMessage(eventPlayer, "dist: {}".format(distance(
+  #   eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3
+  # )))
 
   if distance(
     eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3
   ) > 2.58:
-    smallMessage(eventPlayer, "too far")
+    # smallMessage(eventPlayer, "too far")
     eventPlayer.abilPos0 = raycast(
       eventPlayer.getEyePosition(),
       eventPlayer.getEyePosition() + Vector.DOWN * 25,
@@ -83,12 +84,12 @@ rule "[Mauga] Create barrier (ultimate)":
 
   if not eventPlayer.temp2 or not eventPlayer.temp3:
     smallMessage(eventPlayer, "Barrier deploy failed! Try again")
-    # wait(0.7)
-    # eventPlayer.forceButtonPress(Button.ULTIMATE)
-    # wait(0.016)
-    # eventPlayer.stopForcingButton(Button.ULTIMATE)
-    # wait(0.2)
-    # eventPlayer.setUltCharge(100)
+    wait(0.7)
+    eventPlayer.forceButtonPress(Button.ULTIMATE)
+    wait(0.016)
+    eventPlayer.stopForcingButton(Button.ULTIMATE)
+    wait(0.2)
+    eventPlayer.setUltCharge(100)
     return
   
   # push players inside to center when ult starting
@@ -127,12 +128,12 @@ rule "[Mauga] Barrier push enemies":
         15,
         Relativity.TO_WORLD
       )
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / 10 * 3 # {/ 10 * 3} bacause 0.3 wait time
+      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
     else: # slow down players inside barrier
       eventPlayer.list[eventPlayer.I].state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 0.5
       eventPlayer.list[eventPlayer.I].state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 4
 
-  wait(0.3)
+  wait(MAU_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
     loop()
 
@@ -148,7 +149,6 @@ rule "[Mauga] Check is barrier exists":
   )
   eventPlayer.state[SI.BARRIER_ACTIVE] = false
   eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
-  smallMessage(eventPlayer, "Barrier down")
 
 
 # debug:
@@ -175,38 +175,38 @@ rule "[Mauga][debug]":
   #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   # )
 
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.RED,
-    eventPlayer.abilPos0,
-    0.5,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
+  # createEffect(
+  #   getPlayersInSlot(0, Team.1),
+  #   Effect.SPHERE,
+  #   Color.RED,
+  #   eventPlayer.abilPos0,
+  #   0.5,
+  #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  # )
 
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.PURPLE,
-    eventPlayer.temp1,
-    0.1,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
+  # createEffect(
+  #   getPlayersInSlot(0, Team.1),
+  #   Effect.SPHERE,
+  #   Color.PURPLE,
+  #   eventPlayer.temp1,
+  #   0.1,
+  #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  # )
 
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.BLUE,
-    eventPlayer.temp2,
-    0.1,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
+  # createEffect(
+  #   getPlayersInSlot(0, Team.1),
+  #   Effect.SPHERE,
+  #   Color.BLUE,
+  #   eventPlayer.temp2,
+  #   0.1,
+  #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  # )
 
-  createEffect(
-    getPlayersInSlot(0, Team.1),
-    Effect.SPHERE,
-    Color.GREEN,
-    eventPlayer.temp3,
-    0.1,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
+  # createEffect(
+  #   getPlayersInSlot(0, Team.1),
+  #   Effect.SPHERE,
+  #   Color.GREEN,
+  #   eventPlayer.temp3,
+  #   0.1,
+  #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+  # )

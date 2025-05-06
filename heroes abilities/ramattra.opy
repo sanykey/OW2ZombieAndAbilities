@@ -1,5 +1,7 @@
 #!mainFile "../main.opy"
 
+#!define RAM_BARRIER_PUSH_ENENT_WAIT 0.1
+
 enum RAMMATTRA_I:
   BARRIER_CENTER = 1
   BARRIER_CHECK_BACK = 2
@@ -161,11 +163,10 @@ rule "[Ramattra] Barrier up":
         isInLoS(eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD], eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK], BarrierLos.BLOCKED_BY_ALL_BARRIERS) or
         not isInLoS(eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD], eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK], BarrierLos.PASS_THROUGH_BARRIERS)
       ):
-        smallMessage(eventPlayer, "Barrier fail!")
-        # todo: set barrier cooldown = 0
+        smallMessage(eventPlayer, "Barrier deploy failed! Try again")
+        eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 0)
         return
 
-  smallMessage(eventPlayer, "Barrier UP")
   eventPlayer.state[SI.BARRIER_ACTIVE] = true
 
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD]
@@ -201,9 +202,9 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100))
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
 
-  wait(0.1)
+  wait(RAM_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
       loop()
 
@@ -221,6 +222,5 @@ rule "[Ramattra] Check is barrier exists":
     ),
     10
   )
-  smallMessage(eventPlayer, "Barrier down!")
   eventPlayer.state[SI.BARRIER_ACTIVE] = false
   eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false

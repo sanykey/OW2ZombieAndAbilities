@@ -1,5 +1,7 @@
 #!mainFile "../main.opy"
 
+#!define REI_BARRIER_PUSH_ENENT_WAIT 0.1
+
 rule "[Reinhard] init":
   @Event eachPlayer
   @Team 1
@@ -44,10 +46,10 @@ rule "[Reinhard] Barrier push enemies":
   )
   eventPlayer.temp1.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / BARRIER_DMG_RESIST_MULT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.temp1) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
   eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.getEyePosition() - eventPlayer.state[SI.BARRIER_DAMAGE_FROM])
 
-  wait(0.1)
+  wait(REI_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
       loop()

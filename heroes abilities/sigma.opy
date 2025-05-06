@@ -1,9 +1,10 @@
 #!mainFile "../main.opy"
 
+#!define SIG_BARRIER_PUSH_ENENT_WAIT 0.2
+
 enum SIGMA_I:
   TMP_EFFECT = 0
-  BARRIER_AFFECTED_P = 1
-  BARRIER_FD = 2
+  BARRIER_FD = 1
 
 rule "[Ramattra] init":
   @Event eachPlayer
@@ -67,7 +68,6 @@ rule "[Ramattra] init":
   @Hero sigma 
   @Condition updateEveryFrame(eventPlayer.isFiringSecondaryFire()) == true
 
-  smallMessage(eventPlayer, "Start")
   eventPlayer.state[SI.BARRIER_ACTIVE] = true
   eventPlayer.abilityPosition = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2.25, null, eventPlayer, true).getHitPosition()
   eventPlayer.heroState[SIGMA_I.BARRIER_FD] = eventPlayer.getFacingDirection()
@@ -82,10 +82,8 @@ rule "[Ramattra] init":
 
   # calculate position for barier damaging
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilityPosition
-  smallMessage(eventPlayer, "Stop")
 
   waitUntil(updateEveryFrame(eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE)) != null, 99999)
-  smallMessage(eventPlayer, "End")
   eventPlayer.state[SI.BARRIER_ACTIVE] = false
   eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
   destroyEffect(eventPlayer.heroState[SIGMA_I.TMP_EFFECT])
@@ -96,28 +94,27 @@ rule "[Sigma] Barrier Effect":
   @Hero sigma
   @Condition eventPlayer.state[SI.BARRIER_ACTIVE] == true
   
-  eventPlayer.heroState[SIGMA_I.BARRIER_AFFECTED_P] = [player for player in getPlayersInRadius(eventPlayer.abilityPosition, 3.5, Team.2) if player.isAlive()]
+  eventPlayer.list = [player for player in getPlayersInRadius(eventPlayer.abilityPosition, 3.5, Team.2) if player.isAlive()]
 
   # calculate position for barier damaging
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilityPosition + Vector.UP * 1.8
   eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = eventPlayer.heroState[SIGMA_I.BARRIER_FD]
 
   # calculate damage to barrier
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.heroState[SIGMA_I.BARRIER_AFFECTED_P]) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100))
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
 
   if eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
-    eventPlayer.heroState[SIGMA_I.BARRIER_AFFECTED_P].applyImpulse(
+    eventPlayer.list.applyImpulse(
       normalize(eventPlayer.heroState[SIGMA_I.BARRIER_FD] + vect(0, 0.2679, 0)), 10, Relativity.TO_WORLD
     )
+    eventPlayer.state[SI.BARRIER_DAMAGE_STACK] *= 1.5 # more damage when mooving 
 
-    eventPlayer.state[SI.BARRIER_DAMAGE_STACK] *= 1.5 # * 1.5 * 2 (coz less wait time) more damage when mooving 
-
-    wait(0.1)
   else:
-    eventPlayer.heroState[SIGMA_I.BARRIER_AFFECTED_P].applyImpulse(
+    eventPlayer.list.applyImpulse(
       normalize(eventPlayer.heroState[SIGMA_I.BARRIER_FD] + vect(0, 0.2679, 0)), 15, Relativity.TO_WORLD
     )
-    wait(0.2)
+
+  wait(SIG_BARRIER_PUSH_ENENT_WAIT)
 
   if RULE_CONDITION:
     loop()

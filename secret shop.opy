@@ -97,7 +97,8 @@ rule "Teleport players to secret shop":
   eventPlayer.teleport(vectList[vectListI.ENTER_SHOP_TELEPORT_TO])
   wait(30)
   if eventPlayer.isInSecretShop == false:
-      goto lbl_0
+    goto lbl_0
+      
   smallMessage(eventPlayer, "Leaving in 5...")
   wait(1)
   smallMessage(eventPlayer, 4)
@@ -110,7 +111,7 @@ rule "Teleport players to secret shop":
   wait(1)
   lbl_0:
   if eventPlayer.isInSecretShop == false:
-      goto lbl_1
+    goto lbl_1
   eventPlayer.teleport(vectList[vectListI.EXIT_SHOP_TELEPORT_TO])
   lbl_1:
   eventPlayer.isInSecretShop = false

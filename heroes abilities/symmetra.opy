@@ -4,6 +4,7 @@
 # - [Shield Tracking](https://workshop.codes/XQG9N)
 
 #!define SYM_ULT_DURATION 12
+#!define SYM_BARRIER_PUSH_ENENT_WAIT 0.3
 
 rule "[Symmetra] init":
   @Event eachPlayer
@@ -146,7 +147,7 @@ rule "[Symmetra] Barrier push enemies":
 
     # get players to push from barrier
     if abs(eventPlayer.temp1) < 3:
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * 3 # Multiplication by 3 due to wait(0.3)
+      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * SYM_BARRIER_PUSH_ENENT_WAIT
 
       if eventPlayer.temp1 > 0:
         eventPlayer.list2.append(eventPlayer.list[eventPlayer.I])
@@ -176,7 +177,7 @@ rule "[Symmetra] Barrier push enemies":
       # todo: optimize?
       damage(eventPlayer.list2[eventPlayer.I], eventPlayer, ceil(eventPlayer.list2[eventPlayer.I].getMaxHealth() / 2))
   
-  wait(0.3) # Higher values cause enemies to pass through the barrier
+  wait(SYM_BARRIER_PUSH_ENENT_WAIT) # Higher values cause enemies to pass through the barrier
   if ruleCondition:
       loop()
 
