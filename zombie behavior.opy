@@ -143,36 +143,30 @@ rule "Bots under player impulse":
 rule "Bots antifall safety and fall damage after cc damage from players":
   @Event eachPlayer
   @Team 2
+  eventPlayer.temp1 = false
+  # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
+  if eventPlayer.getPosition().x < 0 and eventPlayer.getPosition().z > -35: 
+    if eventPlayer.getPosition().y < -6:
+      eventPlayer.temp1 = true
+  elif eventPlayer.getPosition().x > 43: # ZONE B
+    if eventPlayer.getPosition().y < 4.7:
+      eventPlayer.temp1 = true
+  else:
+    if eventPlayer.getPosition().y < 0: # Other
+      eventPlayer.temp1 = true
 
-  if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] == true:
-    if (eventPlayer.isInAir() == false and eventPlayer.state[SI.LAST_CC_WAS_IN_AIR] == true):
-      eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
-    else:
-      eventPlayer.state[SI.LAST_CC_WAS_IN_AIR] = eventPlayer.isInAir()
-
-  for eventPlayer.temp1 in range(vectListI.BOTS_ANTI_FALL_LEN):
-    if eventPlayer.temp1 == 7:
-      eventPlayer.temp2 = 30
-    elif eventPlayer.temp1 == 8:
-      eventPlayer.temp2 = 12
-    elif eventPlayer.temp1 == 9:
-      eventPlayer.temp2 = 16
-    else:
-      eventPlayer.temp2 = 15
-
-    if distance(eventPlayer, vectList[eventPlayer.temp1 + vectListI.BOTS_ANTI_FALL_OFFSET]) <= eventPlayer.temp2:
-      # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
-      if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] >= getTotalTimeElapsed():
-        # If the bot has less health than the expected damage, then just let the bot fall down
-        if eventPlayer.getHealth() > ZOMBIE_FALL_DAMAGE * (eventPlayer.state[SI.LAST_CC_ATTACKER].damageStat / 100):
-          damage(eventPlayer, eventPlayer.state[SI.LAST_CC_ATTACKER], ZOMBIE_FALL_DAMAGE)
-          eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-          eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
-
-      else:
+  if eventPlayer.temp1:
+    # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
+    if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] >= getTotalTimeElapsed():
+      # If the bot has less health than the expected damage, then just let the bot fall down
+      if eventPlayer.getHealth() > ceil(ZOMBIE_FALL_DAMAGE * (eventPlayer.state[SI.LAST_CC_ATTACKER].damageStat / 100)):
+        damage(eventPlayer, eventPlayer.state[SI.LAST_CC_ATTACKER], ZOMBIE_FALL_DAMAGE)
         eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  
-  wait(0.1)
+        eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
+    else:
+      eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+
+  wait(0.2)
   loop()
 
 rule "zombies fly faster":

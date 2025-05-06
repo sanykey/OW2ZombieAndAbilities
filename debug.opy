@@ -42,7 +42,7 @@ rule "[debug] User init":
   eventPlayer.money += 1000000
 
   if eventPlayer == hostPlayer:
-    eventPlayer.startForcingHero(Hero.GENJI)
+    eventPlayer.startForcingHero(Hero.DOOMFIST)
 
   eventPlayer.healthStat += 500
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
@@ -51,7 +51,6 @@ rule "[debug] User init":
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
-
 
 rule "[debug] Charge ultimate":
   @Event eachPlayer
