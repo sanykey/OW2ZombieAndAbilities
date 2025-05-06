@@ -15,6 +15,23 @@ rule "[debug] Init":
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
 
+  hudSubtext(
+    getPlayersInSlot(0, Team.1),
+    "P0: {0}".format(updateEveryFrame(temp1)),
+    HudPosition.TOP,
+    -10,
+    Color.WHITE,
+    HudReeval.VISIBILITY_AND_STRING
+  )
+
+  isDebugAutoRespawn = true
+
+rule "[debug] accurace position test":
+  if (getPlayersInSlot(0, Team.1).isAlive()):
+    temp1 = getPlayersInSlot(0, Team.1).getPosition()
+  wait(0.016)
+  loop()
+
 rule "[debug] User init":
   @Event playerJoined
   @Team 1
@@ -25,7 +42,7 @@ rule "[debug] User init":
   eventPlayer.money += 1000000
 
   if eventPlayer == hostPlayer:
-    eventPlayer.startForcingHero(Hero.MAUGA)
+    eventPlayer.startForcingHero(Hero.GENJI)
 
   eventPlayer.healthStat += 500
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
@@ -34,8 +51,6 @@ rule "[debug] User init":
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
-
-
 
 
 rule "[debug] Charge ultimate":

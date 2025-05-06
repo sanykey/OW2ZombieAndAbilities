@@ -1,10 +1,9 @@
 #!mainFile "main.opy"
 
 rule "Create hero buy positions":
-  heroesList = [ # 41
+  heroesList = random.shuffle([ # 41
     # tanks - 12
     Hero.DOOMFIST,
-    # Hero.HAZARD
     Hero.JUNKER_QUEEN,
     Hero.MAUGA,
     Hero.ORISA,
@@ -15,6 +14,7 @@ rule "Create hero buy positions":
     Hero.WINSTON,
     Hero.WRECKING_BALL,
     Hero.ZARYA,
+    # Hero.HAZARD
 
     # damage dealers - 18
     Hero.ASHE,
@@ -48,17 +48,10 @@ rule "Create hero buy positions":
     Hero.MOIRA,
     Hero.ILLARI,
     Hero.ZENYATTA
-  ]
+  ])
 
   # [hero, buy_place_vector, price, buy_text_vector]
   heroesShopData = []
-
-  # shuffle heroes list
-  for I in range(len(heroesList) - 1, 0, -1):
-    J = random.randint(0, I)
-    temp1 = heroesList[J]
-    heroesList[J] = heroesList[I]
-    heroesList[I] = temp1
 
   for I in range(len(heroesList)):
     heroesShopData[I] = [

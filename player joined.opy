@@ -1,9 +1,4 @@
 #!mainFile "main.opy"
-def updateCombatants():
-  @Name "Subroutine: Update Combatants"
-  
-  combatants = [player for player in getPlayers(Team.1) if player.isCombatant]
-  combatantsCount = len(combatants)
 
 rule "Create vips list":
   vips = ["snky"]
@@ -12,10 +7,9 @@ rule "Disable spawn room hero swap":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.hasSpawned() == true
-  
-  eventPlayer.isCombatant = true
-  eventPlayer.disableRespawn()
-  updateCombatants()
+
+  if not isDebugAutoRespawn:
+    eventPlayer.disableRespawn()
 
   if eventPlayer.healthStat == 0:
     eventPlayer.healthStat = 100
@@ -111,6 +105,4 @@ rule "Late joiner catchup after round 15, 25, 50":
 
 rule "All Teams: Player left Match, Scale Damage":
   @Event playerLeft
-  
-  updateCombatants()
   destroyHudText(eventPlayer.HUDs[eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT]])

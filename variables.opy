@@ -1,90 +1,89 @@
 #!mainFile "main.opy"
 #Global variables
 
-globalvar roundNumber 0
-globalvar zombiesflyIOnandOff 26
-globalvar team_shields 30
-globalvar team_armor 31
-globalvar heroesShopData 32
-globalvar matchIsOver 33
-globalvar unlockedLocations 34
-globalvar orbs_arr 35
-globalvar hiddenVector 36
-globalvar roundRemainingBots 39
-globalvar orbs_vectors_arr 40
-globalvar isRoundEnd 41
-globalvar vips 43
-globalvar isBotsDisabled 45
-globalvar debugVectsArr 46
-globalvar debugCurrentVectNum 47
-globalvar debugCurrentVectEffectArr 48
-globalvar vectList 51
-globalvar lockedAreaEffectsArr 52
-globalvar shopState 53
-globalvar teamScore 54
-globalvar temp1 55
-globalvar temp2 56
-globalvar combatants 57
-globalvar combatantsCount 58
-globalvar zombieStats 59
-globalvar heroesList 60
-globalvar zombieRespawnI 61
-globalvar isGameStarted = 62
+globalvar roundNumber
+globalvar zombiesflyIOnandOff
+globalvar team_shields
+globalvar team_armor
+globalvar heroesShopData
+globalvar matchIsOver
+globalvar unlockedLocations
+globalvar orbs_arr
+globalvar hiddenVector
+globalvar roundRemainingBots
+globalvar orbs_vectors_arr
+globalvar isRoundEnd
+globalvar vips
+globalvar isBotsDisabled
+globalvar debugVectsArr
+globalvar debugCurrentVectNum
+globalvar debugCurrentVectEffectArr
+globalvar vectList
+globalvar lockedAreaEffectsArr
+globalvar shopState
+globalvar teamScore
+globalvar temp1
+globalvar temp2
+globalvar zombieStats
+globalvar heroesList
+globalvar zombieRespawnI
+globalvar isGameStarted
+globalvar isDebugAutoRespawn # auto respawn for debug
 
 #Player variables
+playervar healthStat
+playervar damageStat
+playervar healingStat
+playervar zombiesfly
+playervar orb_roll # current orb drop chance when a bot dies
+playervar isInSecretShop
+playervar state # use with enum "SI"
 
+playervar revivers
+playervar reviveTimer
+playervar downedStartTime
 
-playervar healthStat 10
-playervar damageStat 11
-playervar healingStat 12
-playervar zombiesfly 26
-playervar orb_roll 27 # current orb drop chance when a bot dies
-playervar isInSecretShop 28
-playervar state 30 # use with enum "SI"
-playervar reviveProgress 31
-playervar isTargetInLos 32
-playervar recentStackedHealingDealtToSlot 33
-playervar healingTracker 34
-playervar recentHealingDealtToSlot 35
-playervar recentDamageDealtToSlot 29
-playervar recentStackedDamageDealtToSlot 36
-playervar damageAssitsToSlot 58
-playervar downedStartTime 37
-playervar reviveTimer 38
-playervar deathCamTarget 39
-playervar isCombatant 40
-playervar revivers 41
-playervar targetPlayer 42
-playervar talents 43
-playervar HUDs 46
-playervar temp1 47
-playervar temp2 52
-playervar temp3 54
-playervar temp4 62
-playervar temp5 63
-playervar revealed 49
-playervar widowmakerChargeShot 50
-playervar money 51
-playervar raycast 53
-playervar heroState 55
-playervar abilTemp1 57 # temp var use for loops with "wait" per hero
-playervar abilityProjectile 60
-playervar abilityPosition 61
-playervar abilityCD 59
+playervar isTargetInLos
 
-playervar abilPos0 64
-playervar abilPos1 65
-playervar abilPos2 66
-playervar abilPos3 67
-playervar abilPos4 68
+playervar recentStackedHealingDealtToSlot
+playervar healingTracker
+playervar recentHealingDealtToSlot
+playervar recentDamageDealtToSlot
+playervar recentStackedDamageDealtToSlot
+playervar damageAssitsToSlot
 
-playervar abilDir0 69
-playervar abilDir1 70
-playervar abilDir2 72
-playervar abilDir3 76
-playervar list 73
-playervar list2 74
-playervar list3 75
+playervar deathCamTarget
+playervar targetPlayer
+playervar talents
+playervar HUDs
+playervar temp1
+playervar temp2
+playervar temp3
+playervar temp4
+playervar temp5
+playervar revealed
+playervar widowmakerChargeShot
+playervar money
+playervar raycast
+playervar heroState
+playervar abilTemp1 # temp var use for loops with "wait" per hero
+playervar abilityProjectile
+playervar abilityPosition
+playervar abilityCD
+
+playervar abilPos0
+playervar abilPos1
+playervar abilPos2
+playervar abilPos3
+playervar abilPos4
+
+playervar abilDir0
+playervar abilDir1
+playervar abilDir2
+playervar abilDir3
+playervar list
+playervar list2
+playervar list3
 
 #Activated extensions
 #!extension explosionSounds
@@ -147,7 +146,7 @@ enum SI:
   LAST_CC_ATTACKER = 8
   LAST_CC_ATTACK_TIME = 9
   LAST_CC_WAS_IN_AIR = 10
-  HACKED = 11 # status to get money from killed hacked zombies
+  HACKED = 11 # hacked status to get money from killed hacked zombies
   MONEY_RECEIVED = 12 # money received
   HP_STAT = 13
   DAMAGE_STAT = 14

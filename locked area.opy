@@ -8,7 +8,7 @@ rule "Create location buy positions":
     lockedAreaEffectsArr.append(getLastCreatedEntity())
     createInWorldText(
       getPlayers(Team.1),
-      l"{0} {1}".format(l"Buy", l"{0}: {1}".format(l"{0} {1}".format(l"Next", l"Location"), 2500 * (I + 1))),
+      "Buy next location: ${0}".format(2500 * (I + 1)),
       vectList[I],
       1,
       Clip.SURFACES,

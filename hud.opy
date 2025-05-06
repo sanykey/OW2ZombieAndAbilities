@@ -33,7 +33,7 @@ rule "Init hud hero icons of players and how much money they have":
 
   # revive hud
   hudSubtext(
-    [player for player in combatants if player.downedStartTime],
+    [player for player in getPlayers(Team.1) if player.downedStartTime],
     "Waiting for revival. Press {0} to spectate the next player.".format(inputBindingString(Button.JUMP)),
     HudPosition.TOP,
     -70,
@@ -41,9 +41,9 @@ rule "Init hud hero icons of players and how much money they have":
     HudReeval.VISIBILITY_AND_STRING
   )
   progressBarHud(
-    localPlayer if (localPlayer.reviveTimer if localPlayer.downedStartTime else any([localPlayer in player.revivers for player in combatants])) else [],
-    localPlayer.reviveTimer if localPlayer.downedStartTime else ((sorted([player for player in combatants if localPlayer in player.revivers], lambda i: i.reviveTimer)).last()).reviveTimer,
-    "You are being revived" if localPlayer.downedStartTime else "Reviving {0}".format("{0} Teammates".format(len([player for player in combatants if localPlayer in player.revivers])) if len([player for player in combatants if localPlayer in player.revivers]) > 1 else ([player for player in combatants if localPlayer in player.revivers])[0]),
+    localPlayer if (localPlayer.reviveTimer if localPlayer.downedStartTime else any([localPlayer in player.revivers for player in getPlayers(Team.1)])) else [],
+    localPlayer.reviveTimer if localPlayer.downedStartTime else ((sorted([player for player in getPlayers(Team.1) if localPlayer in player.revivers], lambda i: i.reviveTimer)).last()).reviveTimer,
+    "You are being revived" if localPlayer.downedStartTime else "Reviving {0}".format("{0} Teammates".format(len([player for player in getPlayers(Team.1) if localPlayer in player.revivers])) if len([player for player in getPlayers(Team.1) if localPlayer in player.revivers]) > 1 else ([player for player in getPlayers(Team.1) if localPlayer in player.revivers])[0]),
     HudPosition.TOP,
     100,
     Color.SKY_BLUE

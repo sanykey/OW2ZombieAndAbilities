@@ -3,6 +3,7 @@
 rule "Team 1 (Death)":
   @Event playerDied
   @Team 1
+  @Condition not isDebugAutoRespawn
 
   if not eventPlayer.downedStartTime:
     pause3PCamera()
@@ -20,7 +21,7 @@ rule "Revive, check player in radius, unset is downed":
   @Condition eventPlayer.downedStartTime == true
   @Condition eventPlayer.downedStartTime + 1 < getTotalTimeElapsed()
   
-  eventPlayer.revivers = [player for player in combatants if player.isAlive() and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3 and isInLoS(eventPlayer, player)]
+  eventPlayer.revivers = [player for player in getPlayers(Team.1) if player.isAlive() and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3 and isInLoS(eventPlayer, player)]
   if eventPlayer.revivers == []:
     eventPlayer.reviveTimer = 0
   else:
@@ -39,8 +40,6 @@ rule "Team 1: Player gets up":
   @Team 1
   @Condition eventPlayer.downedStartTime == false
   
-  if not eventPlayer.isCombatant:
-    return
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
   eventPlayer.setHealth(INFINITY)
   # eventPlayer.spectated_player = eventPlayer
@@ -52,27 +51,3 @@ rule "Team 1: Player gets up":
   if eventPlayer.getSlot() == ALLY_BOT_PLAYER_SLOT:
     eventPlayer.communicate(Comms.READY)
 
-
-
-
-# rule "Select next spectated Player when event player is downed":
-#   @Event eachPlayer
-#   @Team 1
-#   @Condition eventPlayer.downedStartTime == true
-#   @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
-  
-#   if eventPlayer.downedStartTime + 0.5 >= getTotalTimeElapsed():
-#       return
-#   eventPlayer.deathCamTarget = null
-#   eventPlayer.spectated_player = combatants[(combatants.index(eventPlayer.spectated_player) + 1) % combatants_count]
-#   wait(0.25)
-
-
-# rule "Spectated player does not exist anymore. Set spectated player = event player":
-#     @Event eachPlayer
-#     @Team 1
-#     @Condition eventPlayer.downedStartTime == true
-#     @Condition eventPlayer.spectated_player.is_combatant == false
-#     @Condition eventPlayer.spectated_player.getTeam() != Team.2
-    
-#     eventPlayer.spectated_player = eventPlayer

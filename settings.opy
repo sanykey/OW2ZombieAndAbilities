@@ -25,7 +25,8 @@ settings {
         },
         "general": {
             "gamemodeStartTrigger": "immediately",
-            "heroLimit": "off"
+            "heroLimit": "off",
+            # "respawnTime%": 0
         }
     },
     "heroes": {

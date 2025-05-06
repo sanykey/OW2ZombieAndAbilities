@@ -54,8 +54,8 @@ rule "Round start":
   bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))
   
   # Resurrect and heal all players
-  temp1 = [player for player in combatants if not player.downedStartTime]
-  temp2 = [player for player in combatants if player.downedStartTime]
+  temp1 = [player for player in getPlayers(Team.1) if not player.downedStartTime]
+  temp2 = [player for player in getPlayers(Team.1) if player.downedStartTime]
   temp2.teleport(nearestWalkablePosition(random.choice(temp1) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
   temp2.downedStartTime = 0
   temp2.resurrect()
@@ -106,6 +106,7 @@ rule "Mark last zombie":
   J[21] = getLastCreatedEntity()
 
 rule "Match end":
+  @Condition not isDebugAutoRespawn
   @Condition all([player.isDead() for player in getPlayers(Team.1)]) == true
   @Condition getPlayers(Team.1).hasSpawned() == true
   

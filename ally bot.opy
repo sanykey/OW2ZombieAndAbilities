@@ -5,8 +5,6 @@ rule "Create ally bot":
   @Condition getNumberOfPlayers(Team.1) < MAX_PLAYERS
   wait(2)
   createDummy(Hero.ORISA, Team.1, 7, nearestWalkablePosition(getPlayersInSlot(0, Team.1)), getPlayersInSlot(0, Team.1).getPosition())
-  getPlayersInSlot(7, Team.1).isCombatant = true
-  updateCombatants()
   getPlayersInSlot(7, Team.1).healthStat += 10000
   getPlayersInSlot(7, Team.1).setMaxHealth(getPlayersInSlot(7, Team.1).healthStat)
 
@@ -65,8 +63,8 @@ rule "Teleport bot to died player":
   @Event eachPlayer
   @Team 1
   @Slot ALLY_BOT_PLAYER_SLOT
-  @Condition any([player.downedStartTime == true for player in combatants]) == true
+  @Condition any([player.downedStartTime == true for player in getPlayers(Team.1)]) == true
 
-  temp1 = [player for player in combatants if player.downedStartTime][0]
+  temp1 = [player for player in getPlayers(Team.1) if player.downedStartTime][0]
   if temp1 == true:
     eventPlayer.teleport(temp1.getPosition())

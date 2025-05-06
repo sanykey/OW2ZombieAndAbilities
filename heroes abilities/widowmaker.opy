@@ -148,7 +148,6 @@ rule "[Widowmaker] Phantom bullets headshot hud":
   @Event eachPlayer
   @Hero widowmaker
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
-  @Condition eventPlayer.isCombatant == true
 
   createInWorldText(
     eventPlayer if eventPlayer.heroState[WIDOWMAKER_SI.LAST_HEADSHOT] > getTotalTimeElapsed() else null,
@@ -176,7 +175,7 @@ rule "[Widowmaker] Phantom bullets headshot hud":
   )
   eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_CHARGE] = getLastCreatedText()
 
-  waitUntil(not eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] or not eventPlayer.isCombatant or eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
+  waitUntil(not eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] or eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
   destroyInWorldText(eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_HIT])
   destroyHudText(eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_CHARGE])
 
