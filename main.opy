@@ -1,4 +1,5 @@
 #!include "variables.opy"
+#!include "extensions.opy"
 #!include "settings.opy"
 #!include "utils.opy"
 #!include "compressed vectors.opy"

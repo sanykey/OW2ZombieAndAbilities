@@ -85,19 +85,6 @@ playervar list
 playervar list2
 playervar list3
 
-#Activated extensions
-#!extension explosionSounds
-#!extension kineticExplosionEffects
-#!extension playMoreEffects
-#!extension spawnMoreDummyBots
-#!extension projectiles
-
-# for DVA's Slide ability
-#!extension buffStatusEffects
-#!extension buffAndDebuffSounds
-
-#!setupTags
-
 #!define INFINITY 99999
 #!define MONEY_FOR_REVIVE 300
 #!define MONEY_FOR_ZOMBIE_KILL 200
