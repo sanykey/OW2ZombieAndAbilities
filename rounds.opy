@@ -29,12 +29,15 @@ rule "disable bot auto respawn":
   eventPlayer.disableRespawn()
 
 rule "Create bots":
+  @Condition isBotsDisabled == false
   @Condition isGameStarted == true
   @Condition getNumberOfPlayers(Team.2) < MAX_ZOMBIES
   @Condition getPlayers(Team.1).hasSpawned() == true
   
   wait(1)
   for I in range(MAX_ZOMBIES):
+    if isBotsDisabled == true:
+      break
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(Y))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
@@ -71,7 +74,7 @@ rule "Round start":
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
   for zombieRespawnI in range(MAX_ZOMBIES):
-    if isBotsDisabled == false:
+    if isBotsDisabled == true:
       break
     getPlayersInSlot(zombieRespawnI, Team.2).respawn()
     wait(0.25)
