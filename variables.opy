@@ -97,10 +97,15 @@ playervar juno_rift1_fx
 playervar juno_rift1_destination
 playervar juno_rift2_active
 playervar juno_rift1_active
-playervar juno_transfer_pos
 playervar juno_rift
 playervar juno_hyper_hud
 playervar juno_rift_icon
+
+playervar juno_transfer_pos
+playervar juno_transfer_from
+playervar juno_transfer_to
+playervar juno_transfer_fx
+playervar juno_transfer_started
 
 #!define INFINITY 99999
 #!define MONEY_FOR_REVIVE 300

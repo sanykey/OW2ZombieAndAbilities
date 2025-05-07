@@ -31,26 +31,21 @@ rule "[Juno] init":
   eventPlayer.juno_rift1_destination = vect(0, 1000, 0)
   eventPlayer.juno_rift2_destination = vect(0, 1000, 0)
 
-  eventPlayer.state[SI.TALENTS_COUNT] = 5
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 2
+  eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg721fa3FF>Juno</fg>:\n
-  {} {}Sleep dart{}:
-    - Hitting an enemy puts other enemies within a 3-meter radius to sleep.\n\n
-  {} <fg721fa3FF>Biotic gredane</fg>:
-    - Slows enemies by 50%.\n\n
-  {} {}Nano boost{}:
-    - Can now be used on Ana herself.
-    - Increases movement speed by 30%.\n\n
-  Melee:
-    - Has a 20% chance to put an enemy to sleep.
+  {} NEW! {}Hyper Rift{}:
+    - Press {}[Interact] + [Ability2]{} buttons to create a rift that connects to
+      any existing one, allowing your team to travel between them. 
+      To begin traveling, approach a rift and hold {}[Interact]{} button.\n\n
   ".format(
     heroIcon(Hero.JUNO),
-    abilityIconString(Hero.JUNO, Button.ABILITY_1),
+    abilityIconString(Hero.JUNO, Button.ABILITY_2),
     "<fg721fa3FF>",
     "</fg>",
-    abilityIconString(Hero.JUNO, Button.ABILITY_2),
-    abilityIconString(Hero.JUNO, Button.ULTIMATE),
-    "<fg721fa3FF>",
+    "<fgdb9342FF>",
+    "</fg>",
+    "<fgdb9342FF>",
     "</fg>"
   )
 
@@ -70,14 +65,13 @@ rule "[Juno] init":
 
 
 
-rule "Juno Hyper Rift placement":
+rule "[Juno] Hyper Rift placement":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.JUNO
   @Condition eventPlayer.isUsingAbility2() == true and eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.juno_last_rift != 2
   
   eventPlayer.cancelPrimaryAction()
-  eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
   wait(0.24)
   destroyEffect(eventPlayer.juno_rift2_fx[0])
   destroyEffect(eventPlayer.juno_rift2_fx[1])
@@ -113,14 +107,13 @@ rule "Juno Hyper Rift placement":
       smallMessage(getPlayers(eventPlayer.getTeam()), l"{0} {1} {2}".format(abilityIconString(Hero.JUNO, Button.ABILITY_2), "Hyper Rift created by", l"{0} {1}".format(eventPlayer.getHero(), l"({0})".format(eventPlayer))))
 
 
-rule "Juno Hyper Rift second placement":
+rule "[Juno] Hyper Rift second placement":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.JUNO
   @Condition eventPlayer.isUsingAbility2() == true and eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.juno_last_rift == 2
   
   eventPlayer.cancelPrimaryAction()
-  eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
   wait(0.24)
   destroyEffect(eventPlayer.juno_rift1_fx[0])
   destroyEffect(eventPlayer.juno_rift1_fx[1])
@@ -156,7 +149,7 @@ rule "Juno Hyper Rift second placement":
       smallMessage(getPlayers(eventPlayer.getTeam()), l"{0} {1} {2}".format(abilityIconString(Hero.JUNO, Button.ABILITY_2), "Hyper Rift created by", l"{0} {1}".format(eventPlayer.getHero(), l"({0})".format(eventPlayer))))
 
 
-rule "Juno Hyper Rift icon":
+rule "[Juno] Hyper Rift icon":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.JUNO
   @Condition (eventPlayer.juno_rift2_active == true and eventPlayer.juno_rift1_active == true) == true
@@ -172,77 +165,68 @@ rule "Juno Hyper Rift icon":
   destroyIcon(eventPlayer.juno_rift_icon[1])
 
 
-rule "Juno Hyper Rift transfer":
+rule "[Juno] Hyper Rift transfer":
+  @Event eachPlayer
+  @Condition (
+    eventPlayer.juno_transfer_from and eventPlayer.juno_transfer_to and eventPlayer.juno_transfer_started
+  )
+
+  pause3PCamera()
+  wait(0.1)
+  playEffect(getAllPlayers(), DynamicEffect.SYMMETRA_TELEPORTER_REAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_transfer_from, 1)
+  eventPlayer.setInvisibility(Invis.ALL)
+  eventPlayer.startForcingPosition(eventPlayer.juno_transfer_from, false)
+  eventPlayer.setStatusEffect(null, Status.FROZEN, 20)
+  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 20)
+  eventPlayer.juno_transfer_pos = eventPlayer.juno_transfer_from
+  eventPlayer.startCamera(updateEveryFrame(raycast(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_pos + eventPlayer.getFacingDirection() * -5, null, eventPlayer, true).getHitPosition()), eventPlayer.juno_transfer_pos)
+  chaseAtRate(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_to, 20)
+  createProjectileEffect(getAllPlayers(), Projectile.SIGMA_HYPERSPHERE, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_transfer_pos), directionTowards(eventPlayer.juno_transfer_to, eventPlayer.juno_transfer_from), 0.035, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
+  eventPlayer.juno_transfer_fx = getLastCreatedEntity()
+  
+  waitUntil(distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_from) <= distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_to), 10)
+  eventPlayer.stopForcingPosition()
+  eventPlayer.teleport(eventPlayer.juno_transfer_to)
+  eventPlayer.startForcingPosition(eventPlayer.getPosition(), false)
+  wait(distance(eventPlayer.juno_transfer_from, eventPlayer.juno_transfer_to) / 20)
+  eventPlayer.stopCamera()
+  wait(0.1)
+  eventPlayer.clearStatusEffect(Status.FROZEN)
+  eventPlayer.clearStatusEffect(Status.PHASED_OUT)
+  eventPlayer.setInvisibility(Invis.NONE)
+  playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_REAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_transfer_to, 1)
+  playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_DISAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_transfer_from, 1)
+  destroyEffect(eventPlayer.juno_transfer_fx)
+  eventPlayer.stopForcingPosition()
+  unpause3PCamera()
+  eventPlayer.juno_transfer_started = false
+
+rule "[Juno] Get players for hyper Rift transfer":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.JUNO
   @Condition (eventPlayer.juno_rift2_active == true and eventPlayer.juno_rift1_active == true) == true
-  @Condition (
-    len(getPlayersInRadius(eventPlayer.juno_rift2_destination, 1.5, Team.1)) > 0 or
-    len(getPlayersInRadius(eventPlayer.juno_rift1_destination, 1.5, Team.1)) > 0
-  ) == true
 
-  eventPlayer.list = getPlayersInRadius(eventPlayer.juno_rift1_destination, 1.5, Team.1)
-  eventPlayer.list2 = getPlayersInRadius(eventPlayer.juno_rift2_destination, 1.5, Team.1)
+  eventPlayer.list = [player for player in getPlayersInRadius(eventPlayer.juno_rift1_destination, 2, Team.1) if (
+    player.isAlive() and
+    not player.juno_transfer_started and
+    eventPlayer.isHoldingButton(Button.INTERACT)
+  )]
+  eventPlayer.list2 = [player for player in getPlayersInRadius(eventPlayer.juno_rift2_destination, 2, Team.1) if (
+    player.isAlive() and
+    not player.juno_transfer_started and
+    eventPlayer.isHoldingButton(Button.INTERACT)
+  )]
 
   if (eventPlayer.list):
-    smallMessage(eventPlayer, 'rift1!')
+    eventPlayer.list.juno_transfer_from = eventPlayer.juno_rift1_destination
+    eventPlayer.list.juno_transfer_to = eventPlayer.juno_rift2_destination
+    eventPlayer.list.juno_transfer_started = true
 
   if (eventPlayer.list2):
-    smallMessage(eventPlayer, 'rift2!')
+    eventPlayer.list2.juno_transfer_from = eventPlayer.juno_rift2_destination
+    eventPlayer.list2.juno_transfer_to = eventPlayer.juno_rift1_destination
+    eventPlayer.list2.juno_transfer_started = true
 
-  wait(0.032)
-  if (
-    distance(eventPlayer.juno_rift2_destination, eventPlayer.getEyePosition()) <= 1.5 and distance(eventPlayer.juno_rift1_destination, eventPlayer.getEyePosition()) > 1.5
-  ):
-      playEffect(getAllPlayers(), DynamicEffect.SYMMETRA_TELEPORTER_REAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_rift2_destination, 1)
-      eventPlayer.setInvisibility(Invis.ALL)
-      eventPlayer.startForcingPosition(eventPlayer.juno_rift2_destination, false)
-      eventPlayer.setStatusEffect(null, Status.FROZEN, 20)
-      eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 20)
-      eventPlayer.juno_transfer_pos = eventPlayer.juno_rift2_destination
-      eventPlayer.startCamera(updateEveryFrame(raycast(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_pos + eventPlayer.getFacingDirection() * -5, null, eventPlayer, true).getHitPosition()), eventPlayer.juno_transfer_pos)
-      chaseAtRate(eventPlayer.juno_transfer_pos, eventPlayer.juno_rift1_destination, 20)
-      createProjectileEffect(getAllPlayers(), Projectile.SIGMA_HYPERSPHERE, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_transfer_pos), directionTowards(eventPlayer.juno_rift1_destination, eventPlayer.juno_rift2_destination), 0.035, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
-      eventPlayer.juno_rift2_fx[4] = getLastCreatedEntity()
-      waitUntil(distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_rift2_destination) <= distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_rift1_destination), 10)
-      eventPlayer.stopForcingPosition()
-      eventPlayer.teleport(eventPlayer.juno_rift1_destination)
-      eventPlayer.startForcingPosition(eventPlayer.getPosition(), false)
-      wait(distance(eventPlayer.juno_rift2_destination, eventPlayer.juno_rift1_destination) / 20)
-      eventPlayer.stopCamera()
-      wait(0.1)
-      eventPlayer.clearStatusEffect(Status.FROZEN)
-      eventPlayer.clearStatusEffect(Status.PHASED_OUT)
-      eventPlayer.setInvisibility(Invis.NONE)
-      playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_REAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_rift1_destination, 1)
-      playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_DISAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_rift2_destination, 1)
-      destroyEffect(eventPlayer.juno_rift2_fx[4])
-      eventPlayer.stopForcingPosition()
-  elif (
-    distance(eventPlayer.juno_rift1_destination, eventPlayer.getEyePosition()) <= 1.5 and distance(eventPlayer.juno_rift2_destination, eventPlayer.getEyePosition()) > 1.5
-  ):
-      # eventPlayer.juno_rift1_active = false
-      playEffect(getAllPlayers(), DynamicEffect.SYMMETRA_TELEPORTER_REAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_rift1_destination, 1)
-      eventPlayer.setInvisibility(Invis.ALL)
-      eventPlayer.startForcingPosition(eventPlayer.juno_rift1_destination, false)
-      eventPlayer.setStatusEffect(null, Status.FROZEN, 20)
-      eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 20)
-      eventPlayer.juno_transfer_pos = eventPlayer.juno_rift1_destination
-      eventPlayer.startCamera(updateEveryFrame(raycast(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_pos + eventPlayer.getFacingDirection() * -5, null, eventPlayer, true).getHitPosition()), eventPlayer.juno_transfer_pos)
-      chaseAtRate(eventPlayer.juno_transfer_pos, eventPlayer.juno_rift2_destination, 20)
-      createProjectileEffect(getAllPlayers(), Projectile.SIGMA_HYPERSPHERE, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_transfer_pos), directionTowards(eventPlayer.juno_rift2_destination, eventPlayer.juno_rift1_destination), 0.035, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
-      eventPlayer.juno_rift1_fx[4] = getLastCreatedEntity()
-      waitUntil(distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_rift1_destination) <= distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_rift2_destination), 10)
-      eventPlayer.stopForcingPosition()
-      eventPlayer.teleport(eventPlayer.juno_rift2_destination)
-      eventPlayer.startForcingPosition(eventPlayer.getPosition(), false)
-      wait(distance(eventPlayer.juno_rift1_destination, eventPlayer.juno_rift2_destination) / 20)
-      eventPlayer.stopCamera()
-      wait(0.1)
-      eventPlayer.clearStatusEffect(Status.FROZEN)
-      eventPlayer.clearStatusEffect(Status.PHASED_OUT)
-      eventPlayer.setInvisibility(Invis.NONE)
-      playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_REAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_rift2_destination, 1)
-      playEffect(getAllPlayers(), DynamicEffect.TRACER_RECALL_DISAPPEAR, eventPlayer.getTeam(), eventPlayer.juno_rift1_destination, 1)
-      destroyEffect(eventPlayer.juno_rift1_fx[4])
-      eventPlayer.stopForcingPosition()
+  wait(0.3)
+  if ruleCondition:
+      loop()
