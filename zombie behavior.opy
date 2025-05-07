@@ -107,12 +107,7 @@ rule "Bots attack near player":
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
   eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
 
-
-rule "Bots don't attack near player":
-  @Event eachPlayer
-  @Team 2
-  @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == false
-
+  waitUntil(getPlayersInRadius(eventPlayer, 4, Team.1) == false)
   eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
 
 

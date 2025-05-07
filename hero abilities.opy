@@ -31,11 +31,3 @@ rule "Mei frosty jet pack":
   if RULE_CONDITION:
       goto RULE_START
 
-rule "Brigitte Bash":
-  @Event playerDealtDamage
-  @Team 1
-  @Hero brigitte
-  @Condition eventPlayer.isFiringSecondaryFire() == true
-  @Condition eventAbility == Button.PRIMARY_FIRE
-  
-  victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
