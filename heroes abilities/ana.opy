@@ -80,7 +80,7 @@ rule "[Ana]: Self Nano":
       Vector.DOWN
     )
     eventPlayer.abilPos1 = getLastCreatedEntity()
-    eventPlayer.abilPos1 = eventPlayer.abilPos1[0]
+    # eventPlayer.abilPos1 = eventPlayer.abilPos1[0]
     eventPlayer.abilPos1.startForcingPosition(updateEveryFrame(raycast(eventPlayer.getPosition(), eventPlayer.getPosition() + eventPlayer.getFacingDirection() * 1, getAllPlayers(), eventPlayer, true).getHitPosition()))
     eventPlayer.abilPos1.startFacing(directionTowards(eventPlayer.abilPos1.getEyePosition(), eventPlayer.getPosition()), 4000)
     eventPlayer.abilPos1.startForcingName("■")
@@ -104,11 +104,11 @@ rule "[Ana]: Self Nano":
         eventPlayer.abilPos1.stopForcingPosition()
         eventPlayer.abilPos1.startForcingPosition(vect(0, 1000, 0))
         waitUntil(not eventPlayer.isAlive(), 8)
-        destroyDummy(eventPlayer.getTeam(), 5)
+        destroyDummy(eventPlayer.getTeam(), eventPlayer.abilPos1.getSlot())
         eventPlayer.abilPos0 = false
       elif not eventPlayer.abilPos1.isUsingUltimate():
-        destroyDummy(eventPlayer.getTeam(), 5)
+        destroyDummy(eventPlayer.getTeam(), eventPlayer.abilPos1.getSlot())
         eventPlayer.abilPos0 = false
     elif not eventPlayer.isUsingUltimate():
-      destroyDummy(eventPlayer.getTeam(), 5)
+      destroyDummy(eventPlayer.getTeam(), eventPlayer.abilPos1.getSlot())
       eventPlayer.abilPos0 = false
