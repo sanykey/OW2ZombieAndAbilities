@@ -8,11 +8,11 @@ enum WIDOWMAKER_SI:
 
 rule "[Widowmaker] Talent texts":
   @Event eachPlayer
-  @Hero widowmaker
+  @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
 
   wait(1) # waiting for the previous hero to clear hero data
   # todo: debug
-  eventPlayer.state[SI.TALENTS_COUNT] = 8
+  eventPlayer.state[SI.TALENTS_COUNT] = 7
   eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
   eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
   eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] = true
@@ -33,18 +33,17 @@ rule "[Widowmaker] Talent texts":
       - Hold the crouch button at the end of a grapple to briefly cling to nearby walls.\n\n
   {} <fgA686ABFF>Venom Mine</fg>:
       - Slows and reveals enemies hit for {} seconds.\n\n
-  {} <fgA686ABFF>Infra sight</fg>:
-      - Allows shots to pierce through multiple enemies and walls.
   ".format(
     heroIcon(Hero.WIDOWMAKER),
     abilityIconString(Hero.WIDOWMAKER, Button.PRIMARY_FIRE),
     REVEAL_DURATION,
     abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1),
     abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2),
-    REVEAL_DURATION,
-    abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE)
+    REVEAL_DURATION
   )
 
+  # {} <fgA686ABFF>Infra sight</fg>:
+  #     - Allows shots to pierce through multiple enemies and walls.
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
   clearHeroInfo()
 

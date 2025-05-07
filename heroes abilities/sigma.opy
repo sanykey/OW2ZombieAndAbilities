@@ -5,11 +5,12 @@
 rule "[Ramattra] init":
   @Event eachPlayer
   @Team 1
-  @Hero sigma 
+  @Condition eventPlayer.getHero() == Hero.SIGMA
 
   wait(1) # waiting for the previous hero to clear hero data
   eventPlayer.state[SI.TALENTS_COUNT] = 1
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg94a0a5FF>Winston</fg>:\n
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -2
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg94a0a5FF>Sigma</fg>:\n
   {} {}Experimental barrier{}:
       - Pushes back enemies when stationary, taking damage on contact.
       - Pushes enemies back while flying, but takes increased damage during flight.

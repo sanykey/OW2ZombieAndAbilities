@@ -35,9 +35,9 @@ rule "Create bots":
   @Condition getPlayers(Team.1).hasSpawned() == true
   
   wait(1)
+  if isBotsDisabled == true:
+    return
   for I in range(MAX_ZOMBIES):
-    if isBotsDisabled == true:
-      break
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(Y))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])

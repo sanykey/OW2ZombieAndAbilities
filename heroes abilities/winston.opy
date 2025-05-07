@@ -7,10 +7,11 @@
 rule "[Winston] init":
   @Event eachPlayer
   @Team 1
-  @Hero winston
+  @Condition eventPlayer.getHero() == Hero.WINSTON
 
   wait(1) # waiting for the previous hero to clear hero data
   eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fga0a9baFF>Winston</fg>:\n
   {} {}Barrier projector{}:
       - Pushes out enemies and takes damage on contact.

@@ -1,8 +1,9 @@
 #!mainFile "../main.opy"
 
 def clearHeroInfo():
+  @Name "Subroutine: Clear hero info"
   eventPlayer.state[SI.TALENTS_COUNT] = 0
-  eventPlayer.state[SI.HERO_INFO_TEXT] = ""
+  eventPlayer.state[SI.HERO_INFO_TEXT] = null
 
 def sqrtNewton():
   @Name "Subroutine: Calculate square root"

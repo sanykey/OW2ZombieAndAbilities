@@ -24,6 +24,7 @@ globalvar shopState
 globalvar teamScore
 globalvar temp1
 globalvar temp2
+globalvar temp3
 globalvar zombieStats
 globalvar heroesList
 globalvar zombieRespawnI

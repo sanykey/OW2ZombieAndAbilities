@@ -1,21 +1,12 @@
 #!mainFile "../main.opy"
 
-# rule "[Sombra] Hack+":
-#   @Event eachPlayer
-#   @Team 2
-#   @Condition eventPlayer.hasStatusEffect(Status.HACKED) == true
-  
-#   eventPlayer.setStatusEffect(null, Status.STUNNED, 2.5)
-#   smallMessage(getPlayersOnHero(Hero.SOMBRA, Team.1), "Hack+ Activated: Stun")
-
 rule "[Sombra] Init":
   @Event eachPlayer
   @Team 1
-  @Hero sombra
+  @Condition eventPlayer.getHero() == Hero.SOMBRA
 
   wait(1) # waiting for the previous hero to clear hero data
   eventPlayer.state[SI.TALENTS_COUNT] = 2
-
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 1
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg765dbdFF>Sombra</fg>:\n
   <TX C0000000000A6B6> <fg765dbdFF>Stealth:</fg>

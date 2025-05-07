@@ -9,10 +9,11 @@
 rule "[Mauga] init":
   @Event eachPlayer
   @Team 1
-  @Hero mauga
+  @Condition eventPlayer.getHero() == Hero.MAUGA
 
   eventPlayer.state[SI.TALENTS_COUNT] = 1
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg9d8cd0FF>Mauga</fg>:\n
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
+  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgdc847dFF>Mauga</fg>:\n
   {} {}Cage fight{}:
     - Slows enemies within the ability’s radius by 75%.
     - Pushes back enemies outside the barrier and takes damage on contact.
@@ -20,7 +21,7 @@ rule "[Mauga] init":
   ".format(
     heroIcon(Hero.MAUGA),
     abilityIconString(Hero.MAUGA, Button.ULTIMATE),
-    "<fg9d8cd0FF>",
+    "<fgdc847dFF>",
     "</fg>"
   )
 
