@@ -77,6 +77,9 @@ playervar abilPos2
 playervar abilPos3
 playervar abilPos4
 
+playervar abilState0
+playervar abilState1
+
 playervar abilDir0
 playervar abilDir1
 playervar abilDir2
@@ -84,6 +87,20 @@ playervar abilDir3
 playervar list
 playervar list2
 playervar list3
+
+playervar juno_last_rift
+playervar juno_rift2_placement
+playervar juno_rift2_fx
+playervar juno_rift2_destination
+playervar juno_rift1_placement
+playervar juno_rift1_fx
+playervar juno_rift1_destination
+playervar juno_rift2_active
+playervar juno_rift1_active
+playervar juno_transfer_pos
+playervar juno_rift
+playervar juno_hyper_hud
+playervar juno_rift_icon
 
 #!define INFINITY 99999
 #!define MONEY_FOR_REVIVE 300

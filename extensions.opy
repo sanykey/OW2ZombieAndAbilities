@@ -11,5 +11,8 @@
 #!extension buffStatusEffects
 #!extension buffAndDebuffSounds
 
+# Juno hyper rift
+#!extension energyExplosionEffects
+
 # for text color tags:
 #!setupTags
