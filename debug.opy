@@ -36,16 +36,22 @@ rule "[debug] User init":
   @Event playerJoined
   @Team 1
   # @Slot 0
-  
+  # eventPlayer.healthStat = 100
+  # eventPlayer.damageStat = 100
+  # eventPlayer.healingStat = 100
+
   # waitUntil(eventPlayer.hasSpawned(), INFINITY)
   eventPlayer.state[0] = 4
   eventPlayer.money += 1000000
 
   if eventPlayer == hostPlayer:
-    eventPlayer.startForcingHero(Hero.BRIGITTE)
+    eventPlayer.startForcingHero(Hero.ANA)
 
-  eventPlayer.healthStat += 500
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  # eventPlayer.healthStat = 100
+  # eventPlayer.damageStat = 100
+  # eventPlayer.healingStat = 100
+  # eventPlayer.healthStat += 500
+  # eventPlayer.setMaxHealth(eventPlayer.healthStat)
   # eventPlayer.damageStat = 10000
   # eventPlayer.setDamageDealt(eventPlayer.damageStat)
   # eventPlayer.healingStat += 10000

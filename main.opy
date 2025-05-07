@@ -47,3 +47,4 @@ rule "Game init":
 #!include "heroes abilities/symmetra.opy"
 #!include "heroes abilities/mauga.opy"
 #!include "heroes abilities/brigitte.opy"
+#!include "heroes abilities/ana.opy"

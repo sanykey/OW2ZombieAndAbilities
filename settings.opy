@@ -50,9 +50,9 @@ settings {
                 "movementSpeed%": ZOMBIE_SPEED,
                 "enableAbility2": false,
                 "projectileSpeed%": 0,
-                "combatUltGen%": 10,
+                "combatUltGen%": 50,
                 "passiveUltGen%": 10,
-                "ultGen%": 10,
+                "ultGen%": 50,
                 "weaponsEnabled": "hammer"
             }
         },
