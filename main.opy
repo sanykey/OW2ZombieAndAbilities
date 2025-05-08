@@ -11,7 +11,6 @@ rule "Game init":
   unlockedLocations = 0
   Y = [] # spawn points?
   matchIsOver = false
-  zombiesflyIOnandOff = true
   isGameStarted = false
 
 #!include "player joined.opy"

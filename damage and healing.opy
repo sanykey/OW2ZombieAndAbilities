@@ -128,6 +128,7 @@ rule "Zombie took damage":
 
   # save damage stats for money
   victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed()
+  victim.abilTemp1 = 30 + getTotalTimeElapsed() # for check zombie out of map safety
 
 rule "Player took damage":
   @Event playerTookDamage
