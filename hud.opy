@@ -67,6 +67,22 @@ rule "Init hud hero icons of players and how much money they have":
     SpecVisibility.ALWAYS
   )
 
+  createInWorldText(
+    localPlayer if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true and localPlayer.state[SI.HERO_INFO_TEXT2] else null,
+    localPlayer.state[SI.HERO_INFO_TEXT2],
+    updateEveryFrame(
+      localPlayer.getEyePosition() +
+      localPlayer.getFacingDirection() * 12 +
+      normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()), localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] + # vertical
+      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] # horizontal
+    ),
+    1,
+    Clip.NONE,
+    WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR,
+    Color.WHITE,
+    SpecVisibility.ALWAYS
+  )
+
   # common tips
   createCasedProgressBarIwt(
     text="\n\n\n\n\n\n\n\n\n\n\n\n
@@ -83,20 +99,21 @@ rule "Init hud hero icons of players and how much money they have":
     - Barriers push zombies back but take damage in the process.
 
     - Zombies usually don’t die when falling into a pit, but if you help them fall, they 
-      take 100 base damage. Therefore, controlling abilities and barriers can be useful.
+      take {} base damage. Therefore, controlling abilities and barriers can be useful.
 
     - Health packs also gradually restore health based on your HP or Healing upgrade level,
       and increase movement speed by 50% for 5 seconds.
 
     - The mod is still in development, but some heroes already have unique abilities:
-      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (2),
+      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (4),
       <fgdc847dFF>Mauga</fg> (2), <fg9d8cd0FF>Rammatra</fg> (1), <fg94a1a5FF>Reinhardt</fg> (1), <fg94a0a5FF>Sigma</fg> (2), <fg765dbdFF>Sombra</fg> (4), <fg91bbd1FF>Symmetra</fg> (2), 
       <fgA686ABFF>Widowmaker</fg> (8), <fga0a9baFF>Winston</fg> (1).
     ".format(
       inputBindingString(Button.INTERACT),
       inputBindingString(Button.CROUCH),
       inputBindingString(Button.INTERACT),
-      inputBindingString(Button.INTERACT)
+      inputBindingString(Button.INTERACT),
+      ZOMBIE_FALL_DAMAGE
     ),
     visibleTo=(localPlayer if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true else null),
     position=updateEveryFrame(

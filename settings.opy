@@ -39,7 +39,11 @@ settings {
                 "projectileSpeed%": 500,
                 "spawnWithoutMech": true,
                 "enableUlt": false
-            }
+            },
+            "juno": {
+                "jumpVerticalSpeed%": 115,
+                "ability1Duration%": 150
+            },
         },
         "team2": {
             "torbjorn": {

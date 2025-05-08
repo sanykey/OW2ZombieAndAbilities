@@ -32,16 +32,22 @@ rule "[Juno] init":
   eventPlayer.juno_rift2_destination = vect(0, 1000, 0)
 
   eventPlayer.state[SI.TALENTS_COUNT] = 2
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 2
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg721fa3FF>Juno</fg>:\n
+  {} {}Glide Boost{}:
+    - Duration increased 4 → 6 secs\n\n
   {} {}Orbital ray{}:
     - Immobilizes, lifts enemies into the air, and deals continuous damage.\n\n
   {} NEW! {}Hyper Rift{}:
     - Press {}[Interact] + [Ability2]{} buttons to create a rift that connects to
       any existing one, allowing your team to travel between them. 
-      To begin traveling, approach a rift and hold {}[Interact]{} button.\n\n
+      To begin traveling, approach a rift and hold {}[Interact]{} button.
+    - Cooldown shared with Hyper Rift.\n\n
   ".format(
     heroIcon(Hero.JUNO),
+    abilityIconString(Hero.JUNO, Button.ABILITY_1),
+    "<fg721fa3FF>",
+    "</fg>",
     abilityIconString(Hero.JUNO, Button.ULTIMATE),
     "<fg721fa3FF>",
     "</fg>",
@@ -53,6 +59,13 @@ rule "[Juno] init":
     "<fgdb9342FF>",
     "</fg>"
   )
+
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] = 3.5
+  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 11
+  eventPlayer.state[SI.HERO_INFO_TEXT2] = "
+  <TX C0000000004E37B> <fg721fa3FF>Martian overboots</fg>:
+    - Jump strength and levitation are increased\n\n
+  " 
 
   waitUntil(eventPlayer.getHero() != Hero.JUNO, INFINITY)
   clearHeroInfo()
@@ -90,7 +103,7 @@ rule "[Juno] Ultimate - abduct enemies":
   @Hero juno
   @Condition eventPlayer.isUsingUltimate() == true
   
-  wait(0.49, Wait.ABORT_WHEN_FALSE)
+  wait(0.7, Wait.ABORT_WHEN_FALSE)
 
   eventPlayer.list = [player for player in getLivingPlayers(Team.2) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
   eventPlayer.list.state[SI.LAST_CC_ATTACKER] = eventPlayer
@@ -104,8 +117,8 @@ rule "[Juno] Ultimate - abduct enemies":
 
   for eventPlayer.I in range(len(eventPlayer.list)):
     eventPlayer.list[eventPlayer.I].applyImpulse(
-      normalize((eventPlayer.abilPos0 + Vector.UP * 10) - eventPlayer.list[eventPlayer.I].getPosition()),
-      8,
+      normalize((eventPlayer.abilPos0 + Vector.UP * 20) - eventPlayer.list[eventPlayer.I].getPosition()),
+      13,
       Relativity.TO_WORLD,
       Impulse.INCORPORATE_CONTRARY_MOTION
     )
@@ -231,7 +244,16 @@ rule "[Juno] Hyper Rift transfer":
   eventPlayer.juno_transfer_pos = eventPlayer.juno_transfer_from
   eventPlayer.startCamera(updateEveryFrame(raycast(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_pos + eventPlayer.getFacingDirection() * -5, null, eventPlayer, true).getHitPosition()), eventPlayer.juno_transfer_pos)
   chaseAtRate(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_to, 20)
-  createProjectileEffect(getAllPlayers(), Projectile.SIGMA_HYPERSPHERE, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_transfer_pos), directionTowards(eventPlayer.juno_transfer_to, eventPlayer.juno_transfer_from), 0.035, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
+
+  createProjectileEffect(
+    getAllPlayers(),
+    Projectile.SIGMA_HYPERSPHERE,
+    getPlayers(eventPlayer.getTeam()),
+    updateEveryFrame(eventPlayer.juno_transfer_pos),
+    directionTowards(eventPlayer.juno_transfer_to, eventPlayer.juno_transfer_from),
+    0.035,
+    ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE
+  )
   eventPlayer.juno_transfer_fx = getLastCreatedEntity()
   
   waitUntil(distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_from) <= distance(eventPlayer.juno_transfer_pos, eventPlayer.juno_transfer_to), 10)
