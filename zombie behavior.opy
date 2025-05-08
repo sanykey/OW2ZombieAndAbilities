@@ -3,6 +3,7 @@
 rule "Bots use ultimate at 100%":
   @Event eachPlayer
   @Team 2
+  @Hero torbjorn
   @Condition eventPlayer.getUltCharge() == 100
 
   eventPlayer.forceButtonPress(Button.ULTIMATE)
@@ -82,13 +83,14 @@ rule "Bots face target players and move":
 rule "Bots attack near player":
   @Event eachPlayer
   @Team 2
+  @Hero torbjorn
   @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
 
+  eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
   eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
-  eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
 
-  waitUntil(getPlayersInRadius(eventPlayer, 4, Team.1) == false)
+  waitUntil(not getPlayersInRadius(eventPlayer, 4, Team.1))
   eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
 
 
@@ -170,7 +172,6 @@ rule "zombies fly faster":
 rule "Zombies loS teleport":
   @Event eachPlayer
   @Team 2
-  @Hero torbjorn
   @Condition eventPlayer.isAlive() == true
   @Condition eventPlayer.zombiesfly == false
   @Condition eventPlayer.targetPlayer.isAlive()
@@ -209,3 +210,32 @@ rule "Zombies loS teleport":
     goto RULE_START
 
 
+rule "Bot zombie roadhog melee":
+  @Event eachPlayer
+  @Team 2
+  @Hero roadhog
+  @Condition getPlayersInRadius(eventPlayer, 3, Team.1) == true
+
+  eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
+  eventPlayer.forceButtonPress(Button.MELEE)
+
+  wait(1)
+  if ruleCondition:
+    loop()
+
+rule "Roadhog trying to hook":
+  @Event eachPlayer
+  @Team 2
+  @Hero roadhog
+
+  if isInLoS(eventPlayer, eventPlayer.targetPlayer) and distance(eventPlayer, eventPlayer.targetPlayer) < 30:
+    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.SKY_BLUE, eventPlayer, 1)
+    wait(0.3)
+    getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(2, false)
+    eventPlayer.forceButtonPress(Button.ABILITY_1)
+    wait(0.25)
+    getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
+
+  wait(3)
+  if ruleCondition:
+      loop()

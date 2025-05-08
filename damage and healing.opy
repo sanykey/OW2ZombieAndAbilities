@@ -36,8 +36,15 @@ rule "Player took damage":
 
   # sombra's invisible off
   if eventPlayer.state[SI.IS_INVISIBLE] == true:
-    eventPlayer.setStatusEffect(null, Status.HACKED, 0.01)
+    eventPlayer.setStatusEffect(null, Status.HACKED, 0.05)
     eventPlayer.state[SI.IS_INVISIBLE] = false 
+
+  if (
+    attacker.getHero() == Hero.ROADHOG and
+    eventAbility == Button.MELEE and 
+    random.randint(1, 100) <= 40
+  ):
+    eventPlayer.setStatusEffect(null, Status.HACKED, 1.5)
 
   eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
   wait(15, Wait.RESTART_WHEN_TRUE)

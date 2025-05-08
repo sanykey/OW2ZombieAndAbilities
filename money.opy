@@ -3,7 +3,6 @@
 rule "Zombie points - elimination":
   @Event playerEarnedElimination
   @Team 1
-  @Condition victim.getCurrentHero() == Hero.TORBJORN
   
   # Money for kill. Critical hit, melee or hacked victim give more money
   eventPlayer.state[SI.MONEY_RECEIVED] = (

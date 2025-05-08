@@ -34,12 +34,19 @@ rule "Create bots":
   @Condition getNumberOfPlayers(Team.2) < MAX_ZOMBIES
   @Condition getPlayers(Team.1).hasSpawned() == true
   
+  smallMessage(getAllPlayers(), "Create bots?")
   wait(1)
   if isBotsDisabled == true:
     return
-  for I in range(MAX_ZOMBIES):
+  for I in range(MAX_ZOMBIES - 1):
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
+
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
+
+  createDummy(Hero.ROADHOG, Team.2, MAX_ZOMBIES - 1, random.choice(spawnPointsList))
+  getPlayersOnHero(Hero.ROADHOG, Team.2).startForcingName("Zombie catcher")
+  getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
+
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
