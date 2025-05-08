@@ -158,6 +158,8 @@ rule "Bots antifall safety and fall damage after cc damage from players":
         damage(eventPlayer, eventPlayer.state[SI.LAST_CC_ATTACKER], ZOMBIE_FALL_DAMAGE)
         eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
         eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
+      else:
+        eventPlayer.setEnvironmentalKillCreditor(eventPlayer.state[SI.LAST_CC_ATTACKER])
     else:
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 

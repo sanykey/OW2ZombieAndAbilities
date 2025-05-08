@@ -138,7 +138,7 @@ rule "[Ramattra][Reinhardt][Sigma][Winston] Damage barrier":
       loop()
 
 
-rule "Slowed zombies":
+rule "Changed player speed":
   @Event eachPlayer
   @Condition eventPlayer.state[SI.CHANGED_SPEED_TIME] > getTotalTimeElapsed()
   @Condition not eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV]
@@ -156,6 +156,16 @@ rule "Slowed zombies":
   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = false
+
+
+rule "Low gravitation for player":
+  @Event eachPlayer
+  @Condition eventPlayer.state[SI.LOW_GRAVITY] > getTotalTimeElapsed()
+
+  eventPlayer.setGravity(0)
+  waitUntil(eventPlayer.state[SI.LOW_GRAVITY] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
+  eventPlayer.setGravity(100)
+
 
 rule "[Reinhardt] [Brigitte] Сheck if the barrier is on":
   @Event eachPlayer

@@ -129,8 +129,7 @@ rule "Zombie took damage":
   # save damage stats for money
   victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed()
 
-
-rule "Zombie took damage":
+rule "Player took damage":
   @Event playerTookDamage
   @Team 1
 

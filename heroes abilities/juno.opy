@@ -31,15 +31,20 @@ rule "[Juno] init":
   eventPlayer.juno_rift1_destination = vect(0, 1000, 0)
   eventPlayer.juno_rift2_destination = vect(0, 1000, 0)
 
-  eventPlayer.state[SI.TALENTS_COUNT] = 1
+  eventPlayer.state[SI.TALENTS_COUNT] = 2
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg721fa3FF>Juno</fg>:\n
+  {} {}Orbital ray{}:
+    - Immobilizes, lifts enemies into the air, and deals continuous damage.\n\n
   {} NEW! {}Hyper Rift{}:
     - Press {}[Interact] + [Ability2]{} buttons to create a rift that connects to
       any existing one, allowing your team to travel between them. 
       To begin traveling, approach a rift and hold {}[Interact]{} button.\n\n
   ".format(
     heroIcon(Hero.JUNO),
+    abilityIconString(Hero.JUNO, Button.ULTIMATE),
+    "<fg721fa3FF>",
+    "</fg>",
     abilityIconString(Hero.JUNO, Button.ABILITY_2),
     "<fg721fa3FF>",
     "</fg>",
@@ -64,7 +69,52 @@ rule "[Juno] init":
   eventPlayer.juno_rift1_active = false
 
 
+# code from [Juno Orbital Ray Detection | Workshop.codes](https://workshop.codes/YETHW)
+rule "[Juno] Track Orbital Ray Position":
+  @Event eachPlayer
+  @Hero juno
+  @Condition eventPlayer.isUsingUltimate() == false
+  
+  stopChasingVariable(eventPlayer.abilPos0)
+  eventPlayer.abilPos0 = vect(0, 999, 0)
+  waitUntil(eventPlayer.isUsingUltimate(), INFINITY)
+  eventPlayer.abilPos1 = eventPlayer.getPosition() + directionFromAngles(eventPlayer.getHorizontalFacingAngle(), 0) * 22.5
+  eventPlayer.abilPos0 = eventPlayer.getPosition() + directionTowards(eventPlayer.getPosition(), eventPlayer.abilPos1) * 3
+  wait(1)
+  chaseAtRate(eventPlayer.abilPos0, evalOnce(eventPlayer.abilPos1), 2.25)
 
+
+# code from [Overwatch: The Reworked Showdown](https://workshop.codes/JZCBZ)
+rule "[Juno] Ultimate - abduct enemies":
+  @Event eachPlayer
+  @Hero juno
+  @Condition eventPlayer.isUsingUltimate() == true
+  
+  wait(0.49, Wait.ABORT_WHEN_FALSE)
+
+  eventPlayer.list = [player for player in getLivingPlayers(Team.2) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
+  eventPlayer.list.state[SI.LAST_CC_ATTACKER] = eventPlayer
+  eventPlayer.list.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list.state[SI.LAST_CC_WAS_IN_AIR] = false
+
+  eventPlayer.list.state[SI.LOW_GRAVITY] = 0.5 + getTotalTimeElapsed()
+  eventPlayer.list.state[SI.CHANGED_SPEED_TIME] = 0.5 + getTotalTimeElapsed()
+  eventPlayer.list.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 10
+  damage(eventPlayer.list, eventPlayer, 2.5)
+
+  for eventPlayer.I in range(len(eventPlayer.list)):
+    eventPlayer.list[eventPlayer.I].applyImpulse(
+      normalize((eventPlayer.abilPos0 + Vector.UP * 10) - eventPlayer.list[eventPlayer.I].getPosition()),
+      8,
+      Relativity.TO_WORLD,
+      Impulse.INCORPORATE_CONTRARY_MOTION
+    )
+  wait(0.1)
+  if ruleCondition:
+      loop()
+
+
+# Hyper Rift code from [What If... Overwatch 3?](https://workshop.codes/4MZP7)
 rule "[Juno] Hyper Rift placement":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.JUNO

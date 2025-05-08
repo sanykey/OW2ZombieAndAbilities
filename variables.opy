@@ -173,6 +173,7 @@ enum SI:
   CHANGED_SPEED_TIME = 25
   CHANGED_SPEED_AMOUNT = 26
   CHANGED_SPEED_AMOUNT_PREV = 27
+  LOW_GRAVITY = 28
 
 # for playervar talents
 enum TI:

@@ -89,7 +89,7 @@ rule "Init hud hero icons of players and how much money they have":
       and increase movement speed by 50% for 5 seconds.
 
     - The mod is still in development, but some heroes already have unique abilities:
-      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (1),
+      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (2),
       <fgdc847dFF>Mauga</fg> (2), <fg9d8cd0FF>Rammatra</fg> (1), <fg94a1a5FF>Reinhardt</fg> (1), <fg94a0a5FF>Sigma</fg> (2), <fg765dbdFF>Sombra</fg> (4), <fg91bbd1FF>Symmetra</fg> (2), 
       <fgA686ABFF>Widowmaker</fg> (8), <fga0a9baFF>Winston</fg> (1).
     ".format(
