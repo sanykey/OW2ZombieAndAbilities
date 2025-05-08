@@ -139,7 +139,7 @@ rule "Init hud hero icons of players and how much money they have":
   # delayed start
   hudHeader(
     localPlayer if not isGameStarted else null,
-    "\n\u2001{0}\n\n\u2001Press {1} to Start\u2001\n".format(
+    "\n\u2001{0}\n\n\u2001Hold {1} to Start\u2001\n".format(
       "Zombie survival", inputBindingString(Button.INTERACT)
     ), 
     HudPosition.TOP,
