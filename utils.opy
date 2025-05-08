@@ -12,6 +12,8 @@ rule "Crash Protection [ON]":
   for I in range(MAX_ZOMBIES):
     destroyDummy(Team.2, I)
 
+  smallMessage(getPlayers(Team.1), "[debug] bot spawn poins len: {}".format(len(spawnPointsList)))
+
   wait(5, Wait.ABORT_WHEN_FALSE)
   setSlowMotion(100)
   isBotsDisabled = false

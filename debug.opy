@@ -15,22 +15,18 @@ rule "[debug] Init":
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
 
+
   # hudSubtext(
   #   getPlayersInSlot(0, Team.1),
-  #   "P0: {0}".format(updateEveryFrame(temp1)),
+  #   "spawns: {0}".format(len(spawnPointsList)),
   #   HudPosition.TOP,
   #   -10,
   #   Color.WHITE,
   #   HudReeval.VISIBILITY_AND_STRING
   # )
 
-  isDebugAutoRespawn = true
 
-# rule "[debug] accurace position test":
-#   if (getPlayersInSlot(0, Team.1).isAlive()):
-#     temp1 = getPlayersInSlot(0, Team.1).getPosition()
-#   wait(0.016)
-#   loop()
+  # isDebugAutoRespawn = true
 
 rule "[debug] User init":
   @Event playerJoined
@@ -41,11 +37,11 @@ rule "[debug] User init":
   # eventPlayer.healingStat = 100
 
   # waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.state[0] = 4
-  eventPlayer.money += 1000000
+  # eventPlayer.state[0] = 4
+  # eventPlayer.money += 1000000
 
-  if eventPlayer == hostPlayer:
-    eventPlayer.startForcingHero(Hero.ANA)
+  # if eventPlayer == hostPlayer:
+  #   eventPlayer.startForcingHero(Hero.ANA)
 
   # eventPlayer.healthStat = 100
   # eventPlayer.damageStat = 100
@@ -82,6 +78,23 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
   else:
     isBotsDisabled = false
     smallMessage(eventPlayer, "Bots enabled")
+
+# rule "[debug] show current position":
+#   hudSubtext(
+#     getPlayersInSlot(0, Team.1),
+#     "P0: {0}".format(updateEveryFrame(temp1)),
+#     HudPosition.TOP,
+#     -10,
+#     Color.WHITE,
+#     HudReeval.VISIBILITY_AND_STRING
+#   )
+
+# rule "[debug] accurace position test":
+#   if (getPlayersInSlot(0, Team.1).isAlive()):
+#     temp1 = getPlayersInSlot(0, Team.1).getPosition()
+#   wait(0.016)
+#   loop()
+
 
 
 # rule "Just die":

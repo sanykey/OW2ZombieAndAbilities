@@ -38,7 +38,7 @@ rule "Create bots":
   if isBotsDisabled == true:
     return
   for I in range(MAX_ZOMBIES):
-    createDummy(Hero.TORBJORN, Team.2, I, random.choice(Y))
+    createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
@@ -124,4 +124,4 @@ rule "[Bot Anti-Spawn Check A]":
   @Team 2
   @Condition eventPlayer.isInSpawnRoom() == true
   
-  eventPlayer.teleport(random.choice(Y))
+  eventPlayer.teleport(random.choice(spawnPointsList))

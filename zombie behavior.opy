@@ -117,7 +117,7 @@ rule "Bots moves":
   if eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed():
     eventPlayer.money = 0
     eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
-    eventPlayer.teleport(random.choice(Y))
+    eventPlayer.teleport(random.choice(spawnPointsList))
     goto lbl_0
 
 
@@ -144,7 +144,7 @@ rule "Bots moves":
       eventPlayer.forceButtonPress(Button.JUMP)
 
     if eventPlayer.money > 60:
-      eventPlayer.teleport(random.choice(Y))
+      eventPlayer.teleport(random.choice(spawnPointsList))
       eventPlayer.money = 0
   else:
     eventPlayer.abilPos0 = eventPlayer.temp1

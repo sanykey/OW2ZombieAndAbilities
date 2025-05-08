@@ -31,6 +31,7 @@ globalvar zombieRespawnI
 globalvar isGameStarted
 globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
+globalvar spawnPointsList
 
 #Player variables
 playervar healthStat

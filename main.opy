@@ -9,7 +9,7 @@ rule "Game init":
   hiddenVector = vect(500, 25, 500)
   roundRemainingBots = 0
   unlockedLocations = 0
-  Y = [] # spawn points?
+  spawnPointsList = [] # spawn points?
   matchIsOver = false
   isGameStarted = false
 
@@ -31,6 +31,7 @@ rule "Game init":
 #!include "orbs.opy"
 #!include "zombie events.opy"
 #!include "zombie behavior.opy"
+#!include "zombie spawn points.opy"
 #!include "portal.opy"
 #!include "visuals.opy"
 #!include "heroes abilities/all.opy"
