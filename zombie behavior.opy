@@ -169,6 +169,7 @@ rule "zombies fly faster":
   if RULE_CONDITION:
     goto RULE_START
 
+
 rule "Zombies loS teleport":
   @Event eachPlayer
   @Team 2
@@ -178,7 +179,7 @@ rule "Zombies loS teleport":
   @Condition isInLoS(eventPlayer, eventPlayer.targetPlayer) == false
   @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
   
-  wait(5, Wait.ABORT_WHEN_FALSE)
+  wait(6, Wait.ABORT_WHEN_FALSE)
   eventPlayer.zombiesfly = true
   eventPlayer.disallowButton(Button.PRIMARY_FIRE)
   eventPlayer.setGravity(0)
@@ -200,7 +201,7 @@ rule "Zombies loS teleport":
   eventPlayer.setInvisibility(Invis.NONE)
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
   playEffect(getPlayersInRadius(eventPlayer, 10, Team.1), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 80)
-  eventPlayer.setStatusEffect(null, Status.ROOTED, 1)
+  eventPlayer.setStatusEffect(null, Status.ROOTED, 1.5)
   wait(1.2)
   eventPlayer.allowButton(Button.PRIMARY_FIRE)
   eventPlayer.enablePlayerCollision()
@@ -210,7 +211,7 @@ rule "Zombies loS teleport":
     goto RULE_START
 
 
-rule "Bot zombie roadhog melee":
+rule "[Team2 Roadhog] Bot zombie roadhog melee":
   @Event eachPlayer
   @Team 2
   @Hero roadhog
@@ -223,19 +224,19 @@ rule "Bot zombie roadhog melee":
   if ruleCondition:
     loop()
 
-rule "Roadhog trying to hook":
+rule "[Team2 Roadhog] trying to hook":
   @Event eachPlayer
   @Team 2
   @Hero roadhog
 
-  if isInLoS(eventPlayer, eventPlayer.targetPlayer) and distance(eventPlayer, eventPlayer.targetPlayer) < 30:
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.SKY_BLUE, eventPlayer, 1)
+  if isInLoS(eventPlayer, eventPlayer.targetPlayer) and distance(eventPlayer, eventPlayer.targetPlayer) < 35:
+    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1)
     wait(0.3)
     getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(2, false)
     eventPlayer.forceButtonPress(Button.ABILITY_1)
     wait(0.25)
     getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
 
-  wait(3)
+  wait(3 + (MAX_PLAYERS - getNumberOfPlayers(Team.1)))
   if ruleCondition:
       loop()

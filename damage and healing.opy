@@ -39,6 +39,7 @@ rule "Player took damage":
     eventPlayer.setStatusEffect(null, Status.HACKED, 0.05)
     eventPlayer.state[SI.IS_INVISIBLE] = false 
 
+  # [Team2 Roadhog]
   if (
     attacker.getHero() == Hero.ROADHOG and
     eventAbility == Button.MELEE and 

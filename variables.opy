@@ -140,7 +140,7 @@ playervar juno_transfer_started
 #!define LAST_CC_ATTACK_DURATION 5
 #!define BOT_MAX_INACTIVITY_DURATION 60
 
-
+#!define START_BASE_ZOMBIES_AMOUNT 4
 
 # Sombra
 #!define MONEY_FOR_KILL_HACKED 30

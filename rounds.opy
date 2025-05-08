@@ -4,8 +4,9 @@ rule "Waiting for players ready":
   @Event eachPlayer
   @Team 1
   @Condition isGameStarted == false
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and not eventPlayer.isHoldingButton(Button.CROUCH) 
 
+  wait(0.5, Wait.ABORT_WHEN_FALSE)
   smallMessage(getAllPlayers(), "START!")
   isGameStarted = true
 
@@ -40,13 +41,7 @@ rule "Create bots":
     return
   for I in range(MAX_ZOMBIES - 1):
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
-
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
-
-  createDummy(Hero.ROADHOG, Team.2, MAX_ZOMBIES - 1, random.choice(spawnPointsList))
-  getPlayersOnHero(Hero.ROADHOG, Team.2).startForcingName("Zombie catcher")
-  getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
-
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
@@ -75,7 +70,7 @@ rule "Round start":
 
   wait(5)
   bigMessage(getAllPlayers(), "Starting Round!")
-  roundRemainingBots = 10 + roundNumber * 2
+  roundRemainingBots = START_BASE_ZOMBIES_AMOUNT + roundNumber * 2
 
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
@@ -125,6 +120,15 @@ rule "Match end":
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Total", l"{0}:".format(l"Score"), teamScore))
   wait(4)
   declareTeamVictory(Team.2)
+
+rule "Create [Team2 Roadhog] bot":
+  @Condition roundNumber >= 5
+  createDummy(Hero.ROADHOG, Team.2, MAX_ZOMBIES - 1, random.choice(spawnPointsList))
+  getPlayersOnHero(Hero.ROADHOG, Team.2).startForcingName("Zombie catcher")
+  getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
+  getPlayersOnHero(Hero.ROADHOG, Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
+  getPlayersOnHero(Hero.ROADHOG, Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
+
 
 rule "[Bot Anti-Spawn Check A]":
   @Event eachPlayer
