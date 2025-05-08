@@ -157,8 +157,8 @@ rule "Changed player speed":
     eventPlayer.setMoveSpeed(PLAYER_SPEED)
 
   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
-  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = false
+  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = false
 
 
 rule "Low gravitation for player":

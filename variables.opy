@@ -108,6 +108,16 @@ playervar juno_transfer_to
 playervar juno_transfer_fx
 playervar juno_transfer_started
 
+# vanilla hero constants
+#!define WINSTON_BARRIER_HP 650
+#!define TORBJORN_HAMMER_BASE_DMG 70
+
+# Zombie stats
+#!define ZOMBIE_SPEED 80
+#!define ZOMBIE_FALL_DAMAGE 150
+#!define ZOMBIE_BASE_DAMAGE 20
+#!define ZOMBIE_BASE_HP 150
+
 #!define INFINITY 99999
 #!define MONEY_FOR_REVIVE 300
 #!define MONEY_FOR_ZOMBIE_KILL 200
@@ -122,18 +132,14 @@ playervar juno_transfer_started
 #!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
 #!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
 #!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
-#!define ZOMBIE_FALL_DAMAGE 150
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
-#!define ZOMBIE_SPEED 80
 #!define PLAYER_SPEED 100
 #!define HERO_INFO_HOLD_DURATION 0.5
 #!define LAST_CC_ATTACK_DURATION 5
 #!define BOT_MAX_INACTIVITY_DURATION 60
 
-# vanilla hero constants
-#!define WINSTON_BARRIER_HP 650
-#!define TORBJORN_HAMMER_BASE_DMG 70
+
 
 # Sombra
 #!define MONEY_FOR_KILL_HACKED 30

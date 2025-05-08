@@ -192,7 +192,7 @@ rule "Players list, upgrades and money":
   @Event eachPlayer
   @Team 1
 
-  if eventPlayer.getSlot() > 5:
+  if eventPlayer.isDummy() or eventPlayer.getSlot() > MAX_PLAYERS - 1:
     return
 
   hudText(

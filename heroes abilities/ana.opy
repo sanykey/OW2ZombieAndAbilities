@@ -34,12 +34,20 @@ rule "[Ana] init":
 rule "[Ana] Nano'd target gains speed boost":
   @Event playerDealtHealing
   @Hero ana
-  
-  if eventAbility != Button.ULTIMATE:
-      return
+  @Condition eventAbility == Button.ULTIMATE
 
   healee.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 8
   healee.state[SI.CHANGED_SPEED_AMOUNT] = PLAYER_SPEED + 30
+
+
+rule "[Ana] Nano damage for detect":
+  @Event eachPlayer
+  @Hero ana
+  @Condition eventPlayer.isUsingUltimate() == true
+  
+  damage(getPlayers(eventPlayer.getTeam()).exclude(eventPlayer), null, 0.01)
+  wait(0.2)
+  heal(getPlayers(eventPlayer.getTeam()).exclude(eventPlayer), null, 0.01)
 
 rule "[Ana]: Mass sleep dart, slowdown nade, sleep melee":
   @Event playerDealtDamage

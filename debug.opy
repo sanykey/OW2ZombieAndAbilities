@@ -45,7 +45,7 @@ rule "[debug] User init":
   eventPlayer.money += 1000000
 
   if eventPlayer == hostPlayer:
-    eventPlayer.startForcingHero(Hero.JUNO)
+    eventPlayer.startForcingHero(Hero.ANA)
 
   # eventPlayer.healthStat = 100
   # eventPlayer.damageStat = 100
