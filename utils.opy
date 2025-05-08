@@ -2,6 +2,22 @@
 
 rule "Crash Protection [ON]":
   @Condition getServerLoad() > 250
+  @Condition highloadServerPause < getTotalTimeElapsed()
+  
+  wait(2, Wait.ABORT_WHEN_FALSE)
+  highloadServerPause = 600 + getTotalTimeElapsed()
+  setSlowMotion(83)
+  bigMessage(getPlayers(Team.1), "Too high load on the server. Short break!\n\n (Cur:{} / AVG: {}/ Max: {})".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()))
+  isBotsDisabled = true
+  for I in range(MAX_ZOMBIES):
+    destroyDummy(Team.2, I)
+
+  wait(5, Wait.ABORT_WHEN_FALSE)
+  setSlowMotion(100)
+  isBotsDisabled = false
+
+rule "Crash Protection [ON]":
+  @Condition getServerLoad() > 250
   @Condition roundNumber < 40
   
   wait(2, Wait.ABORT_WHEN_FALSE)

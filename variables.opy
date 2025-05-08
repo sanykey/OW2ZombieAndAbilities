@@ -30,6 +30,7 @@ globalvar heroesList
 globalvar zombieRespawnI
 globalvar isGameStarted
 globalvar isDebugAutoRespawn # auto respawn for debug
+globalvar highloadServerPause
 
 #Player variables
 playervar healthStat
@@ -114,7 +115,7 @@ playervar juno_transfer_started
 #!define MONEY_FOR_HEALING 100
 #!define HEAL_AMOUNT_FOR_MONEY 200
 #!define MAX_PLAYERS 5
-#!define MAX_ZOMBIES 1
+#!define MAX_ZOMBIES 8
 #!define ALLY_BOT_PLAYER_SLOT 7
 #!define REVIVE_TIMER_TICK 5
 #!define ZOMBIE_BASE_MOVE_SPEED 70
@@ -128,6 +129,7 @@ playervar juno_transfer_started
 #!define PLAYER_SPEED 100
 #!define HERO_INFO_HOLD_DURATION 0.5
 #!define LAST_CC_ATTACK_DURATION 5
+#!define BOT_MAX_INACTIVITY_DURATION 60
 
 # vanilla hero constants
 #!define WINSTON_BARRIER_HP 650
