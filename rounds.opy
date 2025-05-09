@@ -14,6 +14,7 @@ rule "Bot died":
   @Event playerDied
   @Team 2
   @Condition roundRemainingBots > 0
+  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
 
   eventPlayer.setUltCharge(0)
 
@@ -33,7 +34,6 @@ rule "Create bots":
   @Condition isBotsDisabled == false
   @Condition isGameStarted == true
   @Condition getNumberOfPlayers(Team.2) < MAX_ZOMBIES
-  @Condition getPlayers(Team.1).hasSpawned() == true
   
   smallMessage(getAllPlayers(), "Create bots?")
   wait(1)
@@ -107,6 +107,14 @@ rule "Mark last zombie":
   createIcon(getPlayers(Team.1), eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
   J[21] = getLastCreatedEntity()
 
+rule "[Bot Anti-Spawn Check A]":
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.isInSpawnRoom() == true
+  
+  eventPlayer.teleport(random.choice(spawnPointsList))
+
+
 rule "Match end":
   @Condition not isDebugAutoRespawn
   @Condition all([player.isDead() for player in getPlayers(Team.1)]) == true
@@ -128,11 +136,3 @@ rule "Create [Team2 Roadhog] bot":
   getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
   getPlayersOnHero(Hero.ROADHOG, Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayersOnHero(Hero.ROADHOG, Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
-
-
-rule "[Bot Anti-Spawn Check A]":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isInSpawnRoom() == true
-  
-  eventPlayer.teleport(random.choice(spawnPointsList))

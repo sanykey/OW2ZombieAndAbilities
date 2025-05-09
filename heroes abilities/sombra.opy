@@ -46,9 +46,9 @@ rule "[Sombre] Stop invisible when hacking":
   @Hero sombra
   @Condition (
     eventPlayer.isFiringSecondaryFire() and
-    eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(Team.2), 8) and
-    isInLoS(eventPlayer, eventPlayer.getPlayerClosestToReticle(Team.2)) and
-    distance(eventPlayer, eventPlayer.getPlayerClosestToReticle(Team.2)) <= 15 
+    eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.2), 8) and
+    isInLoS(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.2)) and
+    distance(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.2)) <= 15 
   )
   eventPlayer.state[SI.IS_INVISIBLE] = false
 

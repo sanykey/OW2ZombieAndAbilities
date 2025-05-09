@@ -1,5 +1,7 @@
 #!mainFile "main.opy"
 
+
+
 rule "Bots use ultimate at 100%":
   @Event eachPlayer
   @Team 2
@@ -16,6 +18,7 @@ rule "Bots use ultimate at 100%":
 rule "Bots antifall safety and fall damage after cc damage from players":
   @Event eachPlayer
   @Team 2
+  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
 
   eventPlayer.temp1 = false
   # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
@@ -61,6 +64,7 @@ rule "Bots antifall safety and fall damage after cc damage from players":
 rule "Bots face target players and move":
   @Event eachPlayer
   @Team 2
+  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
   
   # Bots move toward players
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
@@ -75,7 +79,7 @@ rule "Bots face target players and move":
 
   # eventPlayer.setFacing(
   #   directionTowards(eventPlayer.getEyePosition(),
-  #   (getClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.isAlive()], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()),
+  #   (getRealClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.isAlive()], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()),
   #   Relativity.TO_WORLD
   # )
 
@@ -97,6 +101,7 @@ rule "Bots attack near player":
 rule "Bots moves":
   @Event eachPlayer
   @Team 2
+  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
 
   if (not eventPlayer.isAlive() or eventPlayer.zombiesfly):
     goto lbl_0
@@ -126,7 +131,7 @@ rule "Bots moves":
   eventPlayer.temp1 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
 
   # Bots under player impulse
-  if eventPlayer.getVerticalFacingAngle() < -70 and getClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false: # no need to jump after players who use ultimates (doomfist, mercy and etc)
+  if eventPlayer.getVerticalFacingAngle() < -70 and getRealClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false: # no need to jump after players who use ultimates (doomfist, mercy and etc)
     eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
     wait(0.5)
     eventPlayer.applyImpulse(Vector.UP, 18, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
@@ -161,6 +166,7 @@ rule "zombies fly faster":
   @Team 2
   @Condition eventPlayer.zombiesfly == true
   @Condition distance(eventPlayer, eventPlayer.targetPlayer) > 35
+  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
   
   wait(0.2, Wait.ABORT_WHEN_FALSE)
   eventPlayer.applyImpulse(Vector.FORWARD, 40, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
@@ -175,6 +181,7 @@ rule "Zombies loS teleport":
   @Team 2
   @Condition eventPlayer.isAlive() == true
   @Condition eventPlayer.zombiesfly == false
+  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
   @Condition eventPlayer.targetPlayer.isAlive()
   @Condition isInLoS(eventPlayer, eventPlayer.targetPlayer) == false
   @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
@@ -190,7 +197,7 @@ rule "Zombies loS teleport":
   wait(0.2)
   eventPlayer.applyImpulse(Vector.FORWARD, 5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   eventPlayer.setInvisibility(Invis.ALL)
-  waitUntil(isInLoS(eventPlayer, getClosestPlayer(eventPlayer, Team.1)), 30)
+  waitUntil(isInLoS(eventPlayer, getRealClosestPlayer(eventPlayer, Team.1)), 30)
   wait(0.4)
   eventPlayer.setGravity(100)
   eventPlayer.enableEnvironmentCollision()
@@ -211,32 +218,27 @@ rule "Zombies loS teleport":
     goto RULE_START
 
 
-rule "[Team2 Roadhog] Bot zombie roadhog melee":
+rule "Bot has bad status":
   @Event eachPlayer
   @Team 2
-  @Hero roadhog
-  @Condition getPlayersInRadius(eventPlayer, 3, Team.1) == true
-
-  eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
-  eventPlayer.forceButtonPress(Button.MELEE)
-
-  wait(1)
-  if ruleCondition:
-    loop()
-
-rule "[Team2 Roadhog] trying to hook":
-  @Event eachPlayer
-  @Team 2
-  @Hero roadhog
-
-  if isInLoS(eventPlayer, eventPlayer.targetPlayer) and distance(eventPlayer, eventPlayer.targetPlayer) < 35:
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1)
-    wait(0.3)
-    getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(2, false)
-    eventPlayer.forceButtonPress(Button.ABILITY_1)
-    wait(0.25)
-    getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
-
-  wait(3 + (MAX_PLAYERS - getNumberOfPlayers(Team.1)))
-  if ruleCondition:
-      loop()
+  @Condition eventPlayer.isDummy() == true
+  @Condition eventPlayer.hasSpawned() == true
+  @Condition eventPlayer.isAlive() == true
+  @Condition eventPlayer.hasBadStatus == false
+  @Condition (
+    eventPlayer.hasStatus(Status.HACKED) or
+    eventPlayer.hasStatus(Status.FROZEN) or
+    eventPlayer.hasStatus(Status.KNOCKED_DOWN) or
+    eventPlayer.hasStatus(Status.ASLEEP) or
+    eventPlayer.hasStatus(Status.STUNNED)
+  ) == true
+  
+  eventPlayer.hasBadStatus = true
+  waitUntil(
+    not eventPlayer.hasStatus(Status.KNOCKED_DOWN) and
+    not eventPlayer.hasStatus(Status.ASLEEP) and
+    not eventPlayer.hasStatus(Status.FROZEN) and
+    not eventPlayer.hasStatus(Status.STUNNED),
+    INFINITY
+  )
+  eventPlayer.hasBadStatus = false

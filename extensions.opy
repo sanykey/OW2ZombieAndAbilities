@@ -14,5 +14,8 @@
 # Juno hyper rift
 #!extension energyExplosionEffects
 
+# Bot Widowmaker scope
+#!extension beamEffects
+
 # for text color tags:
 #!setupTags

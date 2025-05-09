@@ -1,7 +1,7 @@
 #!mainFile "main.opy"
 
 rule "Bots spawn points array A":
-  @Condition distance(vect(-6.965, 2.94, -7.146), getClosestPlayer(vect(-6.965, 2.94, -7.146), Team.1)) <= 48
+  @Condition distance(vect(-6.965, 2.94, -7.146), getRealClosestPlayer(vect(-6.965, 2.94, -7.146), Team.1)) <= 48
   
   spawnPointsList.append(vect(14.282, 26.122, -19.096))
   spawnPointsList.append(vect(-25.084, 25.057, -28.765))
@@ -11,7 +11,7 @@ rule "Bots spawn points array A":
 
 
 rule "Bots spawn points array A-":
-  @Condition distance(vect(-6.965, 2.94, -7.146), getClosestPlayer(vect(-6.965, 2.294, -7.146), Team.1)) > 48
+  @Condition distance(vect(-6.965, 2.94, -7.146), getRealClosestPlayer(vect(-6.965, 2.294, -7.146), Team.1)) > 48
   
   spawnPointsList.remove(vect(14.282, 26.122, -19.096))
   spawnPointsList.remove(vect(-25.084, 25.057, -28.765))
@@ -21,7 +21,7 @@ rule "Bots spawn points array A-":
 
 
 rule "Bots spawn points array B":
-  @Condition distance(vect(13.044, 9.697, -73.344), getClosestPlayer(vect(13.044, 9.797, -73.344), Team.1)) <= 35
+  @Condition distance(vect(13.044, 9.697, -73.344), getRealClosestPlayer(vect(13.044, 9.797, -73.344), Team.1)) <= 35
   
   spawnPointsList.append(vect(15.598, 30.551, -60.258))
   spawnPointsList.append(vect(-6.03, 18.558, -47.35))
@@ -34,7 +34,7 @@ rule "Bots spawn points array B":
 
 
 rule "Bots spawn points array B-":
-  @Condition distance(vect(13.044, 9.697, -73.344), getClosestPlayer(vect(13.044, 9.697, -73.344), Team.1)) > 35
+  @Condition distance(vect(13.044, 9.697, -73.344), getRealClosestPlayer(vect(13.044, 9.697, -73.344), Team.1)) > 35
   
   spawnPointsList.remove(vect(15.598, 30.551, -60.258))
   spawnPointsList.remove(vect(-6.03, 18.558, -47.35))
@@ -47,21 +47,21 @@ rule "Bots spawn points array B-":
 
 
 rule "Bots spawn points array C":
-  @Condition distance(vect(-22.86, 8.08, -88.854), getClosestPlayer(vect(-22.86, 8.08, -88.854), Team.1)) <= 15
+  @Condition distance(vect(-22.86, 8.08, -88.854), getRealClosestPlayer(vect(-22.86, 8.08, -88.854), Team.1)) <= 15
   @Condition unlockedLocations == 4
   
   spawnPointsList.append(vect(74.194, 17.928, -49.807))
 
 
 rule "Bots spawn points array C-":
-  @Condition distance(vect(-22.86, 8.08, -88.854), getClosestPlayer(vect(-22.86, 8.08, -88.854), Team.1)) > 15
+  @Condition distance(vect(-22.86, 8.08, -88.854), getRealClosestPlayer(vect(-22.86, 8.08, -88.854), Team.1)) > 15
   @Condition unlockedLocations == 4
   
   spawnPointsList.remove(vect(74.194, 17.928, -49.807))
 
 
 rule "Bots spawn points array D":
-  @Condition distance(vect(59.416, 19.498, -77.513), getClosestPlayer(vect(59.416, 19.498, -77.513), Team.1)) <= 30
+  @Condition distance(vect(59.416, 19.498, -77.513), getRealClosestPlayer(vect(59.416, 19.498, -77.513), Team.1)) <= 30
   
   spawnPointsList.append(vect(60.556, 9.729, -92.999))
   spawnPointsList.append(vect(57.692, 14.745, -78.916))
@@ -73,7 +73,7 @@ rule "Bots spawn points array D":
 
 
 rule "Bots spawn points array D-":
-  @Condition distance(vect(59.416, 19.498, -77.513), getClosestPlayer(vect(59.416, 19.498, -77.513), Team.1)) > 30
+  @Condition distance(vect(59.416, 19.498, -77.513), getRealClosestPlayer(vect(59.416, 19.498, -77.513), Team.1)) > 30
   
   spawnPointsList.remove(vect(60.556, 9.729, -92.999))
   spawnPointsList.remove(vect(57.692, 14.745, -78.916))
@@ -85,7 +85,7 @@ rule "Bots spawn points array D-":
 
 
 rule "Bots spawn points array E":
-  @Condition distance(vect(75.315, 22.594, -101.637), getClosestPlayer(vect(75.315, 22.594, -101.637), Team.1)) <= 50
+  @Condition distance(vect(75.315, 22.594, -101.637), getRealClosestPlayer(vect(75.315, 22.594, -101.637), Team.1)) <= 50
   
   spawnPointsList.append(vect(94.023, 34.402, -65.749))
   spawnPointsList.append(vect(74.277, 14.12, -110.609))
@@ -95,7 +95,7 @@ rule "Bots spawn points array E":
 
 
 rule "Bots spawn points array E-":
-  @Condition distance(vect(75.315, 22.594, -101.637), getClosestPlayer(vect(75.315, 22.594, -101.637), Team.1)) > 50
+  @Condition distance(vect(75.315, 22.594, -101.637), getRealClosestPlayer(vect(75.315, 22.594, -101.637), Team.1)) > 50
   
   spawnPointsList.remove(vect(94.023, 34.402, -65.749))
   spawnPointsList.remove(vect(74.277, 14.12, -110.609))
@@ -105,7 +105,7 @@ rule "Bots spawn points array E-":
 
 
 rule "Bots spawn points array F":
-  @Condition distance(vect(108.196, 14.309, -22.096), getClosestPlayer(vect(108.196, 14.299, -22.094), Team.1)) <= 45
+  @Condition distance(vect(108.196, 14.309, -22.096), getRealClosestPlayer(vect(108.196, 14.299, -22.094), Team.1)) <= 45
   
   spawnPointsList.append(vect(74.194, 17.928, -49.807))
   spawnPointsList.append(vect(124.358, 23.829, -26.451))
@@ -116,7 +116,7 @@ rule "Bots spawn points array F":
 
 
 rule "Bots spawn points array F-":
-  @Condition distance(vect(108.195, 14.3, -22.094), getClosestPlayer(vect(108.196, 14.309, -22.096), Team.1)) > 45
+  @Condition distance(vect(108.195, 14.3, -22.094), getRealClosestPlayer(vect(108.196, 14.309, -22.096), Team.1)) > 45
   
   spawnPointsList.remove(vect(74.194, 17.928, -49.807))
   spawnPointsList.remove(vect(124.358, 23.829, -26.451))
@@ -127,7 +127,7 @@ rule "Bots spawn points array F-":
 
 
 rule "Bots spawn points array G":
-  @Condition distance(vect(140.011, 12.178, -61.257), getClosestPlayer(vect(140.011, 12.178, -61.257), Team.1)) <= 15
+  @Condition distance(vect(140.011, 12.178, -61.257), getRealClosestPlayer(vect(140.011, 12.178, -61.257), Team.1)) <= 15
   
   spawnPointsList.append(vect(74.194, 17, -49.807))
   spawnPointsList.append(vect(124.358, 23, -26.451))
@@ -138,7 +138,7 @@ rule "Bots spawn points array G":
 
 
 rule "Bots spawn points array G-":
-  @Condition distance(vect(140.011, 12.178, -61.257), getClosestPlayer(vect(140.011, 12.178, -61.257), Team.1)) > 15
+  @Condition distance(vect(140.011, 12.178, -61.257), getRealClosestPlayer(vect(140.011, 12.178, -61.257), Team.1)) > 15
   
   spawnPointsList.remove(vect(74.194, 17, -49.807))
   spawnPointsList.remove(vect(124.358, 23, -26.451))

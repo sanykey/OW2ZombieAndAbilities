@@ -15,9 +15,6 @@ globalvar orbs_vectors_arr
 globalvar isRoundEnd
 globalvar vips
 globalvar isBotsDisabled
-globalvar debugVectsArr
-globalvar debugCurrentVectNum
-globalvar debugCurrentVectEffectArr
 globalvar vectList
 globalvar lockedAreaEffectsArr
 globalvar shopState
@@ -32,8 +29,12 @@ globalvar isGameStarted
 globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
 globalvar spawnPointsList
+globalvar botSniperPositions
 
-#Player variables
+
+
+
+# Player variables: 
 playervar healthStat
 playervar damageStat
 playervar healingStat
@@ -56,14 +57,11 @@ playervar recentStackedDamageDealtToSlot
 playervar damageAssitsToSlot
 
 playervar deathCamTarget
-playervar targetPlayer
+
 playervar talents
 playervar HUDs
-playervar temp1
-playervar temp2
-playervar temp3
-playervar temp4
-playervar temp5
+
+playervar hasBadStatus
 playervar revealed
 playervar widowmakerChargeShot
 playervar money
@@ -73,23 +71,38 @@ playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar abilityProjectile
 playervar abilityCD
 
+## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
+playervar temp1
+playervar temp2
+playervar temp3
+playervar temp4
+playervar temp5
+playervar list
+playervar list2
+playervar list3
+
+## hero state vars:
 playervar abilPos0
 playervar abilPos1
 playervar abilPos2
 playervar abilPos3
 playervar abilPos4
-
 playervar abilState0
 playervar abilState1
-
+playervar abilState2
+playervar abilState3
 playervar abilDir0
 playervar abilDir1
 playervar abilDir2
 playervar abilDir3
-playervar list
-playervar list2
-playervar list3
+playervar targetPlayer
 
+## only for debug
+globalvar debugVectsArr
+globalvar debugCurrentVectNum
+globalvar debugCurrentVectEffectArr
+
+## for juno rift ability:
 playervar juno_last_rift
 playervar juno_rift2_placement
 playervar juno_rift2_fx
@@ -103,6 +116,7 @@ playervar juno_rift
 playervar juno_hyper_hud
 playervar juno_rift_icon
 
+## for juno rift ability:
 playervar juno_transfer_pos
 playervar juno_transfer_from
 playervar juno_transfer_to

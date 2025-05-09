@@ -32,6 +32,9 @@ rule "Game init":
 #!include "zombie events.opy"
 #!include "zombie behavior.opy"
 #!include "zombie spawn points.opy"
+#!include "bots/widowmaker.opy"
+#!include "bots/roadhog.opy"
+
 #!include "portal.opy"
 #!include "visuals.opy"
 #!include "heroes abilities/all.opy"

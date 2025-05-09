@@ -195,7 +195,7 @@ rule "[Widowmaker] Phantom bullets - Aiming through walls":
   wait(0.016)
   if (
     eventPlayer.isFiringSecondaryFire() == false or
-    eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(Team.2), WALLHACK_SHOT_IN_VIEW_ANGLE) == false
+    eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.2), WALLHACK_SHOT_IN_VIEW_ANGLE) == false
   ):
     eventPlayer.raycast[RI.FACING_DIRECTION] = false
     return

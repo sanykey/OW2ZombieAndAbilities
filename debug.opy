@@ -37,8 +37,8 @@ rule "[debug] User init":
   # eventPlayer.healingStat = 100
 
   # waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  # eventPlayer.state[0] = 4
-  # eventPlayer.money += 1000000
+  eventPlayer.state[0] = 4
+  eventPlayer.money += 1000000
 
   # if eventPlayer == hostPlayer:
   #   eventPlayer.startForcingHero(Hero.ANA)
@@ -79,21 +79,21 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
     isBotsDisabled = false
     smallMessage(eventPlayer, "Bots enabled")
 
-# rule "[debug] show current position":
-#   hudSubtext(
-#     getPlayersInSlot(0, Team.1),
-#     "P0: {0}".format(updateEveryFrame(temp1)),
-#     HudPosition.TOP,
-#     -10,
-#     Color.WHITE,
-#     HudReeval.VISIBILITY_AND_STRING
-#   )
+rule "[debug] show current position":
+  hudSubtext(
+    getPlayersInSlot(0, Team.1),
+    "P0: {0}".format(updateEveryFrame(temp1)),
+    HudPosition.TOP,
+    -10,
+    Color.WHITE,
+    HudReeval.VISIBILITY_AND_STRING
+  )
 
-# rule "[debug] accurace position test":
-#   if (getPlayersInSlot(0, Team.1).isAlive()):
-#     temp1 = getPlayersInSlot(0, Team.1).getPosition()
-#   wait(0.016)
-#   loop()
+rule "[debug] accurace position test":
+  if (getPlayersInSlot(0, Team.1).isAlive()):
+    temp1 = getPlayersInSlot(0, Team.1).getEyePosition()
+  wait(0.016)
+  loop()
 
 
 
@@ -317,7 +317,7 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
 
 #   hudSubtext(
 #     getPlayersInSlot(0, Team.1),
-#     "in Aim: {0}".format(eventPlayer.isInViewAngle(eventPlayer.getPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 3)),
+#     "in Aim: {0}".format(eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(getOppositeTeam(eventPlayer.getTeam())), 3)),
 #     HudPosition.TOP,
 #     9,
 #     Color.WHITE,
