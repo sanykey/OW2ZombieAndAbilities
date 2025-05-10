@@ -1,8 +1,8 @@
 #!mainFile "main.opy"
 
 rule "Create hero buy positions":
-  heroesList = random.shuffle([ # 41
-    # tanks - 12
+  heroesList = random.shuffle([ # 43
+    # tanks - 13
     Hero.DOOMFIST,
     Hero.JUNKER_QUEEN,
     Hero.MAUGA,
@@ -14,9 +14,9 @@ rule "Create hero buy positions":
     Hero.WINSTON,
     Hero.WRECKING_BALL,
     Hero.ZARYA,
-    # Hero.HAZARD
+    Hero.HAZARD,
 
-    # damage dealers - 18
+    # damage dealers - 19
     Hero.ASHE,
     Hero.BASTION,
     Hero.CASSIDY,
@@ -35,6 +35,7 @@ rule "Create hero buy positions":
     Hero.TRACER,
     Hero.VENTURE,
     Hero.WIDOWMAKER,
+    Hero.FREJA,
 
     # supports - 11
     Hero.ANA,
@@ -56,11 +57,11 @@ rule "Create hero buy positions":
   for I in range(len(heroesList)):
     heroesShopData[I] = [
       heroesList[I],
-      vectList[I + vectListI.BUY_HERO_OFFSET],
+      vectList[I + VI.BUY_HERO_OFFSET],
       floor((
         random.randint(1000, 5000) if I < 6 else (
           random.randint(2500, 7500) if I < 13 else (
-            random.randint(5000, 10000) if I < 26 else random.randint(7500, 15000)
+            random.randint(5000, 10000) if I < 27 else random.randint(7500, 15000)
           )
         )
       ) / 100) * 100
@@ -80,9 +81,9 @@ rule "Create hero buy positions":
     createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, heroesShopData[I][1], 1.7, EffectReeval.VISIBILITY)
 
   # buy DVA
-  heroesShopData[len(heroesList)] = [Hero.DVA, vectList[vectListI.BUY_DVA], 0]
-  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format(heroIcon(Hero.DVA), 0)), vectList[vectListI.BUY_DVA], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY)
-  createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, vectList[vectListI.BUY_DVA], 1.7, EffectReeval.VISIBILITY)
+  heroesShopData[len(heroesList)] = [Hero.DVA, vectList[VI.BUY_DVA], 0]
+  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format(heroIcon(Hero.DVA), 0)), vectList[VI.BUY_DVA], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, vectList[VI.BUY_DVA], 1.7, EffectReeval.VISIBILITY)
 
 rule "Buy hero":
   @Event eachPlayer

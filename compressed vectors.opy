@@ -1,7 +1,7 @@
 #!mainFile "main.opy"
 rule "Create location buy positions":
   # init vectors
-    B = compress([
+    vectList = compressed([
     # Effects for purchase access to locked areas [0-3] len =4
     vect(7.613, 5.326, -34.916),
     vect(31.577, 6.126, -62.399),
@@ -19,7 +19,7 @@ rule "Create location buy positions":
     vect(87.651, 15, -28.387),
     vect(107.743, 12.171, -31.426),
 
-    # Effects for forbidden zones in doorways [13-24] (vectListI.LOCKED_AREA_EFFECTS_OFFSET), len = 12 (LOCKED_AREA_EFFECTS_LEN). 
+    # Effects for forbidden zones in doorways [13-24] (VI.LOCKED_AREA_EFFECTS_OFFSET), len = 12 (LOCKED_AREA_EFFECTS_LEN). 
     vect(12.505, 5.485, -40.846),
     vect(22.609, 6.314, -45.045),
     vect(20.011, 6.314, -40.406),
@@ -103,6 +103,7 @@ rule "Create location buy positions":
     vect(36.879, 14.045, -105.779),
     vect(54.407, 22.254, -67.496),
     vect(102.662, 10.882, -91.232),
+    vect(60.62, 6.72, -108.23),
     #   zone D:
     vect(122.079, 12.303, -64.267),
     vect(122.424, 13.872, -6.63),
@@ -117,15 +118,17 @@ rule "Create location buy positions":
     vect(-18.875, 7.812, -85.866),
     vect(136.347, 13.036, -61.239),
     vect(113.847, 12.303, -19.674),
-    vect(130.268, 12, -57.335)
+    vect(130.268, 12, -57.335),
+    vect(142.02, 11.72, -43.53)
   ])
-  vectList = decompressVectors(B)
-  B = null
 
-#!define BUY_HERO_LEN 40
-#!define LOCKED_AREA_EFFECTS_LEN 12
+  # logToInspector("vectList init:")
+  # logToInspector(arrayToString(vectList, 150))
 
-  enum vectListI:
+  #!define BUY_HERO_LEN 40
+  #!define LOCKED_AREA_EFFECTS_LEN 12
+
+  enum VI:
     BUY_LOCATION_A = 0
     BUY_LOCATION_B = 1
     BUY_LOCATION_C = 2
@@ -154,5 +157,3 @@ rule "Create location buy positions":
 
     BUY_DVA = 54
     BUY_HERO_OFFSET = 55
-    BOTS_ANTI_FALL_OFFSET = 95
-    BOTS_ANTI_FALL_LEN = 10

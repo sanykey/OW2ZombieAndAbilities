@@ -39,7 +39,7 @@ rule "[debug] User init":
   eventPlayer.healingStat = 100
 
   # eventPlayer.state[0] = 4
-  # eventPlayer.money += 1000000
+  eventPlayer.money += 1000000
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
@@ -82,22 +82,16 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
     smallMessage(eventPlayer, "Bots enabled")
 
 rule "[debug] show current position":
-  hudSubtext(
-    getPlayersInSlot(0, Team.1),
-    "P0: {0}".format(updateEveryFrame(temp1)),
-    HudPosition.TOP,
-    -10,
-    Color.WHITE,
-    HudReeval.VISIBILITY_AND_STRING
-  )
-
-rule "[debug] accurace position test":
-  if (getPlayersInSlot(0, Team.1).isAlive()):
-    temp1 = getPlayersInSlot(0, Team.1).getEyePosition()
-  wait(0.016)
-  loop()
-
-
+  # hudSubtext(
+  #   getPlayersInSlot(0, Team.1),
+  #   "P0: {0}".format(getPlayersInSlot(0, Team.1).getEyePosition()),
+  #   HudPosition.TOP,
+  #   -10,
+  #   Color.WHITE,
+  #   HudReeval.VISIBILITY_AND_STRING
+  # )
+  debug(getPlayersInSlot(0, Team.1).getEyePosition())
+  debug(getPlayersInSlot(0, Team.1).getPosition())
 
 # rule "Just die":
 #   @Event eachPlayer
@@ -130,8 +124,8 @@ rule "[debug] accurace position test":
 # rule "Create debbugginh vectors list":
 
 #   debugVectsArr = []
-#   for I in range(vectListI.BUY_HERO_OFFSET, vectListI.BUY_HERO_OFFSET + BUY_HERO_LEN):
-#     debugVectsArr[I - vectListI.BUY_HERO_OFFSET] = vectList[I]
+#   for I in range(VI.BUY_HERO_OFFSET, VI.BUY_HERO_OFFSET + BUY_HERO_LEN):
+#     debugVectsArr[I - VI.BUY_HERO_OFFSET] = vectList[I]
 
 #   createBeam(
 #     getPlayersInSlot(0, Team.1),

@@ -32,7 +32,6 @@ rule "Game init":
 #!include "zombie events.opy"
 #!include "zombie behavior.opy"
 #!include "zombie spawn points.opy"
-#!include "bots restricted areas.opy"
 #!include "bots/widowmaker.opy"
 #!include "bots/roadhog.opy"
 

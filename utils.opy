@@ -51,7 +51,7 @@ rule "Crash Protection 40+ [OFF]":
   wait(2, Wait.ABORT_WHEN_FALSE)
   setSlowMotion(100)
 
-rule "shop ServerLoad info":
+rule "show ServerLoad info":
   hudSubheader(
     localPlayer if localPlayer == hostPlayer else false,
     "Server load: {0} / AVG: {1}/ Max: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()),
@@ -61,9 +61,9 @@ rule "shop ServerLoad info":
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
 
-rule "Disable inspector recording - debug":
-  wait(1)
-  disableInspector()
+# rule "Disable inspector recording - debug":
+#   wait(1)
+#   disableInspector()
 
 rule "Unlimited match time":
   @Condition getMatchTime() < 10

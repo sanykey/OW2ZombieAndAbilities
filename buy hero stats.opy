@@ -1,22 +1,22 @@
 #!mainFile "main.opy"
 
 rule "Inite shop upgrades effects and text":
-  createEffect(getAllPlayers(), Effect.RING, Color.LIME_GREEN, vectList[vectListI.BUY_HP], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.RED, vectList[vectListI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.ORANGE, vectList[vectListI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(getAllPlayers(), "HP (+7%) | 2500 ", vectList[vectListI.BUY_HP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.LIME_GREEN)
-  createInWorldText(getAllPlayers(), "Damage (+5%) | 2500", vectList[vectListI.BUY_DAMAGE], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED)
-  createInWorldText(getAllPlayers(), "Healing Dealt (+5%) | 2500", vectList[vectListI.BUY_HEALING], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
+  createEffect(getAllPlayers(), Effect.RING, Color.LIME_GREEN, vectList[VI.BUY_HP], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getAllPlayers(), Effect.RING, Color.RED, vectList[VI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getAllPlayers(), Effect.RING, Color.ORANGE, vectList[VI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createInWorldText(getAllPlayers(), "HP (+7%) | 2500 ", vectList[VI.BUY_HP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.LIME_GREEN)
+  createInWorldText(getAllPlayers(), "Damage (+5%) | 2500", vectList[VI.BUY_DAMAGE], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED)
+  createInWorldText(getAllPlayers(), "Healing Dealt (+5%) | 2500", vectList[VI.BUY_HEALING], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
 
-  createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[vectListI.BUY_TEAM_ARMOR], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format("+50 Armor [Team]", 7500 + null)), vectList[vectListI.BUY_TEAM_ARMOR], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
-  createEffect(getPlayers(Team.1), Effect.RING, Color.BLUE, vectList[vectListI.BUY_TEAM_SHIELDS], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format("+50 Shields [Team]", 7500 + null)), vectList[vectListI.BUY_TEAM_SHIELDS], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.BLUE)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[VI.BUY_TEAM_ARMOR], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format("+50 Armor [Team]", 7500 + null)), vectList[VI.BUY_TEAM_ARMOR], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.BLUE, vectList[VI.BUY_TEAM_SHIELDS], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format("+50 Shields [Team]", 7500 + null)), vectList[VI.BUY_TEAM_SHIELDS], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.BLUE)
 
 rule "Buy damage upgrade":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[vectListI.BUY_DAMAGE]) < 1.8
+  @Condition distance(eventPlayer, vectList[VI.BUY_DAMAGE]) < 1.8
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 2500
   
@@ -30,7 +30,7 @@ rule "Buy damage upgrade":
 rule "Buy health upgrade":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[vectListI.BUY_HP]) < 1.8
+  @Condition distance(eventPlayer, vectList[VI.BUY_HP]) < 1.8
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 2500
   
@@ -46,7 +46,7 @@ rule "Buy health upgrade":
 rule "Buy healing upgrade":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[vectListI.BUY_HEALING]) < 1.8
+  @Condition distance(eventPlayer, vectList[VI.BUY_HEALING]) < 1.8
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 2500
   
@@ -63,7 +63,7 @@ rule "Buy team shields":
   @Team 1
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 7500
-  @Condition distance(eventPlayer, vectList[vectListI.BUY_TEAM_SHIELDS]) <= 1.5
+  @Condition distance(eventPlayer, vectList[VI.BUY_TEAM_SHIELDS]) <= 1.5
   @Condition unlockedLocations >= 3
   
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.BLUE, eventPlayer, 2)
@@ -80,7 +80,7 @@ rule "Buy team armor":
     @Event eachPlayer
     @Team 1
     @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-    @Condition distance(eventPlayer, vectList[vectListI.BUY_TEAM_ARMOR]) <= 1.5
+    @Condition distance(eventPlayer, vectList[VI.BUY_TEAM_ARMOR]) <= 1.5
     @Condition eventPlayer.money >= 7500
     @Condition unlockedLocations >= 3
 

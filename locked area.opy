@@ -26,7 +26,7 @@ rule "Create location buy positions":
     lockedAreaEffectsArr.append(getLastCreatedText())
 
   ## Create closed doorway effects. lockedAreaEffectsArr [8-19] indexes: ##
-  for I in range(vectListI.LOCKED_AREA_EFFECTS_OFFSET, vectListI.LOCKED_AREA_EFFECTS_OFFSET + LOCKED_AREA_EFFECTS_LEN):
+  for I in range(VI.LOCKED_AREA_EFFECTS_OFFSET, VI.LOCKED_AREA_EFFECTS_OFFSET + LOCKED_AREA_EFFECTS_LEN):
     createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, evalOnce(vectList[I]), 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     lockedAreaEffectsArr.append(getLastCreatedEntity())
 
@@ -221,7 +221,7 @@ rule "Teleport from restricted area 5":
 rule "Unlock next location A":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[vectListI.BUY_LOCATION_A], eventPlayer) <= 2
+  @Condition distance(vectList[VI.BUY_LOCATION_A], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 0
   @Condition eventPlayer.money >= 2500
@@ -244,7 +244,7 @@ rule "Unlock next location A":
 rule "Unlock next location B":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[vectListI.BUY_LOCATION_B], eventPlayer) <= 2
+  @Condition distance(vectList[VI.BUY_LOCATION_B], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 1
   @Condition eventPlayer.money >= 5000
@@ -269,7 +269,7 @@ rule "Unlock next location B":
 rule "Unlock next location C":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[vectListI.BUY_LOCATION_C], eventPlayer) <= 2
+  @Condition distance(vectList[VI.BUY_LOCATION_C], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 2
   @Condition eventPlayer.money >= 7500
@@ -293,7 +293,7 @@ rule "Unlock next location C":
 rule "Unlock next location D":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[vectListI.BUY_LOCATION_D], eventPlayer) <= 2
+  @Condition distance(vectList[VI.BUY_LOCATION_D], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 3
   @Condition eventPlayer.money >= 10000
