@@ -22,6 +22,7 @@ rule "Game init":
 #!include "buy hero.opy"
 #!include "hero abilities.opy"
 #!include "locked area.opy"
+#!include "restricted areas.opy"
 
 #!include "player revive.opy"
 #!include "secret shop.opy"

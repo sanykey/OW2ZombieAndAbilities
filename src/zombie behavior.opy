@@ -1,12 +1,11 @@
 #!mainFile "main.opy"
 
-
-
 rule "Bots use ultimate at 100%":
   @Event eachPlayer
   @Team 2
   @Hero torbjorn
   @Condition eventPlayer.getUltCharge() == 100
+  @Condition eventPlayer.isAlive()
 
   eventPlayer.forceButtonPress(Button.ULTIMATE)
   wait(0.5)
@@ -19,6 +18,7 @@ rule "Bots antifall safety and fall damage after cc damage from players":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
+  @Condition eventPlayer.isAlive()
 
   eventPlayer.temp1 = false
   # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
@@ -65,6 +65,8 @@ rule "Bots antifall safety and fall damage after cc damage from players":
 rule "Zombies loS teleport warning":
   @Event eachPlayer
   @Team 2
+  @Condition eventPlayer.isAlive()
+
   createIcon(
     getPlayers(Team.1) if eventPlayer.zombiesfly else null,
     eventPlayer,
@@ -101,6 +103,7 @@ rule "Bots attack near player":
   @Team 2
   @Hero torbjorn
   @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
+  @Condition eventPlayer.isAlive()
 
   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
@@ -114,6 +117,7 @@ rule "Bots moves":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
+  @Condition eventPlayer.isAlive()
 
   if not RULE_CONDITION:
     eventPlayer.money = 0
@@ -140,7 +144,7 @@ rule "Bots moves":
 
   eventPlayer.targetPlayer = (
     sorted(
-      [player for player in getLivingPlayers(Team.1) if player.isAlive()],
+      [player for player in getLivingPlayers(Team.1) if player.hasSpawned()],
       lambda i: distance(eventPlayer, i) + (
         10 if not isInLoS(eventPlayer, i) else 0
       ) + (
@@ -208,11 +212,11 @@ rule "zombies fly faster":
 rule "Zombies loS teleport (zombiesfly)":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.isAlive() == true
+  @Condition eventPlayer.isAlive()
   @Condition eventPlayer.zombiesfly == false
   @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
   @Condition eventPlayer.targetPlayer.isAlive()
-  @Condition isInLoS(eventPlayer, eventPlayer.targetPlayer) == false
+  @Condition not isInLoS(eventPlayer, eventPlayer.targetPlayer)
   @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
   
   wait(6, Wait.ABORT_WHEN_FALSE)

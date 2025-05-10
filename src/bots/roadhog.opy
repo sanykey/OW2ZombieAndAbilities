@@ -13,6 +13,7 @@ rule "[Team2 Roadhog] Bot zombie roadhog melee":
   @Team 2
   @Hero roadhog
   @Condition getPlayersInRadius(eventPlayer, 3, Team.1) == true
+  @Condition eventPlayer.isAlive()
 
   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.forceButtonPress(Button.MELEE)
@@ -25,6 +26,7 @@ rule "[Team2 Roadhog] trying to hook":
   @Event eachPlayer
   @Team 2
   @Hero roadhog
+  @Condition eventPlayer.isAlive()
 
   if isInLoS(eventPlayer, eventPlayer.targetPlayer) and distance(eventPlayer, eventPlayer.targetPlayer) < 35:
     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1)

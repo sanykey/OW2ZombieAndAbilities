@@ -88,21 +88,18 @@ rule "Round start":
 
 
 rule "Respawn bots":
-  @Condition isRoundEnd == false
   @Condition roundNumber >= 1
-  @Condition getNumberOfLivingPlayers(Team.2) < roundRemainingBots
-  @Condition getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES
   @Condition isBotsDisabled == false
-  
-  wait(3, Wait.ABORT_WHEN_FALSE)
-  botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
-  if botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
-    botsRespawnTemp.startForcingHero(Hero.TORBJORN)
-  else:
-    botsRespawnTemp.respawn()
 
-  if RULE_CONDITION:
-    goto RULE_START
+  wait(3, Wait.ABORT_WHEN_FALSE)
+  if (isRoundEnd == false and getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
+    botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
+    if botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
+      botsRespawnTemp.startForcingHero(Hero.TORBJORN)
+    else:
+      botsRespawnTemp.respawn()
+
+  loop()
 
 rule "Mark last zombie":
   @Event eachPlayer
