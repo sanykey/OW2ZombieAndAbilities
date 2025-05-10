@@ -35,7 +35,9 @@ rule "[Winston] Create barrier and save position":
   @Condition eventPlayer.isUsingAbility2()
 
   eventPlayer.abilTemp1 = false
-  eventPlayer.abilPos0 = eventPlayer.getEyePosition()
+  eventPlayer.abilPos0 = eventPlayer.getEyePosition() # current Barrier projectile position
+
+  # Barrier projectile drop location:
   eventPlayer.abilPos1 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + Vector.DOWN * 50, null, getAllPlayers(), false).getHitPosition()
 
   chaseAtRate(eventPlayer.abilTemp1, 10000, 9.8)

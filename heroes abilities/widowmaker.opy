@@ -8,6 +8,7 @@ enum WIDOWMAKER_SI:
 
 rule "[Widowmaker] Talent texts":
   @Event eachPlayer
+  @Team 1
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
 
   wait(1) # waiting for the previous hero to clear hero data
@@ -50,6 +51,7 @@ rule "[Widowmaker] Talent texts":
 # Party Favours: Gain a second hook charge
 rule "[Widowmaker] Party Favours":
   @Event eachPlayer
+  @Team 1
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
   
@@ -74,6 +76,7 @@ rule "[Widowmaker] Party Favours":
 rule "[Widowmaker] Party Favours - Deplete hook charge":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
   @Condition eventPlayer.isUsingAbility1() == true
   
@@ -89,6 +92,7 @@ rule "[Widowmaker] Party Favours - Deplete hook charge":
 rule "[Widowmaker] Party Favours - Recharge hook ":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
   @Condition eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] < 1
   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
@@ -110,6 +114,7 @@ rule "[Widowmaker] Party Favours - Recharge hook ":
 rule "[Widowmaker] Falling stars":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] == true
   @Condition eventPlayer.isUsingAbility1() == true
   @Condition eventPlayer.getSpeed() >= 20
@@ -125,6 +130,7 @@ rule "[Widowmaker] Falling stars":
 rule "[Widowmaker] Silk web":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.isUsingAbility1() == true
   @Condition eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] == true
   
@@ -149,6 +155,7 @@ rule "[Widowmaker] Silk web":
 rule "[Widowmaker] Phantom bullets headshot hud":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
 
   createInWorldText(
@@ -186,6 +193,7 @@ rule "[Widowmaker] Phantom bullets headshot hud":
 rule "[Widowmaker] Phantom bullets - Aiming through walls":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == false
@@ -207,6 +215,7 @@ rule "[Widowmaker] Phantom bullets - Aiming through walls":
 rule "[Widowmaker] Phantom bullets - damage through walls":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == true
   @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
@@ -278,6 +287,7 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
 rule "[Widowmaker] Felt More Alive":
   @Event eachPlayer
   @Hero widowmaker
+  @Team 1
   @Condition eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] == true
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isInAir() == true
@@ -311,6 +321,8 @@ rule "[Widowmaker] Baiser De Soie":
 
 rule "[Widowmaker] Phantom bullets - Charge":
   @Event eachPlayer
+  @Team 1
+  @Hero widowmaker
   @Condition eventPlayer.isFiringSecondaryFire() == true and eventPlayer.isFiringPrimaryFire() == false
   
   eventPlayer.widowmakerChargeShot = 0

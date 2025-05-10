@@ -5,7 +5,7 @@ rule "Crash Protection [ON]":
   @Condition highloadServerPause < getTotalTimeElapsed()
   
   wait(2, Wait.ABORT_WHEN_FALSE)
-  highloadServerPause = 600 + getTotalTimeElapsed()
+  highloadServerPause = 10 + getTotalTimeElapsed()
   setSlowMotion(83)
   bigMessage(getPlayers(Team.1), "Too high load on the server. Short break!\n\n (Cur:{} / AVG: {}/ Max: {})".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()))
   isBotsDisabled = true

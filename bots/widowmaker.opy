@@ -1,9 +1,21 @@
 #!mainFile "../main.opy"
 
-rule "Create [Team2 Widowmaker] bot":
-  @Condition roundNumber >= 1
-  createDummy(Hero.WIDOWMAKER, Team.2, MAX_ZOMBIES, random.choice(spawnPointsList))
-  getLastCreatedEntity().abilPos0 = true
+def respawnTeam2Widowmaker():
+  @Name "Subroutine: Respawn Team2 Widowmaker"
+  waitUntil(
+    roundRemainingBots > 4 and
+    [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))], 
+    INFINITY
+  )
+  botWidowmakerRespTepm = random.choice(getLivingPlayers(Team.2).exclude(getPlayersOnHero(Hero.ROADHOG)))
+  botWidowmakerRespTepm.startForcingHero(Hero.WIDOWMAKER)
+  botWidowmakerRespTepm.stopForcingThrottle()
+  botWidowmakerRespTepm.startScalingSize(1, false)
+
+rule "[Team2 Widowmaker] start":
+  @Condition roundNumber >= 7 and not isBotsDisabled
+  wait(3)
+  respawnTeam2Widowmaker()
 
 rule "[Team2 Widowmaker] global init":
   botSniperPositions = [
@@ -39,33 +51,30 @@ rule "[Team2 Widowmaker] respawn":
   eventPlayer.startForcingButton(Button.SECONDARY_FIRE)
 
 
+
 rule "[Team2 Widowmaker] died":
   @Event playerDied
   @Team 2
   @Hero widowmaker
 
-  eventPlayer.abilPos0 = false
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
   destroyEffect(eventPlayer.abilPos1)
   eventPlayer.stopFacing()
   wait(30)
-  eventPlayer.abilPos0 = true # can change position and respawn
+  respawnTeam2Widowmaker()
 
 rule "[Team2 Widowmaker] change position":
   @Event eachPlayer
   @Team 2
   @Hero widowmaker
-  @Condition eventPlayer.abilPos0 == true
+  @Condition eventPlayer.isAlive() == true
+  @Condition eventPlayer.hasSpawned() == true
 
   eventPlayer.list = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   )
 
   if eventPlayer.list:
-    if not eventPlayer.isAlive():
-      smallMessage(getAllPlayers(), "WIDOW RESPAWN!")
-      eventPlayer.respawn()
-
     eventPlayer.teleport(eventPlayer.list[random.randint(0, len(eventPlayer.list) - 1)])
     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 2)
     playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
@@ -74,7 +83,7 @@ rule "[Team2 Widowmaker] change position":
   if ruleCondition:
       loop()
 
-
+# code from [Defend Castle - PvE](https://workshop.codes/BQEGS)
 rule "[Team2 Widowmaker] - SEE PLAYER":
   @Event eachPlayer
   @Team 2

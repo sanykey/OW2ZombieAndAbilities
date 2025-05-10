@@ -61,6 +61,18 @@ rule "Bots antifall safety and fall damage after cc damage from players":
 #     Color.RED if (((ceil(getTotalTimeElapsed() * (4 if distance(eventPlayer.getPosition(), localPlayer.getPosition()) > 10 else 8))) % 2) == 0) else Color.YELLOW
 #   )
 
+
+rule "Zombies loS teleport warning":
+  @Event eachPlayer
+  @Team 2
+  createIcon(
+    getPlayers(Team.1) if eventPlayer.zombiesfly else null,
+    eventPlayer,
+    Icon.EYE,
+    IconReeval.VISIBILITY_POSITION_AND_COLOR,
+    Color.RED
+  )
+
 rule "Bots face target players and move":
   @Event eachPlayer
   @Team 2
@@ -103,6 +115,10 @@ rule "Bots moves":
   @Team 2
   @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
 
+  if not RULE_CONDITION:
+    eventPlayer.money = 0
+    return
+
   if (not eventPlayer.isAlive() or eventPlayer.zombiesfly):
     goto lbl_0
 
@@ -139,11 +155,8 @@ rule "Bots moves":
   # bot unstuck
   if (
     eventPlayer.abilPos0 and
-    distance(eventPlayer.abilPos0, eventPlayer.temp1) < 1 and
-    not eventPlayer.hasStatus(Status.ASLEEP) and
-    not eventPlayer.hasStatus(Status.FROZEN) and
-    not eventPlayer.hasStatus(Status.ROOTED) and
-    not eventPlayer.hasStatus(Status.STUNNED)
+    distance(eventPlayer.abilPos0, eventPlayer.temp1) < 2 and
+    not eventPlayer.hasBadStatus
   ):
     eventPlayer.money += 1
     # try to jump if the movement has slowed down
@@ -176,7 +189,7 @@ rule "zombies fly faster":
     goto RULE_START
 
 
-rule "Zombies loS teleport":
+rule "Zombies loS teleport (zombiesfly)":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive() == true

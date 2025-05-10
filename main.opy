@@ -22,7 +22,7 @@ rule "Game init":
 #!include "buy hero.opy"
 #!include "hero abilities.opy"
 #!include "locked area.opy"
-#!include "player spawn.opy"
+
 #!include "player revive.opy"
 #!include "secret shop.opy"
 #!include "hud.opy"
@@ -32,6 +32,7 @@ rule "Game init":
 #!include "zombie events.opy"
 #!include "zombie behavior.opy"
 #!include "zombie spawn points.opy"
+#!include "bots restricted areas.opy"
 #!include "bots/widowmaker.opy"
 #!include "bots/roadhog.opy"
 

@@ -2,21 +2,12 @@
 
 def randomStatUpgrade():
   @Name "Subroutine: Random stat upgrade"
-  switch random.randint(0, 2):
-    case 0:
-      eventPlayer.healthStat += eventPlayer.temp1
-      eventPlayer.setMaxHealth(eventPlayer.healthStat)
-      smallMessage(eventPlayer, "+{}% max health".format(eventPlayer.temp1))
-      break
-    case 1:
-      eventPlayer.healingStat += eventPlayer.temp1
-      eventPlayer.setHealingDealt(eventPlayer.healingStat)
-      smallMessage(eventPlayer, "+{}% healing dealt".format(eventPlayer.temp1))
-      break
-    default:
-      eventPlayer.damageStat += eventPlayer.temp1
-      eventPlayer.setDamageDealt(eventPlayer.damageStat)
-      smallMessage(eventPlayer, "+{}% damage dealt".format(eventPlayer.temp1))
+
+  eventPlayer.damageStat += eventPlayer.temp1
+  eventPlayer.setDamageDealt(eventPlayer.damageStat)
+  eventPlayer.healthStat += eventPlayer.temp1
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  smallMessage(eventPlayer, "+{}% damage dealt and hp".format(eventPlayer.temp1))
 
 rule "Create location buy positions":
   # Create buy location positions and effects. lockedAreaEffectsArr [0-7] indexes
@@ -26,7 +17,7 @@ rule "Create location buy positions":
     lockedAreaEffectsArr.append(getLastCreatedEntity())
     createInWorldText(
       getPlayers(Team.1),
-      "Buy next location: ${0}\n + random stat upgrade".format(2500 * (I + 1)),
+      "Buy next location: ${0}\n  + stats upgrade".format(2500 * (I + 1)),
       vectList[I],
       1,
       Clip.SURFACES,
@@ -247,7 +238,7 @@ rule "Unlock next location A":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 2500
-  eventPlayer.temp1 = 10
+  eventPlayer.temp1 = 7
   randomStatUpgrade()
 
 rule "Unlock next location B":
@@ -271,7 +262,7 @@ rule "Unlock next location B":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 5000
-  eventPlayer.temp1 = 20
+  eventPlayer.temp1 = 14
   randomStatUpgrade()
 
 
@@ -295,7 +286,7 @@ rule "Unlock next location C":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 7500
-  eventPlayer.temp1 = 30
+  eventPlayer.temp1 = 21
   randomStatUpgrade()
 
 
@@ -318,7 +309,7 @@ rule "Unlock next location D":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 10000
-  eventPlayer.temp1 = 40
+  eventPlayer.temp1 = 28
   randomStatUpgrade()
 
 rule "Clear locked areas data when everything is open":

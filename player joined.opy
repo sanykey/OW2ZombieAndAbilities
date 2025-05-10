@@ -15,12 +15,16 @@ rule "Disable spawn room hero swap":
     eventPlayer.healthStat = 100
     eventPlayer.damageStat = 100
     eventPlayer.healingStat = 100
+  
+  eventPlayer.money = 1000 
 
   eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
 
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.addHealthPool(Health.SHIELDS, team_shields, true)
-  eventPlayer.addHealthPool(Health.ARMOR, team_armor, true)
+  if teamShields:
+    eventPlayer.addHealthPool(Health.SHIELDS, teamShields, true)
+  if teamArmor:
+    eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
 
   # revive effects
   createEffect(getAllPlayers() if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
@@ -106,3 +110,16 @@ rule "Late joiner catchup after round 15, 25, 50":
 rule "All Teams: Player left Match, Scale Damage":
   @Event playerLeft
   destroyHudText(eventPlayer.HUDs[eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT]])
+
+rule "Teleport from Spawn Room":
+  @Event eachPlayer
+  @Team 1
+  @Condition distance(eventPlayer, vect(101.397, 14.21, -110.834)) < 14
+  
+  wait(0.5)
+  if not RULE_CONDITION:
+      return
+  eventPlayer.teleport(vect(-27.412, 2, -12.564))
+  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), vect(-12.858, 3.32, -17.254)), 100000)
+  wait(0.1)
+  eventPlayer.stopFacing()

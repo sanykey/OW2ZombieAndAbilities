@@ -10,11 +10,11 @@ rule "Waiting for players ready":
   smallMessage(getAllPlayers(), "START!")
   isGameStarted = true
 
+
 rule "Bot died":
   @Event playerDied
   @Team 2
   @Condition roundRemainingBots > 0
-  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
 
   eventPlayer.setUltCharge(0)
 
@@ -24,22 +24,24 @@ rule "Bot died":
   if roundRemainingBots <= 0:
     isRoundEnd = true
 
+
 rule "disable bot auto respawn":
   @Event playerJoined
   @Team 2
 
   eventPlayer.disableRespawn()
 
+
 rule "Create bots":
   @Condition isBotsDisabled == false
   @Condition isGameStarted == true
   @Condition getNumberOfPlayers(Team.2) < MAX_ZOMBIES
   
-  smallMessage(getAllPlayers(), "Create bots?")
-  wait(1)
+  wait(1, Wait.ABORT_WHEN_FALSE)
   if isBotsDisabled == true:
     return
-  for I in range(MAX_ZOMBIES - 1):
+
+  for I in range(MAX_ZOMBIES):
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
@@ -70,19 +72,20 @@ rule "Round start":
 
   wait(5)
   bigMessage(getAllPlayers(), "Starting Round!")
-  roundRemainingBots = START_BASE_ZOMBIES_AMOUNT + roundNumber * 2
+  roundRemainingBots = MAX_ZOMBIES + roundNumber * 2
 
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
   for zombieRespawnI in range(MAX_ZOMBIES):
-    if isBotsDisabled == true:
+    if isBotsDisabled == true or roundNumber == 1:
       break
     getPlayersInSlot(zombieRespawnI, Team.2).respawn()
     wait(0.25)
 
   isRoundEnd = false
-  heal(getPlayers(Team.2), null, 9999)
+  heal(getPlayers(Team.2), null, INFINITY)
+
 
 rule "Respawn bots":
   @Condition isRoundEnd == false
@@ -92,7 +95,12 @@ rule "Respawn bots":
   @Condition isBotsDisabled == false
   
   wait(3, Wait.ABORT_WHEN_FALSE)
-  random.choice(getDeadPlayers(Team.2)).respawn()
+  botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
+  if botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
+    botsRespawnTemp.startForcingHero(Hero.TORBJORN)
+  else:
+    botsRespawnTemp.respawn()
+
   if RULE_CONDITION:
     goto RULE_START
 
@@ -106,13 +114,6 @@ rule "Mark last zombie":
   
   createIcon(getPlayers(Team.1), eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
   J[21] = getLastCreatedEntity()
-
-rule "[Bot Anti-Spawn Check A]":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isInSpawnRoom() == true
-  
-  eventPlayer.teleport(random.choice(spawnPointsList))
 
 
 rule "Match end":
@@ -128,11 +129,3 @@ rule "Match end":
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Total", l"{0}:".format(l"Score"), teamScore))
   wait(4)
   declareTeamVictory(Team.2)
-
-rule "Create [Team2 Roadhog] bot":
-  @Condition roundNumber >= 5
-  createDummy(Hero.ROADHOG, Team.2, MAX_ZOMBIES - 1, random.choice(spawnPointsList))
-  getPlayersOnHero(Hero.ROADHOG, Team.2).startForcingName("Zombie catcher")
-  getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
-  getPlayersOnHero(Hero.ROADHOG, Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
-  getPlayersOnHero(Hero.ROADHOG, Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])

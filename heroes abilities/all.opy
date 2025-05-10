@@ -74,7 +74,7 @@ def rayIntersectionsWithSphere():
 rule "Chase abilityCD":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.abilityCD == true
+  @Condition eventPlayer.abilityCD
   
   chaseAtRate(eventPlayer.abilityCD, 0, 1)
   waitUntil(not eventPlayer.abilityCD, INFINITY)

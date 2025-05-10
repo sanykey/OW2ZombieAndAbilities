@@ -12,7 +12,7 @@ settings {
         "enableMatchVoiceChat": true,
         "team1Slots": MAX_PLAYERS,
         "team2Slots": 0,
-        "returnToLobby": "afterGame",
+        # "returnToLobby": "afterGame",
         "swapTeamsAfterMatch": false,
         "useExperimentalUpdate": true
     },

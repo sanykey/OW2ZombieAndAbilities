@@ -1,5 +1,13 @@
 #!mainFile "../main.opy"
 
+rule "Create [Team2 Roadhog] bot":
+  @Condition roundNumber >= 5 and not isBotsDisabled
+  
+  waitUntil(getPlayersInSlot(MAX_ZOMBIES - 1, Team.2).isAlive(), INFINITY)
+  createDummy(Hero.ROADHOG, Team.2, MAX_ZOMBIES - 1, random.choice(spawnPointsList))
+  getPlayersInSlot(MAX_ZOMBIES - 1, Team.2).startForcingName("Zombie catcher")
+  getPlayersInSlot(MAX_ZOMBIES - 1, Team.2).startScalingSize(0.7, false)
+
 rule "[Team2 Roadhog] Bot zombie roadhog melee":
   @Event eachPlayer
   @Team 2

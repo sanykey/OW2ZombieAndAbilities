@@ -1,10 +1,12 @@
 #!mainFile "main.opy"
 #Global variables
 
+globalvar botsRespawnTemp
+globalvar botWidowmakerRespTepm
 globalvar roundNumber
 globalvar zombiesflyIOnandOff
-globalvar team_shields
-globalvar team_armor
+globalvar teamShields
+globalvar teamArmor
 globalvar heroesShopData
 globalvar matchIsOver
 globalvar unlockedLocations
@@ -30,8 +32,6 @@ globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
 globalvar spawnPointsList
 globalvar botSniperPositions
-
-
 
 
 # Player variables: 
@@ -131,7 +131,7 @@ playervar juno_transfer_started
 #!define ZOMBIE_SPEED 80
 #!define ZOMBIE_FALL_DAMAGE 150
 #!define ZOMBIE_BASE_DAMAGE 20
-#!define ZOMBIE_BASE_HP 150
+#!define ZOMBIE_BASE_HP 120
 
 #!define INFINITY 99999
 #!define MONEY_FOR_REVIVE 300
@@ -153,8 +153,6 @@ playervar juno_transfer_started
 #!define HERO_INFO_HOLD_DURATION 0.5
 #!define LAST_CC_ATTACK_DURATION 5
 #!define BOT_MAX_INACTIVITY_DURATION 60
-
-#!define START_BASE_ZOMBIES_AMOUNT 4
 
 # Sombra
 #!define MONEY_FOR_KILL_HACKED 30
