@@ -81,6 +81,15 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
     isBotsDisabled = false
     smallMessage(eventPlayer, "Bots enabled")
 
+# rule "[debug] Kill random zombie":
+#   @Event eachPlayer
+#   @Team 1
+#   @Condition eventPlayer == hostPlayer
+#   @Condition eventPlayer.isHoldingButton(Button.RELOAD) == true
+  
+#   eventPlayer.temp1 = random.choice(getLivingPlayers(Team.2))
+#   damage(eventPlayer.temp1, eventPlayer, 99999)
+
 rule "[debug] show current position":
   # hudSubtext(
   #   getPlayersInSlot(0, Team.1),

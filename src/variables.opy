@@ -32,6 +32,7 @@ globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
 globalvar spawnPointsList
 globalvar botSniperPositions
+globalvar lastZombieEf
 
 
 # Player variables: 

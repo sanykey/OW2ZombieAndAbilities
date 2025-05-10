@@ -54,7 +54,7 @@ rule "Round start":
   @Condition matchIsOver == false
   
   roundNumber += 1
-  destroyIcon(J[21]) # remove last zombie marker
+  destroyIcon(lastZombieEf) # remove last zombie marker
   bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))
   
   # Resurrect and heal all players
@@ -113,7 +113,7 @@ rule "Mark last zombie":
   @Condition eventPlayer.isAlive() == true
   
   createIcon(getPlayers(Team.1), eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
-  J[21] = getLastCreatedEntity()
+  lastZombieEf = getLastCreatedEntity()
 
 
 rule "Match end":
