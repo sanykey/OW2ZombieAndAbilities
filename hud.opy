@@ -156,7 +156,7 @@ rule "Init hud hero icons of players and how much money they have":
       "Press {0} to close hero info and tips".format(inputBindingString(Button.INTERACT))
     ),
     null,
-    HudPosition.LEFT,
+    HudPosition.ACTUALLY_LEFT,
     0,
     null,
     rgb(241, 134, 39),
@@ -209,7 +209,7 @@ rule "Players list, upgrades and money":
       eventPlayer.state[SI.TALENTS_COUNT]
     ),
     "{0}: ${1}".format(eventPlayer, eventPlayer.money),
-    HudPosition.LEFT,
+    HudPosition.ACTUALLY_LEFT,
     1,
     Color.BLUE if eventPlayer.getHealth() >= eventPlayer.getMaxHealth() / 2 else Color.RED,
     Color.WHITE,
@@ -217,7 +217,6 @@ rule "Players list, upgrades and money":
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
   eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT] = getLastCreatedText()
-  
 
 # rule "[Tips & Tricks]":
 #   @Event eachPlayer
