@@ -65,7 +65,6 @@ rule "Bots antifall safety and fall damage after cc damage from players":
 rule "Zombies loS teleport warning":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.isAlive()
 
   createIcon(
     getPlayers(Team.1) if eventPlayer.zombiesfly else null,
@@ -84,17 +83,11 @@ rule "Bots face target players and move":
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
   # Bots face nearest players
-  eventPlayer.startFacing(
-    directionTowards(
-      eventPlayer.getEyePosition(),
-      eventPlayer.targetPlayer.getEyePosition()
-    ), 400
-  )
-
-  # eventPlayer.setFacing(
-  #   directionTowards(eventPlayer.getEyePosition(),
-  #   (getRealClosestPlayer(((sorted([player for player in getLivingPlayers(Team.1) if player.isAlive()], lambda i: distance(eventPlayer, i)))[0]).getEyePosition(), Team.1)).getEyePosition()),
-  #   Relativity.TO_WORLD
+  # eventPlayer.startFacing(
+  #   directionTowards(
+  #     eventPlayer.getEyePosition(),
+  #     eventPlayer.targetPlayer.getEyePosition()
+  #   ), 400
   # )
 
 
@@ -123,24 +116,19 @@ rule "Bots moves":
     eventPlayer.money = 0
     return
 
-  if (not eventPlayer.isAlive() or eventPlayer.zombiesfly):
+  # Bots face target players
+  eventPlayer.setFacing(
+    directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer.getEyePosition()),
+    Relativity.TO_WORLD
+  )
+
+  if (eventPlayer.zombiesfly):
     goto lbl_0
 
   # bot in restricted area:
   if eventPlayer.isInSpawnRoom():
     eventPlayer.teleport(random.choice(spawnPointsList))
-  if distance(eventPlayer, vect(83.1, 11.88, -111.642)) < 3:
-    eventPlayer.teleport(vect(79.382, 13.147, -110.093))
-  if distance(eventPlayer, vect(89.731, 13.228, -102.377)) < 2:
-    eventPlayer.teleport(vect(86.903, 14.219, -101.238))
-  if distance(eventPlayer, vect(97.65, 11.233, -30.593)) < 3:
-    eventPlayer.teleport(vect(96.475, 12.392, -35.419))
-  if distance(eventPlayer, vect(103.937, 11.178, -30.358)) < 2:
-    eventPlayer.teleport(vect(107.719, 11.178, -33.024))
-  if distance(eventPlayer, vect(113.037, 12.696, -10.145)) < 3:
-    eventPlayer.teleport(vect(113.894, 11.178, -15.333))
-  if distance(eventPlayer, vect(140.251, 12.481, -17.63)) < 3:
-    eventPlayer.teleport(vect(133.957, 12.363, -18.225))
+    goto lbl_0
 
   eventPlayer.targetPlayer = (
     sorted(

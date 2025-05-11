@@ -34,24 +34,24 @@ rule "[debug] User init":
   # @Slot 0
 
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.healthStat = 100
-  eventPlayer.damageStat = 100
-  eventPlayer.healingStat = 100
 
+
+
+  
   # eventPlayer.state[0] = 4
   eventPlayer.money += 1000000
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    # eventPlayer.startForcingHero(Hero.ANA)
+    eventPlayer.startForcingHero(Hero.SYMMETRA)
 
   # eventPlayer.healthStat = 100
   # eventPlayer.damageStat = 100
   # eventPlayer.healingStat = 100
-  # eventPlayer.healthStat += 500
-  # eventPlayer.setMaxHealth(eventPlayer.healthStat)
-  # eventPlayer.damageStat = 10000
-  # eventPlayer.setDamageDealt(eventPlayer.damageStat)
+  eventPlayer.healthStat += 10000
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  eventPlayer.damageStat = 10000
+  eventPlayer.setDamageDealt(eventPlayer.damageStat)
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
@@ -99,8 +99,12 @@ rule "[debug] show current position":
   #   Color.WHITE,
   #   HudReeval.VISIBILITY_AND_STRING
   # )
-  debug(getPlayersInSlot(0, Team.1).getEyePosition())
-  debug(getPlayersInSlot(0, Team.1).getPosition())
+  # debug(getPlayersInSlot(0, Team.1).getEyePosition())
+  # debug(getPlayersInSlot(0, Team.1).getPosition())
+
+  debug(getNumberOfEntityIds())
+  debug(getNumberOfTextIds())
+  
 
 # rule "Just die":
 #   @Event eachPlayer

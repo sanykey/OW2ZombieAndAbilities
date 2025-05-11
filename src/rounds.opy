@@ -58,11 +58,12 @@ rule "Round start":
   bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))
   
   # Resurrect and heal all players
-  temp1 = [player for player in getPlayers(Team.1) if not player.downedStartTime]
+  
   temp2 = [player for player in getPlayers(Team.1) if player.downedStartTime]
-  temp2.teleport(nearestWalkablePosition(random.choice(temp1) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
-  temp2.downedStartTime = 0
-  temp2.resurrect()
+  if temp2:
+    temp2.teleport(nearestWalkablePosition(random.choice(getLivingPlayers(Team.1)) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
+    temp2.downedStartTime = 0
+    temp2.resurrect()
 
   zombieStats[ZI.HP_STAT] = (ZOMBIE_BASE_HP + 10 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
   zombieStats[ZI.DAMAGE_STAT] = (ZOMBIE_BASE_DAMAGE + 8 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
@@ -72,16 +73,16 @@ rule "Round start":
 
   wait(5)
   bigMessage(getAllPlayers(), "Starting Round!")
-  roundRemainingBots = MAX_ZOMBIES + roundNumber * 2
+  roundRemainingBots = MAX_ZOMBIES + roundNumber if (MAX_ZOMBIES + roundNumber) < 35 else 35
 
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
-  for zombieRespawnI in range(MAX_ZOMBIES):
-    if isBotsDisabled == true or roundNumber == 1:
-      break
-    getPlayersInSlot(zombieRespawnI, Team.2).respawn()
-    wait(0.25)
+  # for zombieRespawnI in range(MAX_ZOMBIES):
+  #   if isBotsDisabled == true or roundNumber == 1:
+  #     break
+  #   getPlayersInSlot(zombieRespawnI, Team.2).respawn()
+  #   wait(0.25)
 
   isRoundEnd = false
   heal(getPlayers(Team.2), null, INFINITY)
@@ -91,7 +92,7 @@ rule "Respawn bots":
   @Condition roundNumber >= 1
   @Condition isBotsDisabled == false
 
-  wait(3, Wait.ABORT_WHEN_FALSE)
+  wait(0.016, Wait.ABORT_WHEN_FALSE)
   if (isRoundEnd == false and getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
     botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
     if botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
