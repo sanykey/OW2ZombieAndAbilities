@@ -26,6 +26,10 @@ rule "Zombie took damage":
   @Event playerTookDamage
   @Team 2
 
+  # [Cassydy] stun effect for flashbang
+  if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):
+    victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
+
   victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed() # save damage stats for money
   # todo: ??
   victim.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed() # for check zombie out of map safety

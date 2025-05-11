@@ -70,7 +70,7 @@ playervar raycast
 playervar heroState
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar abilityProjectile
-playervar abilityCD
+
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp1
@@ -97,6 +97,7 @@ playervar abilDir1
 playervar abilDir2
 playervar abilDir3
 playervar targetPlayer
+playervar abilityCD
 
 ## only for debug
 globalvar debugVectsArr
@@ -135,9 +136,9 @@ playervar juno_transfer_started
 #!define ZOMBIE_BASE_HP 120
 
 #!define INFINITY 99999
-#!define MONEY_FOR_REVIVE 300
-#!define MONEY_FOR_ZOMBIE_KILL 200
-#!define MONEY_FOR_ZOMBIE_CRITICAL 275
+#!define MONEY_FOR_REVIVE 400
+#!define MONEY_FOR_ZOMBIE_KILL 300
+#!define MONEY_FOR_ZOMBIE_CRITICAL 375
 #!define MONEY_FOR_HEALING 100
 #!define HEAL_AMOUNT_FOR_MONEY 200
 #!define MAX_PLAYERS 5
