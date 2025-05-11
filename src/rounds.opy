@@ -92,7 +92,7 @@ rule "Respawn bots":
   @Condition roundNumber >= 1
   @Condition isBotsDisabled == false
 
-  wait(0.016, Wait.ABORT_WHEN_FALSE)
+  wait(3, Wait.ABORT_WHEN_FALSE)
   if (isRoundEnd == false and getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
     botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
     if botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
