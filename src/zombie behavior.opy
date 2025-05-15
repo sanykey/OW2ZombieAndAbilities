@@ -137,6 +137,8 @@ rule "Bots moves":
         10 if not isInLoS(eventPlayer, i) else 0
       ) + (
         100 if i.isInvisible > getTotalTimeElapsed() and (distance(eventPlayer, i) > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
+      ) + (
+        200 if not i.isReady else 0
       )
     )
   )[0]
