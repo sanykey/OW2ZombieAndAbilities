@@ -96,29 +96,28 @@ rule "Init hud hero icons of players and how much money they have":
   # common tips
   createCasedProgressBarIwt(
     text="\n\n\n\n\n\n\n\n\n\n\n\n
-    - Press <fgdb9342FF>{}</fg> button to close this hint.
+    - Hold <fgdb9342FF>{} + {}</fg> to view hero info and help.
 
-    - To switch the camera, press <fgdb9342FF>{} + {}</fg> buttons.
+    - Press <fgdb9342FF>{} + {}</fg> to switch the camera.
 
-    - To buy a hero, find the location with the desired hero, enter the circle, and 
-      press the <fgdb9342FF>{}</fg> button.
+    - To buy a hero, stand in the circle near them and press <fgdb9342FF>{}</fg>, if you can afford it.
 
-    - In each match, the prices and locations where heroes can be bought are 
-      randomly generated.
+    - Hero prices and locations are randomized each match.
 
-    - Barriers push zombies back but take damage in the process.
+    - Barriers push zombies back but take damage while doing so.
 
-    - Zombies usually don’t die when falling into a pit, but if you help them fall, they 
-      take {} base damage. Therefore, controlling abilities and barriers can be useful.
+    - Zombies don’t usually die from falling into pits, but if you force them in, they take {} base damage. 
+      Use crowd control and barriers to your advantage.
 
-    - Health packs also gradually restore health based on your HP or Healing upgrade level,
-      and increase movement speed by 50% for 5 seconds.
+    - Health packs gradually restore HP (scaling with HP/Healing upgrades) and boost movement speed by
+      50% for 5 seconds.
 
-    - The mod is still in development, but some heroes already have unique abilities:
+    - The mod is still in development. Some heroes already have unique abilities:
       <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (4), <fgad5a5fFF>Cassidy</fg> (7)
       <fgdc847dFF>Mauga</fg> (2), <fg9d8cd0FF>Rammatra</fg> (1), <fg94a1a5FF>Reinhardt</fg> (1), <fg94a0a5FF>Sigma</fg> (2), <fg765dbdFF>Sombra</fg> (4), <fg91bbd1FF>Symmetra</fg> (2), 
       <fgA686ABFF>Widowmaker</fg> (8), <fga0a9baFF>Winston</fg> (1).
     ".format(
+      inputBindingString(Button.CROUCH),
       inputBindingString(Button.INTERACT),
       inputBindingString(Button.CROUCH),
       inputBindingString(Button.INTERACT),
@@ -148,7 +147,7 @@ rule "Init hud hero icons of players and how much money they have":
   )
   # delayed start
   hudHeader(
-    localPlayer if not isGameStarted else null,
+    localPlayer if not isGameStarted and not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     "\n\u2001{0}\n\n\u2001Hold {1} to Start\u2001\n".format(
       "Zombie survival", inputBindingString(Button.INTERACT)
     ), 
@@ -162,8 +161,8 @@ rule "Init hud hero icons of players and how much money they have":
   hudText(
     localPlayer,
     null,
-    "Hold {0} + {1} to view hero info and tips".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)) if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == false else (
-      "Press {0} to close hero info and tips".format(inputBindingString(Button.INTERACT))
+    "Hold {0} + {1} to view hero info and help".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)) if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == false else (
+      "Press {0} to close hero info and help".format(inputBindingString(Button.INTERACT))
     ),
     null,
     HudPosition.ACTUALLY_LEFT,
@@ -193,7 +192,12 @@ rule "Open hero talents info hud":
 rule "Close hero talents info hud":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+  @Condition not eventPlayer.isHoldingButton(Button.CROUCH)
+  waitUntil(eventPlayer.isHoldingButton(Button.CROUCH), 0.1)
+  if eventPlayer.isHoldingButton(Button.CROUCH):
+    return
+
   eventPlayer.enableHeroHud()
   eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
 

@@ -3,6 +3,17 @@
 rule "Create vips list":
   vips = ["snky"]
 
+rule "Show game tips in start":
+  @Event eachPlayer
+  @Condition not eventPlayer.isReady
+  waitUntil(distance(eventPlayer, vect(-27.33, -1.94, -12.68)) < 6)
+
+  while not eventPlayer.isReady: 
+    if distance(eventPlayer, vect(-27.33, -1.94, -12.68)) > 6:
+      eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
+      eventPlayer.isReady = true
+    wait(1)
+
 rule "Disable spawn room hero swap":
   @Event eachPlayer
   @Team 1
@@ -69,6 +80,8 @@ rule "Starting spawn location for players":
   eventPlayer.clearStatusEffect(Status.ROOTED)
   eventPlayer.setStatusEffect(null, Status.UNKILLABLE, 5)
   eventPlayer.enablePlayerCollision()
+
+  eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = true
 
 
 rule "Late joiner catchup after round 15, 25, 50":

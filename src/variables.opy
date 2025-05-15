@@ -71,6 +71,7 @@ playervar heroState
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar abilityProjectile
 playervar isInvisible
+playervar isReady
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp1
