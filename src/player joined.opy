@@ -90,8 +90,8 @@ rule "Late joiner catchup after round 15, 25, 50":
   @Condition roundNumber >= 15
   
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.money += 25000
-  eventPlayer.healthStat += 200
+  eventPlayer.money += 15000
+  eventPlayer.healthStat += 100
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
   wait(0.064)
   heal(eventPlayer, null, INFINITY)
@@ -106,18 +106,18 @@ rule "Late joiner catchup after round 15, 25, 50":
 
   # Late joiner catchup [25]
   if roundNumber >= 25:
-    eventPlayer.money += 75000
-    eventPlayer.healthStat += 500
+    eventPlayer.money += 30000
+    eventPlayer.healthStat += 200
     eventPlayer.setMaxHealth(eventPlayer.healthStat)
 
   # "Late joiner catchup [50]"
   if roundNumber >= 50:
     eventPlayer.money += 50000
-    eventPlayer.healthStat += 1250
+    eventPlayer.healthStat += 300
     eventPlayer.setMaxHealth(eventPlayer.healthStat)
 
 
-rule "All Teams: Player left Match, Scale Damage":
+rule "All Teams: Player left Match, destroy hud text":
   @Event playerLeft
   destroyHudText(eventPlayer.HUDs[eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT]])
 
