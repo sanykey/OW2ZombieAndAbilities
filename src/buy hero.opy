@@ -59,9 +59,9 @@ rule "Create hero buy positions":
       heroesList[I],
       vectList[I + VI.BUY_HERO_OFFSET],
       floor((
-        random.randint(1000, 5000) if I < 6 else (
-          random.randint(2500, 7500) if I < 13 else (
-            random.randint(5000, 10000) if I < 27 else random.randint(7500, 15000)
+        random.randint(1000, 3500) if I < 6 else (
+          random.randint(2500, 5000) if I < 13 else (
+            random.randint(4000, 8000) if I < 27 else random.randint(6000, 13000)
           )
         )
       ) / 100) * 100
