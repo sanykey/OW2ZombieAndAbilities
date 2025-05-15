@@ -102,7 +102,10 @@ rule "Respawn bots":
 
   if (getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
     botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
-    if botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
+
+    if roundNumber > 4 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 1:
+      botsRespawnTemp.startForcingHero(Hero.ROADHOG)
+    elif botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
       botsRespawnTemp.startForcingHero(Hero.TORBJORN)
     else:
       botsRespawnTemp.respawn()
