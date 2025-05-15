@@ -26,7 +26,7 @@ rule "Init hud hero icons of players and how much money they have":
   hudText(
     localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     heroIcon(Hero.TORBJORN),
-    "<fgC80013FF>{0}{1}</fg>, <fgA0E81BFF>{2}{3}</fg>".format(
+    "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>".format(
       iconString(Icon.FIRE),
       zombieStats[ZI.DAMAGE_STAT],
       iconString(Icon.HEART),
@@ -214,7 +214,7 @@ rule "Players list, upgrades and money":
   hudText(
     getPlayers(Team.1) if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
-    "<fgC80013FF>{0}{1}</fg>, <fgA0E81BFF>{2}{3}</fg>, <fgEC9900FF>{4}{5}</fg>,{6}{7}".format(
+    "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>, <fgEC9900FF>{4}{5}%</fg>,{6}{7}".format(
       iconString(Icon.FIRE),
       eventPlayer.damageStat,
       iconString(Icon.HEART),
