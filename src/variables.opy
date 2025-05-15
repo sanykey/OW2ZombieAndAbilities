@@ -2,7 +2,7 @@
 #Global variables
 
 globalvar botsRespawnTemp
-globalvar botWidowmakerRespTepm
+globalvar botWidowmakerCanRespawn
 globalvar roundNumber
 globalvar zombiesflyIOnandOff
 globalvar teamShields
@@ -70,7 +70,7 @@ playervar raycast
 playervar heroState
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar abilityProjectile
-
+playervar isInvisible
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp1
@@ -161,7 +161,9 @@ playervar juno_transfer_started
 #!define MONEY_FOR_KILL_HACKED_TEAM 10
 #!define SOMBRA_STEAL_MONEY 25
 
-#!define ABILITI_TEXT_INTEND "                                                                                             "
+#!define ABILITI_TEXT_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
+#!define ABILITI_CHARGES_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
+
 enum SI:
   CAMERA_3P = 0 # number
   # 0: OFF
@@ -169,34 +171,37 @@ enum SI:
   # 2: Temporary OFF higher angle
   # 3: ON
   # 4: ON higher angle
-  CAMERA_3P_PREV = 1 # like as CAMERA_3P
-  HEALING_TRACKER = 2
-  HEALING_TRACKER_THRESHOLD = 3
-  HEALING_RESULT = 4
-  WIDOWMAKER_SHOT_CHARGE = 5
-  IS_TALENTS_HUD_OPENNED = 6
-  TALENTS_COUNT = 7
-  LAST_CC_ATTACKER = 8
-  LAST_CC_ATTACK_TIME = 9
-  LAST_CC_WAS_IN_AIR = 10
-  HACKED = 11 # hacked status to get money from killed hacked zombies
-  MONEY_RECEIVED = 12 # money received
-  HP_STAT = 13
-  DAMAGE_STAT = 14
-  HEALING_STAT = 15
-  LAST_DAMAGE_TIME = 16
-  START_AUTO_HEAL_TIME = 17
-  IS_INVISIBLE = 18
-  HERO_INFO_TEXT = 19
-  HERO_INFO_VERTICAL_FIX = 20
-  BARRIER_DAMAGE_FROM = 21
-  BARRIER_DAMAGE_DIR = 22
-  BARRIER_DAMAGE_STACK = 23
-  BARRIER_ACTIVE = 24
-  CHANGED_SPEED_TIME = 25
-  CHANGED_SPEED_AMOUNT = 26
-  CHANGED_SPEED_AMOUNT_PREV = 27
-  LOW_GRAVITY = 28
+  CAMERA_3P_PREV # like as CAMERA_3P
+  HEALING_TRACKER
+  HEALING_TRACKER_THRESHOLD
+  HEALING_RESULT
+  WIDOWMAKER_SHOT_CHARGE
+  IS_TALENTS_HUD_OPENNED
+  TALENTS_COUNT
+  LAST_CC_ATTACKER
+  LAST_CC_ATTACK_TIME
+  LAST_CC_WAS_IN_AIR
+  HACKED # hacked status to get money from killed hacked zombies
+  MONEY_RECEIVED # money received
+  HP_STAT
+  DAMAGE_STAT
+  HEALING_STAT
+  LAST_DAMAGE_TIME
+  START_AUTO_HEAL_TIME
+  IS_INVISIBLE
+
+  BARRIER_DAMAGE_FROM
+  BARRIER_DAMAGE_DIR
+  BARRIER_DAMAGE_STACK
+  BARRIER_ACTIVE
+  CHANGED_SPEED_TIME
+  CHANGED_SPEED_AMOUNT
+  CHANGED_SPEED_AMOUNT_PREV
+  LOW_GRAVITY
+
+  HERO_INFO_TEXT
+  HERO_INFO_VERTICAL_FIX
+  HERO_INFO_HORIZONTAL_FIX
   
   HERO_INFO_TEXT2
   HERO_INFO_VERTICAL_FIX2

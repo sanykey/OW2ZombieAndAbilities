@@ -25,11 +25,13 @@ rule "Bot died":
     isRoundEnd = true
 
 
-rule "disable bot auto respawn":
+rule "disable auto respawn": 
   @Event playerJoined
-  @Team 2
+  # @Team 2
 
   eventPlayer.disableRespawn()
+  # todo: fix?
+  # if not isDebugAutoRespawn:
 
 
 rule "Create bots":
@@ -84,6 +86,9 @@ rule "Round start":
   #   getPlayersInSlot(zombieRespawnI, Team.2).respawn()
   #   wait(0.25)
 
+  if roundNumber >= 3:
+    botWidowmakerCanRespawn = true
+
   isRoundEnd = false
   heal(getPlayers(Team.2), null, INFINITY)
 
@@ -92,14 +97,29 @@ rule "Respawn bots":
   @Condition roundNumber >= 1
   @Condition isBotsDisabled == false
 
-  wait(3, Wait.ABORT_WHEN_FALSE)
-  if (isRoundEnd == false and getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
+  if isRoundEnd:
+    goto lbl_0
+
+  if (getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
     botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
     if botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
       botsRespawnTemp.startForcingHero(Hero.TORBJORN)
     else:
       botsRespawnTemp.respawn()
 
+  # widowmaker respawn
+  if (
+    botWidowmakerCanRespawn and
+    roundRemainingBots > 4 and
+    [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
+  ):
+    botsRespawnTemp = random.choice(getLivingPlayers(Team.2).exclude(getPlayersOnHero(Hero.ROADHOG, Team.2)))
+    if botsRespawnTemp:
+      botsRespawnTemp.startForcingHero(Hero.WIDOWMAKER)
+      botWidowmakerCanRespawn = false
+
+  lbl_0:
+  wait(3, Wait.ABORT_WHEN_FALSE)
   loop()
 
 rule "Mark last zombie":

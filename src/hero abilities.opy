@@ -11,15 +11,6 @@ rule "[Echo - Freeze Beam]":
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_EXPLOSION, Color.SKY_BLUE, victim, 5)
   wait(2.1)
 
-rule "[Buff To Cassidy Ultimate]":
-  @Event eachPlayer
-  @Team 1
-  @Hero cassidy
-  @Condition eventPlayer.isUsingUltimate() == true
-  
-  wait(0.02)
-  eventPlayer.getPlayersInViewAngle(Team.2, 90).setStatusEffect(null, Status.ROOTED, 2.5)
-
 rule "Mei frosty jet pack":
   @Event eachPlayer
   @Condition eventPlayer.getCurrentHero() == Hero.MEI

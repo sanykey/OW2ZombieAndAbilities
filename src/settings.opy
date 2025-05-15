@@ -12,7 +12,7 @@ settings {
         "enableMatchVoiceChat": true,
         "team1Slots": MAX_PLAYERS,
         "team2Slots": 0,
-        # "returnToLobby": "afterGame",
+        "returnToLobby": "never",
         "swapTeamsAfterMatch": false,
         "useExperimentalUpdate": true
     },
@@ -24,9 +24,11 @@ settings {
             "enablePerks": true
         },
         "general": {
+            "enablePerks": true,
             "gamemodeStartTrigger": "immediately",
             "heroLimit": "off",
             # "respawnTime%": 0
+            "perkEliminationCatchupLevelAmount%": 1
         }
     },
     "heroes": {
@@ -60,6 +62,13 @@ settings {
                 "weaponsEnabled": "hammer"
             },
             "roadhog": {
+                "healingReceived%": 10,
+                "jumpVerticalSpeed%": 150,
+                "movementGravity%": 80,
+                "movementSpeed%": ZOMBIE_SPEED - 10,
+                "ability1Cooldown%": 10
+            },
+            "reinhardt": {
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
                 "movementGravity%": 80,

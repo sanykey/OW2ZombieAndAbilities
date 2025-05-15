@@ -69,7 +69,7 @@ rule "Create hero buy positions":
 
     createInWorldText(
       localPlayer,
-      "Buy {} {}".format(
+      "Buy {} ${}".format(
         heroIcon(heroesShopData[I][0]),
         heroesShopData[I][2]
       ),
@@ -82,8 +82,14 @@ rule "Create hero buy positions":
 
   # buy DVA
   heroesShopData[len(heroesList)] = [Hero.DVA, vectList[VI.BUY_DVA], 0]
-  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format(heroIcon(Hero.DVA), 0)), vectList[VI.BUY_DVA], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+  createInWorldText(getPlayers(Team.1), "Buy {}: 0".format(heroIcon(Hero.DVA)), vectList[VI.BUY_DVA], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY)
   createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, vectList[VI.BUY_DVA], 1.7, EffectReeval.VISIBILITY)
+
+  # buy CASSIDY (CASSIDY's DAY)
+  heroesShopData[len(heroesList) + 1] = [Hero.CASSIDY, vect(-24.86, -2.00, -10.36), 1000]
+  createInWorldText(getPlayers(Team.1), "Buy {}: $1000".format(heroIcon(Hero.CASSIDY)), vect(-24.86, -2.00, -10.36), 1, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, vect(-24.86, -2.00, -10.36), 1.7, EffectReeval.VISIBILITY)
+  createEffect(getPlayers(Team.1), Effect.CLOUD, Color.AQUA, vect(-24.86, -2.00, -10.36), 3, EffectReeval.VISIBILITY)
 
 rule "Buy hero":
   @Event eachPlayer

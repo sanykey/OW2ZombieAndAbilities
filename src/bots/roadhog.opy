@@ -5,6 +5,7 @@ rule "Create [Team2 Roadhog] bot":
   
   waitUntil(getPlayersInSlot(MAX_ZOMBIES - 1, Team.2).isAlive(), INFINITY)
   createDummy(Hero.ROADHOG, Team.2, MAX_ZOMBIES - 1, random.choice(spawnPointsList))
+  wait(0.1)
   getPlayersInSlot(MAX_ZOMBIES - 1, Team.2).startForcingName("Zombie catcher")
   getPlayersInSlot(MAX_ZOMBIES - 1, Team.2).startScalingSize(0.7, false)
 
@@ -28,13 +29,15 @@ rule "[Team2 Roadhog] trying to hook":
   @Hero roadhog
   @Condition eventPlayer.isAlive()
 
-  if isInLoS(eventPlayer, eventPlayer.targetPlayer) and distance(eventPlayer, eventPlayer.targetPlayer) < 35:
+  if isInLoS(eventPlayer, eventPlayer.targetPlayer) and distance(eventPlayer, eventPlayer.targetPlayer) < 35 and eventPlayer.targetPlayer.isInvisible < getTotalTimeElapsed():
     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1)
+    eventPlayer.startFacing(eventPlayer.targetPlayer.getEyePosition(), 200, Relativity.TO_WORLD, FacingReeval.DIRECTION_AND_TURN_RATE)
     wait(0.3)
     getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(2, false)
     eventPlayer.forceButtonPress(Button.ABILITY_1)
     wait(0.25)
     getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
+    eventPlayer.stopFacing()
 
   wait(3 + (MAX_PLAYERS - getNumberOfPlayers(Team.1)))
   if ruleCondition:

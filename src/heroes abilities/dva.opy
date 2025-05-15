@@ -17,11 +17,10 @@ rule "[DVA] Init":
   hudText(
     eventPlayer if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     null,
-    "{}{} Slide ({}): {}".format(
+    "{}{} Slide: {}".format(
       ABILITI_TEXT_INTEND,
       abilityIconString(Hero.TRACER, Button.ABILITY_1),
-      inputBindingString(Button.ABILITY_1),
-      ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>ready</fg>"
+      ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>✓</fg> <fg94a0a544>({})</fg>".format(inputBindingString(Button.ABILITY_1))
     ),
     null,
     HudPosition.TOP,

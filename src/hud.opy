@@ -1,5 +1,15 @@
 #!mainFile "main.opy"
 
+def clearHeroInfo():
+  @Name "Subroutine: Clear hero info"
+  eventPlayer.state[SI.TALENTS_COUNT] = 0
+  eventPlayer.state[SI.HERO_INFO_TEXT] = null
+  eventPlayer.state[SI.HERO_INFO_TEXT2] = null
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3
+  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX] = 9
+  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] = 3.5
+  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 11
+
 rule "Init hud hero icons of players and how much money they have":
   # round
   hudHeader(
@@ -58,7 +68,7 @@ rule "Init hud hero icons of players and how much money they have":
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
       normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()), localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_VERTICAL_FIX] + # vertical
-      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * 9 # horizontal
+      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX] # horizontal
     ),
     1,
     Clip.NONE,
@@ -105,7 +115,7 @@ rule "Init hud hero icons of players and how much money they have":
       and increase movement speed by 50% for 5 seconds.
 
     - The mod is still in development, but some heroes already have unique abilities:
-      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (4),
+      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (4), <fgad5a5fFF>Cassidy</fg> (7)
       <fgdc847dFF>Mauga</fg> (2), <fg9d8cd0FF>Rammatra</fg> (1), <fg94a1a5FF>Reinhardt</fg> (1), <fg94a0a5FF>Sigma</fg> (2), <fg765dbdFF>Sombra</fg> (4), <fg91bbd1FF>Symmetra</fg> (2), 
       <fgA686ABFF>Widowmaker</fg> (8), <fga0a9baFF>Winston</fg> (1).
     ".format(
@@ -194,6 +204,8 @@ rule "Players list, upgrades and money":
 
   if eventPlayer.isDummy() or eventPlayer.getSlot() > MAX_PLAYERS - 1:
     return
+
+  clearHeroInfo()
 
   hudText(
     getPlayers(Team.1) if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,

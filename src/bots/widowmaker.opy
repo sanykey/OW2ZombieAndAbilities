@@ -1,22 +1,5 @@
 #!mainFile "../main.opy"
 
-def respawnTeam2Widowmaker():
-  @Name "Subroutine: Respawn Team2 Widowmaker"
-  waitUntil(
-    roundRemainingBots > 4 and
-    [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))], 
-    INFINITY
-  )
-  botWidowmakerRespTepm = random.choice(getLivingPlayers(Team.2).exclude(getPlayersOnHero(Hero.ROADHOG)))
-  botWidowmakerRespTepm.startForcingHero(Hero.WIDOWMAKER)
-  botWidowmakerRespTepm.stopForcingThrottle()
-  botWidowmakerRespTepm.startScalingSize(1, false)
-
-rule "[Team2 Widowmaker] start":
-  @Condition roundNumber >= 7 and not isBotsDisabled
-  wait(3)
-  respawnTeam2Widowmaker()
-
 rule "[Team2 Widowmaker] global init":
   botSniperPositions = [
     vect(13.33, 11.61, -42.38),
@@ -47,9 +30,10 @@ rule "[Team2 Widowmaker] respawn":
     Color.RED,
     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
+  eventPlayer.stopForcingThrottle()
+  eventPlayer.startScalingSize(1, false)
   eventPlayer.abilPos1 = getLastCreatedEntity()
   eventPlayer.startForcingButton(Button.SECONDARY_FIRE)
-
 
 
 rule "[Team2 Widowmaker] died":
@@ -61,7 +45,8 @@ rule "[Team2 Widowmaker] died":
   destroyEffect(eventPlayer.abilPos1)
   eventPlayer.stopFacing()
   wait(30)
-  respawnTeam2Widowmaker()
+  if not getPlayersOnHero(Hero.WIDOWMAKER, Team.2):
+    botWidowmakerCanRespawn = true
 
 rule "[Team2 Widowmaker] change position":
   @Event eachPlayer
@@ -81,7 +66,7 @@ rule "[Team2 Widowmaker] change position":
 
   wait(15, Wait.ABORT_WHEN_FALSE)
   if ruleCondition:
-      loop()
+    loop()
 
 # code from [Defend Castle - PvE](https://workshop.codes/BQEGS)
 rule "[Team2 Widowmaker] - SEE PLAYER":
@@ -98,7 +83,7 @@ rule "[Team2 Widowmaker] - SEE PLAYER":
   
   eventPlayer.targetPlayer = (
     sorted(
-      [player for player in getLivingPlayers(Team.1) if player.hasSpawned() == true and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) == true],
+      [player for player in getLivingPlayers(Team.1) if player.hasSpawned() and player.isInvisible < getTotalTimeElapsed() and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) == true],
       lambda i: distance(eventPlayer.getPosition(), i.getPosition())
     )
   )[0]
@@ -118,6 +103,7 @@ rule "[Team2 Widowmaker] - SHOOT":
   
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1) # We're warning the players that the widowmaker is about to take a shot
   wait(0.35)
-  eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
+  if (eventPlayer.targetPlayer.isInvisible < getTotalTimeElapsed()):
+    eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
   eventPlayer.stopFacing()
   eventPlayer.targetPlayer = null

@@ -36,9 +36,9 @@ rule "[Sombra] Invisible detect":
   @Condition eventPlayer.isUsingAbility2() == true
   
   wait(0.8, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.state[SI.IS_INVISIBLE] = true
+  eventPlayer.isInvisible = getTotalTimeElapsed() + 5
   waitUntil(eventPlayer.isFiringPrimaryFire() or eventPlayer.isUsingAbility1() or eventPlayer.isMeleeing(), 5)
-  eventPlayer.state[SI.IS_INVISIBLE] = false
+  eventPlayer.isInvisible = false
 
 rule "[Sombre] Stop invisible when hacking":
   @Event eachPlayer
@@ -50,7 +50,7 @@ rule "[Sombre] Stop invisible when hacking":
     isInLoS(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.2)) and
     distance(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.2)) <= 15 
   )
-  eventPlayer.state[SI.IS_INVISIBLE] = false
+  eventPlayer.isInvisible = false
 
 rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
   @Event eachPlayer

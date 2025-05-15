@@ -7,7 +7,7 @@ rule "[Sombra] melee from invisible":
   # [Sombra] melee from invisible
   if (
     eventPlayer.getHero() == Hero.SOMBRA and
-    eventPlayer.state[SI.IS_INVISIBLE] and
+    eventPlayer.isInvisible and
     eventAbility == Button.MELEE
   ):
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
@@ -39,9 +39,9 @@ rule "Player took damage":
   @Team 1
 
   # sombra's invisible off
-  if eventPlayer.state[SI.IS_INVISIBLE] == true:
+  if eventPlayer.isInvisible == true:
     eventPlayer.setStatusEffect(null, Status.HACKED, 0.05)
-    eventPlayer.state[SI.IS_INVISIBLE] = false 
+    eventPlayer.isInvisible = false 
 
   # [Team2 Roadhog]
   if (

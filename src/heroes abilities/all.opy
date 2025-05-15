@@ -2,14 +2,6 @@
 
 #!define REI_BARRIER_PUSH_ENENT_WAIT 0.1
 
-def clearHeroInfo():
-  @Name "Subroutine: Clear hero info"
-  eventPlayer.state[SI.TALENTS_COUNT] = 0
-  eventPlayer.state[SI.HERO_INFO_TEXT] = null
-  eventPlayer.state[SI.HERO_INFO_TEXT2] = null
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] = 3.5
-  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 11
-
 def sqrtNewton():
   @Name "Subroutine: Calculate square root"
   eventPlayer.raycast[RI.SQRT_RESULT] = eventPlayer.raycast[RI.DISC] / 2

@@ -4,8 +4,6 @@ rule "Teleport from restricted areas":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.isAlive() and eventPlayer.hasSpawned()
-    if eventPlayer.isInSpawnRoom():
-      eventPlayer.teleport(random.choice(spawnPointsList))
     if distance(eventPlayer, vect(83.1, 11.88, -111.642)) < 3:
       eventPlayer.teleport(vect(79.382, 13.147, -110.093))
     if distance(eventPlayer, vect(89.731, 13.228, -102.377)) < 2:

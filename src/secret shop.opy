@@ -4,7 +4,7 @@ rule "Secret shop init":
   @Condition unlockedLocations == 4
 
   shopState = []
-  enum shopStateI:
+  enum SHOP_I:
     STATUS = 0
     POWER_ON_EFFECT = 1
     POWER_ON_TEXT = 2
@@ -15,9 +15,9 @@ rule "Secret shop init":
 
   # Create shop power on effects
   createEffect(getAllPlayers(), Effect.RING, Color.TURQUOISE, vectList[VI.CONNECT_SHOP], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  shopState[shopStateI.POWER_ON_EFFECT] = getLastCreatedEntity()
+  shopState[SHOP_I.POWER_ON_EFFECT] = getLastCreatedEntity()
   createInWorldText(getAllPlayers(), l"{0} {1}".format(l"Connect", l"Power"), vectList[VI.CONNECT_SHOP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
-  shopState[shopStateI.POWER_ON_TEXT] = getLastCreatedText()
+  shopState[SHOP_I.POWER_ON_TEXT] = getLastCreatedText()
   createInWorldText(getAllPlayers(), l"#{0}".format(iconString(Icon.ARROW_LEFT)), vectList[VI.CONNECT_SHOP_ARROW], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
 
   # Create shop exit effects
@@ -29,68 +29,68 @@ rule "Power switch ON":
   @Team 1
   @Condition distance(eventPlayer, vectList[VI.CONNECT_SHOP]) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition shopState[shopStateI.STATUS] == 0
+  @Condition shopState[SHOP_I.STATUS] == 0
   @Condition unlockedLocations == 4
   
-  destroyEffect(shopState[shopStateI.POWER_ON_EFFECT])
-  destroyInWorldText(shopState[shopStateI.POWER_ON_TEXT])
-  shopState[shopStateI.STATUS] = 1
+  destroyEffect(shopState[SHOP_I.POWER_ON_EFFECT])
+  destroyInWorldText(shopState[SHOP_I.POWER_ON_TEXT])
+  shopState[SHOP_I.STATUS] = 1
   bigMessage(getAllPlayers(), l"{0} {1}".format(l"Power", l"On"))
 
 rule "Show shop activator":
-  @Condition shopState[shopStateI.STATUS] == 1
+  @Condition shopState[SHOP_I.STATUS] == 1
   
   createEffect(getAllPlayers(), Effect.RING, Color.RED, vect(123.312, 9.176, -27.364), 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  shopState[shopStateI.SHOP_RING] = getLastCreatedEntity()
+  shopState[SHOP_I.SHOP_RING] = getLastCreatedEntity()
   createInWorldText(getAllPlayers(), iconString(Icon.NO), vect(123.312, 9.176, -27.364), 4, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED)
-  shopState[shopStateI.SHOP_ICON] = getLastCreatedText()
+  shopState[SHOP_I.SHOP_ICON] = getLastCreatedText()
   wait(1)
   createEffect(getAllPlayers(), Effect.RING, Color.TURQUOISE, vectList[VI.SHOP_ACTIVATOR], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  shopState[shopStateI.ACTIVATOR_RING] = getLastCreatedEntity()
+  shopState[SHOP_I.ACTIVATOR_RING] = getLastCreatedEntity()
   createInWorldText(getAllPlayers(), iconString(Icon.SPIRAL), vectList[VI.SHOP_ACTIVATOR], 2.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
-  shopState[shopStateI.ACTIVATOR_ICON] = getLastCreatedText()
+  shopState[SHOP_I.ACTIVATOR_ICON] = getLastCreatedText()
 
 rule "Use shop activator":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, vectList[VI.SHOP_ACTIVATOR]) <= 1.5
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition shopState[shopStateI.STATUS] == 1
+  @Condition shopState[SHOP_I.STATUS] == 1
   
-  shopState[shopStateI.STATUS] = 2
+  shopState[SHOP_I.STATUS] = 2
 
 
 rule "Show opened shop teleport area":
-  @Condition shopState[shopStateI.STATUS] == 2
+  @Condition shopState[SHOP_I.STATUS] == 2
   
-  destroyEffect(shopState[shopStateI.SHOP_RING])
-  destroyInWorldText(shopState[shopStateI.SHOP_ICON])
-  destroyEffect(shopState[shopStateI.ACTIVATOR_RING])
-  destroyInWorldText(shopState[shopStateI.ACTIVATOR_ICON])
+  destroyEffect(shopState[SHOP_I.SHOP_RING])
+  destroyInWorldText(shopState[SHOP_I.SHOP_ICON])
+  destroyEffect(shopState[SHOP_I.ACTIVATOR_RING])
+  destroyInWorldText(shopState[SHOP_I.ACTIVATOR_ICON])
   createEffect(getAllPlayers(), Effect.RING, Color.GREEN, vectList[VI.SHOP_TELEPORTER_RING], 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  shopState[shopStateI.SHOP_RING] = getLastCreatedEntity()
+  shopState[SHOP_I.SHOP_RING] = getLastCreatedEntity()
   createInWorldText(getAllPlayers(), "-> [Shop] <-", vectList[VI.SHOP_TELEPORTER_TEXT], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN)
-  shopState[shopStateI.SHOP_ICON] = getLastCreatedText()
+  shopState[SHOP_I.SHOP_ICON] = getLastCreatedText()
   bigMessage(getAllPlayers(), "The secret shop has temporarily opened!")
   wait(60)
-  shopState[shopStateI.STATUS] = 3
+  shopState[SHOP_I.STATUS] = 3
 
 
 rule "Close shop":
-  @Condition shopState[shopStateI.STATUS] == 3
+  @Condition shopState[SHOP_I.STATUS] == 3
   
-  destroyEffect(shopState[shopStateI.SHOP_RING])
-  destroyInWorldText(shopState[shopStateI.SHOP_ICON])
+  destroyEffect(shopState[SHOP_I.SHOP_RING])
+  destroyInWorldText(shopState[SHOP_I.SHOP_ICON])
   bigMessage(getPlayers(Team.1), "Secret Shop Switch -> [Offline]")
   wait(180)
-  shopState[shopStateI.STATUS] = 1
+  shopState[SHOP_I.STATUS] = 1
   bigMessage(getPlayers(Team.1), "Secret Shop Switch -> [Online]")
 
 rule "Teleport players to secret shop":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, vectList[VI.ENTER_SHOP_TELEPORT_FROM]) <= 5
-  @Condition shopState[shopStateI.STATUS] == 2
+  @Condition shopState[SHOP_I.STATUS] == 2
   @Condition eventPlayer.isInSecretShop == false
   
   eventPlayer.isInSecretShop = true

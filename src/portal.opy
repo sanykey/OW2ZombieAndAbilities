@@ -1,7 +1,7 @@
 #!mainFile "main.opy"
 
 rule "[Portal]":
-  @Condition shopState[shopStateI.STATUS] == true
+  @Condition shopState[SHOP_I.STATUS] == true
   
   wait(6)
   createEffect(getAllPlayers(), Effect.BAD_AURA, Color.BLUE, vect(-9.799, 3.5, -27.229), 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -14,7 +14,7 @@ rule "[Portal 1]":
   @Team 1
   @Condition distance(eventPlayer, vect(-9.799, 3.147, -27.229)) <= 1.7
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition shopState[shopStateI.STATUS] == true
+  @Condition shopState[SHOP_I.STATUS] == true
   
   wait(0.15)
   eventPlayer.teleport(vect(126.4, 18, -15.8))
@@ -27,7 +27,7 @@ rule "[Portal 2]":
   @Team 1
   @Condition distance(eventPlayer, vect(126.434, 16.084, -15.81)) <= 1.7
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition shopState[shopStateI.STATUS] == true
+  @Condition shopState[SHOP_I.STATUS] == true
   
   wait(0.15)
   eventPlayer.teleport(vect(-9.8, 6, -27.3))

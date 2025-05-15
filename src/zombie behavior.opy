@@ -17,7 +17,7 @@ rule "Bots use ultimate at 100%":
 rule "Bots antifall safety and fall damage after cc damage from players":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.isAlive()
 
   eventPlayer.temp1 = false
@@ -77,7 +77,7 @@ rule "Zombies loS teleport warning":
 rule "Bots face target players and move":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   
   # Bots move toward players
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
@@ -94,9 +94,9 @@ rule "Bots face target players and move":
 rule "Bots attack near player":
   @Event eachPlayer
   @Team 2
-  @Hero torbjorn
-  @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
   @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.REINHARDT
+  @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
 
   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
@@ -109,7 +109,7 @@ rule "Bots attack near player":
 rule "Bots moves":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.isAlive()
 
   if not RULE_CONDITION:
@@ -136,7 +136,7 @@ rule "Bots moves":
       lambda i: distance(eventPlayer, i) + (
         10 if not isInLoS(eventPlayer, i) else 0
       ) + (
-        50 if i.state[SI.IS_INVISIBLE] and (distance(eventPlayer, i) > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
+        100 if i.isInvisible > getTotalTimeElapsed() and (distance(eventPlayer, i) > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
       )
     )
   )[0]
@@ -187,7 +187,7 @@ rule "zombies fly faster":
   @Team 2
   @Condition eventPlayer.zombiesfly == true
   @Condition distance(eventPlayer, eventPlayer.targetPlayer) > 35
-  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   
   wait(0.2, Wait.ABORT_WHEN_FALSE)
   eventPlayer.applyImpulse(Vector.FORWARD, 40, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
@@ -202,7 +202,7 @@ rule "Zombies loS teleport (zombiesfly)":
   @Team 2
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.zombiesfly == false
-  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ROADHOG
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.targetPlayer.isAlive()
   @Condition not isInLoS(eventPlayer, eventPlayer.targetPlayer)
   @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
