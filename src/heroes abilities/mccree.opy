@@ -228,6 +228,9 @@ rule "[Cassydy] fan the hammer knockback":
   @Hero cassidy
   @Condition eventAbility == Button.SECONDARY_FIRE
   
+  if victim.hasStatus(Status.KNOCKED_DOWN):
+    return
+
   victim.state[SI.LAST_CC_ATTACKER] = eventPlayer
   victim.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
   victim.state[SI.LAST_CC_WAS_IN_AIR] = false
