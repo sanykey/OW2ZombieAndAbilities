@@ -77,7 +77,7 @@ rule "[Team2 Widowmaker] - SEE PLAYER":
   @Condition eventPlayer.hasSpawned() == true
   @Condition eventPlayer.isReloading() == false
   @Condition eventPlayer.targetPlayer == null
-  @Condition eventPlayer.hasBadStatus == false
+  @Condition not eventPlayer.hasBadStatus
   #CAN SEE PLAYER
   @Condition any([isInLoS(eventPlayer.getEyePosition(), i.getEyePosition()) for i in getLivingPlayers(Team.1)]) == true
   

@@ -68,12 +68,12 @@ settings {
                 "movementSpeed%": ZOMBIE_SPEED - 10,
                 "ability1Cooldown%": 10
             },
-            "reinhardt": {
+            "mauga": {
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
                 "movementGravity%": 80,
-                "movementSpeed%": ZOMBIE_SPEED - 10,
-                "ability1Cooldown%": 10
+                "movementSpeed%": ZOMBIE_SPEED,
+                "ability1Cooldown%": 50
             }
         },
         "allTeams": {

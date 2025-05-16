@@ -35,7 +35,7 @@ rule "Game init":
 #!include "zombie spawn points.opy"
 #!include "bots/widowmaker.opy"
 #!include "bots/roadhog.opy"
-# #!include "bots/mauga.opy"
+#!include "bots/mauga.opy"
 
 #!include "portal.opy"
 #!include "visuals.opy"

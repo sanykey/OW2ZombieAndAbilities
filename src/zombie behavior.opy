@@ -62,6 +62,20 @@ rule "Bots antifall safety and fall damage after cc damage from players":
 #   )
 
 
+rule "[Team2 Roadhog][Team2 Mauga] Bot zombie melee":
+  @Event eachPlayer
+  @Team 2
+  @Condition getPlayersInRadius(eventPlayer, 3, Team.1) == true
+  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.getHero() == Hero.ROADHOG or eventPlayer.getHero() == Hero.MAUGA
+
+  eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
+  eventPlayer.forceButtonPress(Button.MELEE)
+
+  wait(1)
+  if ruleCondition:
+    loop()
+
 rule "Zombies loS teleport warning":
   @Event eachPlayer
   @Team 2
@@ -95,7 +109,7 @@ rule "Bots attack near player":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive()
-  @Condition eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.REINHARDT
+  @Condition eventPlayer.getHero() == Hero.TORBJORN
   @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
 
   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()

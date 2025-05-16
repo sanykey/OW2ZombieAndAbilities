@@ -107,6 +107,8 @@ rule "Respawn bots":
 
     if roundNumber > 4 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 1:
       botsRespawnTemp.startForcingHero(Hero.ROADHOG)
+    elif roundNumber > 4 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 2:
+      botsRespawnTemp.startForcingHero(Hero.MAUGA)
     elif botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
       botsRespawnTemp.startForcingHero(Hero.TORBJORN)
     else:
@@ -118,7 +120,7 @@ rule "Respawn bots":
     roundRemainingBots > 4 and
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   ):
-    botsRespawnTemp = random.choice(getLivingPlayers(Team.2).exclude(getPlayersOnHero(Hero.ROADHOG, Team.2)))
+    botsRespawnTemp = random.choice([player for player in getLivingPlayers(Team.2) if player.getHero() == Hero.TORBJORN])
     if botsRespawnTemp:
       botsRespawnTemp.startForcingHero(Hero.WIDOWMAKER)
       botWidowmakerCanRespawn = false

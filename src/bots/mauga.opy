@@ -14,44 +14,56 @@ rule "[Team2 Mauga] Charger":
   @Event eachPlayer
   @Team 2
   @Hero mauga
-  @Condition eventPlayer.targetPlayer != null
-  @Condition eventPlayer.crowdControlled != true
-  @Condition eventPlayer.abilState0 != true
+  @Condition eventPlayer.targetPlayer
+  @Condition not eventPlayer.hasBadStatus
   @Condition eventPlayer.isOnGround()
   @Condition eventPlayer.getAbilityCooldown(Button.ABILITY_1) == 0
-  @Condition eventPlayer.isUsingAbility1() == false
-  @Condition eventPlayer.getThrottle() != vect(0, 0, 0)
-  @Condition abs(angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer.getEyePosition()))) < 35
-  @Condition (distance(eventPlayer.getPosition(), eventPlayer.targetPlayer.getPosition()) < 5 or verticalAngleOfDirection(directionTowards(eventPlayer.getPosition(), eventPlayer.targetPlayer.getPosition())) > -35) == true
+  @Condition not eventPlayer.isUsingAbility1()
+  @Condition abs(
+    angleBetweenVectors(
+      eventPlayer.getFacingDirection(),directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer.getEyePosition())
+    )
+  ) < 35
+  @Condition (
+    distance(eventPlayer, eventPlayer.targetPlayer) < 5 or
+    verticalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.targetPlayer)) > -35
+  )
   
   wait(0.25, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.specialFacing = true
-  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.lastTarget.getEyePosition()), 1500 if eventPlayer.attached else 0 if eventPlayer.crowdControlled else 100)
-  eventPlayer.abilState0 = true
-  eventPlayer.startThrottleInDirection(vect(0, 0, -1), 0.35, Relativity.TO_PLAYER, Throttle.REPLACE_EXISTING, ThrottleReeval.NONE)
+  eventPlayer.startFacing(
+    directionTowards(
+      eventPlayer.getEyePosition(), 
+      eventPlayer.targetPlayer.getEyePosition()
+    ), 
+    1500
+  )
+  wait(0.1)
+  # eventPlayer.startThrottleInDirection(vect(0, 0, -1), 0.35, Relativity.TO_PLAYER, Throttle.REPLACE_EXISTING, ThrottleReeval.NONE)
+
   #Charger walk backwards duration
-  for eventPlayer.pNoCooldownsCount_bCount2 in range(0, 1, 0.064):
-      if eventPlayer.crowdControlled or eventPlayer.isDead():
-          eventPlayer.specialFacing = false
-          eventPlayer.abilState0 = false
-          async(restoreDefaultFacingMovement, AsyncBehavior.NOOP)
-          return
-      wait(0.064)
-  eventPlayer.startThrottleInDirection(directionTowards(eventPlayer.getPosition(), eventPlayer.targetPlayer.getPosition() if eventPlayer.botTempValue == null else eventPlayer.botTempValue), eventPlayer.botThrottleSpeed, Relativity.TO_WORLD, Throttle.REPLACE_EXISTING, ThrottleReeval.NONE)
-  eventPlayer.specialFacing = true
+  # for eventPlayer.pNoCooldownsCount_bCount2 in range(0, 1, 0.064):
+  #   if eventPlayer.hasBadStatus or eventPlayer.isDead():
+  #     eventPlayer.abilState0 = false
+  #     async(restoreDefaultFacingMovement, AsyncBehavior.NOOP)
+  #     return
+  #   wait(0.064)
+
+  eventPlayer.startThrottleInDirection(
+    directionTowards(eventPlayer.getPosition(), eventPlayer.targetPlayer.getPosition()),
+    0.65,
+    Relativity.TO_WORLD,
+    Throttle.REPLACE_EXISTING,
+    ThrottleReeval.NONE
+  )
   eventPlayer.startFacing(eventPlayer.getThrottle(), 100, Relativity.TO_PLAYER)
   eventPlayer.forceButtonPress(Button.ABILITY_1)
   #Charge End
-  waitUntil(not eventPlayer.isUsingAbility1(), 2 if eventPlayer in bosses else 3.5)
+
+  waitUntil(not eventPlayer.isUsingAbility1(), 2)
   eventPlayer.stopThrottleInDirection()
   eventPlayer.stopFacing()
-  eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
-  eventPlayer.setMoveSpeed(100)
-  eventPlayer.specialFacing = false
-  eventPlayer.abilState0 = false
-  async(restoreDefaultFacingMovement, AsyncBehavior.NOOP)
-  waitUntil(not eventPlayer.isUsingAbility1(), 10)
-  eventPlayer.setAbilityCooldown(Button.ABILITY_1, 4 if eventPlayer in bosses else 6)
+  eventPlayer.forceButtonPress(Button.ABILITY_1)
+  # eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
 
 
 rule "[Team2 Mauga] Charger knockback":

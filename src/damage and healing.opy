@@ -38,12 +38,12 @@ rule "Player took damage":
   @Event playerTookDamage
   @Team 1
 
-  # sombra's invisible off
+  # [Sombra] invisible off
   if eventPlayer.isInvisible == true:
     eventPlayer.setStatusEffect(null, Status.HACKED, 0.05)
     eventPlayer.isInvisible = false 
 
-  # [Team2 Roadhog]
+  # [Team2 Roadhog] chance to hack player when melee
   if (
     attacker.getHero() == Hero.ROADHOG and
     eventAbility == Button.MELEE and 
@@ -51,9 +51,26 @@ rule "Player took damage":
   ):
     eventPlayer.setStatusEffect(null, Status.HACKED, 1.5)
 
+  # [Team2 Mauga] Burning players
+  if (
+    attacker.getHero() == Hero.MAUGA and
+    eventAbility == Button.ABILITY_1
+  ):
+    eventPlayer.setStatusEffect(null, Status.BURNING, 5)
+
   eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
   wait(15, Wait.RESTART_WHEN_TRUE)
   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()
+
+
+rule "Player burning":
+  @Event eachPlayer
+  @Condition eventPlayer.hasStatus(Status.BURNING)
+
+  damage(eventPlayer, getPlayersOnHero(Hero.MAUGA, Team.2), 4)
+  wait(0.2, Wait.ABORT_WHEN_FALSE)
+  loop()
+
 
 # code from [Hacked Healthpack/Sombra Healing Detector](https://workshop.codes/EF7H3)
 rule "HealthPack":
