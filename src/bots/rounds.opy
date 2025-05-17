@@ -152,8 +152,10 @@ rule "Mark last zombie":
 
 rule "Match end":
   @Condition not isDebugAutoRespawn
-  @Condition all([player.isDead() for player in getPlayers(Team.1)]) == true
-  @Condition getPlayers(Team.1).hasSpawned() == true
+  @Condition isGameStarted
+  @Condition all(
+    [player.isDead() or not player.hasSpawned() for player in getPlayers(Team.1)]
+  )
   
   matchIsOver = true
   destroyAllEffects()

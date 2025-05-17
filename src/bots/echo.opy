@@ -44,7 +44,7 @@ def botEchoRespawn():
 
   playEffect(getAllPlayers(), DynamicEffect.SOMBRA_EMP_EXPLOSION_EFFECT, Color.SKY_BLUE, eventPlayer.abilPos0, 12)
   playEffect(getAllPlayers(), DynamicEffect.SOMBRA_EMP_EXPLOSION_SOUND, null, eventPlayer.abilPos0, 100)
-  wait(3)
+  wait(4)
   eventPlayer.teleport(eventPlayer.abilPos0)
   playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.abilPos0, 2.5)
   playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, null, eventPlayer.abilPos0, 100)

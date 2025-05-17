@@ -33,6 +33,6 @@ rule "[Team2 Roadhog] trying to hook":
     getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
     eventPlayer.stopFacing()
 
-  wait(3 + (MAX_PLAYERS - getNumberOfPlayers(Team.1)))
+  wait(8)
   if ruleCondition:
       loop()
