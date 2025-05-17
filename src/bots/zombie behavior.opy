@@ -1,4 +1,4 @@
-#!mainFile "main.opy"
+#!mainFile "../main.opy"
 
 rule "Bots use ultimate at 100%":
   @Event eachPlayer
@@ -91,7 +91,7 @@ rule "Zombies loS teleport warning":
 rule "Bots face target players and move":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   
   # Bots move toward players
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
@@ -100,7 +100,7 @@ rule "Bots face target players and move":
   # eventPlayer.startFacing(
   #   directionTowards(
   #     eventPlayer.getEyePosition(),
-  #     eventPlayer.targetPlayer.getEyePosition()
+  #     eventPlayer.targetPlayer0.getEyePosition()
   #   ), 400
   # )
 
@@ -123,7 +123,7 @@ rule "Bots attack near player":
 rule "Bots moves":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   @Condition eventPlayer.isAlive()
 
   if not RULE_CONDITION:
@@ -132,7 +132,7 @@ rule "Bots moves":
 
   # Bots face target players
   eventPlayer.setFacing(
-    directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer.getEyePosition()),
+    directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()),
     Relativity.TO_WORLD
   )
 
@@ -144,7 +144,7 @@ rule "Bots moves":
     eventPlayer.teleport(random.choice(spawnPointsList))
     goto lbl_0
 
-  eventPlayer.targetPlayer = (
+  eventPlayer.targetPlayer0 = (
     sorted(
       [player for player in getLivingPlayers(Team.1) if player.hasSpawned()],
       lambda i: distance(eventPlayer, i) + (
@@ -157,7 +157,7 @@ rule "Bots moves":
     )
   )[0]
 
-  if not eventPlayer.targetPlayer:
+  if not eventPlayer.targetPlayer0:
     goto lbl_0
 
   # Perhaps the bot has fallen into a place it can't get out of and has not been interacted with in any way
@@ -202,8 +202,8 @@ rule "zombies fly faster":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.zombiesfly == true
-  @Condition distance(eventPlayer, eventPlayer.targetPlayer) > 35
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
+  @Condition distance(eventPlayer, eventPlayer.targetPlayer0) > 35
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   
   wait(0.2, Wait.ABORT_WHEN_FALSE)
   eventPlayer.applyImpulse(Vector.FORWARD, 40, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
@@ -219,8 +219,8 @@ rule "Zombies loS teleport (zombiesfly)":
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.zombiesfly == false
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
-  @Condition eventPlayer.targetPlayer.isAlive()
-  @Condition not isInLoS(eventPlayer, eventPlayer.targetPlayer)
+  @Condition eventPlayer.targetPlayer0.isAlive()
+  @Condition not isInLoS(eventPlayer, eventPlayer.targetPlayer0)
   @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
   
   wait(6, Wait.ABORT_WHEN_FALSE)
@@ -229,7 +229,7 @@ rule "Zombies loS teleport (zombiesfly)":
   eventPlayer.setGravity(0)
   eventPlayer.disableEnvironmentCollision(false)
   eventPlayer.disablePlayerCollision()
-  eventPlayer.startAcceleration(directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer.getEyePosition()), 25, 20, Relativity.TO_WORLD)
+  eventPlayer.startAcceleration(directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()), 25, 20, Relativity.TO_WORLD)
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
   wait(0.2)
   eventPlayer.applyImpulse(Vector.FORWARD, 5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)

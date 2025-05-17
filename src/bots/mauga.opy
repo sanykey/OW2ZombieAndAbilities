@@ -1,39 +1,39 @@
 #!mainFile "../main.opy"
 
-rule "Create [Team2 Mauga] bot":
-  @Condition roundNumber >= 1 and not isBotsDisabled
-  wait(3)
-  waitUntil(getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).isAlive(), INFINITY)
-  createDummy(Hero.MAUGA, Team.2, MAX_ZOMBIES - 2, random.choice(spawnPointsList))
-  wait(0.1)
-  getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).startForcingName("Zombie Cha")
-  # getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).startScalingSize(0.7, false)
+# rule "Create [Team2 Mauga] bot":
+#   @Condition roundNumber >= 1 and not isBotsDisabled
+#   wait(3)
+#   waitUntil(getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).isAlive(), INFINITY)
+#   createDummy(Hero.MAUGA, Team.2, MAX_ZOMBIES - 2, random.choice(spawnPointsList))
+#   wait(0.1)
+#   getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).startForcingName("Zombie Cha")
+#   # getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).startScalingSize(0.7, false)
 
 
-rule "[Team2 Mauga] Charger":
+rule "[Team2 Mauga] Charge":
   @Event eachPlayer
   @Team 2
   @Hero mauga
-  @Condition eventPlayer.targetPlayer
+  @Condition eventPlayer.targetPlayer0
   @Condition not eventPlayer.hasBadStatus
   @Condition eventPlayer.isOnGround()
   @Condition eventPlayer.getAbilityCooldown(Button.ABILITY_1) == 0
   @Condition not eventPlayer.isUsingAbility1()
   @Condition abs(
     angleBetweenVectors(
-      eventPlayer.getFacingDirection(),directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer.getEyePosition())
+      eventPlayer.getFacingDirection(),directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition())
     )
   ) < 35
   @Condition (
-    distance(eventPlayer, eventPlayer.targetPlayer) < 5 or
-    verticalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.targetPlayer)) > -35
+    distance(eventPlayer, eventPlayer.targetPlayer0) < 5 or
+    verticalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.targetPlayer0)) > -35
   )
   
   wait(0.25, Wait.ABORT_WHEN_FALSE)
   eventPlayer.startFacing(
     directionTowards(
       eventPlayer.getEyePosition(), 
-      eventPlayer.targetPlayer.getEyePosition()
+      eventPlayer.targetPlayer0.getEyePosition()
     ), 
     1500
   )
@@ -49,7 +49,7 @@ rule "[Team2 Mauga] Charger":
   #   wait(0.064)
 
   eventPlayer.startThrottleInDirection(
-    directionTowards(eventPlayer.getPosition(), eventPlayer.targetPlayer.getPosition()),
+    directionTowards(eventPlayer.getPosition(), eventPlayer.targetPlayer0.getPosition()),
     0.65,
     Relativity.TO_WORLD,
     Throttle.REPLACE_EXISTING,
@@ -66,7 +66,7 @@ rule "[Team2 Mauga] Charger":
   # eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
 
 
-rule "[Team2 Mauga] Charger knockback":
+rule "[Team2 Mauga] Charge knockback":
   @Event playerDealtDamage
   @Team 2
   @Hero mauga

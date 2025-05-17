@@ -27,11 +27,11 @@ rule "[Mercy] Immune during revive":
 #   @Condition eventPlayer.hasStatus(Status.HACKED) == false
 #   @Condition eventPlayer.hasStatus(Status.STUNNED) == false
   
-#   eventPlayer.targetPlayer = (sorted([player for player in getPlayersInRadius(eventPlayer, 8, Team.1) if player.downedStartTime and player.downedStartTime + 0.1 < getTotalTimeElapsed() and eventPlayer.isInViewAngle(player, 45)], lambda i: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i)))).last()
-#   if eventPlayer.targetPlayer:
-#     smallMessage(getAllPlayers(), "{0} has been resurrected by {1}!".format(eventPlayer.targetPlayer, eventPlayer))
-#     eventPlayer.targetPlayer.downedStartTime = 0
-#     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.SKY_BLUE, eventPlayer.targetPlayer, 1)
+#   eventPlayer.targetPlayer0 = (sorted([player for player in getPlayersInRadius(eventPlayer, 8, Team.1) if player.downedStartTime and player.downedStartTime + 0.1 < getTotalTimeElapsed() and eventPlayer.isInViewAngle(player, 45)], lambda i: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i)))).last()
+#   if eventPlayer.targetPlayer0:
+#     smallMessage(getAllPlayers(), "{0} has been resurrected by {1}!".format(eventPlayer.targetPlayer0, eventPlayer))
+#     eventPlayer.targetPlayer0.downedStartTime = 0
+#     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.SKY_BLUE, eventPlayer.targetPlayer0, 1)
 #     eventPlayer.setAbilityCooldown(Button.ABILITY_2, 30)
 #     #Workaround: Set Cooldown for Controller Players
 #     eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 30)

@@ -15,15 +15,15 @@ rule "[Team2 Roadhog] trying to hook":
   @Condition eventPlayer.isAlive()
 
   if (
-    eventPlayer.targetPlayer.isInvisible < getTotalTimeElapsed() and
-    isInLoS(eventPlayer, eventPlayer.targetPlayer, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS) and
-    distance(eventPlayer, eventPlayer.targetPlayer) < 35
+    eventPlayer.targetPlayer0.isInvisible < getTotalTimeElapsed() and
+    isInLoS(eventPlayer, eventPlayer.targetPlayer0, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS) and
+    distance(eventPlayer, eventPlayer.targetPlayer0) < 35
   ):
     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1)
     eventPlayer.startFacing(
       directionTowards(
         eventPlayer.getEyePosition(),
-        eventPlayer.targetPlayer.getEyePosition()
+        eventPlayer.targetPlayer0.getEyePosition()
       ), 400
     )
     wait(0.3)

@@ -1,4 +1,4 @@
-#!mainFile "main.opy"
+#!mainFile "../main.opy"
 
 rule "Bots spawn points array A":
   @Condition distance(vect(-6.965, 2.94, -7.146), getRealClosestPlayer(vect(-6.965, 2.94, -7.146), Team.1)) <= 48

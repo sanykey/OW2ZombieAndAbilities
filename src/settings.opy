@@ -74,6 +74,13 @@ settings {
                 "movementGravity%": 80,
                 "movementSpeed%": ZOMBIE_SPEED,
                 "ability1Cooldown%": 50
+            },
+            "echo": {
+                "healingReceived%": 10,
+                "jumpVerticalSpeed%": 150,
+                "movementGravity%": 40,
+                "ability1Cooldown%": 50,
+                "movementSpeed%": 150,
             }
         },
         "allTeams": {

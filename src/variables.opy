@@ -74,6 +74,7 @@ playervar isInvisible
 playervar isReady
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
+playervar temp0
 playervar temp1
 playervar temp2
 playervar temp3
@@ -97,7 +98,8 @@ playervar abilDir0
 playervar abilDir1
 playervar abilDir2
 playervar abilDir3
-playervar targetPlayer
+playervar targetPlayer0
+playervar targetPlayer1
 playervar abilityCD
 
 ## only for debug
@@ -130,9 +132,9 @@ playervar juno_transfer_started
 #!define WINSTON_BARRIER_HP 650
 #!define TORBJORN_HAMMER_BASE_DMG 70
 
-# Zombie stats
+# Zombie settings
 #!define ZOMBIE_SPEED 80
-#!define ZOMBIE_FALL_DAMAGE 150
+#!define ZOMBIE_FALL_DAMAGE 200
 #!define ZOMBIE_BASE_DAMAGE 20
 #!define ZOMBIE_BASE_HP 120
 
@@ -143,7 +145,7 @@ playervar juno_transfer_started
 #!define MONEY_FOR_HEALING 100
 #!define HEAL_AMOUNT_FOR_MONEY 200
 #!define MAX_PLAYERS 5
-#!define MAX_ZOMBIES 8
+#!define MAX_ZOMBIES 9
 #!define ALLY_BOT_PLAYER_SLOT 7
 #!define REVIVE_TIMER_TICK 5
 #!define ZOMBIE_BASE_MOVE_SPEED 70

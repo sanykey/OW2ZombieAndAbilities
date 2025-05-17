@@ -61,9 +61,9 @@ rule "show ServerLoad info":
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
 
-# rule "Disable inspector recording - debug":
-#   wait(1)
-#   disableInspector()
+rule "Disable inspector recording - debug":
+  wait(1)
+  disableInspector()
 
 rule "Unlimited match time":
   @Condition getMatchTime() < 10

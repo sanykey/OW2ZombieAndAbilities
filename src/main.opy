@@ -16,7 +16,7 @@ rule "Game init":
 #!include "player joined.opy"
 # #!include "ally bot.opy"
 #!include "debug.opy"
-#!include "rounds.opy"
+
 #!include "3p camera.opy"
 #!include "buy hero stats.opy"
 #!include "buy hero.opy"
@@ -30,12 +30,15 @@ rule "Game init":
 #!include "damage and healing.opy"
 #!include "money.opy"
 #!include "orbs.opy"
-#!include "zombie events.opy"
-#!include "zombie behavior.opy"
-#!include "zombie spawn points.opy"
+
+#!include "bots/zombie events.opy"
+#!include "bots/zombie behavior.opy"
+#!include "bots/zombie spawn points.opy"
 #!include "bots/widowmaker.opy"
 #!include "bots/roadhog.opy"
 #!include "bots/mauga.opy"
+#!include "bots/echo.opy"
+#!include "bots/rounds.opy"
 
 #!include "portal.opy"
 #!include "visuals.opy"

@@ -118,7 +118,7 @@ rule "[Cassydy] Init":
   )
   eventPlayer.heroState[CASSIDY_I.LASSO_HUD] = getLastCreatedText()
 
-  # debug(eventPlayer.targetPlayer)
+  # debug(eventPlayer.targetPlayer0)
   # debug(eventPlayer.abilPos0)
   # debug(eventPlayer.abilDir0)
   # debug(eventPlayer.abilState0)
@@ -135,7 +135,7 @@ rule "[Cassydy] throw the lasso":
   @Hero cassidy
   @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
   @Condition not eventPlayer.abilPos0
-  @Condition not eventPlayer.targetPlayer
+  @Condition not eventPlayer.targetPlayer0
   @Condition not eventPlayer.abilDir0
   @Condition eventPlayer.isAlive() == true
 
@@ -146,7 +146,7 @@ rule "[Cassydy] throw the lasso":
   eventPlayer.abilPos0 = raycast(eventPlayer, eventPlayer + vect(0, 5, 0), null, eventPlayer, true).getHitPosition() + vect(0, -1, 0)
   stopChasingVariable(eventPlayer.abilPos0)
   stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.targetPlayer = false
+  eventPlayer.targetPlayer0 = false
   chaseAtRate(eventPlayer.abilPos0, raycast(eventPlayer, eventPlayer + vect(0, 5, 0), null, eventPlayer, true).getHitPosition() + vect(0, -1, 0), 10)
   eventPlayer.abilDir0 = false
   eventPlayer.abilState0 = false
@@ -154,7 +154,7 @@ rule "[Cassydy] throw the lasso":
   eventPlayer.abilDir0 = eventPlayer.getFacingDirection()
   chaseAtRate(eventPlayer.abilDir0, vect(0, -100, 0), 1)
   chaseAtRate(eventPlayer.abilPos0, eventPlayer.abilPos0 + eventPlayer.abilDir0 * 10, 30)
-  eventPlayer.targetPlayer = false
+  eventPlayer.targetPlayer0 = false
   eventPlayer.abilState0 = true
 
   waitUntil(
@@ -176,33 +176,33 @@ rule "[Cassydy] lasso hit a player":
   @Hero cassidy
   @Condition eventPlayer.abilPos0
   @Condition eventPlayer.abilState0
-  @Condition not eventPlayer.targetPlayer
+  @Condition not eventPlayer.targetPlayer0
   @Condition distance(eventPlayer.abilPos0, getClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))) <= 3
   @Condition getNumberOfPlayers(getOppositeTeam(eventPlayer.getTeam())) != 0
   @Condition getClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam())).isDead() != true
 
   stopChasingVariable(eventPlayer.abilPos0)
   stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.targetPlayer = getClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))
-  eventPlayer.targetPlayer.setGravity(0)
-  eventPlayer.abilPos0 = eventPlayer.targetPlayer.getPosition()
-  chaseAtRate(eventPlayer.abilPos0, vect(0, 1, -1) + eventPlayer.targetPlayer.getPosition(), 300)
-  eventPlayer.targetPlayer.setStatusEffect(eventPlayer, Status.STUNNED, 1)
-  eventPlayer.targetPlayer.applyImpulse(directionTowards(eventPlayer.targetPlayer, eventPlayer), 40, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  damage(eventPlayer.targetPlayer, eventPlayer, 10)
-  eventPlayer.targetPlayer.state[SI.LAST_CC_ATTACKER] = eventPlayer
-  eventPlayer.targetPlayer.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.targetPlayer.state[SI.LAST_CC_WAS_IN_AIR] = false
-  eventPlayer.targetPlayer.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 2)
+  eventPlayer.targetPlayer0 = getClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))
+  eventPlayer.targetPlayer0.setGravity(0)
+  eventPlayer.abilPos0 = eventPlayer.targetPlayer0.getPosition()
+  chaseAtRate(eventPlayer.abilPos0, vect(0, 1, -1) + eventPlayer.targetPlayer0.getPosition(), 300)
+  eventPlayer.targetPlayer0.setStatusEffect(eventPlayer, Status.STUNNED, 1)
+  eventPlayer.targetPlayer0.applyImpulse(directionTowards(eventPlayer.targetPlayer0, eventPlayer), 40, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  damage(eventPlayer.targetPlayer0, eventPlayer, 10)
+  eventPlayer.targetPlayer0.state[SI.LAST_CC_ATTACKER] = eventPlayer
+  eventPlayer.targetPlayer0.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.targetPlayer0.state[SI.LAST_CC_WAS_IN_AIR] = false
+  eventPlayer.targetPlayer0.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 2)
 
-  waitUntil(distance(eventPlayer, eventPlayer.targetPlayer) <= 8, 2)
-  eventPlayer.targetPlayer.setGravity(100)
-  eventPlayer.targetPlayer.stopAcceleration()
-  eventPlayer.targetPlayer.clearStatusEffect(Status.STUNNED)
+  waitUntil(distance(eventPlayer, eventPlayer.targetPlayer0) <= 8, 2)
+  eventPlayer.targetPlayer0.setGravity(100)
+  eventPlayer.targetPlayer0.stopAcceleration()
+  eventPlayer.targetPlayer0.clearStatusEffect(Status.STUNNED)
 
   stopChasingVariable(eventPlayer.abilPos0)
   stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.targetPlayer = false
+  eventPlayer.targetPlayer0 = false
   eventPlayer.abilPos0 = false
   eventPlayer.abilState0 = false
   eventPlayer.abilDir0 = false

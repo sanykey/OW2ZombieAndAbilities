@@ -33,14 +33,14 @@ rule "[debug] User init":
   @Team 1
   # @Slot 0
 
-  # waitUntil(eventPlayer.hasSpawned(), INFINITY)
-
+  waitUntil(eventPlayer.hasSpawned(), INFINITY)
+  wait(2)
   # eventPlayer.state[0] = 4
   # eventPlayer.money += 1000000
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.ASHE)
+    # eventPlayer.startForcingHero(Hero.ASHE)
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
   # eventPlayer.healthStat = 100

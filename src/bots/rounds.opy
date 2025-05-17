@@ -1,4 +1,4 @@
-#!mainFile "main.opy"
+#!mainFile "../main.opy"
 
 rule "Waiting for players ready":
   @Event eachPlayer
@@ -43,6 +43,7 @@ rule "Create bots":
   if isBotsDisabled == true:
     return
 
+  smallMessage(getAllPlayers(), "create bots")
   for I in range(MAX_ZOMBIES):
     createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
   getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
@@ -109,8 +110,13 @@ rule "Respawn bots":
       botsRespawnTemp.startForcingHero(Hero.ROADHOG)
     elif roundNumber > 4 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 2:
       botsRespawnTemp.startForcingHero(Hero.MAUGA)
+    elif roundNumber > 4 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 3:
+      botsRespawnTemp.startForcingHero(Hero.ECHO)
+      botsRespawnTemp.setMaxHealth(zombieStats[ZI.HP_STAT] / 2)
     elif botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
+      botsRespawnTemp.setMaxHealth(zombieStats[ZI.HP_STAT])
       botsRespawnTemp.startForcingHero(Hero.TORBJORN)
+      
     else:
       botsRespawnTemp.respawn()
 
@@ -122,7 +128,10 @@ rule "Respawn bots":
   ):
     botsRespawnTemp = random.choice([player for player in getLivingPlayers(Team.2) if player.getHero() == Hero.TORBJORN])
     if botsRespawnTemp:
+      botsRespawnTemp.stopForcingThrottle()
+      wait()
       botsRespawnTemp.startForcingHero(Hero.WIDOWMAKER)
+      botsRespawnTemp.setMaxHealth(zombieStats[ZI.HP_STAT] / 2)
       botWidowmakerCanRespawn = false
 
   lbl_0:
