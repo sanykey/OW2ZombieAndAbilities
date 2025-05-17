@@ -1,17 +1,5 @@
 #!mainFile "../main.opy"
 
-
-def botEchoFlyToPortal():
-  @Name "[Team2 Echo] Fly to portal"
-  
-  eventPlayer.startFacing(
-    directionTowards(eventPlayer.getEyePosition(), eventPlayer.abilPos0), 100
-  )
-  eventPlayer.startThrottleInDirection(
-    directionTowards(eventPlayer.getEyePosition(), eventPlayer.abilPos0), 1, Relativity.TO_WORLD
-  )
-  eventPlayer.startForcingButton(Button.JUMP)
-
 def botEchoFlyToPlayer():
   @Name "[Team2 Echo] Fly to player"
   
@@ -80,7 +68,7 @@ rule "[Team2 Echo] Beam ability":
   @Hero echo
   @Condition eventPlayer.hasSpawned()
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.isUsingAbility1()
+  @Condition not eventPlayer.isUsingAbility2()
   @Condition eventPlayer.abilState0
   
   eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
@@ -91,8 +79,8 @@ rule "[Team2 Echo] respawn":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.isAlive() == true
-  @Condition eventPlayer.hasSpawned() == true
+  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned()
 
   eventPlayer.list = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
@@ -167,7 +155,6 @@ rule "[Team2 Echo] player dead":
   
   if eventPlayer.abilState0:
     botEchoDetachPlayer()
-  botEchoFlyToPortal()
 
 rule "[Team2 Echo] death":
   @Event playerDied
@@ -215,12 +202,6 @@ rule "[Team2 Echo] main logic loop":
   else:
     eventPlayer.startForcingButton(Button.JUMP)
     eventPlayer.stopThrottleInDirection()
-
-    # eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.temp0), 100)
-    # if isInLoS(eventPlayer.getPosition(), eventPlayer.abilPos0):
-    #   eventPlayer.startThrottleInDirection(
-    #     directionTowards(eventPlayer.getEyePosition(), eventPlayer.abilPos0), 1, Relativity.TO_WORLD
-    #   )
 
   lbl_0:
   wait(0.4)

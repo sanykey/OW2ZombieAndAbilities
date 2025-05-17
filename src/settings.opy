@@ -59,7 +59,8 @@ settings {
                 "combatUltGen%": 50,
                 "passiveUltGen%": 10,
                 "ultGen%": 50,
-                "weaponsEnabled": "hammer"
+                "weaponsEnabled": "hammer",
+                "ultDuration%": 200,
             },
             "roadhog": {
                 "healingReceived%": 10,

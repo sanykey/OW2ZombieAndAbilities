@@ -1,22 +1,22 @@
 #!mainFile "main.opy"
 
-rule "Crash Protection [ON]":
-  @Condition getServerLoad() > 250
-  @Condition highloadServerPause < getTotalTimeElapsed()
+# rule "Crash Protection [ON]":
+#   @Condition getServerLoad() > 250
+#   @Condition highloadServerPause < getTotalTimeElapsed()
   
-  wait(2, Wait.ABORT_WHEN_FALSE)
-  highloadServerPause = 10 + getTotalTimeElapsed()
-  setSlowMotion(83)
-  bigMessage(getPlayers(Team.1), "Too high load on the server. Short break!\n\n (Cur:{} / AVG: {}/ Max: {})".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()))
-  isBotsDisabled = true
-  for I in range(MAX_ZOMBIES):
-    destroyDummy(Team.2, I)
+#   wait(2, Wait.ABORT_WHEN_FALSE)
+#   highloadServerPause = 10 + getTotalTimeElapsed()
+#   setSlowMotion(83)
+#   bigMessage(getPlayers(Team.1), "Too high load on the server. Short break!\n\n (Cur:{} / AVG: {}/ Max: {})".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()))
+#   isBotsDisabled = true
+#   for I in range(MAX_ZOMBIES):
+#     destroyDummy(Team.2, I)
 
-  smallMessage(getPlayers(Team.1), "[debug] bot spawn poins len: {}".format(len(spawnPointsList)))
+#   smallMessage(getPlayers(Team.1), "[debug] bot spawn poins len: {}".format(len(spawnPointsList)))
 
-  wait(5, Wait.ABORT_WHEN_FALSE)
-  setSlowMotion(100)
-  isBotsDisabled = false
+#   wait(5, Wait.ABORT_WHEN_FALSE)
+#   setSlowMotion(100)
+#   isBotsDisabled = false
 
 rule "Crash Protection [ON]":
   @Condition getServerLoad() > 250

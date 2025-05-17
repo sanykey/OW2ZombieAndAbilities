@@ -144,8 +144,8 @@ playervar juno_transfer_started
 #!define MONEY_FOR_ZOMBIE_CRITICAL 375
 #!define MONEY_FOR_HEALING 100
 #!define HEAL_AMOUNT_FOR_MONEY 200
-#!define MAX_PLAYERS 6
-#!define MAX_ZOMBIES 9
+#!define MAX_PLAYERS 5
+#!define MAX_ZOMBIES 8
 #!define ALLY_BOT_PLAYER_SLOT 7
 #!define REVIVE_TIMER_TICK 5
 #!define ZOMBIE_BASE_MOVE_SPEED 70
