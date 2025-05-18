@@ -1,6 +1,7 @@
 #!mainFile "../main.opy"
 
 #!define ROUND_START_DELAY 0.1
+#!define MAX_REMAINING_ZOMBIES_IN_ROUND 35
 
 # I accidentally discovered that if preventing bots from being killed and just teleporting them to respawn - it makes the server noticeably more stable
 def botFakeDeathHandle():
@@ -108,7 +109,7 @@ rule "Round start":
   heal(getPlayers(Team.1), null, INFINITY)
   wait(ROUND_START_DELAY)
   bigMessage(getAllPlayers(), "Starting Round!")
-  roundRemainingBots = MAX_ZOMBIES + roundNumber if (MAX_ZOMBIES + roundNumber) < 35 else 35
+  roundRemainingBots = MAX_ZOMBIES + roundNumber if (MAX_ZOMBIES + roundNumber) < MAX_REMAINING_ZOMBIES_IN_ROUND else MAX_REMAINING_ZOMBIES_IN_ROUND
 
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
