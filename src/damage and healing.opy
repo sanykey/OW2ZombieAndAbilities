@@ -1,10 +1,10 @@
 #!mainFile "main.opy"
 
-rule "[Sombra] melee from invisible":
+rule "player Dealt Knockback":
   @Event playerDealtKnockback
   @Team 1
   
-  # [Sombra] melee from invisible
+  # [Sombra] melee from invisible - steal money and stun
   if (
     eventPlayer.getHero() == Hero.SOMBRA and
     eventPlayer.isInvisible and
@@ -25,6 +25,16 @@ rule "[Sombra] melee from invisible":
 rule "Zombie took damage":
   @Event playerTookDamage
   @Team 2
+
+  if not victim.expectedHealth:
+    victim.expectedHealth = floor(victim.getHealth() - eventDamage)
+  else:
+    victim.expectedHealth -= floor(eventDamage)
+
+  if not attacker.lastDamageDealtAmount:
+    attacker.lastDamageDealtAmount = floor(eventPlayer.getStatistic(Stat.DAMAGE_DEALT) + eventDamage)
+  else:
+    attacker.lastDamageDealtAmount += eventDamage
 
   # [Cassydy] stun effect for flashbang
   if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):
@@ -98,3 +108,81 @@ rule "Start auto healing overеime":
   )
   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = false
   eventPlayer.stopAllHealingOverTime()
+
+
+rule "Calculate zombie damage took from turrets and bob":
+  @Event eachPlayer
+  @Team 2
+
+  if (
+    eventPlayer.expectedHealth and
+    eventPlayer.expectedHealth - eventPlayer.getHealth() > 3
+  ):
+    eventPlayer.list = [player for player in getLivingPlayers(Team.1) if (
+      player.hasSpawned() and (
+        player.getHero() == Hero.SYMMETRA or
+        player.getHero() == Hero.TORBJORN or
+        player.getHero() == Hero.ASHE
+      ) and
+      (player.getStatistic(Stat.DAMAGE_DEALT) - player.lastDamageDealtAmount > 5) 
+    )]
+    # smallMessage(
+    #   getAllPlayers(), 
+    #   "Turret? expectedHealth: {}, currentHP: {}".format(
+    #     evalOnce(eventPlayer.expectedHealth), evalOnce(eventPlayer.getHealth())
+    #   )
+    # )
+    eventPlayer.expectedHealth = floor(eventPlayer.getHealth())
+
+    if eventPlayer.list:
+      for eventPlayer.temp0 in range(len(eventPlayer.list)):
+        eventPlayer.list[eventPlayer.temp0].lastDamageDealtAmount = floor(eventPlayer.list[eventPlayer.temp0].getStatistic(Stat.DAMAGE_DEALT))
+
+      smallMessage(
+        getAllPlayers(), 
+        "TURRET! {}".format(eventPlayer.list[0])
+      )
+
+  wait(0.05)
+  loop()
+
+rule "Calculate damage dealt from turrets":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.getHero() == Hero.SYMMETRA or eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ASHE
+
+  turretsDamageOwners = [player for player in getLivingPlayers(Team.1) if (
+    player.hasSpawned() and (
+      player.getHero() == Hero.SYMMETRA or
+      player.getHero() == Hero.TORBJORN or
+      player.getHero() == Hero.ASHE
+    ) and
+    (player.getStatistic(Stat.DAMAGE_DEALT) - player.lastDamageDealtAmount > 5) 
+  )]
+
+  wait(0.05)
+  loop()
+
+
+  # if (
+  #   eventPlayer.lastDamageDealtAmount and
+  #   (eventPlayer.getStatistic(Stat.DAMAGE_DEALT) - eventPlayer.lastDamageDealtAmount > 5) 
+  # ):
+  #   smallMessage(getAllPlayers(), "turret damage! last: {}, cur: {}".format(eventPlayer.lastDamageDealtAmount, eventPlayer.getStatistic(Stat.DAMAGE_DEALT)))
+  #   wait()
+  #   eventPlayer.lastDamageDealtAmount = floor(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
+
+  # wait(0.05)
+  # loop()
+
+rule "debug":
+  @Event eachPlayer
+  @Team 1
+
+  debug(eventPlayer.lastDamageDealtAmount)
+  debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
+
+rule "debug":
+  @Event eachPlayer
+  @Team 2
+  debug(eventPlayer.list)

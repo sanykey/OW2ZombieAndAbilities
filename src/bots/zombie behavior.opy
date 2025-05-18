@@ -220,8 +220,12 @@ rule "Zombies loS teleport (zombiesfly)":
   @Condition eventPlayer.zombiesfly == false
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.targetPlayer0.isAlive()
+  @Condition not eventPlayer.hasBadStatus
+  @Condition not eventPlayer.hasStatus(Status.HACKED)
+  @Condition not eventPlayer.hasStatus(Status.ROOTED)
   @Condition not isInLoS(eventPlayer, eventPlayer.targetPlayer0)
   @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
+  
   
   wait(6, Wait.ABORT_WHEN_FALSE)
   eventPlayer.zombiesfly = true

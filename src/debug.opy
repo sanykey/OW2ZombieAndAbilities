@@ -36,30 +36,30 @@ rule "[debug] User init":
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
   wait(2)
   # eventPlayer.state[0] = 4
-  # eventPlayer.money += 1000000
+  eventPlayer.money += 100000
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.KIRIKO)
+    eventPlayer.startForcingHero(Hero.TORBJORN)
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
   # eventPlayer.healthStat = 100
   # eventPlayer.damageStat = 100
   # eventPlayer.healingStat = 100
-  # eventPlayer.healthStat += 10000
-  # eventPlayer.setMaxHealth(eventPlayer.healthStat)
-  # eventPlayer.damageStat = 10000
-  # eventPlayer.setDamageDealt(eventPlayer.damageStat)
+  eventPlayer.healthStat = 10000
+  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  eventPlayer.damageStat = 100
+  eventPlayer.setDamageDealt(eventPlayer.damageStat)
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
 
-# rule "[debug] Charge ultimate":
-#   @Event eachPlayer
-#   @Team 1
-#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+rule "[debug] Charge ultimate":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
-#   eventPlayer.setUltCharge(100)
+  eventPlayer.setUltCharge(100)
 
 
 rule "[debug] Deactivate bots (Ctrl + shift + interact)":
@@ -100,8 +100,8 @@ rule "[debug] show current position":
   # debug(getPlayersInSlot(0, Team.1).getEyePosition())
   # debug(getPlayersInSlot(0, Team.1).getPosition())
 
-  # debug(getNumberOfEntityIds())
-  # debug(botWidowmakerCanRespawn)
+  debug(getNumberOfEntityIds())
+  debug(hostPlayer.getPosition())
   
 
 # rule "Just die":
