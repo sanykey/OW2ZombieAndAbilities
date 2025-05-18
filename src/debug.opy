@@ -40,7 +40,7 @@ rule "[debug] User init":
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.SOLDIER)
+    eventPlayer.startForcingHero(Hero.SYMMETRA)
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
   # eventPlayer.healthStat = 100

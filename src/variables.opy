@@ -61,7 +61,7 @@ playervar state # use with enum "SI"
 
 playervar revivers
 playervar reviveTimer
-playervar downedStartTime
+playervar downedStartTime # die state for players and zombie bots
 
 playervar recentStackedHealingDealtToSlot
 playervar healingTracker
@@ -90,7 +90,6 @@ playervar money
 playervar raycast
 playervar heroState
 playervar abilTemp1 # temp var use for loops with "wait" per hero
-playervar abilityProjectile
 playervar isInvisible
 playervar isReady
 playervar kills # kills zombies stat for 
@@ -151,7 +150,7 @@ playervar juno_transfer_started
 #!define TORBJORN_HAMMER_BASE_DMG 70
 
 # Zombie settings
-#!define MAX_ZOMBIES 10
+#!define MAX_ZOMBIES 20
 #!define ZOMBIE_SPEED 80
 #!define ZOMBIE_FALL_DAMAGE 200
 #!define ZOMBIE_BASE_DAMAGE 20
@@ -191,6 +190,7 @@ playervar juno_transfer_started
 # Other:
 #!define INFINITY 99999
 #!define ALLY_BOT_PLAYER_SLOT 7
+
 
 enum SI:
   CAMERA_3P = 0 # number

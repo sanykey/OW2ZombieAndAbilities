@@ -44,6 +44,8 @@ rule "[debug] User init":
 
 rule "[debug] toggle noclip":
   @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer == hostPlayer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.ULTIMATE)
   
   debugIsNoclip = not debugIsNoclip
@@ -67,6 +69,8 @@ rule "[debug] toggle noclip":
 
 rule "[debug] refresh noclip":
   @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer == hostPlayer
   @Condition debugIsNoclip != false
   @Condition eventPlayer.isUsingUltimate() == false
   

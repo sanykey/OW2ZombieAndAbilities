@@ -66,11 +66,11 @@ rule "[Ana]: Mass sleep dart, slowdown nade, sleep melee":
 rule "[Ana]: Self Nano":
   @Event eachPlayer
   @Hero ana
-  @Condition eventPlayer.isHoldingButton(Button.ULTIMATE) == true
+  @Condition eventPlayer.isHoldingButton(Button.ULTIMATE)
   @Condition eventPlayer.getUltCharge() == 100
-  @Condition eventPlayer.isAlive() == true
-  @Condition eventPlayer.isDummy() != true
-  @Condition eventPlayer.abilPos0 != true
+  @Condition eventPlayer.isAlive()
+  @Condition not eventPlayer.isDummy()
+  @Condition not eventPlayer.abilPos0
   
   waitUntil(
     eventPlayer.isUsingUltimate(),

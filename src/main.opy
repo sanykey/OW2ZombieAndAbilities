@@ -13,13 +13,6 @@ rule "Game init":
   matchIsOver = false
   isGameStarted = false
 
-rule "disable auto respawn": 
-  @Event playerJoined
-
-  eventPlayer.disableRespawn()
-  # todo: fix?
-  # if not isDebugAutoRespawn:
-
 #!include "player joined.opy"
 # #!include "ally bot.opy"
 #!include "debug utils.opy"
@@ -38,6 +31,8 @@ rule "disable auto respawn":
 #!include "damage and healing.opy"
 #!include "money.opy"
 #!include "orbs.opy"
+
+#!include "match.opy"
 
 #!include "bots/zombie events.opy"
 #!include "bots/zombie behavior.opy"

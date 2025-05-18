@@ -1,10 +1,13 @@
 #!mainFile "../main.opy"
 
+#!define ROUND_START_DELAY 0.1
+
 # I accidentally discovered that if preventing bots from being killed and just teleporting them to respawn - it makes the server noticeably more stable
 def botFakeDeathHandle():
   @Name "Team2 bot fake death handle"
 
   eventPlayer.downedStartTime = true
+  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 0.1) # Resetting continuing damage effects
   # todo: if is not alive?
   eventPlayer.temp0 = eventPlayer.getPosition()
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION, Team.1, eventPlayer.temp0, 5)
@@ -24,7 +27,6 @@ def botFakeDeathHandle():
   # eventPlayer.clearStatusEffect(Status.BURNING)
   eventPlayer.teleport(vect(-16.80, 1.23, 18.75))
   eventPlayer.setStatusEffect(null, Status.ROOTED, INFINITY)
-  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 0.1) # Resetting continuing damage effects
   
   wait(0.2) # wait for turrets damage detect
   heal(eventPlayer, null, INFINITY)
@@ -34,27 +36,20 @@ def botFakeDeathHandle():
 
   # money for kill:
   eventPlayer.list = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
-  smallMessage(eventPlayer.list, "${} - kill".format(MONEY_FOR_ZOMBIE_KILL))
+  smallMessage(eventPlayer.list, "+${}: kill".format(MONEY_FOR_ZOMBIE_KILL))
   eventPlayer.list.money += MONEY_FOR_ZOMBIE_KILL
   eventPlayer.list.kills += 1
   teamScore += MONEY_FOR_ZOMBIE_KILL
   eventPlayer.damageAssitsToSlot = []
 
-  # respawn
-  if roundRemainingBots >= MAX_ZOMBIES:
+  # respawn:
+  eventPlayer.temp0 = len([player for player in getLivingPlayers(Team.2) if not player.downedStartTime])
+
+  if eventPlayer.temp0 < roundRemainingBots:
     eventPlayer.teleport(random.choice(spawnPointsList))
     eventPlayer.clearStatusEffect(Status.ROOTED)
     eventPlayer.downedStartTime = false
 
-rule "Waiting for players ready":
-  @Event eachPlayer
-  @Team 1
-  @Condition isGameStarted == false
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and not eventPlayer.isHoldingButton(Button.CROUCH) 
-
-  wait(0.5, Wait.ABORT_WHEN_FALSE)
-  smallMessage(getAllPlayers(), "START!")
-  isGameStarted = true
 
 # Bots shouldn't die (Bot fake death), but just in case, let's keep an eye on the event
 rule "Bot died":
@@ -86,6 +81,7 @@ rule "Create bots":
       getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
       getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
       getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
+      getPlayers(Team.2).setStatusEffect(null, Status.UNKILLABLE, INFINITY)
 
 
 rule "Round start":
@@ -99,7 +95,6 @@ rule "Round start":
   setObjectiveDescription(localPlayer, "Round {}".format(roundNumber), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   
   # Resurrect and heal all players
-  
   temp2 = [player for player in getPlayers(Team.1) if player.downedStartTime]
   if temp2:
     temp2.teleport(nearestWalkablePosition(random.choice(getLivingPlayers(Team.1)) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
@@ -111,7 +106,7 @@ rule "Round start":
 
   wait(0.25)
   heal(getPlayers(Team.1), null, INFINITY)
-  wait(5)
+  wait(ROUND_START_DELAY)
   bigMessage(getAllPlayers(), "Starting Round!")
   roundRemainingBots = MAX_ZOMBIES + roundNumber if (MAX_ZOMBIES + roundNumber) < 35 else 35
 
@@ -131,14 +126,14 @@ rule "Round start":
   getPlayers(Team.2).clearStatusEffect(Status.ROOTED)
 
   for botsRespawnTemp in range(getNumberOfPlayers(Team.2)):
-    getPlayers(Team.2)[botsRespawnTemp].teleport(random.choice(spawnPointsList))
-    getPlayers(Team.2)[botsRespawnTemp].downedStartTime = false
-    getPlayers(Team.2)[botsRespawnTemp].clearStatusEffect(Status.ROOTED)
-    wait(0.5)
+    if getPlayers(Team.2)[botsRespawnTemp].downedStartTime:
+      getPlayers(Team.2)[botsRespawnTemp].teleport(random.choice(spawnPointsList))
+      getPlayers(Team.2)[botsRespawnTemp].downedStartTime = false
+      getPlayers(Team.2)[botsRespawnTemp].clearStatusEffect(Status.ROOTED)
+      heal(getPlayers(Team.2)[botsRespawnTemp], null, INFINITY)
+      wait(0.5)
 
   isRoundEnd = false
-  heal(getPlayers(Team.2), null, INFINITY)
-
 
 rule "Respawn bots":
   @Condition roundNumber >= 1
@@ -197,22 +192,6 @@ rule "Respawn bots":
 #   createIcon(getPlayers(Team.1), eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
 #   lastZombieEf = getLastCreatedEntity()
 
-
-rule "Match end":
-  @Condition not isDebugAutoRespawn
-  @Condition isGameStarted
-  @Condition all(
-    [player.isDead() or not player.hasSpawned() for player in getPlayers(Team.1)]
-  )
-  
-  matchIsOver = true
-  destroyAllEffects()
-  destroyAllInWorldTexts()
-  wait(3)
-  bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Survived", roundNumber, l"Rounds"))
-  bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Total", l"{0}:".format(l"Score"), teamScore))
-  wait(4)
-  declareTeamVictory(Team.2)
 
 rule "[debug] icons for bots":
   @Event eachPlayer
