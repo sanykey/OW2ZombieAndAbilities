@@ -37,7 +37,7 @@ def botFakeDeathHandle():
 
   # money for kill:
   eventPlayer.list = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
-  smallMessage(eventPlayer.list, "+${}: kill".format(MONEY_FOR_ZOMBIE_KILL))
+  smallMessage(eventPlayer.list, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL)) # <TX C00000000003389> - turret icon
   eventPlayer.list.money += MONEY_FOR_ZOMBIE_KILL
   eventPlayer.list.kills += 1
   teamScore += MONEY_FOR_ZOMBIE_KILL

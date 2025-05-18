@@ -120,7 +120,7 @@ rule "Healing points":
 
   eventPlayer.state[SI.HEALING_RESULT] = floor(eventPlayer.state[SI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING * eventPlayer.H
   eventPlayer.money += eventPlayer.state[SI.HEALING_RESULT]
-  smallMessage(eventPlayer, "+${0}: healing".format(eventPlayer.state[SI.HEALING_RESULT]))
+  smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.state[SI.HEALING_RESULT]))
   teamScore += eventPlayer.state[SI.HEALING_RESULT]
   eventPlayer.state[SI.HEALING_TRACKER] = 0
 

@@ -252,7 +252,7 @@ rule "Zombies loS teleport (zombiesfly)":
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
   playEffect(getPlayersInRadius(eventPlayer, 10, Team.1), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 80)
 
-  if getRealPlayersInRadius(eventPlayer, 3, Team.1): # If a zombie bot came out of the wall very close to the player, give the player time to react
+  if getRealPlayersInRadius(eventPlayer, 4, Team.1): # If a zombie bot came out of the wall very close to the player, give the player time to react
     eventPlayer.setStatusEffect(null, Status.STUNNED, 1.5)
     wait(1.2)
   eventPlayer.allowButton(Button.PRIMARY_FIRE)
