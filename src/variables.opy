@@ -34,6 +34,9 @@ globalvar spawnPointsList
 globalvar botSniperPositions
 globalvar lastZombieEf
 globalvar turretsDamageOwners
+globalvar turretsVictimZombies
+globalvar turretsI
+globalvar turretsJ
 
 
 # Player variables: 
