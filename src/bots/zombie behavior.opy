@@ -19,6 +19,7 @@ rule "Bots antifall safety and fall damage after cc damage from players":
   @Team 2
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.isAlive()
+  @Condition not eventPlayer.downedStartTime
 
   eventPlayer.temp1 = false
   # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
@@ -35,13 +36,11 @@ rule "Bots antifall safety and fall damage after cc damage from players":
   if eventPlayer.temp1:
     # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
     if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] >= getTotalTimeElapsed():
-      # If the bot has less health than the expected damage, then just let the bot fall down
-      if eventPlayer.getHealth() > ceil(ZOMBIE_FALL_DAMAGE * (eventPlayer.state[SI.LAST_CC_ATTACKER].damageStat / 100)):
-        damage(eventPlayer, eventPlayer.state[SI.LAST_CC_ATTACKER], ZOMBIE_FALL_DAMAGE)
-        eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-        eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
-      else:
-        eventPlayer.setEnvironmentalKillCreditor(eventPlayer.state[SI.LAST_CC_ATTACKER])
+      eventPlayer.setEnvironmentalKillCreditor(eventPlayer.state[SI.LAST_CC_ATTACKER]) # Just to be safe.
+
+      damage(eventPlayer, eventPlayer.state[SI.LAST_CC_ATTACKER], ZOMBIE_FALL_DAMAGE)
+      eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+      eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
     else:
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
@@ -109,6 +108,7 @@ rule "Bots attack near player":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive()
+  @Condition not eventPlayer.downedStartTime
   @Condition eventPlayer.getHero() == Hero.TORBJORN
   @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
 
@@ -125,6 +125,7 @@ rule "Bots moves":
   @Team 2
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   @Condition eventPlayer.isAlive()
+  @Condition not eventPlayer.downedStartTime
 
   if not RULE_CONDITION:
     eventPlayer.money = 0
@@ -140,9 +141,9 @@ rule "Bots moves":
     goto lbl_0
 
   # bot in restricted area:
-  if eventPlayer.isInSpawnRoom():
-    eventPlayer.teleport(random.choice(spawnPointsList))
-    goto lbl_0
+  # if eventPlayer.isInSpawnRoom():
+  #   eventPlayer.teleport(random.choice(spawnPointsList))
+    # goto lbl_0
 
   eventPlayer.targetPlayer0 = (
     sorted(
@@ -217,6 +218,7 @@ rule "Zombies loS teleport (zombiesfly)":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive()
+  @Condition not eventPlayer.downedStartTime
   @Condition eventPlayer.zombiesfly == false
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.targetPlayer0.isAlive()
@@ -262,9 +264,9 @@ rule "Zombies loS teleport (zombiesfly)":
 rule "Bot has bad status":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.isDummy() == true
-  @Condition eventPlayer.hasSpawned() == true
-  @Condition eventPlayer.isAlive() == true
+  @Condition eventPlayer.hasSpawned()
+  @Condition eventPlayer.isAlive()
+  @Condition not eventPlayer.downedStartTime
   @Condition eventPlayer.hasBadStatus == false
   @Condition (
     eventPlayer.hasStatus(Status.HACKED) or

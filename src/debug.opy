@@ -40,7 +40,7 @@ rule "[debug] User init":
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.TORBJORN)
+    eventPlayer.startForcingHero(Hero.SOLDIER)
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
   # eventPlayer.healthStat = 100
@@ -61,23 +61,6 @@ rule "[debug] Charge ultimate":
   
   eventPlayer.setUltCharge(100)
 
-
-rule "[debug] Deactivate bots (Ctrl + shift + interact)":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer == hostPlayer
-  @Condition eventPlayer.isHoldingButton(Button.CROUCH)
-  @Condition eventPlayer.isHoldingButton(Button.MELEE)
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
-  
-  if isBotsDisabled == false:
-    isBotsDisabled = true
-    for I in range(MAX_ZOMBIES):
-      destroyDummy(Team.2, I)
-    smallMessage(eventPlayer, "Bots disabled (ctrl + shift + interact)")
-  else:
-    isBotsDisabled = false
-    smallMessage(eventPlayer, "Bots enabled (ctrl + shift + interact)")
 
 # rule "[debug] Kill random zombie":
 #   @Event eachPlayer
@@ -100,8 +83,8 @@ rule "[debug] show current position":
   # debug(getPlayersInSlot(0, Team.1).getEyePosition())
   # debug(getPlayersInSlot(0, Team.1).getPosition())
 
-  debug(getNumberOfEntityIds())
-  debug(hostPlayer.getPosition())
+  # debug(getNumberOfEntityIds())
+  # debug(hostPlayer.getPosition())
   
 
 # rule "Just die":

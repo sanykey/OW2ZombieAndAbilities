@@ -13,8 +13,16 @@ rule "Game init":
   matchIsOver = false
   isGameStarted = false
 
+rule "disable auto respawn": 
+  @Event playerJoined
+
+  eventPlayer.disableRespawn()
+  # todo: fix?
+  # if not isDebugAutoRespawn:
+
 #!include "player joined.opy"
 # #!include "ally bot.opy"
+#!include "debug utils.opy"
 #!include "debug.opy"
 
 #!include "3p camera.opy"

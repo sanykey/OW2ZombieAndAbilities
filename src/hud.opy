@@ -11,17 +11,6 @@ def clearHeroInfo():
   eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 11
 
 rule "Init hud hero icons of players and how much money they have":
-  # round
-  hudHeader(
-    localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
-    l"Round {0}".format(roundNumber),
-    HudPosition.TOP,
-    0,
-    Color.WHITE,
-    HudReeval.VISIBILITY_AND_STRING,
-    SpecVisibility.ALWAYS
-  )
-
   # zombies status
   hudText(
     localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
@@ -221,8 +210,8 @@ rule "Players list, upgrades and money":
       eventPlayer.healthStat,
       iconString(Icon.PLUS),
       eventPlayer.healingStat,
-      iconString(Icon.DIAMOND),
-      eventPlayer.state[SI.TALENTS_COUNT]
+      " <TX C0000000000D29C>",   # iconString(Icon.DIAMOND),
+      eventPlayer.kills
     ),
     "{0}: ${1}".format(eventPlayer, eventPlayer.money),
     HudPosition.ACTUALLY_LEFT,
@@ -234,9 +223,11 @@ rule "Players list, upgrades and money":
   )
   eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT] = getLastCreatedText()
 
-# rule "[Tips & Tricks]":
-#   @Event eachPlayer
-#   @Team 1
+rule "[Tips & Tricks]":
+  @Event eachPlayer
+  @Team 1
+
+  setObjectiveDescription(eventPlayer, "Round {0}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
   
 #   wait(1)
 #   setObjectiveDescription(eventPlayer, "Welcome to Zombies Unleashed! | Objective: Survive as many waves of zombies as possible!", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
@@ -280,54 +271,54 @@ rule "Players list, upgrades and money":
 #   wait(15)
 #   goto RULE_START
 
-rule "Show player damage":
-  @Event eachPlayer
-  @Team 2
+# rule "Show player damage":
+#   @Event eachPlayer
+#   @Team 2
   
-  createInWorldText(
-    null if localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,
+#   createInWorldText(
+#     null if localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()] == 0 or localPlayer == eventPlayer else localPlayer,
 
-    "{0}".format(round(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()])) if localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()] == localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()] else "{0} +{1}".format(round(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()]), round(localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()])),
-    updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
-    0.7,
-    Clip.NONE,
-    WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
-    Color.ORANGE if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] > getTotalTimeElapsed() and eventPlayer.state[SI.LAST_CC_ATTACKER] == localPlayer else Color.WHITE
-  )
+#     "{0}".format(round(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()])) if localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()] == localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()] else "{0} +{1}".format(round(localPlayer.recentStackedDamageDealtToSlot[eventPlayer.getSlot()]), round(localPlayer.recentDamageDealtToSlot[eventPlayer.getSlot()])),
+#     updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
+#     0.7,
+#     Clip.NONE,
+#     WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
+#     Color.ORANGE if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] > getTotalTimeElapsed() and eventPlayer.state[SI.LAST_CC_ATTACKER] == localPlayer else Color.WHITE
+#   )
 
-rule "Zombie received damage for hud":
-  @Event playerTookDamage
-  @Team 2
+# rule "Zombie received damage for hud":
+#   @Event playerTookDamage
+#   @Team 2
     
-  # save damage stats
-  attacker.recentStackedDamageDealtToSlot[victim.getSlot()] += eventDamage
-  attacker.recentDamageDealtToSlot[victim.getSlot()] = eventDamage
-  wait(1.5, Wait.RESTART_WHEN_TRUE)
+#   # save damage stats
+#   attacker.recentStackedDamageDealtToSlot[victim.getSlot()] += eventDamage
+#   attacker.recentDamageDealtToSlot[victim.getSlot()] = eventDamage
+#   wait(1.5, Wait.RESTART_WHEN_TRUE)
 
-  # If one bot is attacked by multiple players, the damage indicator breaks, so we reset it to zero for all players
-  getPlayers(Team.1).recentStackedDamageDealtToSlot[victim.getSlot()] = 0
+#   # If one bot is attacked by multiple players, the damage indicator breaks, so we reset it to zero for all players
+#   getPlayers(Team.1).recentStackedDamageDealtToSlot[victim.getSlot()] = 0
 
-rule "Show player healing":
-  @Event eachPlayer
-  @Team 1
+# rule "Show player healing":
+#   @Event eachPlayer
+#   @Team 1
   
-  createInWorldText(
-    null if localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()] == false else localPlayer,
-    ("{0} +{1}").format(round(localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()]), round(localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()])),
-    updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
-    0.7,
-    Clip.NONE,
-    WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
-    Color.LIME_GREEN
-  )
+#   createInWorldText(
+#     null if localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()] == false else localPlayer,
+#     ("{0} +{1}").format(round(localPlayer.recentStackedHealingDealtToSlot[eventPlayer.getSlot()]), round(localPlayer.recentHealingDealtToSlot[eventPlayer.getSlot()])),
+#     updateEveryFrame(vect(eventPlayer.getEyePosition().x, eventPlayer.getEyePosition().y + 1.4, eventPlayer.getEyePosition().z)),
+#     0.7,
+#     Clip.NONE,
+#     WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
+#     Color.LIME_GREEN
+#   )
 
-rule "Player received healing":
-  @Event playerReceivedHealing
-  @Team 1
+# rule "Player received healing":
+#   @Event playerReceivedHealing
+#   @Team 1
 
-  healer.recentStackedHealingDealtToSlot[healee.getSlot()] += eventHealing
-  healer.recentHealingDealtToSlot[healee.getSlot()] = eventHealing
-  wait(1.5, Wait.RESTART_WHEN_TRUE)
+#   healer.recentStackedHealingDealtToSlot[healee.getSlot()] += eventHealing
+#   healer.recentHealingDealtToSlot[healee.getSlot()] = eventHealing
+#   wait(1.5, Wait.RESTART_WHEN_TRUE)
 
-  # If one player is healed by multiple players, the healing indicator breaks, so we reset it to zero for all players
-  getPlayers(Team.1).recentStackedHealingDealtToSlot[healee.getSlot()] = 0
+#   # If one player is healed by multiple players, the healing indicator breaks, so we reset it to zero for all players
+#   getPlayers(Team.1).recentStackedHealingDealtToSlot[healee.getSlot()] = 0

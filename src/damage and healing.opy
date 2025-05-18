@@ -97,7 +97,7 @@ rule "HealthPack":
   eventPlayer.setMoveSpeed(100)
 
 
-rule "Start auto healing overеime":
+rule "Start auto healing overеtime":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.state[SI.START_AUTO_HEAL_TIME] + AUTO_HEALING_OVERTIME_DURATION > getTotalTimeElapsed()
@@ -111,6 +111,29 @@ rule "Start auto healing overеime":
   )
   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = false
   eventPlayer.stopAllHealingOverTime()
+
+
+rule "Healing points":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.state[SI.HEALING_TRACKER] >= eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] 
+
+  eventPlayer.state[SI.HEALING_RESULT] = floor(eventPlayer.state[SI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING * eventPlayer.H
+  eventPlayer.money += eventPlayer.state[SI.HEALING_RESULT]
+  smallMessage(eventPlayer, "{0} {1}".format(eventPlayer.state[SI.HEALING_RESULT], "points for healing"))
+  teamScore += eventPlayer.state[SI.HEALING_RESULT]
+  eventPlayer.state[SI.HEALING_TRACKER] = 0
+
+rule "Healing amount tracker":
+  @Event playerDealtHealing
+  @Team 1
+  
+  # healing yourself gives less points
+  eventPlayer.state[SI.HEALING_TRACKER] += eventHealing / 3 if healee == eventPlayer else eventHealing
+
+
+
+#!define WAIT_TURRENT_DAMAGE_OWNERS 0.45
 
 # There is a bug in workshop: damage from turrets and Bob is not detected. To get around this problem, we compare the damage received 
 #   by zombies and current health, and the damage dealt by players with the damage statistics. If there are discrepancies at the same time,
@@ -128,7 +151,7 @@ rule "Detect zombie damage took from turrets and bob":
   if not turretsVictimZombies:
     goto lbl_1
 
-  waitUntil(turretsDamageOwners, 0.45)
+  waitUntil(turretsDamageOwners, WAIT_TURRENT_DAMAGE_OWNERS) # “player.getStatistic(Stat.DAMAGE_DEALT)” in 'turretsDamageOwners' is updated with a delay, so it has to be waited for
   for turretsI in range(len(turretsVictimZombies)):
     turretsVictimZombies[turretsI].expectedHealth = floor(turretsVictimZombies[turretsI].getHealth())
 
@@ -137,7 +160,7 @@ rule "Detect zombie damage took from turrets and bob":
         turretsVictimZombies.damageAssitsToSlot[turretsDamageOwners[turretsJ].getSlot()] = 5 + getTotalTimeElapsed()
 
   lbl_1:
-  wait(0.05)
+  wait(0.1)
   if RULE_CONDITION:
     loop()
 
@@ -160,22 +183,25 @@ rule "Detect players damage deal from turrets and bob":
         turretsDamageOwners[turretsK].lastDamageDealtAmount = floor(turretsDamageOwners[turretsK].getStatistic(Stat.DAMAGE_DEALT))
 
   lbl_0:
-  wait(0.05)
+  wait(0.1)
   if RULE_CONDITION:
     loop()
 
 
-rule "debug detect turrets damage (team1)":
-  @Event eachPlayer
-  @Condition eventPlayer == hostPlayer
+# rule "debug detect turrets damage (team1)":
+#   @Event eachPlayer
+#   @Condition eventPlayer == hostPlayer
 
-  debug(eventPlayer.lastDamageDealtAmount)
-  debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
+#   debug(eventPlayer.lastDamageDealtAmount)
+#   debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
   
-  debug(turretsVictimZombies)
-  debug(turretsDamageOwners)
+#   debug(turretsVictimZombies)
+#   debug(turretsDamageOwners)
 
 rule "debug detect turrets damage (team2)":
   @Event eachPlayer
   @Team 2
+  @Slot 0
   debug(eventPlayer.damageAssitsToSlot)
+  debug(eventPlayer.downedStartTime)
+  

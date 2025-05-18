@@ -34,6 +34,14 @@ globalvar spawnPointsList
 globalvar botSniperPositions
 globalvar lastZombieEf
 
+## only for debug
+globalvar debugVectsArr
+globalvar debugCurrentVectNum
+globalvar debugCurrentVectEffectArr
+globalvar debugIsNoclip
+globalvar debugPos1
+globalvar debugPos2
+
 # detecting turrents and Bob damage for Bot fake death
 globalvar turretsDamageOwners
 globalvar turretsDamageOwnersTime
@@ -41,7 +49,6 @@ globalvar turretsVictimZombies
 globalvar turretsI
 globalvar turretsJ
 globalvar turretsK
-
 
 # Player variables: 
 playervar healthStat
@@ -55,8 +62,6 @@ playervar state # use with enum "SI"
 playervar revivers
 playervar reviveTimer
 playervar downedStartTime
-
-playervar isTargetInLos
 
 playervar recentStackedHealingDealtToSlot
 playervar healingTracker
@@ -72,7 +77,6 @@ playervar expectedHealth
 
 playervar talents
 playervar HUDs
-
 playervar hasBadStatus
 playervar revealed
 playervar widowmakerChargeShot
@@ -83,6 +87,7 @@ playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar abilityProjectile
 playervar isInvisible
 playervar isReady
+playervar kills
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp0
@@ -113,10 +118,7 @@ playervar targetPlayer0
 playervar targetPlayer1
 playervar abilityCD
 
-## only for debug
-globalvar debugVectsArr
-globalvar debugCurrentVectNum
-globalvar debugCurrentVectEffectArr
+
 
 ## for juno rift ability:
 playervar juno_last_rift
@@ -140,43 +142,49 @@ playervar juno_transfer_fx
 playervar juno_transfer_started
 
 # vanilla hero constants
-#!define WINSTON_BARRIER_HP 650
 #!define TORBJORN_HAMMER_BASE_DMG 70
 
 # Zombie settings
+#!define MAX_ZOMBIES 10
 #!define ZOMBIE_SPEED 80
 #!define ZOMBIE_FALL_DAMAGE 200
 #!define ZOMBIE_BASE_DAMAGE 20
 #!define ZOMBIE_BASE_HP 120
+#!define ZOMBIE_BASE_MOVE_SPEED 70
+#!define BOT_MAX_INACTIVITY_DURATION 60
+#!define LAST_CC_ATTACK_DURATION 5
 
-#!define INFINITY 99999
+# Player settings
+#!define MAX_PLAYERS 5
+#!define REVIVE_TIMER_TICK 5
+#!define AUTO_HEALING_OVERTIME_DURATION 20
+#!define REVEAL_DURATION 10
+#!define PLAYER_SPEED 100
+
+# [Widowmaker] hitbox position for wallhack shots
+#!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
+#!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
+#!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
+
+# Money:
 #!define MONEY_FOR_REVIVE 400
 #!define MONEY_FOR_ZOMBIE_KILL 300
 #!define MONEY_FOR_ZOMBIE_CRITICAL 375
 #!define MONEY_FOR_HEALING 100
 #!define HEAL_AMOUNT_FOR_MONEY 200
-#!define MAX_PLAYERS 5
-#!define MAX_ZOMBIES 1
-#!define ALLY_BOT_PLAYER_SLOT 7
-#!define REVIVE_TIMER_TICK 5
-#!define ZOMBIE_BASE_MOVE_SPEED 70
-#!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
-#!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
-#!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
-#!define AUTO_HEALING_OVERTIME_DURATION 20
-#!define REVEAL_DURATION 10
-#!define PLAYER_SPEED 100
-#!define HERO_INFO_HOLD_DURATION 0.5
-#!define LAST_CC_ATTACK_DURATION 5
-#!define BOT_MAX_INACTIVITY_DURATION 60
-
-# Sombra
+# [Sombra] Money:
 #!define MONEY_FOR_KILL_HACKED 30
 #!define MONEY_FOR_KILL_HACKED_TEAM 10
 #!define SOMBRA_STEAL_MONEY 25
 
+# Hud:
+#!define HERO_INFO_HOLD_DURATION 0.5
 #!define ABILITI_TEXT_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
 #!define ABILITI_CHARGES_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
+
+# Other:
+#!define INFINITY 99999
+#!define ALLY_BOT_PLAYER_SLOT 7
 
 enum SI:
   CAMERA_3P = 0 # number
@@ -246,6 +254,7 @@ enum HI:
   DEBUG4 = 6
   DEBUG5 = 7
 
+# for [Widowmaker] wallhack calculation
 enum RI:
   A = 1
   B = 2
