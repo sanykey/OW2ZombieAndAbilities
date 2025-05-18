@@ -48,7 +48,7 @@ rule "[debug] User init":
   # eventPlayer.healingStat = 100
   eventPlayer.healthStat = 10000
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
-  eventPlayer.damageStat = 100
+  eventPlayer.damageStat = 10000
   eventPlayer.setDamageDealt(eventPlayer.damageStat)
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)

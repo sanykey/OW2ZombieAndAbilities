@@ -33,10 +33,14 @@ globalvar highloadServerPause
 globalvar spawnPointsList
 globalvar botSniperPositions
 globalvar lastZombieEf
+
+# detecting turrents and Bob damage for Bot fake death
 globalvar turretsDamageOwners
+globalvar turretsDamageOwnersTime
 globalvar turretsVictimZombies
 globalvar turretsI
 globalvar turretsJ
+globalvar turretsK
 
 
 # Player variables: 
@@ -60,10 +64,11 @@ playervar recentHealingDealtToSlot
 playervar recentDamageDealtToSlot
 playervar recentStackedDamageDealtToSlot
 playervar damageAssitsToSlot
-playervar lastDamageDealtAmount
-playervar expectedHealth
 
-playervar deathCamTarget
+# detecting turrents and Bob damage for Bot fake death
+playervar lastDamageDealtAmount
+playervar lastDamageDealtTime
+playervar expectedHealth
 
 playervar talents
 playervar HUDs

@@ -8,8 +8,6 @@ rule "Team 1 (Death)":
   if not eventPlayer.downedStartTime:
     pause3PCamera()
     smallMessage(getAllPlayers(), "{0} was downed!".format(eventPlayer))
-    # eventPlayer.deathCamTarget = eventPlayer.getEyePosition() + 1000 * directionFromAngles(eventPlayer.getHorizontalFacingAngle(), 0)
-    # eventPlayer.startCamera((raycast(eventPlayer.spectated_player.getEyePosition(), eventPlayer.spectated_player.getEyePosition() - (6.25 * directionTowards(eventPlayer.spectated_player.getEyePosition(), eventPlayer.deathCamTarget) if eventPlayer.deathCamTarget else 8.25 * directionFromAngles(eventPlayer.spectated_player.getHorizontalFacingAngle(), 20)), null, null, false).getHitPosition()) + (0.25 * (directionTowards(eventPlayer.spectated_player.getEyePosition(), eventPlayer.deathCamTarget) if eventPlayer.deathCamTarget else directionFromAngles(eventPlayer.spectated_player.getHorizontalFacingAngle(), 20))), eventPlayer.spectated_player.getEyePosition(), 10 if eventPlayer.deathCamTarget else 20)
     eventPlayer.downedStartTime = getTotalTimeElapsed()
     eventPlayer.reviveTimer = 0
   if eventWasEnvironment:
@@ -21,7 +19,7 @@ rule "Revive, check player in radius, unset is downed":
   @Condition eventPlayer.downedStartTime == true
   @Condition eventPlayer.downedStartTime + 1 < getTotalTimeElapsed()
   
-  eventPlayer.revivers = [player for player in getPlayers(Team.1) if player.isAlive() and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3 and isInLoS(eventPlayer, player)]
+  eventPlayer.revivers = [player for player in getPlayers(Team.1) if player.isAlive() and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3]
   if eventPlayer.revivers == []:
     eventPlayer.reviveTimer = 0
   else:
@@ -42,7 +40,6 @@ rule "Team 1: Player gets up":
   
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
   eventPlayer.setHealth(INFINITY)
-  # eventPlayer.spectated_player = eventPlayer
   eventPlayer.revivers = []
   unpause3PCamera()
   wait(2.5, Wait.ABORT_WHEN_FALSE)

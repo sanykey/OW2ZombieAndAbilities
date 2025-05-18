@@ -24,7 +24,7 @@ rule "Bot died":
   if roundRemainingBots <= 0:
     isRoundEnd = true
 
-rule "Bot died alt":
+rule "Bot fake death":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.getHealth() < 10
@@ -48,7 +48,7 @@ rule "Bot died alt":
     eventPlayer.teleport(hiddenVector)
   else:
     eventPlayer.teleport(random.choice(spawnPointsList))
-  wait()
+  wait(0.1)
   heal(eventPlayer, null, INFINITY)
   wait()
   eventPlayer.expectedHealth = eventPlayer.getHealth()

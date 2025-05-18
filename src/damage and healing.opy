@@ -26,15 +26,18 @@ rule "Zombie took damage":
   @Event playerTookDamage
   @Team 2
 
+  # collect zombie health statistics for damage detection by turrets
   if not victim.expectedHealth:
     victim.expectedHealth = floor(victim.getHealth() - eventDamage)
   else:
     victim.expectedHealth -= floor(eventDamage)
 
+  # collect player damage statistics for damage detection by turrets
   if not attacker.lastDamageDealtAmount:
     attacker.lastDamageDealtAmount = floor(eventPlayer.getStatistic(Stat.DAMAGE_DEALT) + eventDamage)
   else:
     attacker.lastDamageDealtAmount += eventDamage
+  attacker.lastDamageDealtTime = getTotalTimeElapsed() + 0.5
 
   # [Cassydy] stun effect for flashbang
   if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):
@@ -109,25 +112,38 @@ rule "Start auto healing overеime":
   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = false
   eventPlayer.stopAllHealingOverTime()
 
+# There is a bug in workshop: damage from turrets and Bob is not detected. To get around this problem, we compare the damage received 
+#   by zombies and current health, and the damage dealt by players with the damage statistics. If there are discrepancies at the same time,
+#   then fix the damage from turrets. This is not a very accurate method, but it is acceptable.
+# This functionality was required because the “Bot fake death” mechanic was introduced, where zombies don't die and it is impossible to
+#   track “fake death” from turrets damage
+rule "Detect zombie damage took from turrets and bob":
+  @Condition getPlayersOnHero(Hero.SYMMETRA, Team.1) or getPlayersOnHero(Hero.TORBJORN, Team.1) or getPlayersOnHero(Hero.ASHE, Team.1)
 
-# def clearTurretsDamagersList():
-#   @Name "Clear turrets damagers list"
-#   wait(0.2)
-#   if eventPlayer.list:
-#     for eventPlayer.temp0 in range(len(eventPlayer.list)):
-#       eventPlayer.list[eventPlayer.temp0].lastDamageDealtAmount = floor(eventPlayer.list[eventPlayer.temp0].getStatistic(Stat.DAMAGE_DEALT))
-
-#   eventPlayer.list = false
-
-
-rule "Calculate zombie damage took from turrets and bob":
   turretsVictimZombies = [player for player in getLivingPlayers(Team.2) if (
     player.expectedHealth and
     player.expectedHealth - player.getHealth() > 3
   )]
 
   if not turretsVictimZombies:
-    goto lbl_0
+    goto lbl_1
+
+  waitUntil(turretsDamageOwners, 0.45)
+  for turretsI in range(len(turretsVictimZombies)):
+    turretsVictimZombies[turretsI].expectedHealth = floor(turretsVictimZombies[turretsI].getHealth())
+
+    if turretsDamageOwners:
+      for turretsJ in range(len(turretsDamageOwners)):
+        turretsVictimZombies.damageAssitsToSlot[turretsDamageOwners[turretsJ].getSlot()] = 5 + getTotalTimeElapsed()
+
+  lbl_1:
+  wait(0.05)
+  if RULE_CONDITION:
+    loop()
+
+
+rule "Detect players damage deal from turrets and bob":
+  @Condition getPlayersOnHero(Hero.SYMMETRA, Team.1) or getPlayersOnHero(Hero.TORBJORN, Team.1) or getPlayersOnHero(Hero.ASHE, Team.1)
 
   turretsDamageOwners = [player for player in getPlayers(Team.1) if (
     player.hasSpawned() and (
@@ -138,91 +154,28 @@ rule "Calculate zombie damage took from turrets and bob":
     (player.getStatistic(Stat.DAMAGE_DEALT) - player.lastDamageDealtAmount > 5) 
   )]
 
-  for turretsI in range(len(turretsVictimZombies)):
-    turretsVictimZombies[turretsI].expectedHealth = floor(turretsVictimZombies[turretsI].getHealth())
-
-    if turretsDamageOwners:
-      for turretsJ in range(len(turretsDamageOwners)):
-        turretsVictimZombies.damageAssitsToSlot[turretsDamageOwners[turretsJ].getSlot()] = 5 + getTotalTimeElapsed()
-        
   if turretsDamageOwners:
-    for turretsI in range(len(turretsDamageOwners)):
-      turretsDamageOwners[turretsI].lastDamageDealtAmount = floor(turretsDamageOwners[turretsI].getStatistic(Stat.DAMAGE_DEALT))
+    for turretsK in range(len(turretsDamageOwners)):
+      if turretsDamageOwners[turretsK].lastDamageDealtTime < getTotalTimeElapsed():
+        turretsDamageOwners[turretsK].lastDamageDealtAmount = floor(turretsDamageOwners[turretsK].getStatistic(Stat.DAMAGE_DEALT))
 
   lbl_0:
   wait(0.05)
-  loop()
+  if RULE_CONDITION:
+    loop()
 
 
-  # if (
-  #   eventPlayer.expectedHealth and
-  #   eventPlayer.expectedHealth - eventPlayer.getHealth() > 3
-  # ):
-  #   eventPlayer.list = [player for player in getLivingPlayers(Team.1) if (
-  #     player.hasSpawned() and (
-  #       player.getHero() == Hero.SYMMETRA or
-  #       player.getHero() == Hero.TORBJORN or
-  #       player.getHero() == Hero.ASHE
-  #     ) and
-  #     (player.getStatistic(Stat.DAMAGE_DEALT) - player.lastDamageDealtAmount > 5) 
-  #   )]
-  #   # smallMessage(
-  #   #   getAllPlayers(), 
-  #   #   "Turret? expectedHealth: {}, currentHP: {}".format(
-  #   #     evalOnce(eventPlayer.expectedHealth), evalOnce(eventPlayer.getHealth())
-  #   #   )
-  #   # )
-  #   eventPlayer.expectedHealth = floor(eventPlayer.getHealth())
-
-  #   if eventPlayer.list:
-  #     for eventPlayer.temp0 in range(len(eventPlayer.list)):
-  #       eventPlayer.list[eventPlayer.temp0].lastDamageDealtAmount = floor(eventPlayer.list[eventPlayer.temp0].getStatistic(Stat.DAMAGE_DEALT))
-
-  #     smallMessage(
-  #       getAllPlayers(), 
-  #       "TURRET! {}".format(eventPlayer.list[0])
-  #     )
-
-
-# rule "Calculate damage dealt from turrets":
-#   @Event eachPlayer
-#   @Team 1
-#   @Condition eventPlayer.getHero() == Hero.SYMMETRA or eventPlayer.getHero() == Hero.TORBJORN or eventPlayer.getHero() == Hero.ASHE
-
-  # turretsDamageOwners = [player for player in getLivingPlayers(Team.1) if (
-  #   player.hasSpawned() and (
-  #     player.getHero() == Hero.SYMMETRA or
-  #     player.getHero() == Hero.TORBJORN or
-  #     player.getHero() == Hero.ASHE
-  #   ) and
-  #   (player.getStatistic(Stat.DAMAGE_DEALT) - player.lastDamageDealtAmount > 5) 
-  # )]
-
-#   wait(0.05)
-#   loop()
-
-
-  # if (
-  #   eventPlayer.lastDamageDealtAmount and
-  #   (eventPlayer.getStatistic(Stat.DAMAGE_DEALT) - eventPlayer.lastDamageDealtAmount > 5) 
-  # ):
-  #   smallMessage(getAllPlayers(), "turret damage! last: {}, cur: {}".format(eventPlayer.lastDamageDealtAmount, eventPlayer.getStatistic(Stat.DAMAGE_DEALT)))
-  #   wait()
-  #   eventPlayer.lastDamageDealtAmount = floor(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
-
-  # wait(0.05)
-  # loop()
-
-rule "debug":
+rule "debug detect turrets damage (team1)":
   @Event eachPlayer
-  @Team 1
+  @Condition eventPlayer == hostPlayer
 
   debug(eventPlayer.lastDamageDealtAmount)
   debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
-  debug(turretsDamageOwners)
+  
   debug(turretsVictimZombies)
+  debug(turretsDamageOwners)
 
-rule "debug":
+rule "debug detect turrets damage (team2)":
   @Event eachPlayer
   @Team 2
   debug(eventPlayer.damageAssitsToSlot)
