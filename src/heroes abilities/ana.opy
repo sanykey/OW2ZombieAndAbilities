@@ -5,7 +5,6 @@ rule "[Ana] init":
   @Team 1
   @Condition eventPlayer.getHero() == Hero.ANA
 
-  eventPlayer.state[SI.TALENTS_COUNT] = 5
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 2
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg6e89b1FF>Ana</fg>:\n
   {} {}Sleep dart{}:

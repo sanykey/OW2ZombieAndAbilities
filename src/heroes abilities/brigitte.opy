@@ -5,7 +5,6 @@ rule "[Brigitte] init":
   @Team 1
   @Condition eventPlayer.getHero() == Hero.BRIGITTE
 
-  eventPlayer.state[SI.TALENTS_COUNT] = 2
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg8b625eFF>Brigitte</fg>:\n
   {} {}Barrier shield{}:

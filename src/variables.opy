@@ -81,6 +81,7 @@ playervar lastCcAttackTime
 playervar lastCcWasInAir
 
 playervar talents
+
 playervar HUDs
 playervar hasBadStatus
 playervar revealed
@@ -92,7 +93,7 @@ playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar abilityProjectile
 playervar isInvisible
 playervar isReady
-playervar kills
+playervar kills # kills zombies stat for 
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp0
@@ -204,10 +205,6 @@ enum SI:
   HEALING_RESULT
   WIDOWMAKER_SHOT_CHARGE
   IS_TALENTS_HUD_OPENNED
-  TALENTS_COUNT
-  LAST_CC_ATTACKER
-  LAST_CC_ATTACK_TIME
-  LAST_CC_WAS_IN_AIR
   HACKED # hacked status to get money from killed hacked zombies
   MONEY_RECEIVED # money received
   HP_STAT

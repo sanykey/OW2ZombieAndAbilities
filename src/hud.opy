@@ -2,7 +2,6 @@
 
 def clearHeroInfo():
   @Name "Subroutine: Clear hero info"
-  eventPlayer.state[SI.TALENTS_COUNT] = 0
   eventPlayer.state[SI.HERO_INFO_TEXT] = null
   eventPlayer.state[SI.HERO_INFO_TEXT2] = null
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3

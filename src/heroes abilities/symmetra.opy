@@ -12,7 +12,6 @@ rule "[Symmetra] init":
   @Condition eventPlayer.getHero() == Hero.SYMMETRA
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.TALENTS_COUNT] = 2
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg91bbd1FF>Symmetra</fg>:\n
   {} {}Photon barrier{}:

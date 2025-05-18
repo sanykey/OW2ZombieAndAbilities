@@ -22,7 +22,6 @@ rule "[Cassydy] Init":
   @Condition eventPlayer.getHero() == Hero.CASSIDY
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.TALENTS_COUNT] = 7
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3
   eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX] = 8
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgad5a5fFF>Cassidy</fg>:\n

@@ -32,7 +32,6 @@ rule "[DVA] Init":
   eventPlayer.heroState[DVA_SI.SLIDE_HUD] = getLastCreatedText()
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.TALENTS_COUNT] = 1
 
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 1
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fged93c7FF>DVA</fg>:\n

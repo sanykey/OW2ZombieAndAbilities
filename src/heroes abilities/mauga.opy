@@ -11,7 +11,6 @@ rule "[Mauga] init":
   @Team 1
   @Condition eventPlayer.getHero() == Hero.MAUGA
 
-  eventPlayer.state[SI.TALENTS_COUNT] = 1
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgdc847dFF>Mauga</fg>:\n
   {} {}Cage fight{}:

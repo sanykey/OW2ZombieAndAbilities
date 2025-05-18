@@ -34,7 +34,6 @@ rule "[Juno] init":
   eventPlayer.juno_rift1_destination = vect(0, 1000, 0)
   eventPlayer.juno_rift2_destination = vect(0, 1000, 0)
 
-  eventPlayer.state[SI.TALENTS_COUNT] = 2
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 2
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg721fa3FF>Juno</fg>:\n
   {} {}Glide Boost{}:

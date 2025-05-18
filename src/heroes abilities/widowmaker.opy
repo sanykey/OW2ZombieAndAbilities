@@ -13,7 +13,6 @@ rule "[Widowmaker] Talent texts":
 
   wait(1) # waiting for the previous hero to clear hero data
   # todo: debug
-  eventPlayer.state[SI.TALENTS_COUNT] = 7
   eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
   eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
   eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] = true
