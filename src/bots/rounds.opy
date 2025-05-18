@@ -17,9 +17,9 @@ def botFakeDeathHandle():
     isRoundEnd = true
 
   eventPlayer.setUltCharge(0)
-  eventPlayer.state[SI.LAST_CC_ATTACKER] = false
-  eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
-  eventPlayer.state[SI.LAST_CC_WAS_IN_AIR] = false
+  eventPlayer.lastCcAttacker = false
+  eventPlayer.lastCcAttackTime = false
+  eventPlayer.lastCcWasInAir = false
 
   # eventPlayer.clearStatusEffect(Status.BURNING)
   eventPlayer.teleport(vect(-16.80, 1.23, 18.75))

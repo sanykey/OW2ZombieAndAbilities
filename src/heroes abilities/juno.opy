@@ -137,9 +137,9 @@ rule "[Juno] Ultimate - abduct enemies":
   wait(0.7, Wait.ABORT_WHEN_FALSE)
 
   eventPlayer.list = [player for player in getLivingPlayers(Team.2) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
-  eventPlayer.list.state[SI.LAST_CC_ATTACKER] = eventPlayer
-  eventPlayer.list.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list.state[SI.LAST_CC_WAS_IN_AIR] = false
+  eventPlayer.list.lastCcAttacker = eventPlayer
+  eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list.lastCcWasInAir = false
 
   eventPlayer.list.state[SI.LOW_GRAVITY] = 0.5 + getTotalTimeElapsed()
   eventPlayer.list.state[SI.CHANGED_SPEED_TIME] = 0.5 + getTotalTimeElapsed()

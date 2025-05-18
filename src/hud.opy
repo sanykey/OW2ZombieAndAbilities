@@ -283,7 +283,7 @@ rule "[Tips & Tricks]":
 #     0.7,
 #     Clip.NONE,
 #     WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
-#     Color.ORANGE if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] > getTotalTimeElapsed() and eventPlayer.state[SI.LAST_CC_ATTACKER] == localPlayer else Color.WHITE
+#     Color.ORANGE if eventPlayer.lastCcAttackTime > getTotalTimeElapsed() and eventPlayer.lastCcAttacker == localPlayer else Color.WHITE
 #   )
 
 # rule "Zombie received damage for hud":

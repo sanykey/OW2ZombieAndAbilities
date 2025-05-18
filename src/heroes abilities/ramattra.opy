@@ -184,9 +184,9 @@ rule "[Ramattra] Barrier push enemies":
   eventPlayer.list.append([player for player in getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list])
 
   # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list.state[SI.LAST_CC_ATTACKER] = eventPlayer
-  eventPlayer.list.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list.state[SI.LAST_CC_WAS_IN_AIR] = false
+  eventPlayer.list.lastCcAttacker = eventPlayer
+  eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list.lastCcWasInAir = false
 
   [player for player in eventPlayer.list if (
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK]) > 

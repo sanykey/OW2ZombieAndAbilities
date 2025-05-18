@@ -75,6 +75,11 @@ playervar lastDamageDealtAmount
 playervar lastDamageDealtTime
 playervar expectedHealth
 
+# detecting crowd control abilities for bots fall damage
+playervar lastCcAttacker
+playervar lastCcAttackTime
+playervar lastCcWasInAir
+
 playervar talents
 playervar HUDs
 playervar hasBadStatus

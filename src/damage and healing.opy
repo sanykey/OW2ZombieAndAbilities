@@ -17,9 +17,9 @@ rule "player Dealt Knockback":
     eventPlayer.money += 25 * eventPlayer.H
 
   # Save last cc damage from player for fall damage
-  victim.state[SI.LAST_CC_ATTACKER] = attacker
-  victim.state[SI.LAST_CC_ATTACK_TIME] = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  victim.state[SI.LAST_CC_WAS_IN_AIR] = victim.isInAir()
+  victim.lastCcAttacker = attacker
+  victim.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  victim.lastCcWasInAir = victim.isInAir()
 
 
 rule "Zombie took damage":

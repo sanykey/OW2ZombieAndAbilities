@@ -35,12 +35,12 @@ rule "Bots antifall safety and fall damage after cc damage from players":
 
   if eventPlayer.temp1:
     # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
-    if eventPlayer.state[SI.LAST_CC_ATTACK_TIME] >= getTotalTimeElapsed():
-      eventPlayer.setEnvironmentalKillCreditor(eventPlayer.state[SI.LAST_CC_ATTACKER]) # Just to be safe.
+    if eventPlayer.lastCcAttackTime >= getTotalTimeElapsed():
+      eventPlayer.setEnvironmentalKillCreditor(eventPlayer.lastCcAttacker) # Just to be safe.
 
-      damage(eventPlayer, eventPlayer.state[SI.LAST_CC_ATTACKER], ZOMBIE_FALL_DAMAGE)
+      damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-      eventPlayer.state[SI.LAST_CC_ATTACK_TIME] = false
+      eventPlayer.lastCcAttackTime = false
     else:
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
