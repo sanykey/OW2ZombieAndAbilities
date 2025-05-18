@@ -34,6 +34,10 @@ globalvar spawnPointsList
 globalvar botSniperPositions
 globalvar lastZombieEf
 
+# workshop settings 
+globalvar wSettingsStartMoney
+globalvar wSettingsMaxZombieBots
+
 ## only for debug
 globalvar debugVectsArr
 globalvar debugCurrentVectNum
@@ -150,7 +154,6 @@ playervar juno_transfer_started
 #!define TORBJORN_HAMMER_BASE_DMG 70
 
 # Zombie settings
-#!define MAX_ZOMBIES 20
 #!define ZOMBIE_SPEED 80
 #!define ZOMBIE_FALL_DAMAGE 200
 #!define ZOMBIE_BASE_DAMAGE 20
@@ -160,7 +163,7 @@ playervar juno_transfer_started
 #!define LAST_CC_ATTACK_DURATION 5
 
 # Player settings
-#!define MAX_PLAYERS 5
+#!define MAX_PLAYERS 6
 #!define REVIVE_TIMER_TICK 5
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10

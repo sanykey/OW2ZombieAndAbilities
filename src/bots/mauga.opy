@@ -3,11 +3,11 @@
 # rule "Create [Team2 Mauga] bot":
 #   @Condition roundNumber >= 1 and not isBotsDisabled
 #   wait(3)
-#   waitUntil(getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).isAlive(), INFINITY)
-#   createDummy(Hero.MAUGA, Team.2, MAX_ZOMBIES - 2, random.choice(spawnPointsList))
+#   waitUntil(getPlayersInSlot(wSettingsMaxZombieBots - 2, Team.2).isAlive(), INFINITY)
+#   createDummy(Hero.MAUGA, Team.2, wSettingsMaxZombieBots - 2, random.choice(spawnPointsList))
 #   wait(0.1)
-#   getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).startForcingName("Zombie Cha")
-#   # getPlayersInSlot(MAX_ZOMBIES - 2, Team.2).startScalingSize(0.7, false)
+#   getPlayersInSlot(wSettingsMaxZombieBots - 2, Team.2).startForcingName("Zombie Cha")
+#   # getPlayersInSlot(wSettingsMaxZombieBots - 2, Team.2).startScalingSize(0.7, false)
 
 
 rule "[Team2 Mauga] Charge":

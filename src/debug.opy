@@ -36,7 +36,6 @@ rule "[debug] User init":
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
   wait(2)
   # eventPlayer.state[0] = 4
-  eventPlayer.money += 100000
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4

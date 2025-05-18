@@ -22,7 +22,7 @@ rule "Disable spawn room hero swap":
   eventPlayer.healthStat = 100
   eventPlayer.damageStat = 100
   eventPlayer.healingStat = 100
-  eventPlayer.money = 2000 
+  eventPlayer.money = wSettingsStartMoney 
   eventPlayer.kills = 0
 
   eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY

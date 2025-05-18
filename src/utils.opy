@@ -9,7 +9,7 @@
 #   setSlowMotion(83)
 #   bigMessage(getPlayers(Team.1), "Too high load on the server. Short break!\n\n (Cur:{} / AVG: {}/ Max: {})".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()))
 #   isBotsDisabled = true
-#   for I in range(MAX_ZOMBIES):
+#   for I in range(wSettingsMaxZombieBots):
 #     destroyDummy(Team.2, I)
 
 #   smallMessage(getPlayers(Team.1), "[debug] bot spawn poins len: {}".format(len(spawnPointsList)))
@@ -51,15 +51,7 @@ rule "Crash Protection 40+ [OFF]":
   wait(2, Wait.ABORT_WHEN_FALSE)
   setSlowMotion(100)
 
-rule "show ServerLoad info":
-  hudSubheader(
-    localPlayer if localPlayer == hostPlayer else false,
-    "Server load: {0} / AVG: {1}/ Max: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()),
-    HudPosition.RIGHT,
-    -5,
-    rgb(255, 280 - getAverageServerLoad(), 0),
-    HudReeval.VISIBILITY_STRING_AND_COLOR
-  )
+
 
 rule "Disable inspector recording - debug":
   wait(1)

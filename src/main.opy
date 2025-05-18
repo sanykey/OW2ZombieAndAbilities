@@ -17,6 +17,7 @@ rule "Game init":
 # #!include "ally bot.opy"
 #!include "debug utils.opy"
 #!include "debug.opy"
+#!include "workshop settings.opy"
 
 #!include "3p camera.opy"
 #!include "buy hero stats.opy"

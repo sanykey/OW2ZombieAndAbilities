@@ -70,13 +70,13 @@ rule "Bot fake death - low hp (alternative way)":
 rule "Create bots":
   @Condition not isBotsDisabled
   @Condition isGameStarted == true
-  @Condition getNumberOfPlayers(Team.2) < MAX_ZOMBIES
+  @Condition getNumberOfPlayers(Team.2) < wSettingsMaxZombieBots
   
   wait(3, Wait.ABORT_WHEN_FALSE)
   if isBotsDisabled:
     return
 
-  for I in range(MAX_ZOMBIES):
+  for I in range(wSettingsMaxZombieBots):
     if not getPlayersInSlot(I, Team.2):
       createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
       getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
@@ -109,12 +109,12 @@ rule "Round start":
   heal(getPlayers(Team.1), null, INFINITY)
   wait(ROUND_START_DELAY)
   bigMessage(getAllPlayers(), "Starting Round!")
-  roundRemainingBots = MAX_ZOMBIES + roundNumber if (MAX_ZOMBIES + roundNumber) < MAX_REMAINING_ZOMBIES_IN_ROUND else MAX_REMAINING_ZOMBIES_IN_ROUND
+  roundRemainingBots = wSettingsMaxZombieBots + roundNumber if (wSettingsMaxZombieBots + roundNumber) < MAX_REMAINING_ZOMBIES_IN_ROUND else MAX_REMAINING_ZOMBIES_IN_ROUND
 
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
 
-  # for zombieRespawnI in range(MAX_ZOMBIES):
+  # for zombieRespawnI in range(wSettingsMaxZombieBots):
   #   if isBotsDisabled == true or roundNumber == 1:
   #     break
   #   getPlayersInSlot(zombieRespawnI, Team.2).respawn()
@@ -143,16 +143,16 @@ rule "Respawn bots":
   if isRoundEnd:
     goto lbl_0
 
-  if (getNumberOfLivingPlayers(Team.2) < MAX_ZOMBIES and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
+  if (getNumberOfLivingPlayers(Team.2) < wSettingsMaxZombieBots and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
     botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
     botsRespawnTemp.respawn()
     wait()
 
-    if roundNumber > 0 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 1:
+    if roundNumber > 0 and botsRespawnTemp.getSlot() == wSettingsMaxZombieBots - 1:
       botsRespawnTemp.startForcingHero(Hero.ROADHOG)
-    elif roundNumber > 0 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 2:
+    elif roundNumber > 0 and botsRespawnTemp.getSlot() == wSettingsMaxZombieBots - 2:
       botsRespawnTemp.startForcingHero(Hero.MAUGA)
-    # elif roundNumber > 0 and botsRespawnTemp.getSlot() == MAX_ZOMBIES - 3:
+    # elif roundNumber > 0 and botsRespawnTemp.getSlot() == wSettingsMaxZombieBots - 3:
     #   botsRespawnTemp.startForcingHero(Hero.ECHO)
     #   botsRespawnTemp.setMaxHealth(zombieStats[ZI.HP_STAT] / 2)
     # elif botsRespawnTemp.getHero() == Hero.WIDOWMAKER:

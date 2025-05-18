@@ -1,6 +1,17 @@
 #!mainFile "main.opy"
 
 rule "[debug] User init":
+  # show ServerLoad info
+  hudSubheader(
+    localPlayer if localPlayer == hostPlayer else false,
+    "Server load: {0} / AVG: {1}/ Max: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()),
+    HudPosition.RIGHT,
+    -5,
+    rgb(255, 280 - getAverageServerLoad(), 0),
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )
+
+  # positions and distance info for hostplayer and debug vects
   hudSubtext(
     hostPlayer if debugIsNoclip else null,
     "pos: {}".format(hostPlayer.getPosition()),
@@ -90,7 +101,7 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
   
   if isBotsDisabled == false:
     isBotsDisabled = true
-    for I in range(MAX_ZOMBIES):
+    for I in range(wSettingsMaxZombieBots):
       destroyDummy(Team.2, I)
     smallMessage(eventPlayer, "Bots disabled (ctrl + shift + interact)")
   else:
