@@ -1,15 +1,28 @@
 #!mainFile "../main.opy"
 
 #!define ROUND_START_DELAY 0.1
-#!define MAX_REMAINING_ZOMBIES_IN_ROUND 35
+#!define MAX_REMAINING_ZOMBIES_IN_ROUND 40
+#!define BOT_WIDOWMAKER_RESPAWN_COOLDOWN 15
+#!define BOT_ECHO_RESPAWN_COOLDOWN 15
+#!define BOT_FAKE_DIE_HP_THRESHOLD 10
 
 # I accidentally discovered that if preventing bots from being killed and just teleporting them to respawn - it makes the server noticeably more stable
 def botFakeDeathHandle():
   @Name "Team2 bot fake death handle"
 
+  # [Team2 Widowmaker] died
+  if eventPlayer.getHero() == Hero.WIDOWMAKER:
+    botWidowmakerClear()
+    botWidowmakerRespawnTime = getTotalTimeElapsed() + BOT_WIDOWMAKER_RESPAWN_COOLDOWN
+  # [Team2 Echo] died:
+  elif eventPlayer.getHero() == Hero.ECHO:
+    botEchoDetachPlayer()
+    botEchoRespawnTime = getTotalTimeElapsed() + BOT_ECHO_RESPAWN_COOLDOWN
+
+  # destroyIcon(eventPlayer.lastZombieIcon)
+
   eventPlayer.downedStartTime = true
   eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 0.1) # Resetting continuing damage effects
-  # todo: if is not alive?
   eventPlayer.temp0 = eventPlayer.getPosition()
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION, Team.1, eventPlayer.temp0, 5)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.temp0, 200)
@@ -44,26 +57,68 @@ def botFakeDeathHandle():
   eventPlayer.damageAssitsToSlot = []
 
   # respawn:
-  eventPlayer.temp0 = len([player for player in getLivingPlayers(Team.2) if not player.downedStartTime])
+  eventPlayer.list = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
 
-  if eventPlayer.temp0 < roundRemainingBots:
-    eventPlayer.teleport(random.choice(spawnPointsList))
-    eventPlayer.clearStatusEffect(Status.ROOTED)
-    eventPlayer.downedStartTime = false
+  if len(eventPlayer.list) >= roundRemainingBots:
+    return
 
+  if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
+    eventPlayer.startForcingHero(Hero.TORBJORN)
+  elif botEchoRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.ECHO:
+    eventPlayer.startForcingHero(Hero.TORBJORN)
+  
+
+  # [Team2 Roadhog] respawn:
+  if roundNumber > 4 and len(getPlayersOnHero(Hero.ROADHOG)) < 1:
+    eventPlayer.startForcingHero(Hero.ROADHOG)
+
+  # [Team2 Mauga] respawn:
+  elif roundNumber > 4 and len(getPlayersOnHero(Hero.MAUGA)) < 1:
+    eventPlayer.startForcingHero(Hero.MAUGA)
+
+  # [Team2 Widowmaker] respawn:
+  elif (
+    roundNumber > 2 and
+    botWidowmakerRespawnTime < getTotalTimeElapsed() and
+    eventPlayer.getHero() != Hero.ROADHOG and
+    eventPlayer.getHero() != Hero.MAUGA and
+    not getPlayersOnHero(Hero.WIDOWMAKER, Team.2) and 
+    [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
+  ):
+    eventPlayer.startForcingHero(Hero.WIDOWMAKER)
+    goto lbl_0
+
+  # [Team2 Echo] respawn:
+  elif ( 
+    roundNumber > 4 and
+    botEchoRespawnTime < getTotalTimeElapsed() and
+    eventPlayer.getHero() != Hero.ROADHOG and 
+    eventPlayer.getHero() != Hero.MAUGA and
+    not getPlayersOnHero(Hero.ECHO, Team.2) and
+    [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
+  ):
+    eventPlayer.startForcingHero(Hero.ECHO)
+    goto lbl_0
+    
+    
+  eventPlayer.teleport(random.choice(spawnPointsList))
+  lbl_0:
+  eventPlayer.clearStatusEffect(Status.ROOTED)
+  eventPlayer.downedStartTime = false
+  if eventPlayer.isDead():
+    eventPlayer.respawn()
 
 # Bots shouldn't die (Bot fake death), but just in case, let's keep an eye on the event
 rule "Bot died":
   @Event playerDied
   @Team 2
-  # @Condition roundRemainingBots > 0
 
   botFakeDeathHandle()
 
 rule "Bot fake death - low hp (alternative way)":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.getHealth() < 10
+  @Condition eventPlayer.getHealth() < BOT_FAKE_DIE_HP_THRESHOLD
   @Condition eventPlayer.hasStatus(Status.UNKILLABLE)
   botFakeDeathHandle()
 
@@ -113,19 +168,9 @@ rule "Round start":
 
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
-
-  # for zombieRespawnI in range(wSettingsMaxZombieBots):
-  #   if isBotsDisabled == true or roundNumber == 1:
-  #     break
-  #   getPlayersInSlot(zombieRespawnI, Team.2).respawn()
-  #   wait(0.25)
-
-  if roundNumber >= 3:
-    botWidowmakerCanRespawn = true
-
   getPlayers(Team.2).setStatusEffect(null, Status.UNKILLABLE, INFINITY)
-  getPlayers(Team.2).clearStatusEffect(Status.ROOTED)
 
+  # respawn bots
   for botsRespawnTemp in range(getNumberOfPlayers(Team.2)):
     if getPlayers(Team.2)[botsRespawnTemp].downedStartTime:
       getPlayers(Team.2)[botsRespawnTemp].teleport(random.choice(spawnPointsList))
@@ -136,67 +181,32 @@ rule "Round start":
 
   isRoundEnd = false
 
-rule "Respawn bots":
+rule "Check bots state":
   @Condition roundNumber >= 1
   @Condition isBotsDisabled == false
 
   if isRoundEnd:
     goto lbl_0
 
-  if (getNumberOfLivingPlayers(Team.2) < wSettingsMaxZombieBots and getNumberOfLivingPlayers(Team.2) < roundRemainingBots):
-    botsRespawnTemp = random.choice(getDeadPlayers(Team.2))
-    botsRespawnTemp.respawn()
-    wait()
+  botsCheckList = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
 
-    if roundNumber > 0 and botsRespawnTemp.getSlot() == wSettingsMaxZombieBots - 1:
-      botsRespawnTemp.startForcingHero(Hero.ROADHOG)
-    elif roundNumber > 0 and botsRespawnTemp.getSlot() == wSettingsMaxZombieBots - 2:
-      botsRespawnTemp.startForcingHero(Hero.MAUGA)
-    # elif roundNumber > 0 and botsRespawnTemp.getSlot() == wSettingsMaxZombieBots - 3:
-    #   botsRespawnTemp.startForcingHero(Hero.ECHO)
-    #   botsRespawnTemp.setMaxHealth(zombieStats[ZI.HP_STAT] / 2)
-    # elif botsRespawnTemp.getHero() == Hero.WIDOWMAKER:
-    #   botsRespawnTemp.setMaxHealth(zombieStats[ZI.HP_STAT])
-    #   botsRespawnTemp.startForcingHero(Hero.TORBJORN)
-      
-    else:
-      botsRespawnTemp.respawn()
-
-    botsRespawnTemp.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
-
-  # widowmaker respawn
-  # if (
-  #   botWidowmakerCanRespawn and
-  #   roundRemainingBots > 4 and
-  #   [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
-  # ):
-  #   botsRespawnTemp = random.choice([player for player in getLivingPlayers(Team.2) if player.getHero() == Hero.TORBJORN])
-  #   if botsRespawnTemp:
-  #     botsRespawnTemp.stopForcingThrottle()
-  #     wait()
-  #     botsRespawnTemp.startForcingHero(Hero.WIDOWMAKER)
-  #     botsRespawnTemp.setMaxHealth(zombieStats[ZI.HP_STAT] / 2)
-  #     botWidowmakerCanRespawn = false
+  for botsCheckTemp in range(len(botsCheckList)):
+    # If an immortal zombie bot appears, heal it so it can be teleported away:
+    if botsCheckList[botsCheckTemp].getHealth() < BOT_FAKE_DIE_HP_THRESHOLD:
+      heal(botsCheckList[botsCheckTemp], null, BOT_FAKE_DIE_HP_THRESHOLD + true) 
+    
+    # Add icons to last zombies:
+    # if roundRemainingBots < 5:
+    #   createIcon(getPlayers(Team.1), evalOnce(botsCheckList[botsCheckTemp]), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+    #   botsCheckList[botsCheckTemp].lastZombieIcon = getLastCreatedEntity()
 
   lbl_0:
   wait(3, Wait.ABORT_WHEN_FALSE)
   loop()
 
-# rule "Mark last zombie":
+# rule "[debug] icons for bots":
 #   @Event eachPlayer
 #   @Team 2
-#   @Condition isRoundEnd == false
-#   @Condition roundRemainingBots < 2
-#   @Condition getNumberOfLivingPlayers(Team.2) == 1
-#   @Condition eventPlayer.isAlive() == true
   
-#   createIcon(getPlayers(Team.1), eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
-#   lastZombieEf = getLastCreatedEntity()
-
-
-rule "[debug] icons for bots":
-  @Event eachPlayer
-  @Team 2
-  
-  createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
-  createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+#   createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+#   createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)

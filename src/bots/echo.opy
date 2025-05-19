@@ -37,23 +37,12 @@ def botEchoRespawn():
   playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.abilPos0, 2.5)
   playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, null, eventPlayer.abilPos0, 100)
 
-  
-
-rule "[Team2 Echo] init":
-  @Event eachPlayer
-  @Team 2
-  @Hero echo
-
-  # eventPlayer.setGravity(0)
-  # eventPlayer.setMoveSpeed(140)
-
 
 rule "[Team2 Echo] Fly ability":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned()
-  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition not eventPlayer.isUsingAbility1()
   
   eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
@@ -66,8 +55,7 @@ rule "[Team2 Echo] Beam ability":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned()
-  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition not eventPlayer.isUsingAbility2()
   @Condition eventPlayer.abilState0
   
@@ -79,8 +67,7 @@ rule "[Team2 Echo] respawn":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.isAlive()
-  @Condition eventPlayer.hasSpawned()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
 
   eventPlayer.list = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
@@ -99,8 +86,7 @@ rule "[Team2 Echo] can see player":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned()
-  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition eventPlayer.targetPlayer0
   @Condition not eventPlayer.abilState0
   @Condition isInLoS(
@@ -117,8 +103,7 @@ rule "[Team2 Echo] Attach player by beam":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned()
-  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition eventPlayer.targetPlayer0
   @Condition not eventPlayer.hasBadStatus
   @Condition not eventPlayer.targetPlayer1
@@ -137,8 +122,7 @@ rule "[Team2 Echo] Attach player by beam":
 rule "[Team2 Echo] Bad status - reset beam":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.hasSpawned()
-  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition eventPlayer.hasBadStatus
   
   if eventPlayer.abilState0:
@@ -149,8 +133,7 @@ rule "[Team2 Echo] player dead":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned()
-  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition eventPlayer.targetPlayer1.isDead() != null
   
   if eventPlayer.abilState0:
@@ -168,8 +151,7 @@ rule "[Team2 Echo] main logic loop":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned()
-  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
 
   if not eventPlayer.targetPlayer1:
     goto lbl_0

@@ -209,7 +209,7 @@ rule "Players list, upgrades and money":
       eventPlayer.healthStat,
       iconString(Icon.PLUS),
       eventPlayer.healingStat,
-      " <TX C0000000000D29C>",   # iconString(Icon.DIAMOND),
+      "<TX C00000000021569>",
       eventPlayer.kills
     ),
     "{0}: ${1}".format(eventPlayer, eventPlayer.money),

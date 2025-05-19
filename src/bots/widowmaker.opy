@@ -27,7 +27,7 @@ rule "[Team2 Widowmaker] respawn":
   @Event eachPlayer
   @Team 2
   @Hero widowmaker
-  @Condition eventPlayer.isAlive() and eventPlayer.hasSpawned()
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   createBeam(
     null if eventPlayer.hasBadStatus else getAllPlayers(),
     Beam.TORBJORN_TURRET_SIGHT,
@@ -43,23 +43,11 @@ rule "[Team2 Widowmaker] respawn":
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
   botWidowmakerClear()
 
-rule "[Team2 Widowmaker] died":
-  @Event playerDied
-  @Team 2
-  @Hero widowmaker
-
-  eventPlayer.stopFacing()
-  botWidowmakerClear()
-  wait(30)
-  if not getPlayersOnHero(Hero.WIDOWMAKER, Team.2):
-    botWidowmakerCanRespawn = true
-
 rule "[Team2 Widowmaker] change position":
   @Event eachPlayer
   @Team 2
   @Hero widowmaker
-  @Condition eventPlayer.isAlive() == true
-  @Condition eventPlayer.hasSpawned() == true
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
 
   eventPlayer.list = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
@@ -79,8 +67,7 @@ rule "[Team2 Widowmaker] - see player":
   @Event eachPlayer
   @Team 2
   @Hero widowmaker
-  @Condition eventPlayer.isAlive() == true
-  @Condition eventPlayer.hasSpawned() == true
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition eventPlayer.isReloading() == false
   @Condition eventPlayer.targetPlayer0 == null
   @Condition not eventPlayer.hasBadStatus
@@ -101,7 +88,7 @@ rule "[Team2 Widowmaker] - SHOOT":
   @Event eachPlayer
   @Team 2
   @Hero widowmaker
-  @Condition eventPlayer.isAlive() == true
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
   @Condition eventPlayer.isReloading() == false
   @Condition eventPlayer.targetPlayer0 != null
   @Condition eventPlayer.hasBadStatus == false

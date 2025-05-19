@@ -2,8 +2,13 @@
 #Global variables
 
 globalvar botsRespawnTemp
-globalvar botWidowmakerCanRespawn
+globalvar botsCheckTemp
+globalvar botsCheckList
+
+globalvar botWidowmakerRespawnTime
+globalvar botEchoRespawnTime
 globalvar roundNumber
+
 globalvar zombiesflyIOnandOff
 globalvar teamShields
 globalvar teamArmor
@@ -55,6 +60,8 @@ globalvar turretsJ
 globalvar turretsK
 
 # Player variables: 
+playervar isCat
+
 playervar healthStat
 playervar damageStat
 playervar healingStat
@@ -96,7 +103,8 @@ playervar heroState
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady
-playervar kills # kills zombies stat for 
+playervar kills # kills zombies stat for players 
+playervar lastZombieIcon
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp0
@@ -157,13 +165,13 @@ playervar juno_transfer_started
 #!define ZOMBIE_SPEED 80
 #!define ZOMBIE_FALL_DAMAGE 200
 #!define ZOMBIE_BASE_DAMAGE 20
-#!define ZOMBIE_BASE_HP 120
+#!define ZOMBIE_BASE_HP 100
 #!define ZOMBIE_BASE_MOVE_SPEED 70
 #!define BOT_MAX_INACTIVITY_DURATION 60
 #!define LAST_CC_ATTACK_DURATION 5
 
 # Player settings
-#!define MAX_PLAYERS 6
+#!define MAX_PLAYERS 5
 #!define REVIVE_TIMER_TICK 5
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
