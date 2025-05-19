@@ -1,5 +1,17 @@
 #!mainFile "main.opy"
 
+rule "Player burning":
+  @Event eachPlayer
+
+  eventPlayer.defensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
+  eventPlayer.damageBlockedStat = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
+  eventPlayer.damageTakenStat = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
+  eventPlayer.damageDealtStat = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
+  eventPlayer.deathsStat = eventPlayer.getStatistic(Stat.DEATHS)
+
+  wait(5)
+  loop()
+
 rule "player Dealt Knockback":
   @Event playerDealtKnockback
   @Team 1
@@ -102,7 +114,7 @@ rule "Start auto healing overеtime":
   @Team 1
   @Condition eventPlayer.state[SI.START_AUTO_HEAL_TIME] + AUTO_HEALING_OVERTIME_DURATION > getTotalTimeElapsed()
 
-  eventPlayer.startHealingOverTime(eventPlayer, AUTO_HEALING_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthStat / 100) - 20) / 5))
+  eventPlayer.startHealingOverTime(eventPlayer, AUTO_HEALING_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthBoostPercent / 100) - 20) / 5))
 
   waitUntil(
     eventPlayer.state[SI.LAST_DAMAGE_TIME] + 0.1 > getTotalTimeElapsed() or
@@ -191,7 +203,7 @@ rule "Detect players damage deal from turrets and bob":
     loop()
 
 
-# rule "debug detect turrets damage (team1)":
+# rule "[debug] detect turrets damage (team1)":
 #   @Event eachPlayer
 #   @Condition eventPlayer == hostPlayer
 
@@ -201,10 +213,19 @@ rule "Detect players damage deal from turrets and bob":
 #   debug(turretsVictimZombies)
 #   debug(turretsDamageOwners)
 
-# rule "debug detect turrets damage (team2)":
+# rule "[debug] detect turrets damage (team2)":
 #   @Event eachPlayer
 #   @Team 2
 #   @Slot 0
 #   debug(eventPlayer.damageAssitsToSlot)
 #   debug(eventPlayer.downedStartTime)
   
+rule "[debug] detect turrets damage (team2)":
+  @Event eachPlayer
+  @Team 1
+  @Slot 0
+  debug(eventPlayer.defensiveAssistsStat)
+  debug(eventPlayer.damageBlockedStat)
+  debug(eventPlayer.damageTakenStat)
+  debug(eventPlayer.damageDealtStat)
+  debug(eventPlayer.deathsStat)

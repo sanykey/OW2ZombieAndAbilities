@@ -11,7 +11,7 @@ rule "[DVA] Init":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.DVA
 
-  eventPlayer.setMaxHealth(eventPlayer.healthStat + 50)
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent + 50)
 
   # Slide ability hud:
   hudText(
@@ -47,7 +47,7 @@ rule "[DVA] Init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.DVA, INFINITY)
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   clearHeroInfo()
   destroyHudText(eventPlayer.heroState[DVA_SI.SLIDE_HUD])
 

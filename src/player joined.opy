@@ -19,9 +19,9 @@ rule "Disable spawn room hero swap":
   @Team 1
   @Condition eventPlayer.hasSpawned() == true
 
-  eventPlayer.healthStat = 100
-  eventPlayer.damageStat = 100
-  eventPlayer.healingStat = 100
+  eventPlayer.healthBoostPercent = 100
+  eventPlayer.damageBoostPercent = 100
+  eventPlayer.healingBoostPercent = 100
   eventPlayer.money = wSettingsStartMoney 
   eventPlayer.kills = 0
 
@@ -90,8 +90,8 @@ rule "Late joiner catchup after round 15, 25, 50":
   
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
   eventPlayer.money += 15000
-  eventPlayer.healthStat += 100
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  eventPlayer.healthBoostPercent += 100
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   wait(0.064)
   heal(eventPlayer, null, INFINITY)
   eventPlayer.setDamageReceived(25)
@@ -106,14 +106,14 @@ rule "Late joiner catchup after round 15, 25, 50":
   # Late joiner catchup [25]
   if roundNumber >= 25:
     eventPlayer.money += 30000
-    eventPlayer.healthStat += 200
-    eventPlayer.setMaxHealth(eventPlayer.healthStat)
+    eventPlayer.healthBoostPercent += 200
+    eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
 
   # "Late joiner catchup [50]"
   if roundNumber >= 50:
     eventPlayer.money += 50000
-    eventPlayer.healthStat += 300
-    eventPlayer.setMaxHealth(eventPlayer.healthStat)
+    eventPlayer.healthBoostPercent += 300
+    eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
 
 
 rule "All Teams: Player left Match, destroy hud text":

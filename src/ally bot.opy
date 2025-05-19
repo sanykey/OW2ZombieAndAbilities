@@ -5,8 +5,8 @@ rule "Create ally bot":
   @Condition getNumberOfPlayers(Team.1) < MAX_PLAYERS
   wait(2)
   createDummy(Hero.ORISA, Team.1, 7, nearestWalkablePosition(getPlayersInSlot(0, Team.1)), getPlayersInSlot(0, Team.1).getPosition())
-  getPlayersInSlot(7, Team.1).healthStat += 10000
-  getPlayersInSlot(7, Team.1).setMaxHealth(getPlayersInSlot(7, Team.1).healthStat)
+  getPlayersInSlot(7, Team.1).healthBoostPercent += 10000
+  getPlayersInSlot(7, Team.1).setMaxHealth(getPlayersInSlot(7, Team.1).healthBoostPercent)
 
 rule "Destroy ally bot when max players":
   @Event eachPlayer

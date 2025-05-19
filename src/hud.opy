@@ -207,11 +207,11 @@ rule "Players list, upgrades and money":
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
     "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>, <fgEC9900FF>{4}{5}%</fg>,{6}{7}".format(
       iconString(Icon.FIRE),
-      eventPlayer.damageStat,
+      eventPlayer.damageBoostPercent,
       iconString(Icon.HEART),
-      eventPlayer.healthStat,
+      eventPlayer.healthBoostPercent,
       iconString(Icon.PLUS),
-      eventPlayer.healingStat,
+      eventPlayer.healingBoostPercent,
       "<TX C00000000021569>",
       eventPlayer.kills
     ),

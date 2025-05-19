@@ -21,8 +21,8 @@ rule "Buy damage upgrade":
   @Condition eventPlayer.money >= 2500
   
   eventPlayer.money -= 2500
-  eventPlayer.damageStat += 5
-  eventPlayer.setDamageDealt(eventPlayer.damageStat)
+  eventPlayer.damageBoostPercent += 5
+  eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.RED, eventPlayer, 100)
 
@@ -35,8 +35,8 @@ rule "Buy health upgrade":
   @Condition eventPlayer.money >= 2500
   
   eventPlayer.money -= 2500
-  eventPlayer.healthStat += 7
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  eventPlayer.healthBoostPercent += 7
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.LIME_GREEN, eventPlayer, 1)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.LIME_GREEN, eventPlayer, 100)
   wait(1, Wait.RESTART_WHEN_TRUE)
@@ -51,10 +51,10 @@ rule "Buy healing upgrade":
   @Condition eventPlayer.money >= 2500
   
   eventPlayer.money -= 2500
-  eventPlayer.healingStat += 5
-  eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
+  eventPlayer.healingBoostPercent += 5
+  eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
 
-  eventPlayer.setHealingDealt(eventPlayer.healingStat)
+  eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, eventPlayer, 1)
   playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, eventPlayer, 100)
 

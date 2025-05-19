@@ -3,10 +3,10 @@
 def randomStatUpgrade():
   @Name "Subroutine: Random stat upgrade"
 
-  eventPlayer.damageStat += eventPlayer.temp1
-  eventPlayer.setDamageDealt(eventPlayer.damageStat)
-  eventPlayer.healthStat += eventPlayer.temp1
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
+  eventPlayer.damageBoostPercent += eventPlayer.temp1
+  eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
+  eventPlayer.healthBoostPercent += eventPlayer.temp1
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   smallMessage(eventPlayer, "+{}% damage dealt and hp".format(eventPlayer.temp1))
 
 rule "Create location buy positions":

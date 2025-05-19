@@ -65,10 +65,16 @@ globalvar turretsK
 ##################################################
 ############## Player variables: #################
 ##################################################
+playervar healthBoostPercent
+playervar damageBoostPercent
+playervar healingBoostPercent
 
-playervar healthStat
-playervar damageStat
-playervar healingStat
+playervar defensiveAssistsStat
+playervar damageBlockedStat
+playervar damageTakenStat
+playervar damageDealtStat
+playervar deathsStat
+
 playervar zombiesfly
 playervar orb_roll # current orb drop chance when a bot dies
 playervar isInSecretShop
@@ -94,8 +100,6 @@ playervar lastDamageDealtAmount
 playervar lastDamageDealtTime
 playervar expectedHealth
 playervar turretDamageTimeToSlot
-
-
 
 # detecting crowd control abilities for bots fall damage
 playervar lastCcAttacker

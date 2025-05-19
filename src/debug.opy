@@ -39,20 +39,20 @@ rule "[debug] User init":
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.SOLDIER)
+    eventPlayer.startForcingHero(Hero.REINHARDT)
     
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
   eventPlayer.money = 50000
-  # eventPlayer.healthStat = 100
-  # eventPlayer.damageStat = 100
-  # eventPlayer.healingStat = 100
-  eventPlayer.healthStat = 10000
-  eventPlayer.setMaxHealth(eventPlayer.healthStat)
-  eventPlayer.damageStat = 10000
-  eventPlayer.setDamageDealt(eventPlayer.damageStat)
-  # eventPlayer.healingStat += 10000
-  # eventPlayer.setHealingDealt(eventPlayer.healingStat)
-  # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
+  # eventPlayer.healthBoostPercent = 100
+  # eventPlayer.damageBoostPercent = 100
+  # eventPlayer.healingBoostPercent = 100
+  eventPlayer.healthBoostPercent = 10000
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
+  eventPlayer.damageBoostPercent = 10000
+  eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
+  # eventPlayer.healingBoostPercent += 10000
+  # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
+  # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
 
 rule "[debug] Charge ultimate":
   @Event eachPlayer
