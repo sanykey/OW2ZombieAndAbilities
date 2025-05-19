@@ -32,6 +32,7 @@ rule "[Winston] Create barrier and save position":
   @Team 1
   @Hero winston
   @Condition eventPlayer.isUsingAbility2()
+  @SuppressWarnings w_chased_var_in_for w_ow2_rule_condition_chase
 
   eventPlayer.abilTemp1 = false
   eventPlayer.abilPos0 = eventPlayer.getEyePosition() # current Barrier projectile position

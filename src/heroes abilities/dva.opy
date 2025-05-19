@@ -59,7 +59,9 @@ rule "[DVA] Slide":
   @Condition eventPlayer.getHero() == Hero.DVA
   @Condition eventPlayer.isHoldingButton(Button.ABILITY_1) == true
   @Condition eventPlayer.heroState[DVA_SI.SLIDE_TIME] == false
-  @Condition eventPlayer.abilityCD == false
+
+  if not eventPlayer.abilityCD:
+    return
   
   createEffect(getAllPlayers(), Effect.LUCIO_SOUND_BARRIER_PROTECTED, eventPlayer.getTeam(), eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   eventPlayer.heroState[DVA_SI.SLIDE_EFFECT] = getLastCreatedEntity()

@@ -176,13 +176,13 @@ rule "[Cassydy] lasso hit a player":
   @Condition eventPlayer.abilPos0
   @Condition eventPlayer.abilState0
   @Condition not eventPlayer.targetPlayer0
-  @Condition distance(eventPlayer.abilPos0, getClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))) <= 3
+  @Condition distance(eventPlayer.abilPos0, getRealClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))) <= 3
   @Condition getNumberOfPlayers(getOppositeTeam(eventPlayer.getTeam())) != 0
-  @Condition getClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam())).isDead() != true
+  @Condition getRealClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam())).isDead() != true
 
   stopChasingVariable(eventPlayer.abilPos0)
   stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.targetPlayer0 = getClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))
+  eventPlayer.targetPlayer0 = getRealClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))
   eventPlayer.targetPlayer0.setGravity(0)
   eventPlayer.abilPos0 = eventPlayer.targetPlayer0.getPosition()
   chaseAtRate(eventPlayer.abilPos0, vect(0, 1, -1) + eventPlayer.targetPlayer0.getPosition(), 300)

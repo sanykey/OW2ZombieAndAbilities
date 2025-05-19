@@ -152,7 +152,9 @@ rule "Detect zombie damage took from turrets and bob":
   if not turretsVictimZombies:
     goto lbl_1
 
-  waitUntil(turretsDamageOwners, WAIT_TURRENT_DAMAGE_OWNERS) # “player.getStatistic(Stat.DAMAGE_DEALT)” in 'turretsDamageOwners' is updated with a delay, so it has to be waited for
+  # “player.getStatistic(Stat.DAMAGE_DEALT)” in 'turretsDamageOwners' is updated with a delay, so it has to be waited for:
+  waitUntil(len(turretsDamageOwners) > 0, WAIT_TURRENT_DAMAGE_OWNERS) 
+
   for turretsI in range(len(turretsVictimZombies)):
     turretsVictimZombies[turretsI].expectedHealth = floor(turretsVictimZombies[turretsI].getHealth())
 

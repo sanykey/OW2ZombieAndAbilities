@@ -67,6 +67,7 @@ rule "Chase abilityCD":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.abilityCD
+  @SuppressWarnings w_ow2_rule_condition_chase
   
   chaseAtRate(eventPlayer.abilityCD, 0, 1)
   waitUntil(not eventPlayer.abilityCD, INFINITY)
