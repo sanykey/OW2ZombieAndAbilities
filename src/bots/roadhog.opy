@@ -19,7 +19,7 @@ rule "[Team2 Roadhog] trying to hook":
     isInLoS(eventPlayer, eventPlayer.targetPlayer0, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS) and
     distance(eventPlayer, eventPlayer.targetPlayer0) < 35
   ):
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1)
+    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.LIME_GREEN, eventPlayer, 1)
     eventPlayer.startFacing(
       directionTowards(
         eventPlayer.getEyePosition(),

@@ -94,7 +94,7 @@ rule "[Team2 Widowmaker] - SHOOT":
   @Condition eventPlayer.hasBadStatus == false
   @Condition getTotalTimeElapsed() >= eventPlayer.abilState3
   
-  playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ROSE, eventPlayer, 1) # We're warning the players that the widowmaker is about to take a shot
+  playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.LIME_GREEN, eventPlayer, 1) # We're warning the players that the widowmaker is about to take a shot
   wait(0.35)
   if (eventPlayer.targetPlayer0.isInvisible < getTotalTimeElapsed()):
     eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
