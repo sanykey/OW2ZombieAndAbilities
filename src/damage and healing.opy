@@ -86,7 +86,7 @@ rule "Player burning":
 
 
 # code from [Hacked Healthpack/Sombra Healing Detector](https://workshop.codes/EF7H3)
-rule "HealthPack":
+rule "HealthPack with auto heal and speed boost":
   @Event playerReceivedHealing
   @Team 1
   @Condition eventWasHealthPack == true
@@ -135,6 +135,7 @@ rule "Healing amount tracker":
 
 #!define WAIT_TURRENT_DAMAGE_OWNERS 0.45
 
+# [Bot fake death]:
 # There is a bug in workshop: damage from turrets and Bob is not detected. To get around this problem, we compare the damage received 
 #   by zombies and current health, and the damage dealt by players with the damage statistics. If there are discrepancies at the same time,
 #   then fix the damage from turrets. This is not a very accurate method, but it is acceptable.
@@ -164,7 +165,7 @@ rule "Detect zombie damage took from turrets and bob":
   if RULE_CONDITION:
     loop()
 
-
+# [Bot fake death]
 rule "Detect players damage deal from turrets and bob":
   @Condition getPlayersOnHero(Hero.SYMMETRA, Team.1) or getPlayersOnHero(Hero.TORBJORN, Team.1) or getPlayersOnHero(Hero.ASHE, Team.1)
 
@@ -188,20 +189,20 @@ rule "Detect players damage deal from turrets and bob":
     loop()
 
 
-rule "debug detect turrets damage (team1)":
-  @Event eachPlayer
-  @Condition eventPlayer == hostPlayer
+# rule "debug detect turrets damage (team1)":
+#   @Event eachPlayer
+#   @Condition eventPlayer == hostPlayer
 
-  debug(eventPlayer.lastDamageDealtAmount)
-  debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
+#   debug(eventPlayer.lastDamageDealtAmount)
+#   debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
   
-  debug(turretsVictimZombies)
-  debug(turretsDamageOwners)
+#   debug(turretsVictimZombies)
+#   debug(turretsDamageOwners)
 
-rule "debug detect turrets damage (team2)":
-  @Event eachPlayer
-  @Team 2
-  @Slot 0
-  debug(eventPlayer.damageAssitsToSlot)
-  debug(eventPlayer.downedStartTime)
+# rule "debug detect turrets damage (team2)":
+#   @Event eachPlayer
+#   @Team 2
+#   @Slot 0
+#   debug(eventPlayer.damageAssitsToSlot)
+#   debug(eventPlayer.downedStartTime)
   

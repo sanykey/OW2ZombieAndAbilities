@@ -38,7 +38,9 @@ globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
 globalvar spawnPointsList
 globalvar botSniperPositions
-globalvar lastZombieEf
+
+# [Bot fake death]:
+globalvar botsDeathPlaceIcons
 
 # workshop settings 
 globalvar wSettingsStartMoney
@@ -84,11 +86,16 @@ playervar recentStackedDamageDealtToSlot
 
 playervar damageAssitsToSlot
 
-# detecting turrents and Bob damage for Bot fake death
+# [Bot fake death]:
+playervar kills # kills zombies stat for players 
+playervar lastKillTime # for kill icon near scope
+#   detecting turrents and Bob damage for Bot fake death
 playervar lastDamageDealtAmount
 playervar lastDamageDealtTime
 playervar expectedHealth
 playervar turretDamageTimeToSlot
+
+
 
 # detecting crowd control abilities for bots fall damage
 playervar lastCcAttacker
@@ -107,7 +114,7 @@ playervar heroState
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady
-playervar kills # kills zombies stat for players 
+
 playervar lastZombieIcon
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code

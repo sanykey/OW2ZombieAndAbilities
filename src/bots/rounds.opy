@@ -6,7 +6,7 @@
 #!define BOT_ECHO_RESPAWN_COOLDOWN 15
 #!define BOT_FAKE_DIE_HP_THRESHOLD 10
 
-# I accidentally discovered that if preventing bots from being killed and just teleporting them to respawn - it makes the server noticeably more stable
+# [Bot fake death] I accidentally discovered that if preventing bots from being killed and just teleporting them to respawn - it makes the server noticeably more stable
 def botFakeDeathHandle():
   @Name "Team2 bot fake death handle"
 
@@ -19,13 +19,17 @@ def botFakeDeathHandle():
     botEchoDetachPlayer()
     botEchoRespawnTime = getTotalTimeElapsed() + BOT_ECHO_RESPAWN_COOLDOWN
 
-  # destroyIcon(eventPlayer.lastZombieIcon)
-
   eventPlayer.downedStartTime = true
   eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 0.1) # Resetting continuing damage effects
-  eventPlayer.temp0 = eventPlayer.getPosition()
-  playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION, Team.1, eventPlayer.temp0, 5)
+  eventPlayer.setStatusEffect(null, Status.HACKED, 0.1) # Stop current zombie ability
+
+  eventPlayer.temp0 = eventPlayer.getEyePosition()
+  botsDeathPlaceIcons[eventPlayer.getSlot()] = eventPlayer.getPosition()
+
+  playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR, Color.TEAM_2, eventPlayer.temp0, 1)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.temp0, 200)
+
+  # Projectile.SIGMA_HYPERSPHERE
 
   if isBotsDisabled == false:
     roundRemainingBots -= 1
@@ -47,14 +51,15 @@ def botFakeDeathHandle():
   smallMessage(eventPlayer.list, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL)) # <TX C00000000003389> - turret icon
   eventPlayer.list.money += MONEY_FOR_ZOMBIE_KILL
   eventPlayer.list.kills += 1
+  eventPlayer.list.lastKillTime = getTotalTimeElapsed()
   teamScore += MONEY_FOR_ZOMBIE_KILL
 
 
-  wait(0.2) # wait for turrets damage detect
+  wait(0.2) # wait for detect damage/heal detect 
   heal(eventPlayer, null, INFINITY)
-  wait()
+  wait() # wait for save expectedHeal
   eventPlayer.expectedHealth = eventPlayer.getHealth()
-  wait(1)
+  wait(1) # wait for turrets damage detect
 
   # Turret damage has to be counted with a delay, so it is counted separately from other types of damage
   eventPlayer.list = [player for player in getPlayers(Team.1) if (
@@ -73,10 +78,10 @@ def botFakeDeathHandle():
   if len(eventPlayer.list) >= roundRemainingBots:
     return
 
-  # if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
-  #   eventPlayer.startForcingHero(Hero.TORBJORN)
-  # elif botEchoRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.ECHO:
-  #   eventPlayer.startForcingHero(Hero.TORBJORN)
+  if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
+    eventPlayer.startForcingHero(Hero.TORBJORN)
+  elif botEchoRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.ECHO:
+    eventPlayer.startForcingHero(Hero.TORBJORN)
   
 
   # [Team2 Roadhog] create bot:
@@ -118,6 +123,21 @@ def botFakeDeathHandle():
   eventPlayer.downedStartTime = false
   if eventPlayer.isDead():
     eventPlayer.respawn()
+
+
+rule "Create bots death place icons":
+  botsDeathPlaceIcons = []
+  for I in range(wSettingsMaxZombieBots):
+    botsDeathPlaceIcons[I] = hiddenVector
+    createInWorldText(
+      getPlayers(Team.1),
+      "<TX C0000000000B667>", # <TX C0000000000B666> <TX C0000000001C365> <TX C0000000002178B>
+      botsDeathPlaceIcons[evalOnce(I)],
+      1.7,
+      Clip.SURFACES,
+      WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
+      color=rgb(false,false,false,95)
+    )
 
 # Bots shouldn't die (Bot fake death), but just in case, let's keep an eye on the event
 rule "Bot died":
@@ -163,7 +183,6 @@ rule "Round start":
   @Condition matchIsOver == false
   
   roundNumber += 1
-  destroyIcon(lastZombieEf) # remove last zombie marker
   bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))
   setObjectiveDescription(localPlayer, "Round {}".format(roundNumber), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   
@@ -222,9 +241,16 @@ rule "Check bots state":
   wait(3, Wait.ABORT_WHEN_FALSE)
   loop()
 
+rule "[debug] icons for kill":
+  @Event eachPlayer
+  @Team 1
+  @Slot 0
+
+  debug(eventPlayer.lastKillTime)
+
 # rule "[debug] icons for bots":
 #   @Event eachPlayer
 #   @Team 2
-  
+
 #   createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
 #   createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)

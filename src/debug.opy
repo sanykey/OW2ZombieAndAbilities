@@ -39,14 +39,14 @@ rule "[debug] User init":
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.TORBJORN)
+    eventPlayer.startForcingHero(Hero.SOLDIER)
     
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
   eventPlayer.money = 50000
   # eventPlayer.healthStat = 100
   # eventPlayer.damageStat = 100
   # eventPlayer.healingStat = 100
-  eventPlayer.healthStat = 200
+  eventPlayer.healthStat = 10000
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
   eventPlayer.damageStat = 10000
   eventPlayer.setDamageDealt(eventPlayer.damageStat)

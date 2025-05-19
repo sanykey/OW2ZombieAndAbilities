@@ -10,7 +10,7 @@ def clearHeroInfo():
   eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 11
 
 rule "Init hud hero icons of players and how much money they have":
-  # zombies status
+  # zombies status hud (stats and remaining)
   hudText(
     localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     heroIcon(Hero.TORBJORN),
@@ -38,7 +38,7 @@ rule "Init hud hero icons of players and how much money they have":
     Color.YELLOW,
     HudReeval.VISIBILITY_AND_STRING
   )
-
+  # revive progress bar
   progressBarHud(
     localPlayer if (localPlayer.reviveTimer if localPlayer.downedStartTime else any([localPlayer in player.revivers for player in getPlayers(Team.1)])) else [],
     localPlayer.reviveTimer if localPlayer.downedStartTime else ((sorted([player for player in getPlayers(Team.1) if localPlayer in player.revivers], lambda i: i.reviveTimer)).last()).reviveTimer,
@@ -64,7 +64,7 @@ rule "Init hud hero icons of players and how much money they have":
     Color.WHITE,
     SpecVisibility.ALWAYS
   )
-
+  # Hero info part 2
   createInWorldText(
     localPlayer if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true and localPlayer.state[SI.HERO_INFO_TEXT2] else null,
     localPlayer.state[SI.HERO_INFO_TEXT2],
@@ -123,16 +123,19 @@ rule "Init hud hero icons of players and how much money they have":
   )
 
   # push down hud texts for abilities
+  # localPlayer.lastKillTime
   hudSubtext(
     localPlayer if isGameStarted else null,
     "
-    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+    \n\n\n\n\n\n\n\n\n\n\n\n\n\n
+    \n\n\n\n\n\n\n
     ",
     HudPosition.TOP,
     1,
     Color.WHITE,
-    HudReeval.VISIBILITY_AND_STRING
+    HudReeval.VISIBILITY_AND_COLOR
   )
+
   # delayed start
   hudHeader(
     localPlayer if not isGameStarted and not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
