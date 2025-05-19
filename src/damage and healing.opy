@@ -157,7 +157,7 @@ rule "Detect zombie damage took from turrets and bob":
 
     if turretsDamageOwners:
       for turretsJ in range(len(turretsDamageOwners)):
-        turretsVictimZombies.damageAssitsToSlot[turretsDamageOwners[turretsJ].getSlot()] = 5 + getTotalTimeElapsed()
+        turretsVictimZombies.turretDamageTimeToSlot[turretsDamageOwners[turretsJ].getSlot()] = 5 + getTotalTimeElapsed()
 
   lbl_1:
   wait(0.1)
@@ -188,20 +188,20 @@ rule "Detect players damage deal from turrets and bob":
     loop()
 
 
-# rule "debug detect turrets damage (team1)":
-#   @Event eachPlayer
-#   @Condition eventPlayer == hostPlayer
+rule "debug detect turrets damage (team1)":
+  @Event eachPlayer
+  @Condition eventPlayer == hostPlayer
 
-#   debug(eventPlayer.lastDamageDealtAmount)
-#   debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
+  debug(eventPlayer.lastDamageDealtAmount)
+  debug(eventPlayer.getStatistic(Stat.DAMAGE_DEALT))
   
-#   debug(turretsVictimZombies)
-#   debug(turretsDamageOwners)
+  debug(turretsVictimZombies)
+  debug(turretsDamageOwners)
 
-# rule "debug detect turrets damage (team2)":
-#   @Event eachPlayer
-#   @Team 2
-#   @Slot 0
-#   debug(eventPlayer.damageAssitsToSlot)
-#   debug(eventPlayer.downedStartTime)
+rule "debug detect turrets damage (team2)":
+  @Event eachPlayer
+  @Team 2
+  @Slot 0
+  debug(eventPlayer.damageAssitsToSlot)
+  debug(eventPlayer.downedStartTime)
   

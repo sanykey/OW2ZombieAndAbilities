@@ -42,19 +42,30 @@ def botFakeDeathHandle():
   eventPlayer.teleport(vect(-16.80, 1.23, 18.75))
   eventPlayer.setStatusEffect(null, Status.ROOTED, INFINITY)
   
+  # money, effects and team score for kills:
+  eventPlayer.list = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
+  smallMessage(eventPlayer.list, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL)) # <TX C00000000003389> - turret icon
+  eventPlayer.list.money += MONEY_FOR_ZOMBIE_KILL
+  eventPlayer.list.kills += 1
+  teamScore += MONEY_FOR_ZOMBIE_KILL
+
+
   wait(0.2) # wait for turrets damage detect
   heal(eventPlayer, null, INFINITY)
   wait()
   eventPlayer.expectedHealth = eventPlayer.getHealth()
   wait(1)
 
-  # money for kill:
-  eventPlayer.list = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
-  smallMessage(eventPlayer.list, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL)) # <TX C00000000003389> - turret icon
+  # Turret damage has to be counted with a delay, so it is counted separately from other types of damage
+  eventPlayer.list = [player for player in getPlayers(Team.1) if (
+    eventPlayer.turretDamageTimeToSlot[player.getSlot()] >= getTotalTimeElapsed() and
+    eventPlayer.damageAssitsToSlot[player.getSlot()] < getTotalTimeElapsed()
+  )]
+  smallMessage(eventPlayer.list, "<TX C00000000003389> +${}".format(MONEY_FOR_ZOMBIE_KILL))
   eventPlayer.list.money += MONEY_FOR_ZOMBIE_KILL
   eventPlayer.list.kills += 1
-  teamScore += MONEY_FOR_ZOMBIE_KILL
   eventPlayer.damageAssitsToSlot = []
+  eventPlayer.turretDamageTimeToSlot = []
 
   # respawn:
   eventPlayer.list = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
@@ -62,43 +73,43 @@ def botFakeDeathHandle():
   if len(eventPlayer.list) >= roundRemainingBots:
     return
 
-  if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
-    eventPlayer.startForcingHero(Hero.TORBJORN)
-  elif botEchoRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.ECHO:
-    eventPlayer.startForcingHero(Hero.TORBJORN)
+  # if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
+  #   eventPlayer.startForcingHero(Hero.TORBJORN)
+  # elif botEchoRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.ECHO:
+  #   eventPlayer.startForcingHero(Hero.TORBJORN)
   
 
-  # [Team2 Roadhog] respawn:
+  # [Team2 Roadhog] create bot:
   if roundNumber > 4 and len(getPlayersOnHero(Hero.ROADHOG)) < 1:
     eventPlayer.startForcingHero(Hero.ROADHOG)
 
-  # [Team2 Mauga] respawn:
+  # [Team2 Mauga] create bot:
   elif roundNumber > 4 and len(getPlayersOnHero(Hero.MAUGA)) < 1:
     eventPlayer.startForcingHero(Hero.MAUGA)
 
   # [Team2 Widowmaker] respawn:
   elif (
     roundNumber > 2 and
+    not getPlayersOnHero(Hero.WIDOWMAKER, Team.2) and 
     botWidowmakerRespawnTime < getTotalTimeElapsed() and
     eventPlayer.getHero() != Hero.ROADHOG and
     eventPlayer.getHero() != Hero.MAUGA and
-    not getPlayersOnHero(Hero.WIDOWMAKER, Team.2) and 
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   ):
     eventPlayer.startForcingHero(Hero.WIDOWMAKER)
     goto lbl_0
 
   # [Team2 Echo] respawn:
-  elif ( 
-    roundNumber > 4 and
-    botEchoRespawnTime < getTotalTimeElapsed() and
-    eventPlayer.getHero() != Hero.ROADHOG and 
-    eventPlayer.getHero() != Hero.MAUGA and
-    not getPlayersOnHero(Hero.ECHO, Team.2) and
-    [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
-  ):
-    eventPlayer.startForcingHero(Hero.ECHO)
-    goto lbl_0
+  # elif ( 
+  #   roundNumber > 4 and
+  #   not getPlayersOnHero(Hero.ECHO, Team.2) and
+  #   botEchoRespawnTime < getTotalTimeElapsed() and
+  #   eventPlayer.getHero() != Hero.ROADHOG and 
+  #   eventPlayer.getHero() != Hero.MAUGA and
+  #   [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
+  # ):
+  #   eventPlayer.startForcingHero(Hero.ECHO)
+  #   goto lbl_0
     
     
   eventPlayer.teleport(random.choice(spawnPointsList))
@@ -112,7 +123,6 @@ def botFakeDeathHandle():
 rule "Bot died":
   @Event playerDied
   @Team 2
-
   botFakeDeathHandle()
 
 rule "Bot fake death - low hp (alternative way)":
@@ -121,6 +131,17 @@ rule "Bot fake death - low hp (alternative way)":
   @Condition eventPlayer.getHealth() < BOT_FAKE_DIE_HP_THRESHOLD
   @Condition eventPlayer.hasStatus(Status.UNKILLABLE)
   botFakeDeathHandle()
+
+rule "Setup created bots":
+  @Event eachPlayer
+  @Team 2
+  getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
+  eventPlayer.setMaxHealth(zombieStats[ZI.HP_STAT])
+  wait()
+  heal(eventPlayer, null, INFINITY)
+  eventPlayer.setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
+  eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
+  eventPlayer.expectedHealth = eventPlayer.getHealth()
 
 rule "Create bots":
   @Condition not isBotsDisabled
@@ -134,10 +155,6 @@ rule "Create bots":
   for I in range(wSettingsMaxZombieBots):
     if not getPlayersInSlot(I, Team.2):
       createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
-      getPlayersOnHero(Hero.TORBJORN, Team.2).startForcingName("Zombie")
-      getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
-      getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
-      getPlayers(Team.2).setStatusEffect(null, Status.UNKILLABLE, INFINITY)
 
 
 rule "Round start":
@@ -175,6 +192,7 @@ rule "Round start":
     if getPlayers(Team.2)[botsRespawnTemp].downedStartTime:
       getPlayers(Team.2)[botsRespawnTemp].teleport(random.choice(spawnPointsList))
       getPlayers(Team.2)[botsRespawnTemp].downedStartTime = false
+      getPlayers(Team.2)[botsRespawnTemp].expectedHealth = getPlayers(Team.2)[botsRespawnTemp].getHealth()
       getPlayers(Team.2)[botsRespawnTemp].clearStatusEffect(Status.ROOTED)
       heal(getPlayers(Team.2)[botsRespawnTemp], null, INFINITY)
       wait(0.5)

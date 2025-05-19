@@ -1,6 +1,7 @@
 #!mainFile "main.opy"
-#Global variables
-
+#####################################################
+################ Global variables ###################
+#####################################################
 globalvar botsRespawnTemp
 globalvar botsCheckTemp
 globalvar botsCheckList
@@ -59,8 +60,9 @@ globalvar turretsI
 globalvar turretsJ
 globalvar turretsK
 
-# Player variables: 
-playervar isCat
+##################################################
+############## Player variables: #################
+##################################################
 
 playervar healthStat
 playervar damageStat
@@ -79,12 +81,14 @@ playervar healingTracker
 playervar recentHealingDealtToSlot
 playervar recentDamageDealtToSlot
 playervar recentStackedDamageDealtToSlot
+
 playervar damageAssitsToSlot
 
 # detecting turrents and Bob damage for Bot fake death
 playervar lastDamageDealtAmount
 playervar lastDamageDealtTime
 playervar expectedHealth
+playervar turretDamageTimeToSlot
 
 # detecting crowd control abilities for bots fall damage
 playervar lastCcAttacker

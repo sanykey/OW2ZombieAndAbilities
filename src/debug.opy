@@ -48,8 +48,8 @@ rule "[debug] User init":
   # eventPlayer.healingStat = 100
   eventPlayer.healthStat = 200
   eventPlayer.setMaxHealth(eventPlayer.healthStat)
-  # eventPlayer.damageStat = 10000
-  # eventPlayer.setDamageDealt(eventPlayer.damageStat)
+  eventPlayer.damageStat = 10000
+  eventPlayer.setDamageDealt(eventPlayer.damageStat)
   # eventPlayer.healingStat += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingStat)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingStat < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingStat / 500))
