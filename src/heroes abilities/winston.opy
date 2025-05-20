@@ -106,7 +106,7 @@ rule "[Winston] Barrier push enemies":
   eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
   eventPlayer.list.lastCcWasInAir = false
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
 
   wait(WIN_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

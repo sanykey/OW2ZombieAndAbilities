@@ -4,7 +4,14 @@ rule "[debug] User init":
   # show ServerLoad info
   hudSubheader(
     localPlayer if localPlayer == hostPlayer else false,
-    "Server load: {0} / AVG: {1}/ Max: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()),
+    "Server load: {} / AVG: {}/ Max: {}
+      Entities: {}
+    ".format(
+      getServerLoad(),
+      getAverageServerLoad(),
+      getPeakServerLoad(),
+      getNumberOfEntityIds()
+    ),
     HudPosition.RIGHT,
     -5,
     rgb(255, 280 - getAverageServerLoad(), 0),

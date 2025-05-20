@@ -81,7 +81,7 @@ rule "[Sigma] Barrier Effect":
   eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = eventPlayer.abilDir0
 
   # calculate damage to barrier
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
 
   if eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
     eventPlayer.list.applyImpulse(

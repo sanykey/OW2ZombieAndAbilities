@@ -2,9 +2,14 @@
 #####################################################
 ################ Global variables ###################
 #####################################################
-globalvar botsRespawnTemp
-globalvar botsCheckTemp
-globalvar botsCheckList
+globalvar botsHealthBoostPercent
+globalvar botsDamageBoostPercent
+
+# Loop vars for creating last zombies icons
+globalvar lastZombiesList
+globalvar lastZombiesI
+
+globalvar createDummyI
 
 globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
@@ -20,8 +25,7 @@ globalvar orbs_arr
 globalvar hiddenVector
 globalvar roundRemainingBots
 globalvar orbs_vectors_arr
-globalvar isRoundEnd
-globalvar vips
+globalvar vipPlayers # List of players who received special privileges
 globalvar isBotsDisabled
 globalvar vectList
 globalvar lockedAreaEffectsArr
@@ -74,7 +78,6 @@ playervar damageBlockedStat
 playervar damageTakenStat
 playervar damageDealtStat
 playervar deathsStat
-
 playervar zombiesfly
 playervar orb_roll # current orb drop chance when a bot dies
 playervar isInSecretShop

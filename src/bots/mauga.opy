@@ -57,9 +57,9 @@ rule "[Team2 Mauga] Charge":
   )
   eventPlayer.startFacing(eventPlayer.getThrottle(), 100, Relativity.TO_PLAYER)
   eventPlayer.forceButtonPress(Button.ABILITY_1)
-  #Charge End
 
-  waitUntil(not eventPlayer.isUsingAbility1(), 2)
+  #Charge End
+  waitUntil(not eventPlayer.isUsingAbility1() or eventPlayer.downedStartTime, 2)
   eventPlayer.stopThrottleInDirection()
   eventPlayer.stopFacing()
   eventPlayer.forceButtonPress(Button.ABILITY_1)
@@ -72,6 +72,6 @@ rule "[Team2 Mauga] Charge knockback":
   @Hero mauga
   @Condition eventAbility == Button.ABILITY_1
   
-  if not eventPlayer.isUsingAbility1():
-      return
+  if not eventPlayer.isUsingAbility1() or eventPlayer.downedStartTime:
+    return
   eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)

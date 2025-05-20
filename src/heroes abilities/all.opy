@@ -196,7 +196,7 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
   eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
   eventPlayer.list.lastCcWasInAir = false
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
   eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.getEyePosition() - eventPlayer.state[SI.BARRIER_DAMAGE_FROM])
 

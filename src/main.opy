@@ -43,6 +43,7 @@ rule "Game init":
 #!include "bots/mauga.opy"
 #!include "bots/echo.opy"
 #!include "bots/rounds.opy"
+#!include "bots/fake death and respawn.opy"
 
 #!include "portal.opy"
 #!include "visuals.opy"

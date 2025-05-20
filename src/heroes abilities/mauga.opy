@@ -134,7 +134,7 @@ rule "[Mauga] Barrier push enemies":
         15,
         Relativity.TO_WORLD
       )
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
+      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
 
       # save information about bots being pushed to account for damage when falling down
       eventPlayer.list[eventPlayer.I].lastCcAttacker = eventPlayer

@@ -22,12 +22,8 @@ def botWidowmakerClear():
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
   destroyEffect(eventPlayer.abilPos1)
   
-
-rule "[Team2 Widowmaker] respawn":
-  @Event eachPlayer
-  @Team 2
-  @Hero widowmaker
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+def botWidowmakerRespawn():
+  @Name "[Team2 Widowmaker] respawn"
   createBeam(
     null if eventPlayer.hasBadStatus else getAllPlayers(),
     Beam.TORBJORN_TURRET_SIGHT,
@@ -36,19 +32,13 @@ rule "[Team2 Widowmaker] respawn":
     Color.RED,
     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
+  eventPlayer.abilPos1 = getLastCreatedEntity()
   eventPlayer.stopForcingThrottle()
   eventPlayer.startScalingSize(1, false)
-  eventPlayer.abilPos1 = getLastCreatedEntity()
   eventPlayer.startForcingButton(Button.SECONDARY_FIRE)
-  waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
-  botWidowmakerClear()
 
-rule "[Team2 Widowmaker] change position":
-  @Event eachPlayer
-  @Team 2
-  @Hero widowmaker
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
-
+def botWidowmakerChangePositon():
+  @Name "[Team2 Widowmaker] change position"
   eventPlayer.list = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   )
@@ -57,6 +47,14 @@ rule "[Team2 Widowmaker] change position":
     eventPlayer.teleport(eventPlayer.list[random.randint(0, len(eventPlayer.list) - 1)])
     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 2)
     playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
+
+rule "[Team2 Widowmaker] trigger change position":
+  @Event eachPlayer
+  @Team 2
+  @Hero widowmaker
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+
+  botWidowmakerChangePositon()
 
   wait(15, Wait.ABORT_WHEN_FALSE)
   if ruleCondition:

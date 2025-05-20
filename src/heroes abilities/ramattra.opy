@@ -205,7 +205,7 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
 
   wait(RAM_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

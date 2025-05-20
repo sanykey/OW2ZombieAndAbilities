@@ -71,7 +71,7 @@ rule "[debug] Charge ultimate":
 #   eventPlayer.temp1 = random.choice(getLivingPlayers(Team.2))
 #   damage(eventPlayer.temp1, eventPlayer, 99999)
 
-rule "[debug] show current position":
+# rule "[debug] show current position":
   # hudSubtext(
   #   getPlayersInSlot(0, Team.1),
   #   "P0: {0}".format(getPlayersInSlot(0, Team.1).getEyePosition()),
@@ -82,9 +82,6 @@ rule "[debug] show current position":
   # )
   # debug(getPlayersInSlot(0, Team.1).getEyePosition())
   # debug(getPlayersInSlot(0, Team.1).getPosition())
-
-  # debug(getNumberOfEntityIds())
-  # debug(hostPlayer.getPosition())
   
 
 # rule "Just die":

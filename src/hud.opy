@@ -16,9 +16,9 @@ rule "Init hud hero icons of players and how much money they have":
     heroIcon(Hero.TORBJORN),
     "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>".format(
       iconString(Icon.FIRE),
-      zombieStats[ZI.DAMAGE_STAT],
+      botsDamageBoostPercent,
       iconString(Icon.HEART),
-      zombieStats[ZI.HP_STAT]
+      botsHealthBoostPercent
     ),
     "{0} Enemies".format(roundRemainingBots),
     HudPosition.RIGHT,

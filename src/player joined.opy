@@ -1,7 +1,7 @@
 #!mainFile "main.opy"
 
-rule "Create vips list":
-  vips = ["snky"]
+rule "Create vipPlayers list":
+  vipPlayers = ["snky"]
 
 rule "Show game tips in start":
   @Event eachPlayer
@@ -40,7 +40,7 @@ rule "Disable spawn room hero swap":
   eventPlayer.H = 1
 
   # Change character for vip players
-  # if "{0}".format(eventPlayer) in vips == true:
+  # if "{0}".format(eventPlayer) in vipPlayers == true:
   #   wait(2)
   #   eventPlayer.startForcingHero(Hero.SOMBRA)
   #   eventPlayer.state[0] = 4

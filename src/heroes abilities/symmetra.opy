@@ -146,7 +146,7 @@ rule "[Symmetra] Barrier push enemies":
 
     # get players to push from barrier
     if abs(eventPlayer.temp1) < 3:
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (zombieStats[ZI.DAMAGE_STAT] / 100)) * SYM_BARRIER_PUSH_ENENT_WAIT
+      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SYM_BARRIER_PUSH_ENENT_WAIT
 
       if eventPlayer.temp1 > 0:
         eventPlayer.list2.append(eventPlayer.list[eventPlayer.I])
