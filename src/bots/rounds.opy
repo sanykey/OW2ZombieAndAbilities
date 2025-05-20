@@ -6,19 +6,23 @@
 #!define BOT_ECHO_RESPAWN_COOLDOWN 15
 #!define BOT_FAKE_DIE_HP_THRESHOLD 10
 
-def afterDeathPreTeleportEffects():
-  @Name "Team2 Bots pre death teleport effect"
-  heal(eventPlayer, null, INFINITY)
-  wait()
-  eventPlayer.expectedHealth = eventPlayer.getHealth()
+def preDeathTeleportEffects():
+  @Name "Team2 Bots pre death teleport effect"  
   playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR, Color.TEAM_2, eventPlayer.getEyePosition(), 1)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
   botsDeathPlaceIcons[eventPlayer.getSlot()] = eventPlayer.getPosition()
+  
+
+def postDeathTeleportEffects():
+  eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
+  heal(eventPlayer, null, INFINITY)
+  wait()
+  eventPlayer.expectedHealth = eventPlayer.getHealth()
 
 
 # [Bot fake death] I accidentally discovered that if preventing bots from being killed and just teleporting them to respawn - it makes the server noticeably more stable
 def botFakeDeathHandle():
-  @Name "Team2 bot fake death handle"
+  @Name "[Bot fake death] handle"
 
   # [Team2 Widowmaker] died
   if eventPlayer.getHero() == Hero.WIDOWMAKER:
@@ -28,11 +32,15 @@ def botFakeDeathHandle():
   elif eventPlayer.getHero() == Hero.ECHO:
     botEchoDetachPlayer()
     botEchoRespawnTime = getTotalTimeElapsed() + BOT_ECHO_RESPAWN_COOLDOWN
+  elif eventPlayer.getHero() == Hero.MAUGA and eventPlayer.isUsingAbility1():
+    eventPlayer.startForcingButton(Button.ABILITY_1)
+    waitUntil(not eventPlayer.isUsingAbility1(), 0.3)
+    eventPlayer.stopForcingButton(Button.ABILITY_1)
 
   eventPlayer.downedStartTime = true
   eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITY) # Stop current zombie ability
   wait()
-  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 1.1) # Resetting continuing damage effects
+  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITY) # Resetting continuing damage effects
   eventPlayer.temp0 = eventPlayer.getEyePosition()
 
   if isBotsDisabled == false:
@@ -67,12 +75,18 @@ def botFakeDeathHandle():
   eventPlayer.damageAssitsToSlot = []
   eventPlayer.turretDamageTimeToSlot = []
 
+  # Attempt to prevent simultaneous respawning of several bots (do not allow race condition).
+  waitUntil(
+    floor((getTotalTimeElapsed() - floor(getTotalTimeElapsed())) * 100) % (wSettingsMaxZombieBots * 5) == eventPlayer.getSlot() * 5,
+    INFINITY
+  )
+
   # respawn:
   eventPlayer.list = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
-
   if len(eventPlayer.list) >= roundRemainingBots:
-    afterDeathPreTeleportEffects()
+    preDeathTeleportEffects()
     eventPlayer.teleport(vect(-16.80, 1.23, 18.75))
+    postDeathTeleportEffects()
     return
 
   if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
@@ -86,7 +100,7 @@ def botFakeDeathHandle():
     eventPlayer.startForcingHero(Hero.ROADHOG)
 
   # [Team2 Mauga] create bot:
-  elif roundNumber > 4 and len(getPlayersOnHero(Hero.MAUGA)) < 1:
+  elif roundNumber > 0 and len(getPlayersOnHero(Hero.MAUGA)) < 1:
     eventPlayer.startForcingHero(Hero.MAUGA)
 
   # [Team2 Widowmaker] respawn:
@@ -98,7 +112,7 @@ def botFakeDeathHandle():
     eventPlayer.getHero() != Hero.MAUGA and
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   ):
-    afterDeathPreTeleportEffects()
+    preDeathTeleportEffects()
     eventPlayer.startForcingHero(Hero.WIDOWMAKER)
     goto lbl_0
 
@@ -114,16 +128,18 @@ def botFakeDeathHandle():
   #   eventPlayer.startForcingHero(Hero.ECHO)
   #   goto lbl_0
     
-  afterDeathPreTeleportEffects()
+  preDeathTeleportEffects()
   eventPlayer.teleport(random.choice(spawnPointsList))
   lbl_0:
+  postDeathTeleportEffects()
   eventPlayer.clearStatusEffect(Status.KNOCKED_DOWN)
+  eventPlayer.clearStatusEffect(Status.PHASED_OUT)
   eventPlayer.downedStartTime = false
   if eventPlayer.isDead():
     eventPlayer.respawn()
 
 
-rule "Create bots death place icons":
+rule "[Bot fake death] Create bots death place icons":
   botsDeathPlaceIcons = []
   for I in range(wSettingsMaxZombieBots):
     botsDeathPlaceIcons[I] = hiddenVector
@@ -131,23 +147,24 @@ rule "Create bots death place icons":
       getPlayers(Team.1),
       "<TX C0000000000B667>", # <TX C0000000000B666> <TX C0000000001C365> <TX C0000000002178B>
       botsDeathPlaceIcons[evalOnce(I)],
-      1.7,
+      10,
       Clip.SURFACES,
       WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
       color=rgb(false,false,false,95)
     )
 
 # Bots shouldn't die (Bot fake death), but just in case, let's keep an eye on the event
-rule "Bot died":
+rule "[Bot fake death] Bot died":
   @Event playerDied
   @Team 2
   botFakeDeathHandle()
 
-rule "Bot fake death - low hp (alternative way)":
+rule "[Bot fake death] low hp (alternative way for turrets)":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.getHealth() < BOT_FAKE_DIE_HP_THRESHOLD
-  @Condition eventPlayer.hasStatus(Status.UNKILLABLE)
+  @Condition eventPlayer.isReady
+  @Condition not eventPlayer.downedStartTime
   botFakeDeathHandle()
 
 rule "Setup created bots":
@@ -161,6 +178,8 @@ rule "Setup created bots":
   eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
   eventPlayer.expectedHealth = eventPlayer.getHealth()
   eventPlayer.startModifyingVoicelinePitch(0.5 * (sinDeg(getTotalTimeElapsed() * evalOnce(random.uniform(360, 720)))))
+  wait()
+  eventPlayer.isReady = true
 
   # debug:
   createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
@@ -179,6 +198,38 @@ rule "Create bots":
   for I in range(wSettingsMaxZombieBots):
     if not getPlayersInSlot(I, Team.2):
       createDummy(Hero.TORBJORN, Team.2, I, random.choice(spawnPointsList))
+      wait()
+
+
+rule "Check bots state":
+  @Event eachPlayer
+  @Team 2
+  @Condition roundNumber >= 1
+
+  if (
+    eventPlayer.downedStartTime or
+    not eventPlayer.isAlive() or
+    isRoundEnd or
+    eventPlayer.getHealth() > BOT_FAKE_DIE_HP_THRESHOLD or
+    not eventPlayer.isReady
+  ):
+    goto lbl_0
+
+  waitUntil(eventPlayer.downedStartTime == true, 0.5)
+  if not eventPlayer.downedStartTime:
+    eventPlayer.clearStatusEffect(Status.UNKILLABLE)
+    eventPlayer.clearStatusEffect(Status.PHASED_OUT)
+    eventPlayer.clearStatusEffect(Status.KNOCKED_DOWN)
+    smallMessage(hostPlayer, "Server: Immortal zombie found. Trying not to neutralize immortality")
+
+  # Add icons to last zombies:
+  # if roundRemainingBots < 5:
+  #   createIcon(getPlayers(Team.1), evalOnce(botsCheckList[botsCheckTemp]), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+  #   botsCheckList[botsCheckTemp].lastZombieIcon = getLastCreatedEntity()
+
+  lbl_0:
+  wait(3, Wait.ABORT_WHEN_FALSE)
+  loop()
 
 
 rule "Round start":
@@ -200,7 +251,7 @@ rule "Round start":
   zombieStats[ZI.HP_STAT] = (ZOMBIE_BASE_HP + 10 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
   zombieStats[ZI.DAMAGE_STAT] = (ZOMBIE_BASE_DAMAGE + 8 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8))))
 
-  wait(0.25)
+  wait(5)
   heal(getPlayers(Team.1), null, INFINITY)
   wait(ROUND_START_DELAY)
   bigMessage(getAllPlayers(), "Starting Round!")
@@ -208,46 +259,27 @@ rule "Round start":
 
   getPlayers(Team.2).setMaxHealth(zombieStats[ZI.HP_STAT])
   getPlayers(Team.2).setDamageDealt(zombieStats[ZI.DAMAGE_STAT])
-  getPlayers(Team.2).setStatusEffect(null, Status.UNKILLABLE, INFINITY)
 
   # respawn bots
   for botsRespawnTemp in range(getNumberOfPlayers(Team.2)):
     if getPlayers(Team.2)[botsRespawnTemp].downedStartTime:
       getPlayers(Team.2)[botsRespawnTemp].teleport(random.choice(spawnPointsList))
       getPlayers(Team.2)[botsRespawnTemp].downedStartTime = false
-      getPlayers(Team.2)[botsRespawnTemp].expectedHealth = getPlayers(Team.2)[botsRespawnTemp].getHealth()
       getPlayers(Team.2)[botsRespawnTemp].clearStatusEffect(Status.KNOCKED_DOWN)
+      getPlayers(Team.2)[botsRespawnTemp].clearStatusEffect(Status.PHASED_OUT)
       heal(getPlayers(Team.2)[botsRespawnTemp], null, INFINITY)
+      wait()
+      getPlayers(Team.2)[botsRespawnTemp].expectedHealth = getPlayers(Team.2)[botsRespawnTemp].getHealth()
       wait(0.5)
 
   isRoundEnd = false
 
-rule "Check bots state":
-  @Condition roundNumber >= 1
-  @Condition isBotsDisabled == false
 
-  if isRoundEnd:
-    goto lbl_0
 
-  botsCheckList = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
 
-  for botsCheckTemp in range(len(botsCheckList)):
-    # If an immortal zombie bot appears, heal it so it can be teleported away:
-    if botsCheckList[botsCheckTemp].getHealth() < BOT_FAKE_DIE_HP_THRESHOLD:
-      heal(botsCheckList[botsCheckTemp], null, BOT_FAKE_DIE_HP_THRESHOLD + true) 
-    
-    # Add icons to last zombies:
-    # if roundRemainingBots < 5:
-    #   createIcon(getPlayers(Team.1), evalOnce(botsCheckList[botsCheckTemp]), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
-    #   botsCheckList[botsCheckTemp].lastZombieIcon = getLastCreatedEntity()
+rule "[debug] lastKillTime":
+  @Event eachPlayer
+  @Team 1
+  @Slot 0
 
-  lbl_0:
-  wait(3, Wait.ABORT_WHEN_FALSE)
-  loop()
-
-# rule "[debug] lastKillTime":
-#   @Event eachPlayer
-#   @Team 1
-#   @Slot 0
-
-#   debug(eventPlayer.lastKillTime)
+  debug(floor((getTotalTimeElapsed() - floor(getTotalTimeElapsed())) * 100) % (wSettingsMaxZombieBots) * 2)

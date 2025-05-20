@@ -1,16 +1,16 @@
 #!mainFile "main.opy"
 
-rule "Player burning":
-  @Event eachPlayer
+# rule "Player burning":
+#   @Event eachPlayer
 
-  eventPlayer.defensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
-  eventPlayer.damageBlockedStat = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
-  eventPlayer.damageTakenStat = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
-  eventPlayer.damageDealtStat = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
-  eventPlayer.deathsStat = eventPlayer.getStatistic(Stat.DEATHS)
+#   eventPlayer.defensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
+#   eventPlayer.damageBlockedStat = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
+#   eventPlayer.damageTakenStat = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
+#   eventPlayer.damageDealtStat = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
+#   eventPlayer.deathsStat = eventPlayer.getStatistic(Stat.DEATHS)
 
-  wait(5)
-  loop()
+#   wait(5)
+#   loop()
 
 rule "player Dealt Knockback":
   @Event playerDealtKnockback
@@ -179,7 +179,7 @@ rule "Detect zombie damage took from turrets and bob":
   if RULE_CONDITION:
     loop()
 
-# [Bot fake death]
+# [Bot fake death] 
 rule "Detect players damage deal from turrets and bob":
   @Condition getPlayersOnHero(Hero.SYMMETRA, Team.1) or getPlayersOnHero(Hero.TORBJORN, Team.1) or getPlayersOnHero(Hero.ASHE, Team.1)
 
@@ -220,12 +220,12 @@ rule "Detect players damage deal from turrets and bob":
 #   debug(eventPlayer.damageAssitsToSlot)
 #   debug(eventPlayer.downedStartTime)
   
-rule "[debug] detect turrets damage (team2)":
-  @Event eachPlayer
-  @Team 1
-  @Slot 0
-  debug(eventPlayer.defensiveAssistsStat)
-  debug(eventPlayer.damageBlockedStat)
-  debug(eventPlayer.damageTakenStat)
-  debug(eventPlayer.damageDealtStat)
-  debug(eventPlayer.deathsStat)
+# rule "[debug] detect turrets damage (team2)":
+#   @Event eachPlayer
+#   @Team 1
+#   @Slot 0
+#   debug(eventPlayer.defensiveAssistsStat)
+#   debug(eventPlayer.damageBlockedStat)
+#   debug(eventPlayer.damageTakenStat)
+#   debug(eventPlayer.damageDealtStat)
+#   debug(eventPlayer.deathsStat)
