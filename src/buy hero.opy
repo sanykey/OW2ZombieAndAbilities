@@ -84,7 +84,12 @@ rule "Create hero buy positions":
   # buy DVA
   heroesShopData[len(heroesList)] = [Hero.DVA, vectList[VI.BUY_DVA], 0]
   createInWorldText(
-    getPlayers(Team.1), "Buy {}: 0\n\n\u3000\u3000\u202f\u202f\u202f\u202f\u202f<TX C00000000021660>".format(heroIcon(Hero.DVA)), vectList[VI.BUY_DVA], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY
+    getPlayers(Team.1),
+    "Buy {}: 0\n\n\u3000\u3000\u202f\u202f\u202f\u202f\u202f<TX C00000000021660>".format(heroIcon(Hero.DVA)),
+    vectList[VI.BUY_DVA],
+    1,
+    Clip.SURFACES,
+    WorldTextReeval.VISIBILITY
   )
 
   # buy CASSIDY (CASSIDY's DAY)
@@ -95,10 +100,31 @@ rule "Create hero buy positions":
 rule "Buy hero":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
 
   for I in range(len(heroesShopData)):
+    # Create tip effects
+    if distance(eventPlayer, heroesShopData[I][1]) <= 1.7 and eventPlayer.interactZoneVect != heroesShopData[I][1]:
+      eventPlayer.interactZoneVect = heroesShopData[I][1]
+      createInWorldText(
+          getPlayersInRadius(eventPlayer.interactZoneVect, 4, Team.1),
+          "Press {}".format(inputBindingString(Button.INTERACT)),
+          eventPlayer.interactZoneVect + Vector.DOWN * 0.2,
+          1.3,
+          Clip.SURFACES,
+          WorldTextReeval.VISIBILITY_AND_STRING
+      )
+      eventPlayer.interactZoneText = getLastCreatedText()
+      createEffect(eventPlayer, Effect.RING, Color.AQUA, eventPlayer.interactZoneVect, 1.7, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+      eventPlayer.interactZoneEffect = getLastCreatedEntity()
+    # Destroy tip effect
+    elif eventPlayer.interactZoneVect == heroesShopData[I][1] and distance(eventPlayer, heroesShopData[I][1]) > 1.7:
+      destroyInWorldText(eventPlayer.interactZoneText)
+      destroyEffect(eventPlayer.interactZoneEffect)
+      eventPlayer.interactZoneVect = false
+
+    # buy
     if (
+      eventPlayer.isHoldingButton(Button.INTERACT) and
       distance(eventPlayer, heroesShopData[I][1]) <= 1.7 and
       eventPlayer.getCurrentHero() != heroesShopData[I][0] and
       eventPlayer.money >= heroesShopData[I][2]
@@ -109,3 +135,7 @@ rule "Buy hero":
       eventPlayer.money -= heroesShopData[I][2]
       wait(0.25)
       heal(eventPlayer, null, INFINITY)
+
+  wait(0.1)
+  if ruleCondition:
+      loop()

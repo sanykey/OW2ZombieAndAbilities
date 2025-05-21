@@ -75,6 +75,10 @@ playervar healthBoostPercent
 playervar damageBoostPercent
 playervar healingBoostPercent
 
+playervar interactZoneVect
+playervar interactZoneText
+playervar interactZoneEffect
+
 playervar defensiveAssistsStat
 playervar damageBlockedStat
 playervar damageTakenStat
