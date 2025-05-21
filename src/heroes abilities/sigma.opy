@@ -69,22 +69,22 @@ rule "[Sigma] Barrier Effect":
   @Hero sigma
   @Condition eventPlayer.state[SI.BARRIER_ACTIVE] == true
   
-  eventPlayer.list = [player for player in getPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
+  eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
 
   # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list.lastCcAttacker = eventPlayer
-  eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list.lastCcWasInAir = false
+  eventPlayer.list0.lastCcAttacker = eventPlayer
+  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list0.lastCcWasInAir = false
 
   # calculate position for barier damaging
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilPos0 + Vector.UP * 1.8
   eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = eventPlayer.abilDir0
 
   # calculate damage to barrier
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
 
   if eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
-    eventPlayer.list.applyImpulse(
+    eventPlayer.list0.applyImpulse(
       normalize(eventPlayer.abilDir0 + vect(0, 0.2679, 0)), 16, Relativity.TO_WORLD
     )
     eventPlayer.state[SI.BARRIER_DAMAGE_STACK] *= 1.5 # more damage when mooving 
@@ -111,11 +111,11 @@ rule "[Sigma] Barrier Effect":
       eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
       return
 
-    for eventPlayer.I in range(len(eventPlayer.list)):
-      eventPlayer.list[eventPlayer.I].applyImpulse(
+    for eventPlayer.I in range(len(eventPlayer.list0)):
+      eventPlayer.list0[eventPlayer.I].applyImpulse(
         normalize(
           eventPlayer.abilDir0 *
-          (-1 if isInLoS(eventPlayer.list[eventPlayer.I], eventPlayer.abilPos0, BarrierLos.BLOCKED_BY_ALL_BARRIERS) else 1)
+          (-1 if isInLoS(eventPlayer.list0[eventPlayer.I], eventPlayer.abilPos0, BarrierLos.BLOCKED_BY_ALL_BARRIERS) else 1)
           + vect(0, 0.2679, 0)
         ) 
         ,

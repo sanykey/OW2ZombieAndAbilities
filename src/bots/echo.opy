@@ -69,12 +69,12 @@ rule "[Team2 Echo] respawn":
   @Hero echo
   @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
 
-  eventPlayer.list = (
+  eventPlayer.list0 = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   )
 
-  if eventPlayer.list:
-    eventPlayer.abilPos0 = eventPlayer.list[random.randint(0, len(eventPlayer.list) - 1)]
+  if eventPlayer.list0:
+    eventPlayer.abilPos0 = eventPlayer.list0[random.randint(0, len(eventPlayer.list0) - 1)]
     botEchoRespawn()
 
   wait(15, Wait.ABORT_WHEN_FALSE)

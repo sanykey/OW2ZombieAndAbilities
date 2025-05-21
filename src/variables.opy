@@ -145,9 +145,9 @@ playervar temp2
 playervar temp3
 playervar temp4
 playervar temp5
-playervar list
+playervar list0
+playervar list1
 playervar list2
-playervar list3
 
 ## hero state vars:
 playervar abilPos0

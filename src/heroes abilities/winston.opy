@@ -94,19 +94,19 @@ rule "[Winston] Barrier push enemies":
   @Hero winston
   @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
 
-  eventPlayer.list = getPlayersInRadius(eventPlayer.abilPos0, 6, Team.2)
+  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos0, 6, Team.2)
 
-  for eventPlayer.I in range(len(eventPlayer.list)):
-    eventPlayer.list[eventPlayer.I].applyImpulse(
-      normalize(eventPlayer.list[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0), 15 - distance(eventPlayer.abilPos0, eventPlayer.list[eventPlayer.I]), Relativity.TO_WORLD
+  for eventPlayer.I in range(len(eventPlayer.list0)):
+    eventPlayer.list0[eventPlayer.I].applyImpulse(
+      normalize(eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0), 15 - distance(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I]), Relativity.TO_WORLD
     )
 
   # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list.lastCcAttacker = eventPlayer
-  eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list.lastCcWasInAir = false
+  eventPlayer.list0.lastCcAttacker = eventPlayer
+  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list0.lastCcWasInAir = false
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
 
   wait(WIN_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

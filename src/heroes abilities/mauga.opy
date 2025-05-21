@@ -80,21 +80,21 @@ rule "[Mauga] Create barrier (ultimate)":
   eventPlayer.temp1 = eventPlayer.abilPos0 + Vector.UP * 3
   eventPlayer.temp2 = false
   eventPlayer.temp3 = false
-  eventPlayer.list = [Vector.LEFT, Vector.RIGHT, Vector.FORWARD, Vector.BACKWARD]
-  for eventPlayer.I in range(len(eventPlayer.list)):
+  eventPlayer.list0 = [Vector.LEFT, Vector.RIGHT, Vector.FORWARD, Vector.BACKWARD]
+  for eventPlayer.I in range(len(eventPlayer.list0)):
     if (
       not isInLoS(
-        eventPlayer.temp1 + eventPlayer.list[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
-        eventPlayer.temp1 + eventPlayer.list[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
+        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
+        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
         BarrierLos.BLOCKED_BY_ALL_BARRIERS
       ) and isInLoS(
-        eventPlayer.temp1 + eventPlayer.list[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
-        eventPlayer.temp1 + eventPlayer.list[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
+        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
+        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
         BarrierLos.PASS_THROUGH_BARRIERS
       )
     ):
-      eventPlayer.temp2 = eventPlayer.temp1 + eventPlayer.list[eventPlayer.I] * MAU_INNER_CHECK_RADIUS
-      eventPlayer.temp3 = eventPlayer.temp1 + eventPlayer.list[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS
+      eventPlayer.temp2 = eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS
+      eventPlayer.temp3 = eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS
       break
 
   if not eventPlayer.temp2 or not eventPlayer.temp3:
@@ -119,17 +119,17 @@ rule "[Mauga] Barrier push enemies":
   @Hero mauga
   @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
 
-  eventPlayer.list = getPlayersInRadius(eventPlayer.abilPos0, 10, Team.2)
+  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos0, 10, Team.2)
   
-  for eventPlayer.I in range(len(eventPlayer.list)):
+  for eventPlayer.I in range(len(eventPlayer.list0)):
     # pushes back enemies outside barrier:
     if distance(
-      vect(eventPlayer.list[eventPlayer.I].getPosition().x, false, eventPlayer.list[eventPlayer.I].getPosition().z),
+      vect(eventPlayer.list0[eventPlayer.I].getPosition().x, false, eventPlayer.list0[eventPlayer.I].getPosition().z),
       eventPlayer.abilPos1
     ) > 7:
-      eventPlayer.list[eventPlayer.I].applyImpulse(
+      eventPlayer.list0[eventPlayer.I].applyImpulse(
         normalize(
-          eventPlayer.list[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0
+          eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0
         ),
         15,
         Relativity.TO_WORLD
@@ -137,13 +137,13 @@ rule "[Mauga] Barrier push enemies":
       eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
 
       # save information about bots being pushed to account for damage when falling down
-      eventPlayer.list[eventPlayer.I].lastCcAttacker = eventPlayer
-      eventPlayer.list[eventPlayer.I].lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-      eventPlayer.list[eventPlayer.I].lastCcWasInAir = false
+      eventPlayer.list0[eventPlayer.I].lastCcAttacker = eventPlayer
+      eventPlayer.list0[eventPlayer.I].lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+      eventPlayer.list0[eventPlayer.I].lastCcWasInAir = false
 
     else: # slow down players inside barrier
-      eventPlayer.list[eventPlayer.I].state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 0.5
-      eventPlayer.list[eventPlayer.I].state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 4
+      eventPlayer.list0[eventPlayer.I].state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 0.5
+      eventPlayer.list0[eventPlayer.I].state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 4
 
   wait(MAU_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

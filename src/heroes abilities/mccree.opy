@@ -217,10 +217,10 @@ rule "[Cassydy] Detonates a flashbang while rolling":
   wait(0.1)
   playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.abilPos1, 1)
   playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.WHITE, eventPlayer.abilPos1, 100)
-  eventPlayer.list = getPlayersInRadius(eventPlayer.abilPos1, 3, Team.2)
+  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos1, 3, Team.2)
 
-  damage(eventPlayer.list, eventPlayer, 15)
-  eventPlayer.list.setStatusEffect(eventPlayer, Status.STUNNED, 0.5)
+  damage(eventPlayer.list0, eventPlayer, 15)
+  eventPlayer.list0.setStatusEffect(eventPlayer, Status.STUNNED, 0.5)
 
 rule "[Cassydy] fan the hammer knockback":
   @Event playerDealtDamage
@@ -275,8 +275,8 @@ rule "[Cassidy] Smoke Bomb - Hide":
   @Hero cassidy
   @Condition eventPlayer.abilState2
   
-  eventPlayer.list = getPlayersInRadius(eventPlayer.abilPos2, 6, Team.1)
-  eventPlayer.list.isInvisible = getTotalTimeElapsed() + 0.25
+  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos2, 6, Team.1)
+  eventPlayer.list0.isInvisible = getTotalTimeElapsed() + 0.25
 
   wait(0.2)
   if ruleCondition:

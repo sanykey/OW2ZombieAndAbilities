@@ -39,12 +39,12 @@ def botWidowmakerRespawn():
 
 def botWidowmakerChangePositon():
   @Name "[Team2 Widowmaker] change position"
-  eventPlayer.list = (
+  eventPlayer.list0 = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   )
 
-  if eventPlayer.list:
-    eventPlayer.teleport(eventPlayer.list[random.randint(0, len(eventPlayer.list) - 1)])
+  if eventPlayer.list0:
+    eventPlayer.teleport(eventPlayer.list0[random.randint(0, len(eventPlayer.list0) - 1)])
     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 2)
     playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
 

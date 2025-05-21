@@ -135,19 +135,19 @@ rule "[Juno] Ultimate - abduct enemies":
   
   wait(0.7, Wait.ABORT_WHEN_FALSE)
 
-  eventPlayer.list = [player for player in getLivingPlayers(Team.2) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
-  eventPlayer.list.lastCcAttacker = eventPlayer
-  eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list.lastCcWasInAir = false
+  eventPlayer.list0 = [player for player in getLivingPlayers(Team.2) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
+  eventPlayer.list0.lastCcAttacker = eventPlayer
+  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list0.lastCcWasInAir = false
 
-  eventPlayer.list.state[SI.LOW_GRAVITY] = 0.5 + getTotalTimeElapsed()
-  eventPlayer.list.state[SI.CHANGED_SPEED_TIME] = 0.5 + getTotalTimeElapsed()
-  eventPlayer.list.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 10
-  damage(eventPlayer.list, eventPlayer, 2.5)
+  eventPlayer.list0.state[SI.LOW_GRAVITY] = 0.5 + getTotalTimeElapsed()
+  eventPlayer.list0.state[SI.CHANGED_SPEED_TIME] = 0.5 + getTotalTimeElapsed()
+  eventPlayer.list0.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 10
+  damage(eventPlayer.list0, eventPlayer, 2.5)
 
-  for eventPlayer.I in range(len(eventPlayer.list)):
-    eventPlayer.list[eventPlayer.I].applyImpulse(
-      normalize((eventPlayer.abilPos0 + Vector.UP * 20) - eventPlayer.list[eventPlayer.I].getPosition()),
+  for eventPlayer.I in range(len(eventPlayer.list0)):
+    eventPlayer.list0[eventPlayer.I].applyImpulse(
+      normalize((eventPlayer.abilPos0 + Vector.UP * 20) - eventPlayer.list0[eventPlayer.I].getPosition()),
       13,
       Relativity.TO_WORLD,
       Impulse.INCORPORATE_CONTRARY_MOTION
@@ -310,28 +310,28 @@ rule "[Juno] Get players for hyper Rift transfer":
   @Condition eventPlayer.getHero() == Hero.JUNO
   @Condition eventPlayer.juno_rift2_active == true and eventPlayer.juno_rift1_active
 
-  eventPlayer.list = [player for player in getPlayersInRadius(eventPlayer.juno_rift1_destination, 2, Team.1) if (
+  eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.juno_rift1_destination, 2, Team.1) if (
     player.isAlive() and
     not player.juno_transfer_started and
     eventPlayer.isHoldingButton(Button.INTERACT)
   )]
-  eventPlayer.list2 = [player for player in getPlayersInRadius(eventPlayer.juno_rift2_destination, 2, Team.1) if (
+  eventPlayer.list1 = [player for player in getPlayersInRadius(eventPlayer.juno_rift2_destination, 2, Team.1) if (
     player.isAlive() and
     not player.juno_transfer_started and
     eventPlayer.isHoldingButton(Button.INTERACT)
   )]
 
-  if (eventPlayer.list):
-    eventPlayer.list.juno_transfer_from = eventPlayer.juno_rift1_destination
-    eventPlayer.list.juno_transfer_to = eventPlayer.juno_rift2_destination
-    eventPlayer.list.juno_transfer_started = true
-    eventPlayer.abilState0 -= len(eventPlayer.list)
+  if (eventPlayer.list0):
+    eventPlayer.list0.juno_transfer_from = eventPlayer.juno_rift1_destination
+    eventPlayer.list0.juno_transfer_to = eventPlayer.juno_rift2_destination
+    eventPlayer.list0.juno_transfer_started = true
+    eventPlayer.abilState0 -= len(eventPlayer.list0)
 
-  if (eventPlayer.list2):
-    eventPlayer.list2.juno_transfer_from = eventPlayer.juno_rift2_destination
-    eventPlayer.list2.juno_transfer_to = eventPlayer.juno_rift1_destination
-    eventPlayer.list2.juno_transfer_started = true
-    eventPlayer.abilState0 -= len(eventPlayer.list2)
+  if (eventPlayer.list1):
+    eventPlayer.list1.juno_transfer_from = eventPlayer.juno_rift2_destination
+    eventPlayer.list1.juno_transfer_to = eventPlayer.juno_rift1_destination
+    eventPlayer.list1.juno_transfer_started = true
+    eventPlayer.abilState0 -= len(eventPlayer.list1)
 
   if eventPlayer.abilState0 < 1:
     destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT0])
@@ -358,4 +358,4 @@ rule "[Juno] Get players for hyper Rift transfer":
 #   @Condition eventPlayer.getHero() == Hero.JUNO
 
 #   debug(eventPlayer.abilPos0)
-#   debug(eventPlayer.list)
+#   debug(eventPlayer.list0)

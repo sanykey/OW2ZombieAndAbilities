@@ -179,15 +179,15 @@ rule "[Ramattra] Barrier push enemies":
   @Hero ramattra
   @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
 
-  eventPlayer.list = getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_RIGHT_BACK], 3, Team.2)
-  eventPlayer.list.append([player for player in getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list])
+  eventPlayer.list0 = getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_RIGHT_BACK], 3, Team.2)
+  eventPlayer.list0.append([player for player in getPlayersInRadius(eventPlayer.heroState[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list0])
 
   # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list.lastCcAttacker = eventPlayer
-  eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list.lastCcWasInAir = false
+  eventPlayer.list0.lastCcAttacker = eventPlayer
+  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list0.lastCcWasInAir = false
 
-  [player for player in eventPlayer.list if (
+  [player for player in eventPlayer.list0 if (
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK]) > 
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD])
   )].applyImpulse(
@@ -196,7 +196,7 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
   wait(0.016)
-  [player for player in eventPlayer.list if (
+  [player for player in eventPlayer.list0 if (
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_BACK]) < 
     distance(player, eventPlayer.heroState[RAMMATTRA_I.BARRIER_CHECK_FORWARD])
   )].applyImpulse(
@@ -205,7 +205,7 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
 
   wait(RAM_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

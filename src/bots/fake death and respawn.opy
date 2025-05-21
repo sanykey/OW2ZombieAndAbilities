@@ -28,8 +28,8 @@ def botFakeDeathRespawn():
   # botsDeathPlaceIcons[eventPlayer.getSlot()] = eventPlayer.getPosition()
 
   # Respawn if there are available roundRemainingBots slots; otherwise, send to base:
-  eventPlayer.list = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
-  if len(eventPlayer.list) >= roundRemainingBots:
+  eventPlayer.list0 = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
+  if len(eventPlayer.list0) >= roundRemainingBots:
     eventPlayer.teleport(vect(-16.80, 1.23, 18.75))
     postDeathTeleportEffects()
     return
@@ -127,23 +127,23 @@ def botFakeDeathHandle():
   eventPlayer.lastCcWasInAir = false
 
   # money, effects and team score for kills:
-  eventPlayer.list = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
-  smallMessage(eventPlayer.list, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL))
-  eventPlayer.list.money += MONEY_FOR_ZOMBIE_KILL
-  eventPlayer.list.kills += 1
-  eventPlayer.list.lastKillTime = getTotalTimeElapsed()
+  eventPlayer.list0 = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
+  smallMessage(eventPlayer.list0, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL))
+  eventPlayer.list0.money += MONEY_FOR_ZOMBIE_KILL
+  eventPlayer.list0.kills += 1
+  eventPlayer.list0.lastKillTime = getTotalTimeElapsed()
   teamScore += MONEY_FOR_ZOMBIE_KILL
 
   wait(1) # wait for turrets damage detect
 
   # Turret damage has to be counted with a delay, so it is counted separately from other types of damage
-  eventPlayer.list = [player for player in getPlayers(Team.1) if (
+  eventPlayer.list0 = [player for player in getPlayers(Team.1) if (
     eventPlayer.turretDamageTimeToSlot[player.getSlot()] >= getTotalTimeElapsed() and
     eventPlayer.damageAssitsToSlot[player.getSlot()] < getTotalTimeElapsed()
   )]
-  smallMessage(eventPlayer.list, "<TX C00000000003389> +${}".format(MONEY_FOR_ZOMBIE_KILL))
-  eventPlayer.list.money += MONEY_FOR_ZOMBIE_KILL
-  eventPlayer.list.kills += 1
+  smallMessage(eventPlayer.list0, "<TX C00000000003389> +${}".format(MONEY_FOR_ZOMBIE_KILL))
+  eventPlayer.list0.money += MONEY_FOR_ZOMBIE_KILL
+  eventPlayer.list0.kills += 1
   eventPlayer.damageAssitsToSlot = []
   eventPlayer.turretDamageTimeToSlot = []
 

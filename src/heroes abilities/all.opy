@@ -180,7 +180,7 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
   @Condition eventPlayer.getHero() == Hero.REINHARDT or eventPlayer.getHero() == Hero.BRIGITTE
   @Condition eventPlayer.isFiringSecondaryFire()
 
-  eventPlayer.list = (
+  eventPlayer.list0 = (
     [player for player in getPlayersInRadius(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * -1, 6, Team.2) if (
       distance(player, eventPlayer.getPosition() + eventPlayer.getFacingDirection()) < 2 or (
         not isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ALL_BARRIERS) and
@@ -189,14 +189,14 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
       )
     )]
   )
-  eventPlayer.list.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
+  eventPlayer.list0.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
 
   # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list.lastCcAttacker = eventPlayer
-  eventPlayer.list.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list.lastCcWasInAir = false
+  eventPlayer.list0.lastCcAttacker = eventPlayer
+  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list0.lastCcWasInAir = false
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
   eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.getEyePosition() - eventPlayer.state[SI.BARRIER_DAMAGE_FROM])
 

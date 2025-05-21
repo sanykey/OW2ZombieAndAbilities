@@ -134,13 +134,13 @@ rule "[Symmetra] Barrier push enemies":
   @Hero symmetra
   @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
 
-  eventPlayer.list = [player for player in getPlayers(Team.2) if player.isAlive()]
-  eventPlayer.list2 = [] # players to push one side
-  eventPlayer.list3 = [] # players to push second side
+  eventPlayer.list0 = [player for player in getPlayers(Team.2) if player.isAlive()]
+  eventPlayer.list1 = [] # players to push one side
+  eventPlayer.list2 = [] # players to push second side
 
-  for eventPlayer.I in range(len(eventPlayer.list)):
+  for eventPlayer.I in range(len(eventPlayer.list0)):
     eventPlayer.temp1 = dotProduct( # distance between player and barrier
-      vect(eventPlayer.list[eventPlayer.I].getPosition().x, 0, eventPlayer.list[eventPlayer.I].getPosition().z) - eventPlayer.abilPos1,
+      vect(eventPlayer.list0[eventPlayer.I].getPosition().x, 0, eventPlayer.list0[eventPlayer.I].getPosition().z) - eventPlayer.abilPos1,
       eventPlayer.abilDir1
     )
 
@@ -149,38 +149,38 @@ rule "[Symmetra] Barrier push enemies":
       eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SYM_BARRIER_PUSH_ENENT_WAIT
 
       if eventPlayer.temp1 > 0:
-        eventPlayer.list2.append(eventPlayer.list[eventPlayer.I])
+        eventPlayer.list1.append(eventPlayer.list0[eventPlayer.I])
       else:
-        eventPlayer.list3.append(eventPlayer.list[eventPlayer.I])
+        eventPlayer.list2.append(eventPlayer.list0[eventPlayer.I])
 
 
-  if (len(eventPlayer.list2)):
-    eventPlayer.list2.applyImpulse(
+  if (len(eventPlayer.list1)):
+    eventPlayer.list1.applyImpulse(
       eventPlayer.abilDir1 + vect(0, 0.2679, 0),
       7,
       Relativity.TO_WORLD
     )
     wait(0.016)
-  if (len(eventPlayer.list3)):
-    eventPlayer.list3.applyImpulse(
+  if (len(eventPlayer.list2)):
+    eventPlayer.list2.applyImpulse(
       eventPlayer.abilDir1 * -1 + vect(0, 0.2679, 0),
       7,
       Relativity.TO_WORLD
     )
 
 
-  eventPlayer.list2.append(eventPlayer.list3)
+  eventPlayer.list1.append(eventPlayer.list2)
   # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list2.lastCcAttacker = eventPlayer
-  eventPlayer.list2.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list2.lastCcWasInAir = false
+  eventPlayer.list1.lastCcAttacker = eventPlayer
+  eventPlayer.list1.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
+  eventPlayer.list1.lastCcWasInAir = false
 
   # damage enemies on barrier deployment
   if eventPlayer.abilTemp1:
     eventPlayer.abilTemp1 = false
-    for eventPlayer.I in range(len(eventPlayer.list2)):
+    for eventPlayer.I in range(len(eventPlayer.list1)):
       # todo: optimize?
-      damage(eventPlayer.list2[eventPlayer.I], eventPlayer, ceil(eventPlayer.list2[eventPlayer.I].getMaxHealth() / 2))
+      damage(eventPlayer.list1[eventPlayer.I], eventPlayer, ceil(eventPlayer.list1[eventPlayer.I].getMaxHealth() / 2))
   
   wait(SYM_BARRIER_PUSH_ENENT_WAIT) # Higher values cause enemies to pass through the barrier
   if ruleCondition:
