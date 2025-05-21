@@ -9,7 +9,7 @@ rule "Game init":
   hiddenVector = vect(500, 25, 500)
   roundRemainingBots = 0
   unlockedLocations = 0
-  spawnPointsList = [] # spawn points?
+  spawnPointsList = []
   matchIsOver = false
   isGameStarted = false
 
@@ -18,8 +18,8 @@ rule "Game init":
 #!include "workshop settings.opy"
 
 #!include "3p camera.opy"
-#!include "buy hero stats.opy"
 #!include "buy hero.opy"
+#!include "buy hero stats.opy"
 #!include "hero abilities.opy"
 #!include "locked area.opy"
 #!include "restricted areas.opy"
@@ -44,7 +44,6 @@ rule "Game init":
 #!include "bots/fake death and respawn.opy"
 
 #!include "portal.opy"
-#!include "visuals.opy"
 #!include "heroes abilities/all.opy"
 #!include "heroes abilities/dva.opy"
 #!include "heroes abilities/mercy.opy"
