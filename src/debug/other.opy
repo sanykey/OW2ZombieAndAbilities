@@ -1,34 +1,6 @@
-#!mainFile "main.opy"
+#!mainFile "../main.opy"
 
-rule "[debug] Init":
-  hudText(
-    localPlayer,
-    null,
-    "The server is running in development mode.
-    The mod is not ready yet.",
-    null,
-    HudPosition.RIGHT,
-    -10,
-    null,
-    rgb(241, 134, 39),
-    null,
-    HudReeval.VISIBILITY_STRING_AND_COLOR
-  )
-
-
-  # hudSubtext(
-  #   getPlayersInSlot(0, Team.1),
-  #   "spawns: {0}".format(len(spawnPointsList)),
-  #   HudPosition.TOP,
-  #   -10,
-  #   Color.WHITE,
-  #   HudReeval.VISIBILITY_AND_STRING
-  # )
-
-
-  # isDebugAutoRespawn = true
-
-rule "[debug] User init":
+rule "[debug] User starting stats":
   @Event playerJoined
   @Team 1
   # @Slot 0
@@ -39,7 +11,7 @@ rule "[debug] User init":
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.REINHARDT)
+    eventPlayer.startForcingHero(Hero.SOLDIER)
     
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
   eventPlayer.money = 50000
@@ -60,6 +32,10 @@ rule "[debug] Charge ultimate":
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
   eventPlayer.setUltCharge(100)
+
+
+rule "[debug] debug objects":
+  debug(spawnPointsList)
 
 
 # rule "[debug] Kill random zombie":
@@ -96,6 +72,8 @@ rule "[debug] Charge ultimate":
 
 
 # rule "Init":
+  
+
 #   Player 1 current coordinates
 #   hudSubtext(getPlayersInSlot(0, Team.1), "P1: {0}".format(getPlayersInSlot(0, Team.1).getPosition()), HudPosition.TOP, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 #   hudSubtext(getPlayersInSlot(0, Team.1), "Current [{0}] vect: {1}".format(debugCurrentVectNum, debugVectsArr[debugCurrentVectNum].getPosition()), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
@@ -112,68 +90,7 @@ rule "[debug] Charge ultimate":
 #   hudSubtext(getPlayersInSlot(0, Team.1), "DISC: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.DISC]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
 #   hudSubtext(getPlayersInSlot(0, Team.1), "DIST SQRT: {0}".format(getPlayersInSlot(0, Team.1).raycast[RI.SQRT_RESULT]), HudPosition.TOP, 5, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
 
-# rule "Create debbugginh vectors list":
 
-#   debugVectsArr = []
-#   for I in range(VI.BUY_HERO_OFFSET, VI.BUY_HERO_OFFSET + BUY_HERO_LEN):
-#     debugVectsArr[I - VI.BUY_HERO_OFFSET] = vectList[I]
-
-#   createBeam(
-#     getPlayersInSlot(0, Team.1),
-#     Beam.GOOD,
-#     getPlayersInSlot(0, Team.1).getEyePosition() + vect(0, -0.25, 0),
-#     debugVectsArr[debugCurrentVectNum], 
-#     Color.GREEN,
-#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-#   )
-
-#   createEffect(
-#     getPlayersInSlot(0, Team.1),
-#     Effect.SPHERE,
-#     Color.GREEN,
-#     debugVectsArr[debugCurrentVectNum],
-#     1,
-#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-#   )
-
-#   hudHeader(
-#     getPlayersInSlot(0, Team.1),
-#     "vect {0}: {1} ({2})".format(debugCurrentVectNum, debugVectsArr[debugCurrentVectNum], distance(getPlayersInSlot(0, Team.1), debugVectsArr[debugCurrentVectNum])),
-#     HudPosition.TOP,
-#     0,
-#     Color.WHITE,
-#     HudReeval.VISIBILITY_AND_STRING,
-#     SpecVisibility.ALWAYS
-#   )
-
-  
-# rule "Show next vector":
-#   @Event eachPlayer
-#   @Team 1
-#   @Slot 0
-#   @Condition eventPlayer.isHoldingButton(Button.JUMP) == true
-#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-
-#   if debugCurrentVectNum >= len(debugVectsArr) - 1:
-#     debugCurrentVectNum = 0
-#     smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr) - 1))
-#   else:
-#     debugCurrentVectNum += 1
-#     smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr) - 1))
-  
-# rule "Show prev vector":
-#   @Event eachPlayer
-#   @Team 1
-#   @Slot 0
-#   @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
-#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-
-#   if debugCurrentVectNum <= 0:
-#     debugCurrentVectNum = len(debugVectsArr) - 1
-#     smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr) - 1))
-#   else:
-#     debugCurrentVectNum -= 1
-#     smallMessage(eventPlayer, "{0} vector of {1}".format(debugCurrentVectNum, len(debugVectsArr) - 1))
 
 
 

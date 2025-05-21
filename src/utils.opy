@@ -1,5 +1,39 @@
 #!mainFile "main.opy"
 
+rule "User load info":
+  # show ServerLoad info
+  hudSubheader(
+    localPlayer if localPlayer == hostPlayer else false,
+    "Server load: {} / AVG: {}/ Max: {}
+      Entities: {}, Texts: {}
+    ".format(
+      getServerLoad(),
+      getAverageServerLoad(),
+      getPeakServerLoad(),
+      getNumberOfEntityIds(),
+      getNumberOfTextIds()
+    ),
+    HudPosition.RIGHT,
+    -5,
+    rgb(255, 280 - getAverageServerLoad(), 0),
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )
+
+rule "Create development mode text":
+  hudText(
+    localPlayer,
+    null,
+    "The server is running in development mode.
+    The mod is not ready yet.",
+    null,
+    HudPosition.RIGHT,
+    -10,
+    null,
+    rgb(241, 134, 39),
+    null,
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )
+
 # rule "Crash Protection [ON]":
 #   @Condition getServerLoad() > 250
 #   @Condition highloadServerPause < getTotalTimeElapsed()
