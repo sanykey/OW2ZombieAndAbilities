@@ -64,6 +64,7 @@ rule "Game init":
 
 #!include "debug/utils.opy"
 #!include "debug/other.opy"
+
 #!include "debug/noclip.opy"
 #!include "debug/positions measuring.opy"
 #!include "debug/vector list.opy"

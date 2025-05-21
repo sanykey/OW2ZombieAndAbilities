@@ -70,19 +70,17 @@ rule "Create location buy positions":
     vect(74.955, 13.858, -52.677), # BUY_TEAM_ARMOR
     vect(75.589, 13.865, -50.533), # BUY_TEAM_SHIELDS
 
-    # Buy dva [54]
-    vect(-18.268, 0.50, -10.4),
-
     # It is good to place the hero purchase vectors at a height of 50 units from the floor
-    # Buy hero [55-94] len = 40
-    #   zone A:
+    # Buy hero [54-96] len = 43
+    #   zone A (len = 6):
+    vect(-18.268, 0.50, -10.4), # Baby DVA
     vect(-2.191, 2.50, -38.067),
     vect(26.385, 4.51, -32.792),
     vect(14.038, 4.52, -18.487),
     vect(27.171, 1.43, -12.287),
     vect(-4.685, 0.50, -8.427),
     vect(-16.322, 2.50, -31.226),
-    #   zone B:
+    #   zone B (len = 7):
     vect(12.129, 6.51, -90.424),
     vect(10.56, 11.5, -84.54),
     vect(12.919, 11.51, -100.131),
@@ -90,7 +88,7 @@ rule "Create location buy positions":
     vect(1.675, 6.5, -47.434),
     vect(-0.898, 4.69, -90.515),
     vect(-1.751, 7, -71.73),
-    #   zone C:
+    #   zone C (len = 14):
     vect(59.56, 7.22, -72.899),
     vect(55.848, 12.25, -78.688),
     vect(59.273, 12.20, -59.882),
@@ -105,28 +103,28 @@ rule "Create location buy positions":
     vect(54.407, 21.5, -67.496),
     vect(102.662, 10.07, -91.232),
     vect(60.62, 7.22, -108.23),
-    #   zone D:
-    vect(122.079, 11.22, -64.267),
-    vect(122.424, 13.22, -6.63),
-    vect(126.145, 11.22, -16.063),
-    vect(133.977, 13.22, -9.824),
-    vect(129.875, 15.24, -36.803),
-    vect(108.546, 13.22, -55.139),
+    #   zone D (len = 15):
     vect(83, 16.22, -32),
-    vect(135.735, 11.22, -28.177),
-    vect(109.456, 13.22, -24.316),
-    vect(97.61, 16.22, -23.23),
-    vect(-18.875, 7.812, -85.866),
-    vect(136.347, 12.22, -61.239),
+
+    vect(122.079, 11.22, -64.267),
     vect(113.847, 11.22, -19.674),
-    vect(130.268, 12.22, -57.335),
-    vect(142.02, 12.22, -43.53)
+    vect(135.735, 11.22, -28.177),
+    vect(126.145, 11.22, -16.063),
+
+    vect(108.546, 13.22, -55.139),
+    vect(122.424, 13.22, -6.63),
+    vect(133.977, 13.22, -9.824),
+    vect(109.456, 13.22, -24.316),
+
+    vect(129.875, 15.24, -36.803),
+    vect(97.61, 16.22, -23.23),
+
+    vect(139.03, 12.22, -54.51),
+    vect(136.347, 12.22, -61.239),
+    vect(142.02, 12.22, -43.53),
+    vect(130.268, 12.22, -57.335)
   ])
 
-  # logToInspector("vectList init:")
-  # logToInspector(arrayToString(vectList, 150))
-
-  #!define BUY_HERO_LEN 42
   #!define LOCKED_AREA_EFFECTS_LEN 12
 
   enum VI:
@@ -156,5 +154,4 @@ rule "Create location buy positions":
     BUY_TEAM_ARMOR = 52
     BUY_TEAM_SHIELDS = 53
 
-    BUY_DVA = 54
-    BUY_HERO_OFFSET = 55
+    BUY_HERO_OFFSET = 54
