@@ -64,11 +64,11 @@ rule "Create location buy positions":
     vect(123.312, 9.176, -27.364), # SHOP_TELEPORTER_RING
 
     # Buy hero stats [49-53] len = 5
-    vect(-31.204, 7.849, -87.474), # BUY_HP
-    vect(-26.235, 7.812, -90.938), # BUY_DAMAGE
-    vect(-27.198, 7.849, -96.303), # BUY_HEALING
-    vect(74.955, 13.858, -52.677), # BUY_TEAM_ARMOR
-    vect(75.589, 13.865, -50.533), # BUY_TEAM_SHIELDS
+    vect(-31.204, 7.8, -87.474), # BUY_HP
+    vect(-26.235, 7.8, -90.938), # BUY_DAMAGE
+    vect(-27.198, 7.8, -96.303), # BUY_HEALING
+    vect(-25.55, 7.8, -84.91), # BUY_TEAM_ARMOR
+    vect(-22.23, 7.8, -83.38), # BUY_TEAM_SHIELDS
 
     # It is good to place the hero purchase vectors at a height of 50 units from the floor
     # Buy hero [54-96] len = 43

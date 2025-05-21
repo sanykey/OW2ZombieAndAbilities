@@ -76,7 +76,7 @@ rule "Create hero buy positions":
     ]
 
     createInWorldText(
-      localPlayer,
+      getPlayers(Team.1),
       "Buy {} ${}\n\n\u3000\u3000\u202f\u202f\u202f\u202f\u202f<TX C00000000021660>
       ".format( #  <TX C0000000001C365> <TX C00000000021660>
         heroIcon(heroesShopData[I][0]),

@@ -96,24 +96,23 @@ rule "Teleport players to secret shop":
   eventPlayer.isInSecretShop = true
   eventPlayer.teleport(vectList[VI.ENTER_SHOP_TELEPORT_TO])
   wait(30)
-  if eventPlayer.isInSecretShop == false:
-    goto lbl_0
+  if eventPlayer.isInSecretShop == false or isBotsDisabled:
+    return
       
   smallMessage(eventPlayer, "Leaving in 5...")
-  wait(1)
+  wait(true)
   smallMessage(eventPlayer, 4)
-  wait(1)
+  wait(true)
   smallMessage(eventPlayer, 3)
-  wait(1)
+  wait(true)
   smallMessage(eventPlayer, 2)
-  wait(1)
-  smallMessage(eventPlayer, 1)
-  wait(1)
-  lbl_0:
+  wait(true)
+  smallMessage(eventPlayer, true)
+  wait(true)
   if eventPlayer.isInSecretShop == false:
-    goto lbl_1
+    return
+
   eventPlayer.teleport(vectList[VI.EXIT_SHOP_TELEPORT_TO])
-  lbl_1:
   eventPlayer.isInSecretShop = false
 
 
@@ -130,6 +129,6 @@ rule "Auto heal secret shop":
   @Team 1
   @Condition distance(eventPlayer, vectList[VI.SHOP_HEAL_AREA]) < 12
 
-  wait(1)
+  wait(true)
   heal(eventPlayer, null, INFINITY)
   wait(2)

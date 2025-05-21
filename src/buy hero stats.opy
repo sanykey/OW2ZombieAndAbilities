@@ -1,17 +1,17 @@
 #!mainFile "main.opy"
 
 rule "Inite shop upgrades effects and text":
-  createEffect(getAllPlayers(), Effect.RING, Color.LIME_GREEN, vectList[VI.BUY_HP], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.RED, vectList[VI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.RING, Color.ORANGE, vectList[VI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(getAllPlayers(), "HP (+7%) | 2500 ", vectList[VI.BUY_HP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.LIME_GREEN)
-  createInWorldText(getAllPlayers(), "Damage (+5%) | 2500", vectList[VI.BUY_DAMAGE], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED)
-  createInWorldText(getAllPlayers(), "Healing Dealt (+5%) | 2500", vectList[VI.BUY_HEALING], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.LIME_GREEN, vectList[VI.BUY_HP], 1.5, EffectReeval.VISIBILITY)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.RED, vectList[VI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[VI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY)
+  createInWorldText(getPlayers(Team.1), "HP (+7%): $2500 ", vectList[VI.BUY_HP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.LIME_GREEN)
+  createInWorldText(getPlayers(Team.1), "Damage (+5%): $2500", vectList[VI.BUY_DAMAGE], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.RED)
+  createInWorldText(getPlayers(Team.1), "Healing Dealt (+5%): $2500", vectList[VI.BUY_HEALING], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.ORANGE)
 
-  createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[VI.BUY_TEAM_ARMOR], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format("+50 Armor [Team]", 7500 + null)), vectList[VI.BUY_TEAM_ARMOR], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.ORANGE)
-  createEffect(getPlayers(Team.1), Effect.RING, Color.BLUE, vectList[VI.BUY_TEAM_SHIELDS], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(getPlayers(Team.1), l"{0} {1}".format(l"Buy", l"{0}: {1}".format("+50 Shields [Team]", 7500 + null)), vectList[VI.BUY_TEAM_SHIELDS], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.BLUE)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[VI.BUY_TEAM_ARMOR], 1.5, EffectReeval.VISIBILITY)
+  createEffect(getPlayers(Team.1), Effect.RING, Color.BLUE, vectList[VI.BUY_TEAM_SHIELDS], 1.5, EffectReeval.VISIBILITY)
+  createInWorldText(getPlayers(Team.1), "+50 Armor [Team]: $7500", vectList[VI.BUY_TEAM_ARMOR], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.ORANGE)
+  createInWorldText(getPlayers(Team.1), "+50 Shields [Team]: $7500", vectList[VI.BUY_TEAM_SHIELDS], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.BLUE)
 
 rule "Buy damage upgrade":
   @Event eachPlayer

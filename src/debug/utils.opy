@@ -14,7 +14,9 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
       destroyDummy(Team.2, I)
     roundNumber -= 1
     roundRemainingBots = 0
+    hostPlayer.setMoveSpeed(200)
     smallMessage(eventPlayer, "Bots disabled (ctrl + shift + interact)")
   else:
     isBotsDisabled = false
+    hostPlayer.setMoveSpeed(100)
     smallMessage(eventPlayer, "Bots enabled (ctrl + shift + interact)")

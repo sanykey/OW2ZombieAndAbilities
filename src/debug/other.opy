@@ -11,10 +11,10 @@ rule "[debug] User starting stats":
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.SOLDIER)
+    eventPlayer.startForcingHero(Hero.SOMBRA)
     
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
-  eventPlayer.money = 50000
+  eventPlayer.money = 500000
   # eventPlayer.healthBoostPercent = 100
   # eventPlayer.damageBoostPercent = 100
   # eventPlayer.healingBoostPercent = 100
