@@ -10,6 +10,7 @@ rule "Player joined setup":
   # eventPlayer.disableRespawn()
   eventPlayer.setRespawnTime(INFINITY)
 
+  eventPlayer.disableKillFeed() # coz [Bot fake death]
   eventPlayer.healthBoostPercent = 100
   eventPlayer.damageBoostPercent = 100
   eventPlayer.healingBoostPercent = 100
@@ -22,11 +23,11 @@ rule "Player joined setup":
   createIcon(getAllPlayers().exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY, Color.YELLOW)
 
   # Change character for vip players
-  if "{0}".format(eventPlayer) in vipPlayers == true:
-    wait(2)
-    eventPlayer.startForcingHero(Hero.SOMBRA)
-  else:
-    eventPlayer.startForcingHero(Hero.DVA)
+  # if "{0}".format(eventPlayer) in vipPlayers == true:
+  #   wait(2)
+  #   eventPlayer.startForcingHero(Hero.SOMBRA)
+  # else:
+  eventPlayer.startForcingHero(Hero.DVA)
   
   eventPlayer.respawn()
   eventPlayer.teleport(vect(-27.412, 8.678, -12.564))

@@ -136,6 +136,7 @@ playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady
 
+playervar isDvaUltBought
 playervar lastZombieIcon
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code

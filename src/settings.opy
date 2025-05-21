@@ -39,8 +39,7 @@ settings {
             "dva": {
                 "damageReceived%": 85,
                 "projectileSpeed%": 500,
-                "spawnWithoutMech": true,
-                "enableUlt": false
+                "spawnWithoutMech": true
             },
             "juno": {
                 "jumpVerticalSpeed%": 115,

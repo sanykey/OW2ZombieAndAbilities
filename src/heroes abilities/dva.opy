@@ -10,7 +10,7 @@ enum DVA_SI:
 rule "[DVA] Init":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.DVA
-
+  eventPlayer.setUltEnabled(eventPlayer.isDvaUltBought)
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent + 50)
 
   # Slide ability hud:
@@ -50,6 +50,8 @@ rule "[DVA] Init":
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   clearHeroInfo()
   destroyHudText(eventPlayer.heroState[DVA_SI.SLIDE_HUD])
+  if not eventPlayer.isDvaUltBought:
+    eventPlayer.setUltEnabled(true)
 
 
 # todo: only without mech

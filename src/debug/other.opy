@@ -11,7 +11,7 @@ rule "[debug] User starting stats":
 
   if eventPlayer == hostPlayer:
     eventPlayer.state[SI.CAMERA_3P] = 4
-    eventPlayer.startForcingHero(Hero.SOMBRA)
+    # eventPlayer.startForcingHero(Hero.SOMBRA)
     
     # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
   eventPlayer.money = 500000
@@ -28,12 +28,12 @@ rule "[debug] User starting stats":
   wait()
   heal(eventPlayer, null, INFINITY)
 
-rule "[debug] Charge ultimate":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+# rule "[debug] Charge ultimate":
+#   @Event eachPlayer
+#   @Team 1
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
-  eventPlayer.setUltCharge(100)
+#   eventPlayer.setUltCharge(100)
 
 
 rule "[debug] debug objects":

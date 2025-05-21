@@ -13,7 +13,7 @@ rule "Create hero buy positions":
       heroesList[I],
       vectList[I + VI.BUY_HERO_OFFSET],
       floor((
-        0 if I == 0 else (
+        7000 if I == 0 else (
           random.randint(1000, 3500) if I < 6 else (
             random.randint(2500, 5000) if I < 13 else (
               random.randint(4000, 8000) if I < 27 else (
@@ -47,22 +47,32 @@ rule "Buy hero":
   for I in range(len(heroesShopData)):
     if (
       distance(eventPlayer, heroesShopData[I][1]) <= 1.7 and
-      eventPlayer.getCurrentHero() != heroesShopData[I][0] and
-      eventPlayer.money >= heroesShopData[I][2]
+      (eventPlayer.getCurrentHero() != heroesShopData[I][0] or heroesShopData[I][0] == Hero.DVA)
     ):
-      eventPlayer.startForcingHero(heroesShopData[I][0])
-      playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
-      playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)
 
-      if not heroesShopData[I][0] in eventPlayer.purchasedHeroes == true:
+      # buy DVA mech
+      if (
+        heroesShopData[I][0] == Hero.DVA and
+        not eventPlayer.isDvaUltBought and
+        eventPlayer.money >= heroesShopData[I][2]
+      ):
+        eventPlayer.isDvaUltBought = true
         eventPlayer.money -= heroesShopData[I][2]
-        eventPlayer.purchasedHeroes.append(heroesShopData[I][0])
+        eventPlayer.setUltEnabled(true)
+        eventPlayer.setUltCharge(100)
+
+      eventPlayer.temp0 = heroesShopData[I][0] in eventPlayer.purchasedHeroes
+      if eventPlayer.temp0 or eventPlayer.money >= heroesShopData[I][2]:
+        eventPlayer.startForcingHero(heroesShopData[I][0])
+        playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
+        playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)
+        if not eventPlayer.temp0:
+          eventPlayer.money -= heroesShopData[I][2]
+          eventPlayer.purchasedHeroes.append(heroesShopData[I][0])
       
       wait(0.25)
       heal(eventPlayer, null, INFINITY)
       break
-
-
 
 # rule "Buy hero":
 #   @Event eachPlayer

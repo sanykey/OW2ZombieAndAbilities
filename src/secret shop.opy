@@ -5,13 +5,14 @@ rule "Secret shop init":
 
   shopState = []
   enum SHOP_I:
-    STATUS = 0
-    POWER_ON_EFFECT = 1
-    POWER_ON_TEXT = 2
-    ACTIVATOR_ICON = 3
-    ACTIVATOR_RING = 4
-    SHOP_RING = 5
-    SHOP_ICON = 6
+    STATUS
+    POWER_ON_EFFECT
+    POWER_ON_TEXT
+    ACTIVATOR_ICON
+    ACTIVATOR_RING
+    SHOP_RING
+    SHOP_ICON
+    ARROW_LEFT_TEXT
 
   # Create shop power on effects
   createEffect(getAllPlayers(), Effect.RING, Color.TURQUOISE, vectList[VI.CONNECT_SHOP], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -19,6 +20,7 @@ rule "Secret shop init":
   createInWorldText(getAllPlayers(), l"{0} {1}".format(l"Connect", l"Power"), vectList[VI.CONNECT_SHOP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
   shopState[SHOP_I.POWER_ON_TEXT] = getLastCreatedText()
   createInWorldText(getAllPlayers(), l"#{0}".format(iconString(Icon.ARROW_LEFT)), vectList[VI.CONNECT_SHOP_ARROW], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
+  shopState[SHOP_I.ARROW_LEFT_TEXT] = getLastCreatedText()
 
   # Create shop exit effects
   createInWorldText(getAllPlayers(), "[Exit]", vectList[VI.EXIT_SHOP_TEXT], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN)
@@ -33,6 +35,7 @@ rule "Power switch ON":
   @Condition unlockedLocations == 4
   
   destroyEffect(shopState[SHOP_I.POWER_ON_EFFECT])
+  destroyInWorldText(shopState[SHOP_I.ARROW_LEFT_TEXT])
   destroyInWorldText(shopState[SHOP_I.POWER_ON_TEXT])
   shopState[SHOP_I.STATUS] = 1
   bigMessage(getAllPlayers(), l"{0} {1}".format(l"Power", l"On"))
