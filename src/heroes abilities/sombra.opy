@@ -9,7 +9,8 @@ rule "[Sombra] Init":
   eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 1
   eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg765dbdFF>Sombra</fg>:\n
   <TX C0000000000A6B6> <fg765dbdFF>Stealth:</fg>
-      - Enemies will see you if you get too close in their line of sight (you can approach from behind undetected).
+      - Enemies will see you if you get too close in their line of sight
+        (you can approach from behind undetected).
       - A melee stuns enemies and steals ${}\n\n
   {} <fg765dbdFF>Hack:</fg>
       - Allies and Sombra deal an additional 30% damage to hacked targets
