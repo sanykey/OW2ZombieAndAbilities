@@ -1,12 +1,5 @@
 #!mainFile "main.opy"
 
-rule "disable auto respawn": 
-  @Event playerJoined
-
-  eventPlayer.disableRespawn()
-  # todo: fix?
-  # if not isDebugAutoRespawn:
-
 rule "Waiting for players ready":
   @Event eachPlayer
   @Team 1

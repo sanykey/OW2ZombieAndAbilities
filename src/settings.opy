@@ -85,9 +85,6 @@ settings {
             }
         },
         "allTeams": {
-            "enabledHeroes": [
-                "dva"
-            ],
             "general": {
                 "passiveHealthRegen": false,
                 "ultGen%": 30,

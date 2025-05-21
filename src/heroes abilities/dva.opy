@@ -60,7 +60,7 @@ rule "[DVA] Slide":
   @Condition eventPlayer.isHoldingButton(Button.ABILITY_1) == true
   @Condition eventPlayer.heroState[DVA_SI.SLIDE_TIME] == false
 
-  if not eventPlayer.abilityCD:
+  if eventPlayer.abilityCD:
     return
   
   createEffect(getAllPlayers(), Effect.LUCIO_SOUND_BARRIER_PROTECTED, eventPlayer.getTeam(), eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)

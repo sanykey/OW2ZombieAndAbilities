@@ -100,6 +100,8 @@ playervar recentDamageDealtToSlot
 playervar recentStackedDamageDealtToSlot
 
 playervar damageAssitsToSlot
+playervar posBeforeChangeHero
+playervar purchasedHeroes
 
 # [Bot fake death]:
 playervar kills # kills zombies stat for players 

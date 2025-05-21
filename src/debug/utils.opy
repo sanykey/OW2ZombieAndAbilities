@@ -20,3 +20,26 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
     isBotsDisabled = false
     hostPlayer.setMoveSpeed(100)
     smallMessage(eventPlayer, "Bots enabled (ctrl + shift + interact)")
+
+rule "[debug] Trigger open Switch hero hud":
+  @Event eachPlayer
+  @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer.isHoldingButton(Button.CROUCH)
+  @Condition eventPlayer.isHoldingButton(Button.RELOAD)
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+  openSwitchHeroHud()
+
+rule "Create development mode text":
+  hudText(
+    localPlayer,
+    null,
+    "The server is running in development mode.
+    The mod is not ready yet.",
+    null,
+    HudPosition.RIGHT,
+    -10,
+    null,
+    rgb(241, 134, 39),
+    null,
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )

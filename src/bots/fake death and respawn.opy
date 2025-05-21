@@ -164,6 +164,13 @@ def botFakeDeathHandle():
 #       color=rgb(false,false,false,95)
 #     )
 
+rule "disable bots auto respawn": 
+  @Event playerJoined
+  @Team 2
+
+  eventPlayer.disableRespawn()
+
+
 rule "[Bot fake death] clear effects for destroed dummy bots":
   @Event playerLeft
   @Condition getNumberOfPlayers(Team.2) < wSettingsMaxZombieBots

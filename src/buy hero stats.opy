@@ -13,6 +13,20 @@ rule "Inite shop upgrades effects and text":
   createInWorldText(getPlayers(Team.1), "+50 Armor [Team]: $7500", vectList[VI.BUY_TEAM_ARMOR], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.ORANGE)
   createInWorldText(getPlayers(Team.1), "+50 Shields [Team]: $7500", vectList[VI.BUY_TEAM_SHIELDS], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.BLUE)
 
+  createEffect(getPlayers(Team.1), Effect.RING, Color.WHITE, vectList[VI.CHANGE_HERO], 1.5, EffectReeval.VISIBILITY)
+  createInWorldText(getPlayers(Team.1), "Change to a purchased hero", vectList[VI.CHANGE_HERO], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.WHITE)
+
+rule "Buy damage upgrade":
+  @Event eachPlayer
+  @Team 1
+  @Condition distance(eventPlayer, vectList[VI.CHANGE_HERO]) < 1.8
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  
+  playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 1)
+  playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
+  openSwitchHeroHud()
+
+
 rule "Buy damage upgrade":
   @Event eachPlayer
   @Team 1

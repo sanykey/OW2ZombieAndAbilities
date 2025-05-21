@@ -1,7 +1,6 @@
 #!mainFile "main.opy"
 
-rule "User load info":
-  # show ServerLoad info
+rule "Show ServerLoad info":
   hudSubheader(
     localPlayer if localPlayer == hostPlayer else false,
     "Server load: {} / AVG: {}/ Max: {}
@@ -16,21 +15,6 @@ rule "User load info":
     HudPosition.RIGHT,
     -5,
     rgb(255, 280 - getAverageServerLoad(), 0),
-    HudReeval.VISIBILITY_STRING_AND_COLOR
-  )
-
-rule "Create development mode text":
-  hudText(
-    localPlayer,
-    null,
-    "The server is running in development mode.
-    The mod is not ready yet.",
-    null,
-    HudPosition.RIGHT,
-    -10,
-    null,
-    rgb(241, 134, 39),
-    null,
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
 
@@ -52,49 +36,49 @@ rule "Create development mode text":
 #   setSlowMotion(100)
 #   isBotsDisabled = false
 
-rule "Crash Protection [ON]":
-  @Condition getServerLoad() > 250
-  @Condition roundNumber < 40
+# rule "Crash Protection [ON]":
+#   @Condition getServerLoad() > 250
+#   @Condition roundNumber < 40
   
-  wait(2, Wait.ABORT_WHEN_FALSE)
-  setSlowMotion(83)
+#   wait(2, Wait.ABORT_WHEN_FALSE)
+#   setSlowMotion(83)
 
 
-rule "Crash Protection [OFF]":
-  @Condition getAverageServerLoad() < 249
-  @Condition roundNumber < 40
+# rule "Crash Protection [OFF]":
+#   @Condition getAverageServerLoad() < 249
+#   @Condition roundNumber < 40
   
-  wait(2, Wait.ABORT_WHEN_FALSE)
-  setSlowMotion(100)
+#   wait(2, Wait.ABORT_WHEN_FALSE)
+#   setSlowMotion(100)
 
 
-rule "Crash Protection 40+ [ON]":
-  @Condition getServerLoad() > 250
-  @Condition getPlayers(Team.1).G[6] == false
-  @Condition roundNumber > 39
+# rule "Crash Protection 40+ [ON]":
+#   @Condition getServerLoad() > 250
+#   @Condition getPlayers(Team.1).G[6] == false
+#   @Condition roundNumber > 39
   
-  wait(2, Wait.ABORT_WHEN_FALSE)
-  setSlowMotion(83)
+#   wait(2, Wait.ABORT_WHEN_FALSE)
+#   setSlowMotion(83)
 
 
-rule "Crash Protection 40+ [OFF]":
-  @Condition getAverageServerLoad() < 249
-  @Condition getPlayers(Team.1).G[6] == false
-  @Condition roundNumber > 39
+# rule "Crash Protection 40+ [OFF]":
+#   @Condition getAverageServerLoad() < 249
+#   @Condition getPlayers(Team.1).G[6] == false
+#   @Condition roundNumber > 39
   
-  wait(2, Wait.ABORT_WHEN_FALSE)
-  setSlowMotion(100)
+#   wait(2, Wait.ABORT_WHEN_FALSE)
+#   setSlowMotion(100)
 
 
 
-rule "Disable inspector recording - debug":
-  wait(1)
-  disableInspector()
+# rule "Disable inspector recording - debug":
+#   wait(1)
+#   disableInspector()
 
-rule "Unlimited match time":
-  @Condition getMatchTime() < 10
-  @Condition matchIsOver == false
+# rule "Unlimited match time":
+#   @Condition getMatchTime() < 10
+#   @Condition matchIsOver == false
   
-  setMatchTime(3599)
+#   setMatchTime(3599)
 
 

@@ -25,8 +25,8 @@ rule "player Dealt Knockback":
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
     damage(victim, eventPlayer, 40)
     playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
-    smallMessage(eventPlayer, "{0} points".format(25 * eventPlayer.H))
-    eventPlayer.money += 25 * eventPlayer.H
+    smallMessage(eventPlayer, "{0} points".format(25))
+    eventPlayer.money += 25
 
   # Save last cc damage from player for fall damage
   victim.lastCcAttacker = attacker
@@ -130,7 +130,7 @@ rule "Healing points":
   @Team 1
   @Condition eventPlayer.state[SI.HEALING_TRACKER] >= eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] 
 
-  eventPlayer.state[SI.HEALING_RESULT] = floor(eventPlayer.state[SI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING * eventPlayer.H
+  eventPlayer.state[SI.HEALING_RESULT] = floor(eventPlayer.state[SI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING
   eventPlayer.money += eventPlayer.state[SI.HEALING_RESULT]
   smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.state[SI.HEALING_RESULT]))
   teamScore += eventPlayer.state[SI.HEALING_RESULT]
