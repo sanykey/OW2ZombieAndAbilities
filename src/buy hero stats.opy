@@ -16,7 +16,7 @@ rule "Inite shop upgrades effects and text":
   createEffect(getPlayers(Team.1), Effect.RING, Color.WHITE, vectList[VI.CHANGE_HERO], 1.5, EffectReeval.VISIBILITY)
   createInWorldText(getPlayers(Team.1), "Change to a purchased hero", vectList[VI.CHANGE_HERO], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.WHITE)
 
-rule "Buy damage upgrade":
+rule "Change hero from shop":
   @Event eachPlayer
   @Team 1
   @Condition distance(eventPlayer, vectList[VI.CHANGE_HERO]) < 1.8
@@ -91,18 +91,18 @@ rule "Buy team shields":
 
 
 rule "Buy team armor":
-    @Event eachPlayer
-    @Team 1
-    @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-    @Condition distance(eventPlayer, vectList[VI.BUY_TEAM_ARMOR]) <= 1.5
-    @Condition eventPlayer.money >= 7500
-    @Condition unlockedLocations >= 3
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Condition distance(eventPlayer, vectList[VI.BUY_TEAM_ARMOR]) <= 1.5
+  @Condition eventPlayer.money >= 7500
+  @Condition unlockedLocations >= 3
 
-    playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, getPlayers(Team.1), 2)
-    playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, getPlayers(Team.1), 100)
-    bigMessage(getPlayers(Team.1), l"{0} {1}".format(eventPlayer, "has awarded the team +40 Armor!"))
-    getPlayers(Team.1).addHealthPool(Health.ARMOR, 40, true)
-    eventPlayer.money -= 7500
-    wait(0.25)
-    heal(getLivingPlayers(Team.1), null, INFINITY)
-    teamArmor += 40
+  playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, getPlayers(Team.1), 2)
+  playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, getPlayers(Team.1), 100)
+  bigMessage(getPlayers(Team.1), l"{0} {1}".format(eventPlayer, "has awarded the team +40 Armor!"))
+  getPlayers(Team.1).addHealthPool(Health.ARMOR, 40, true)
+  eventPlayer.money -= 7500
+  wait(0.25)
+  heal(getLivingPlayers(Team.1), null, INFINITY)
+  teamArmor += 40

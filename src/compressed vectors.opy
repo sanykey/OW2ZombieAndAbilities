@@ -63,15 +63,16 @@ rule "Create location buy positions":
     vect(123.312, 10.5, -27.364), # SHOP_TELEPORTER_TEXT
     vect(123.312, 9.176, -27.364), # SHOP_TELEPORTER_RING
 
-    # Buy hero stats [49-53] len = 5
+    # Buy hero stats [49-54] len = 5
     vect(-31.204, 7.8, -87.474), # BUY_HP
     vect(-26.235, 7.8, -90.938), # BUY_DAMAGE
     vect(-27.198, 7.8, -96.303), # BUY_HEALING
-    vect(-25.55, 7.8, -84.91), # BUY_TEAM_ARMOR
-    vect(-22.23, 7.8, -83.38), # BUY_TEAM_SHIELDS
+    vect(-27.94, 7.8, -85.89), # BUY_TEAM_ARMOR
+    vect(-24.27, 7.8, -84.38), # BUY_TEAM_SHIELDS
+    vect(-21.08, 7.8, -82.96), # CHANGE_HERO
 
     # It is good to place the hero purchase vectors at a height of 50 units from the floor
-    # Buy hero [54-96] len = 43
+    # Buy hero [55-97] len = 43
     #   zone A (len = 6):
     vect(-18.268, 0.50, -10.4), # Baby DVA
     vect(-2.191, 2.50, -38.067),
@@ -105,20 +106,16 @@ rule "Create location buy positions":
     vect(60.62, 7.22, -108.23),
     #   zone D (len = 15):
     vect(83, 16.22, -32),
-
     vect(122.079, 11.22, -64.267),
     vect(113.847, 11.22, -19.674),
     vect(135.735, 11.22, -28.177),
     vect(126.145, 11.22, -16.063),
-
     vect(108.546, 13.22, -55.139),
     vect(122.424, 13.22, -6.63),
     vect(133.977, 13.22, -9.824),
     vect(109.456, 13.22, -24.316),
-
     vect(129.875, 15.24, -36.803),
     vect(97.61, 16.22, -23.23),
-
     vect(139.03, 12.22, -54.51),
     vect(136.347, 12.22, -61.239),
     vect(142.02, 12.22, -43.53),
@@ -153,5 +150,5 @@ rule "Create location buy positions":
     BUY_HEALING = 51
     BUY_TEAM_ARMOR = 52
     BUY_TEAM_SHIELDS = 53
-
-    BUY_HERO_OFFSET = 54
+    CHANGE_HERO = 54
+    BUY_HERO_OFFSET = 55

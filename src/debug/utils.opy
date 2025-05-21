@@ -27,6 +27,8 @@ rule "[debug] Trigger open Switch hero hud":
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   @Condition eventPlayer.isHoldingButton(Button.RELOAD)
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+
+  eventPlayer.purchasedHeroes = getAllHeroes()
   openSwitchHeroHud()
 
 rule "Create development mode text":

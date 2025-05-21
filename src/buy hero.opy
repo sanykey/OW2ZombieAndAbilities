@@ -2,58 +2,25 @@
 
 #!define BUY_HERO_LEN 43
 
+def openSwitchHeroHud():
+  @Name "Open Switch hero hud"
+
+  eventPlayer.posBeforeChangeHero = eventPlayer.getPosition()
+  eventPlayer.setRespawnTime(0)
+  eventPlayer.stopForcingCurrentHero()
+  eventPlayer.setAllowedHeroes(getAllHeroes().exclude(eventPlayer.getHero()))
+  wait()
+  eventPlayer.setAllowedHeroes(eventPlayer.purchasedHeroes)
+
+  # eventPlayer.resetHeroAvailability()
+  waitUntil(eventPlayer.hasSpawned(), INFINITY)
+  eventPlayer.teleport(eventPlayer.posBeforeChangeHero)
+  eventPlayer.setRespawnTime(INFINITY)
+  eventPlayer.posBeforeChangeHero = false
+
 rule "Create hero buy positions":
-  heroesList = [Hero.DVA] # 
-
-  heroesList.append(random.shuffle([ # 43
-    # tanks - 1 + 12
-    Hero.DOOMFIST,
-    Hero.HAZARD,
-    Hero.JUNKER_QUEEN,
-    Hero.MAUGA,
-    Hero.ORISA,
-    Hero.RAMATTRA,
-    Hero.REINHARDT,
-    Hero.ROADHOG,
-    Hero.SIGMA,
-    Hero.WINSTON,
-    Hero.WRECKING_BALL,
-    Hero.ZARYA,
-
-    # damage dealers - 19
-    Hero.ASHE,
-    Hero.BASTION,
-    Hero.CASSIDY,
-    Hero.ECHO,
-    Hero.FREJA,
-    Hero.GENJI,
-    Hero.HANZO,
-    Hero.JUNKRAT,
-    Hero.MEI,
-    Hero.PHARAH,
-    Hero.REAPER,
-    Hero.SOJOURN,
-    Hero.SOLDIER,
-    Hero.SOMBRA,
-    Hero.SYMMETRA,
-    Hero.TORBJORN,
-    Hero.TRACER,
-    Hero.VENTURE,
-    Hero.WIDOWMAKER,
-    
-    # supports - 11
-    Hero.ANA,
-    Hero.BAPTISTE,
-    Hero.BRIGITTE,
-    Hero.ILLARI,
-    Hero.JUNO,
-    Hero.KIRIKO,
-    Hero.LIFEWEAVER,
-    Hero.LUCIO,
-    Hero.MERCY,
-    Hero.MOIRA,
-    Hero.ZENYATTA
-  ]))
+  heroesList = [Hero.DVA]
+  heroesList.append(random.shuffle(getAllHeroes().exclude(Hero.DVA))) # 43 heroes
 
   # [hero, buy_place_vector, price, buy_text_vector]
   heroesShopData = []
@@ -77,9 +44,8 @@ rule "Create hero buy positions":
 
     createInWorldText(
       getPlayers(Team.1),
-      "Buy {} ${}\n\n\u3000\u3000\u202f\u202f\u202f\u202f\u202f<TX C00000000021660>
-      ".format( #  <TX C0000000001C365> <TX C00000000021660>
-        heroIcon(heroesShopData[I][0]),
+      "Buy {} ${}\n\n\u3000\u3000\u202f\u202f\u202f\u202f\u202f<TX C00000000021660>".format(
+        "<TX C00000000004EAB>{}".format(heroIcon(Hero.DVA)) if heroesShopData[I][0] == Hero.DVA else heroIcon(heroesShopData[I][0]),
         heroesShopData[I][2]
       ),
       heroesShopData[I][true],
@@ -124,7 +90,9 @@ rule "Buy hero":
       eventPlayer.startForcingHero(heroesShopData[I][0])
       playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
       playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)
-      eventPlayer.money -= heroesShopData[I][2]
+      if not heroesShopData[I][0] in eventPlayer.purchasedHeroes == true:
+        eventPlayer.money -= heroesShopData[I][2]
+        eventPlayer.purchasedHeroes.append(heroesShopData[I][0])
       wait(0.25)
       heal(eventPlayer, null, INFINITY)
 

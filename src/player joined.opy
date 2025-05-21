@@ -3,29 +3,38 @@
 rule "Create vipPlayers list":
   vipPlayers = ["snky"]
 
-rule "Show game tips in start":
-  @Event eachPlayer
-  @Condition not eventPlayer.isReady
-  waitUntil(distance(eventPlayer, vect(-27.33, -1.94, -12.68)) < 6)
-
-  while not eventPlayer.isReady: 
-    if distance(eventPlayer, vect(-27.33, -1.94, -12.68)) > 6:
-      eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
-      eventPlayer.isReady = true
-    wait(1)
-
-rule "Disable spawn room hero swap":
-  @Event eachPlayer
+rule "Player joined setup": 
+  @Event playerJoined
   @Team 1
-  @Condition eventPlayer.hasSpawned() == true
+
+  # eventPlayer.disableRespawn()
+  eventPlayer.setRespawnTime(INFINITY)
 
   eventPlayer.healthBoostPercent = 100
   eventPlayer.damageBoostPercent = 100
   eventPlayer.healingBoostPercent = 100
   eventPlayer.money = wSettingsStartMoney 
   eventPlayer.kills = 0
-
+  eventPlayer.purchasedHeroes = [Hero.DVA]
   eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
+
+  createEffect(getAllPlayers() if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
+  createIcon(getAllPlayers().exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY, Color.YELLOW)
+
+  # Change character for vip players
+  if "{0}".format(eventPlayer) in vipPlayers == true:
+    wait(2)
+    eventPlayer.startForcingHero(Hero.SOMBRA)
+  else:
+    eventPlayer.startForcingHero(Hero.DVA)
+  
+  eventPlayer.respawn()
+  eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
+
+rule "Player spawned setup":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.hasSpawned()
 
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
   if teamShields:
@@ -33,55 +42,18 @@ rule "Disable spawn room hero swap":
   if teamArmor:
     eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
 
-  # revive effects
-  createEffect(getAllPlayers() if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
-  createIcon(getAllPlayers().exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY, Color.YELLOW)
-
-  eventPlayer.H = 1
-
-  # Change character for vip players
-  # if "{0}".format(eventPlayer) in vipPlayers == true:
-  #   wait(2)
-  #   eventPlayer.startForcingHero(Hero.SOMBRA)
-  #   eventPlayer.state[0] = 4
-  #   smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
-
-
-rule "Starting spawn location for players":
+rule "Show game tips in start":
   @Event eachPlayer
-  @Team 1
-  @Hero dva
-  @Condition eventPlayer.isInSpawnRoom() == true
-  
-  eventPlayer.startCamera(vect(-17.532, 3.356, -16.72), vect(-26.463, -0.316, -14.143))
-  eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
-  eventPlayer.disableGamemodeHud()
-  eventPlayer.disableHeroHud()
-  wait(0.3)
-  eventPlayer.setStatusEffect(null, Status.ROOTED, INFINITY)
-  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITY)
-  eventPlayer.disallowButton(Button.PRIMARY_FIRE + Button.SECONDARY_FIRE + Button.ABILITY_1 + Button.ABILITY_2 + Button.ULTIMATE + Button.INTERACT + Button.JUMP + Button.CROUCH + Button.MELEE)
-  eventPlayer.startFacing(Vector.RIGHT, 100000, Relativity.TO_PLAYER)
-  playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.VIOLET, eventPlayer, 2)
-  wait(0.8)
-  eventPlayer.setUltCharge(0)
-  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), vect(-12.858, 3.32, -17.254)), 100000)
-  wait(0.1)
-  eventPlayer.stopCamera()
-  eventPlayer.stopFacing()
-  eventPlayer.enableGamemodeHud()
-  eventPlayer.enableHeroHud()
-  getPlayers(Team.2).applyImpulse(Vector.UP, 2, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
-  wait(0.5)
-  eventPlayer.setMoveSpeed(100)
-  eventPlayer.allowButton(Button.PRIMARY_FIRE + Button.SECONDARY_FIRE + Button.ABILITY_1 + Button.ABILITY_2 + Button.ULTIMATE + Button.INTERACT + Button.JUMP + Button.CROUCH + Button.MELEE + Button.RELOAD)
-  eventPlayer.clearStatusEffect(Status.PHASED_OUT)
-  eventPlayer.clearStatusEffect(Status.ROOTED)
-  eventPlayer.setStatusEffect(null, Status.UNKILLABLE, 5)
-  eventPlayer.enablePlayerCollision()
+  @Condition not eventPlayer.isReady
+  waitUntil(distance(eventPlayer, vect(-27.33, -1.94, -12.68)) < 6)
 
   eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = true
 
+  while not eventPlayer.isReady: 
+    if distance(eventPlayer, vect(-27.33, -1.94, -12.68)) > 6:
+      eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
+      eventPlayer.isReady = true
+    wait(1)
 
 rule "Late joiner catchup after round 15, 25, 50":
   @Event playerJoined
@@ -119,16 +91,3 @@ rule "Late joiner catchup after round 15, 25, 50":
 rule "All Teams: Player left Match, destroy hud text":
   @Event playerLeft
   destroyHudText(eventPlayer.HUDs[eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT]])
-
-rule "Teleport from Spawn Room":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, vect(101.397, 14.21, -110.834)) < 14
-  
-  wait(0.5)
-  if not RULE_CONDITION:
-      return
-  eventPlayer.teleport(vect(-27.412, 2, -12.564))
-  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), vect(-12.858, 3.32, -17.254)), 100000)
-  wait(0.1)
-  eventPlayer.stopFacing()

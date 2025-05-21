@@ -25,6 +25,8 @@ rule "[debug] User starting stats":
   # eventPlayer.healingBoostPercent += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
+  wait()
+  heal(eventPlayer, null, INFINITY)
 
 rule "[debug] Charge ultimate":
   @Event eachPlayer
@@ -35,8 +37,8 @@ rule "[debug] Charge ultimate":
 
 
 rule "[debug] debug objects":
-  debug(spawnPointsList)
-
+  # debug(spawnPointsList)
+  debug(hostPlayer.purchasedHeroes)
 
 # rule "[debug] Kill random zombie":
 #   @Event eachPlayer
