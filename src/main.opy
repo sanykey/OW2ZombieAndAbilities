@@ -3,21 +3,13 @@
 #!include "settings.opy"
 #!include "utils.opy"
 #!include "compressed vectors.opy"
-
-rule "Game init":
-  roundNumber = 0
-  hiddenVector = vect(500, 25, 500)
-  roundRemainingBots = 0
-  unlockedLocations = 0
-  spawnPointsList = []
-  matchIsOver = false
-  isGameStarted = false
-
-#!include "player joined.opy"
-# #!include "ally bot.opy"
 #!include "workshop settings.opy"
 
+#!include "player joined.opy"
+
+
 #!include "3p camera.opy"
+#!include "switch hero.opy"
 #!include "buy hero.opy"
 #!include "buy hero stats.opy"
 #!include "hero abilities.opy"
@@ -26,6 +18,7 @@ rule "Game init":
 
 #!include "player revive.opy"
 #!include "secret shop.opy"
+#!include "hero text macro.opy"
 #!include "hud.opy"
 #!include "damage and healing.opy"
 #!include "money.opy"
@@ -33,6 +26,9 @@ rule "Game init":
 
 #!include "match.opy"
 
+# #!include "ally bot.opy"
+
+#/*
 #!include "bots/zombie events.opy"
 #!include "bots/zombie behavior.opy"
 #!include "bots/zombie spawn points.opy"
@@ -42,7 +38,9 @@ rule "Game init":
 #!include "bots/echo.opy"
 #!include "bots/rounds.opy"
 #!include "bots/fake death and respawn.opy"
+#*/
 
+#/*
 #!include "portal.opy"
 #!include "heroes abilities/all.opy"
 #!include "heroes abilities/dva.opy"
@@ -60,10 +58,12 @@ rule "Game init":
 #!include "heroes abilities/ana.opy"
 #!include "heroes abilities/mccree.opy"
 #!include "heroes abilities/kiriko.opy"
+#*/
 
 #!include "debug/utils.opy"
 #!include "debug/other.opy"
-
+/*
 #!include "debug/noclip.opy"
 #!include "debug/positions measuring.opy"
 #!include "debug/vector list.opy"
+#*/

@@ -12,8 +12,8 @@ rule "[Symmetra] init":
   @Condition eventPlayer.getHero() == Hero.SYMMETRA
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg91bbd1FF>Symmetra</fg>:\n
+  eventPlayer.heroInfoVertFix0 = -3
+  eventPlayer.heroInfoText0 = "{} <fg91bbd1FF>Symmetra</fg>:\n
   {} {}Photon barrier{}:
     - Pushes back enemies and takes damage on contact.
     - On deployment, deals damage to nearby enemies equal to 50% of their maximum health..

@@ -15,17 +15,17 @@ globalvar createDummyI
 
 globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
-globalvar roundNumber
+globalvar roundNumber = 0
 
 globalvar zombiesflyIOnandOff
 globalvar teamShields
 globalvar teamArmor
 globalvar heroesShopData
-globalvar matchIsOver
-globalvar unlockedLocations
+globalvar matchIsOver = false
+globalvar unlockedLocations = 0
 globalvar orbs_arr
-globalvar hiddenVector
-globalvar roundRemainingBots
+globalvar hiddenVector = vect(500, 25, 500)
+globalvar roundRemainingBots = 0
 globalvar orbs_vectors_arr
 globalvar vipPlayers # List of players who received special privileges
 globalvar isBotsDisabled
@@ -39,10 +39,10 @@ globalvar temp3
 globalvar zombieStats
 globalvar heroesList
 globalvar zombieRespawnI
-globalvar isGameStarted
+globalvar isGameStarted = false
 globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
-globalvar spawnPointsList
+globalvar spawnPointsList = []
 globalvar botSniperPositions
 
 # [Bot fake death]:
@@ -103,6 +103,14 @@ playervar damageAssitsToSlot
 playervar posBeforeChangeHero
 playervar purchasedHeroes
 
+# Hero Info:
+playervar heroInfoText0
+playervar heroInfoVertFix0
+playervar heroInfoHorFix0
+playervar heroInfoText1
+playervar heroInfoVertFix1
+playervar heroInfoHorFix1
+
 # [Bot fake death]:
 playervar kills # kills zombies stat for players 
 playervar lastKillTime # for kill icon near scope
@@ -116,8 +124,6 @@ playervar turretDamageTimeToSlot
 playervar lastCcAttacker
 playervar lastCcAttackTime
 playervar lastCcWasInAir
-
-playervar talents
 
 playervar HUDs
 playervar hasBadStatus

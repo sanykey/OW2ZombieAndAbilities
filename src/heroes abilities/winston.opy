@@ -10,8 +10,8 @@ rule "[Winston] init":
   @Condition eventPlayer.getHero() == Hero.WINSTON
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fga0a9baFF>Winston</fg>:\n
+  eventPlayer.heroInfoVertFix0 = -3
+  eventPlayer.heroInfoText0 = "{} <fga0a9baFF>Winston</fg>:\n
   {} {}Barrier projector{}:
       - Pushes out enemies and takes damage on contact.
       - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.

@@ -1,23 +1,6 @@
 #!mainFile "main.opy"
 
 #!define BUY_HERO_LEN 43
-
-def openSwitchHeroHud():
-  @Name "Open Switch hero hud"
-
-  eventPlayer.posBeforeChangeHero = eventPlayer.getPosition()
-  eventPlayer.setRespawnTime(0)
-  eventPlayer.stopForcingCurrentHero()
-  eventPlayer.setAllowedHeroes(getAllHeroes().exclude(eventPlayer.getHero()))
-  wait()
-  eventPlayer.setAllowedHeroes(eventPlayer.purchasedHeroes)
-
-  # eventPlayer.resetHeroAvailability()
-  waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  eventPlayer.teleport(eventPlayer.posBeforeChangeHero)
-  eventPlayer.setRespawnTime(INFINITY)
-  eventPlayer.posBeforeChangeHero = false
-
 rule "Create hero buy positions":
   heroesList = [Hero.DVA]
   heroesList.append(random.shuffle(getAllHeroes().exclude(Hero.DVA))) # 43 heroes
@@ -55,47 +38,73 @@ rule "Create hero buy positions":
     )
     # createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, heroesShopData[I][1], 1.7, EffectReeval.VISIBILITY)
 
+
 rule "Buy hero":
   @Event eachPlayer
   @Team 1
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
 
   for I in range(len(heroesShopData)):
-    # Create tip effects
-    if distance(eventPlayer, heroesShopData[I][true]) <= 1.7 and eventPlayer.interactZoneVect != heroesShopData[I][true]: 
-      eventPlayer.interactZoneVect = heroesShopData[I][true]
-      createInWorldText(
-        getPlayersInRadius(eventPlayer.interactZoneVect, 4, Team.1),
-        "Press {}".format(inputBindingString(Button.INTERACT)),
-        eventPlayer.interactZoneVect + Vector.DOWN * 0.1,
-        1.3,
-        Clip.SURFACES,
-        WorldTextReeval.VISIBILITY_AND_STRING
-      )
-      eventPlayer.interactZoneText = getLastCreatedText()
-      createEffect(eventPlayer, Effect.RING, Color.AQUA, eventPlayer.interactZoneVect, 1.7, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-      eventPlayer.interactZoneEffect = getLastCreatedEntity()
-    # Destroy tip effect
-    elif eventPlayer.interactZoneVect == heroesShopData[I][true] and distance(eventPlayer, heroesShopData[I][true]) > 1.7:
-      destroyInWorldText(eventPlayer.interactZoneText)
-      destroyEffect(eventPlayer.interactZoneEffect)
-      eventPlayer.interactZoneVect = false
-
-    # buy
     if (
-      eventPlayer.isHoldingButton(Button.INTERACT) and
-      distance(eventPlayer, heroesShopData[I][true]) <= 1.7 and
+      distance(eventPlayer, heroesShopData[I][1]) <= 1.7 and
       eventPlayer.getCurrentHero() != heroesShopData[I][0] and
       eventPlayer.money >= heroesShopData[I][2]
     ):
       eventPlayer.startForcingHero(heroesShopData[I][0])
       playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
       playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)
+
       if not heroesShopData[I][0] in eventPlayer.purchasedHeroes == true:
         eventPlayer.money -= heroesShopData[I][2]
         eventPlayer.purchasedHeroes.append(heroesShopData[I][0])
+      
       wait(0.25)
       heal(eventPlayer, null, INFINITY)
+      break
 
-  wait(0.1)
-  if ruleCondition:
-    loop()
+
+
+# rule "Buy hero":
+#   @Event eachPlayer
+#   @Team 1
+
+#   for I in range(len(heroesShopData)):
+#     # Create tip effects
+#     if distance(eventPlayer, heroesShopData[I][true]) <= 1.7 and eventPlayer.interactZoneVect != heroesShopData[I][true]: 
+#       eventPlayer.interactZoneVect = heroesShopData[I][true]
+#       createInWorldText(
+#         getPlayersInRadius(eventPlayer.interactZoneVect, 4, Team.1),
+#         "Press {}".format(inputBindingString(Button.INTERACT)),
+#         eventPlayer.interactZoneVect + Vector.DOWN * 0.1,
+#         1.3,
+#         Clip.SURFACES,
+#         WorldTextReeval.VISIBILITY_AND_STRING
+#       )
+#       eventPlayer.interactZoneText = getLastCreatedText()
+#       createEffect(eventPlayer, Effect.RING, Color.AQUA, eventPlayer.interactZoneVect, 1.7, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+#       eventPlayer.interactZoneEffect = getLastCreatedEntity()
+#     # Destroy tip effect
+#     elif eventPlayer.interactZoneVect == heroesShopData[I][true] and distance(eventPlayer, heroesShopData[I][true]) > 1.7:
+#       destroyInWorldText(eventPlayer.interactZoneText)
+#       destroyEffect(eventPlayer.interactZoneEffect)
+#       eventPlayer.interactZoneVect = false
+
+#     # buy
+#     if (
+#       eventPlayer.isHoldingButton(Button.INTERACT) and
+#       distance(eventPlayer, heroesShopData[I][true]) <= 1.7 and
+#       eventPlayer.getCurrentHero() != heroesShopData[I][0] and
+#       eventPlayer.money >= heroesShopData[I][2]
+#     ):
+#       eventPlayer.startForcingHero(heroesShopData[I][0])
+#       playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
+#       playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)
+#       if not heroesShopData[I][0] in eventPlayer.purchasedHeroes == true:
+#         eventPlayer.money -= heroesShopData[I][2]
+#         eventPlayer.purchasedHeroes.append(heroesShopData[I][0])
+#       wait(0.25)
+#       heal(eventPlayer, null, INFINITY)
+
+#   wait(0.1)
+#   if ruleCondition:
+#     loop()

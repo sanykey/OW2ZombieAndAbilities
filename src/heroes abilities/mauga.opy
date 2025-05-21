@@ -11,8 +11,8 @@ rule "[Mauga] init":
   @Team 1
   @Condition eventPlayer.getHero() == Hero.MAUGA
 
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgdc847dFF>Mauga</fg>:\n
+  eventPlayer.heroInfoVertFix0 = -3
+  eventPlayer.heroInfoText0 = "{} <fgdc847dFF>Mauga</fg>:\n
   {} {}Cage fight{}:
     - Slows enemies within the ability’s radius by 75%.
     - Pushes back enemies outside the barrier and takes damage on contact.

@@ -33,8 +33,8 @@ rule "[DVA] Init":
 
   wait(1) # waiting for the previous hero to clear hero data
 
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 1
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fged93c7FF>DVA</fg>:\n
+  eventPlayer.heroInfoVertFix0 = 1
+  eventPlayer.heroInfoText0 = "{} <fged93c7FF>DVA</fg>:\n
   {} {}Slide{}: 
       - Start sliding in the direction you're moving. Press Jump to trigger a high-jump.\n\n
   About vanilla Perks:

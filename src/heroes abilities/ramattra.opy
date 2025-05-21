@@ -19,8 +19,8 @@ rule "[Ramattra] init":
   @Condition eventPlayer.getHero() == Hero.RAMATTRA
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = -3
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg9d8cd0FF>Rammatra</fg>:\n
+  eventPlayer.heroInfoVertFix0 = -3
+  eventPlayer.heroInfoText0 = "{} <fg9d8cd0FF>Rammatra</fg>:\n
   {} {}Void barrier{}:
       - Pushes back enemies and takes damage on contact.
       - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.

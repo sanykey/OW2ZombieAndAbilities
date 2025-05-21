@@ -2,12 +2,12 @@
 
 def clearHeroInfo():
   @Name "Subroutine: Clear hero info"
-  eventPlayer.state[SI.HERO_INFO_TEXT] = null
-  eventPlayer.state[SI.HERO_INFO_TEXT2] = null
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3
-  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX] = 9
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] = 3.5
-  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 11
+  eventPlayer.heroInfoText0 = null
+  eventPlayer.heroInfoText1 = null
+  eventPlayer.heroInfoVertFix0 = 3
+  eventPlayer.heroInfoHorFix0 = 9
+  eventPlayer.heroInfoVertFix1 = 3.5
+  eventPlayer.heroInfoHorFix1 = 11
 
 rule "Init hud hero icons of players and how much money they have":
   # zombies status hud (stats and remaining)

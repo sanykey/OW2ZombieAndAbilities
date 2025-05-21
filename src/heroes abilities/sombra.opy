@@ -6,8 +6,8 @@ rule "[Sombra] Init":
   @Condition eventPlayer.getHero() == Hero.SOMBRA
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 1
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg765dbdFF>Sombra</fg>:\n
+  eventPlayer.heroInfoVertFix0 = 1
+  eventPlayer.heroInfoText0 = "{} <fg765dbdFF>Sombra</fg>:\n
   <TX C0000000000A6B6> <fg765dbdFF>Stealth:</fg>
       - Enemies will see you if you get too close in their line of sight
         (you can approach from behind undetected).

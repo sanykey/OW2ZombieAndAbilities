@@ -34,8 +34,8 @@ rule "[Juno] init":
   eventPlayer.juno_rift1_destination = vect(0, 1000, 0)
   eventPlayer.juno_rift2_destination = vect(0, 1000, 0)
 
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 2
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg721fa3FF>Juno</fg>:\n
+  eventPlayer.heroInfoVertFix0 = 2
+  eventPlayer.heroInfoText0 = "{} <fg721fa3FF>Juno</fg>:\n
   {} {}Glide Boost{}:
     - Duration increased 4 → 6 secs\n\n
   {} {}Orbital ray{}:
@@ -62,9 +62,9 @@ rule "[Juno] init":
     "</fg>"
   )
 
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] = 3.5
-  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 11
-  eventPlayer.state[SI.HERO_INFO_TEXT2] = "
+  eventPlayer.heroInfoVertFix1 = 3.5
+  eventPlayer.heroInfoHorFix1 = 11
+  eventPlayer.heroInfoText1 = "
   <TX C0000000004E37B> <fg721fa3FF>Martian overboots</fg>:
     - Jump strength and levitation are increased\n\n
   " 

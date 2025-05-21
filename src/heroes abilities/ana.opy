@@ -5,8 +5,8 @@ rule "[Ana] init":
   @Team 1
   @Condition eventPlayer.getHero() == Hero.ANA
 
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 2
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fg6e89b1FF>Ana</fg>:\n
+  eventPlayer.heroInfoVertFix0 = 2
+  eventPlayer.heroInfoText0 = "{} <fg6e89b1FF>Ana</fg>:\n
   {} {}Sleep dart{}:
     - Hitting an enemy puts other enemies within a 3-meter radius to sleep.\n\n
   {} <fg6e89b1FF>Biotic gredane</fg>:

@@ -22,9 +22,9 @@ rule "[Cassydy] Init":
   @Condition eventPlayer.getHero() == Hero.CASSIDY
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3
-  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX] = 8
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgad5a5fFF>Cassidy</fg>:\n
+  eventPlayer.heroInfoVertFix0 = 3
+  eventPlayer.heroInfoHorFix0 = 8
+  eventPlayer.heroInfoText0 = "{} <fgad5a5fFF>Cassidy</fg>:\n
   {} <fgad5a5fFF>Peacekeeper</fg>:
       - Alternate fire pushes enemies back.\n\n
   {} <fgad5a5fFF>Combat Roll</fg>:
@@ -41,9 +41,9 @@ rule "[Cassydy] Init":
     abilityIconString(Hero.CASSIDY, Button.ABILITY_2)
   )
 
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] = 4.7
-  eventPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] = 9.5
-  eventPlayer.state[SI.HERO_INFO_TEXT2] = "
+  eventPlayer.heroInfoVertFix1 = 4.7
+  eventPlayer.heroInfoHorFix1 = 9.5
+  eventPlayer.heroInfoText1 = "
   {} <fgad5a5fFF>Deadeye</fg>:
       - On activation, freezes enemies in your line of sight for 2.5 seconds.\n\n
   {} NEW! <fgad5a5fFF>Lasso</fg>:

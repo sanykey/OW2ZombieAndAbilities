@@ -12,17 +12,8 @@ rule "[Widowmaker] Talent texts":
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
 
   wait(1) # waiting for the previous hero to clear hero data
-  # todo: debug
-  eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] = true
-  eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] = true
-  eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] = true
-  eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] = true
-  eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] = true
-  eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] = true
-  eventPlayer.talents[TI.WIDOWMAKER_TRACKER_VENOM] = true
-
-  eventPlayer.state[SI.HERO_INFO_VERTICAL_FIX] = 3
-  eventPlayer.state[SI.HERO_INFO_TEXT] = "{} <fgA686ABFF>Widowmaker</fg>:\n
+  eventPlayer.heroInfoVertFix0 = 3
+  eventPlayer.heroInfoText0 = "{} <fgA686ABFF>Widowmaker</fg>:\n
   {} <fgA686ABFF>Widow's Kiss</fg>:
       - Scoped shots reveals enemies ({} seconds).
       - Fully charged scoped shots pierce through walls and one enemy.
@@ -51,7 +42,6 @@ rule "[Widowmaker] Talent texts":
 rule "[Widowmaker] Party Favours":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
   
   hudText(
@@ -76,7 +66,6 @@ rule "[Widowmaker] Party Favours - Deplete hook charge":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
   @Condition eventPlayer.isUsingAbility1() == true
   
   waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
@@ -92,7 +81,6 @@ rule "[Widowmaker] Party Favours - Recharge hook ":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_PARTY_FAMOURS] == true
   @Condition eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] < 1
   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
   
@@ -114,7 +102,6 @@ rule "[Widowmaker] Falling stars":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_FALLING_STARS] == true
   @Condition eventPlayer.isUsingAbility1() == true
   @Condition eventPlayer.getSpeed() >= 20
   
@@ -131,7 +118,6 @@ rule "[Widowmaker] Silk web":
   @Hero widowmaker
   @Team 1
   @Condition eventPlayer.isUsingAbility1() == true
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_SILK_WEB] == true
   
   waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
   if not eventPlayer.isHoldingButton(Button.CROUCH):
@@ -155,7 +141,6 @@ rule "[Widowmaker] Phantom bullets headshot hud":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
 
   createInWorldText(
     eventPlayer if eventPlayer.heroState[WIDOWMAKER_SI.LAST_HEADSHOT] > getTotalTimeElapsed() else null,
@@ -183,7 +168,7 @@ rule "[Widowmaker] Phantom bullets headshot hud":
   )
   eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_CHARGE] = getLastCreatedText()
 
-  waitUntil(not eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] or eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
+  waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
   destroyInWorldText(eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_HIT])
   destroyHudText(eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_CHARGE])
 
@@ -193,7 +178,6 @@ rule "[Widowmaker] Phantom bullets - Aiming through walls":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == false
   @Condition len([player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()]) > 0
@@ -217,7 +201,6 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
   @Team 1
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == true
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_PHANTOM_BULLETS] == true
   @Condition eventPlayer.raycast[RI.FACING_DIRECTION] == true
 
   if eventPlayer.widowmakerChargeShot < 100:
@@ -287,7 +270,6 @@ rule "[Widowmaker] Felt More Alive":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_FELT_MORE_ALIVE] == true
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isInAir() == true
   @Condition eventPlayer.heroState[WIDOWMAKER_SI.SILK_WEB] == false
@@ -300,7 +282,6 @@ rule "[Widowmaker] Felt More Alive":
 rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
   @Event playerTookDamage
   @Condition attacker.getCurrentHero() == Hero.WIDOWMAKER
-  @Condition attacker.talents[TI.WIDOWMAKER_TRACKER_VENOM] == true
   @Condition eventAbility == Button.ABILITY_2
   
   victim.revealed = REVEAL_DURATION + getTotalTimeElapsed()
@@ -312,7 +293,6 @@ rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
 rule "[Widowmaker] Baiser De Soie":
   @Event playerDealtDamage
   @Hero widowmaker
-  @Condition eventPlayer.talents[TI.WIDOWMAKER_BRAISER_DE_SOIE] == true
   @Condition eventAbility == Button.PRIMARY_FIRE
   @Condition eventAbility == Button.SECONDARY_FIRE
 
