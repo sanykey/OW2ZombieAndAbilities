@@ -20,6 +20,7 @@ rule "Waiting for players ready":
 rule "Match end":
   @Condition not isDebugAutoRespawn
   @Condition isGameStarted
+  @Condition getNumberOfPlayers() > 1
   @Condition all(
     [player.isDead() or not player.hasSpawned() for player in getPlayers(Team.1)]
   )

@@ -7,6 +7,7 @@ rule "Round start":
   @Condition isGameStarted == true
   @Condition roundRemainingBots <= 0
   @Condition matchIsOver == false
+  @Condition not isBotsDisabled
   
   roundNumber += 1
   bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))

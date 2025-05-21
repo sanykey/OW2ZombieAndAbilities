@@ -25,7 +25,7 @@ def botFakeDeathRespawn():
   # Play teleport effects:
   playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR, Color.TEAM_2, eventPlayer.getEyePosition(), 1)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
-  botsDeathPlaceIcons[eventPlayer.getSlot()] = eventPlayer.getPosition()
+  # botsDeathPlaceIcons[eventPlayer.getSlot()] = eventPlayer.getPosition()
 
   # Respawn if there are available roundRemainingBots slots; otherwise, send to base:
   eventPlayer.list = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
@@ -149,20 +149,27 @@ def botFakeDeathHandle():
 
   botFakeDeathRespawn()
 
-rule "[Bot fake death] Create bots death place icons and last zombies icons":
-  botsDeathPlaceIcons = []
-  # Create bots death place icons
-  for I in range(wSettingsMaxZombieBots):
-    botsDeathPlaceIcons[I] = hiddenVector
-    createInWorldText(
-      getPlayers(Team.1),
-      "<TX C0000000000B667>", # <TX C0000000000B666> <TX C0000000001C365> <TX C0000000002178B>
-      botsDeathPlaceIcons[evalOnce(I)],
-      10,
-      Clip.SURFACES,
-      WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
-      color=rgb(false,false,false,95)
-    )
+# rule "[Bot fake death] Create bots death place icons and last zombies icons":
+#   botsDeathPlaceIcons = []
+#   # Create bots death place icons
+#   for I in range(wSettingsMaxZombieBots):
+#     botsDeathPlaceIcons[I] = hiddenVector
+#     createInWorldText(
+#       getPlayers(Team.1),
+#       "<TX C0000000000B667>", # <TX C0000000000B666> <TX C0000000001C365> <TX C0000000002178B>
+#       botsDeathPlaceIcons[evalOnce(I)],
+#       10,
+#       Clip.SURFACES,
+#       WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
+#       color=rgb(false,false,false,95)
+#     )
+
+rule "[Bot fake death] clear effects for destroed dummy bots":
+  @Event playerLeft
+  @Condition getNumberOfPlayers(Team.2) < wSettingsMaxZombieBots
+  
+  for lastZombiesI in range(LAST_ZOMBIES_ICONS_AMOUNT):
+    destroyIcon(lastZombiesIcons[lastZombiesI])
 
 # Bots shouldn't die (Bot fake death), but just in case, let's keep an eye on the event
 rule "[Bot fake death] Bot died":
@@ -194,7 +201,7 @@ rule "Setup created bots":
   wait()
   eventPlayer.isReady = true
 
-  # debug:
+  # [debug]:
   # createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.RED)
   # wait()
   # createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
@@ -224,6 +231,7 @@ rule "Create icons for last zombies":
       if not lastZombiesList[lastZombiesI].lastZombieIcon:
         createIcon(getPlayers(Team.1), evalOnce(lastZombiesList[lastZombiesI]), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
         lastZombiesList[lastZombiesI].lastZombieIcon = getLastCreatedEntity()
+        lastZombiesIcons[lastZombiesI] = getLastCreatedEntity() # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
 
   wait(3)
   loop()

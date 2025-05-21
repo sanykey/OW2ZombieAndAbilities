@@ -5,9 +5,11 @@
 globalvar botsHealthBoostPercent
 globalvar botsDamageBoostPercent
 
-# Loop vars for creating last zombies icons
+# Loop vars for creating last zombies icons:
 globalvar lastZombiesList
 globalvar lastZombiesI
+
+globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
 
 globalvar createDummyI
 

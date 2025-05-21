@@ -15,8 +15,6 @@ rule "Game init":
 
 #!include "player joined.opy"
 # #!include "ally bot.opy"
-#!include "debug utils.opy"
-#!include "debug.opy"
 #!include "workshop settings.opy"
 
 #!include "3p camera.opy"
@@ -63,3 +61,9 @@ rule "Game init":
 #!include "heroes abilities/ana.opy"
 #!include "heroes abilities/mccree.opy"
 #!include "heroes abilities/kiriko.opy"
+
+#!include "debug/utils.opy"
+#!include "debug/other.opy"
+#!include "debug/noclip.opy"
+#!include "debug/positions measuring.opy"
+#!include "debug/vector list.opy"
