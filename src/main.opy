@@ -32,7 +32,7 @@
 #!include "match.opy"
 
 
-/*
+#/*
 #!include "bots/zombie events.opy"
 #!include "bots/zombie behavior.opy"
 
@@ -44,7 +44,7 @@
 #!include "bots/fake death and respawn.opy"
 #*/
 
-/*
+#/*
 #!include "portal.opy"
 #!include "heroes abilities/all.opy"
 #!include "heroes abilities/dva.opy"
