@@ -8,6 +8,7 @@ rule "Waiting for players ready":
 
   wait(0.5, Wait.ABORT_WHEN_FALSE)
   smallMessage(getAllPlayers(), "Match begins!")
+  destroyHudText(delayerStartHudId)
   isGameStarted = true
 
 rule "Match end":

@@ -91,4 +91,4 @@ rule "Late joiner catchup after round 15, 25, 50":
 
 rule "All Teams: Player left Match, destroy hud text":
   @Event playerLeft
-  destroyHudText(eventPlayer.HUDs[eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT]])
+  destroyHudText(eventPlayer.playerListHudId)

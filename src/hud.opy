@@ -9,7 +9,7 @@ def clearHeroInfo():
   eventPlayer.heroInfoVertFix1 = 3.5
   eventPlayer.heroInfoHorFix1 = 11
 
-rule "Init hud hero icons of players and how much money they have":
+rule "Init huds":
   # zombies status hud (stats and remaining)
   hudText(
     localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
@@ -138,7 +138,7 @@ rule "Init hud hero icons of players and how much money they have":
 
   # delayed start
   hudHeader(
-    localPlayer if not isGameStarted and not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
+    localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
     "\n\u2001{0}\n\n\u2001Hold {1} to Start\u2001\n".format(
       "Zombie survival", inputBindingString(Button.INTERACT)
     ), 
@@ -147,22 +147,23 @@ rule "Init hud hero icons of players and how much money they have":
     Color.WHITE,
     HudReeval.VISIBILITY_AND_STRING
   )
+  delayerStartHudId = getLastCreatedText()
 
   # hotkey tip: open hero talents description 
-  hudText(
-    localPlayer,
-    null,
-    "Hold {0} + {1} to view hero info and help".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)) if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == false else (
-      "Press {0} to close hero info and help".format(inputBindingString(Button.INTERACT))
-    ),
-    null,
-    HudPosition.ACTUALLY_LEFT,
-    0,
-    null,
-    rgb(241, 134, 39),
-    null,
-    HudReeval.VISIBILITY_STRING_AND_COLOR
-  )
+  # hudText(
+  #   localPlayer,
+  #   null,
+  #   "Hold {0} + {1} to view hero info and help".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)) if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == false else (
+  #     "Press {0} to close hero info and help".format(inputBindingString(Button.INTERACT))
+  #   ),
+  #   null,
+  #   HudPosition.ACTUALLY_LEFT,
+  #   0,
+  #   null,
+  #   rgb(241, 134, 39),
+  #   null,
+  #   HudReeval.VISIBILITY_STRING_AND_COLOR
+  # )
 
 
 rule "Open hero talents info hud":
@@ -223,7 +224,7 @@ rule "Players list, upgrades and money":
     Color.WHITE,
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
-  eventPlayer.HUDs[HI.PLAYER_LIST_STATUS_TEXT] = getLastCreatedText()
+  eventPlayer.playerListHudId = getLastCreatedText()
 
 rule "[Tips & Tricks]":
   @Event eachPlayer
