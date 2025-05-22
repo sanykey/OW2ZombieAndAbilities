@@ -47,7 +47,8 @@ rule "[debug] init positions measuring effects":
 rule "set pos1":
   @Event eachPlayer
   @Condition eventPlayer == hostPlayer
-  @Condition eventPlayer.isHoldingButton(Button.ABILITY_1)
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+  @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE)
   
   debugPos1 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 1000, getAllPlayers(), eventPlayer, true).getHitPosition()
   playEffect(eventPlayer, DynamicEffect.SOMBRA_TRANSLOCATOR_REAPPEAR_SOUND, Color.TEAM_1, debugPos1, 100)
@@ -57,7 +58,8 @@ rule "set pos1":
 rule "set pos2":
   @Event eachPlayer
   @Condition eventPlayer == hostPlayer
-  @Condition eventPlayer.isHoldingButton(Button.ABILITY_2)
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+  @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
   
   debugPos2 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 1000, getAllPlayers(), eventPlayer, true).getHitPosition()
   playEffect(eventPlayer, DynamicEffect.SOMBRA_TRANSLOCATOR_REAPPEAR_SOUND, Color.TEAM_1, debugPos2, 100)
