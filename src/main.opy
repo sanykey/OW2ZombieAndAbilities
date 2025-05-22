@@ -10,24 +10,27 @@
 #!include "3p camera.opy"
 #!include "switch hero.opy"
 
-# 46 texts:
 #!include "buy hero.opy" 
 #!include "zones.opy"
+#!include "buy hero upgrades.opy" 
+#!include "hero abilities.opy" 
+# 4 texts:
+#!include "locked area.opy" 
 
-##!include "buy hero stats.opy" 6 texts
-##!include "hero abilities.opy" 
-##!include "locked area.opy" # 4 texts
-##!include "restricted areas.opy" # 3 texts
+# 3 texts:
+#!include "restricted areas.opy" 
 
-##!include "player revive.opy"
-##!include "secret shop.opy"
-##!include "hero text macro.opy"
-##!include "hud.opy" # 12 texts?
-##!include "damage and healing.opy"
-##!include "money.opy"
-##!include "orbs.opy"
-##!include "match.opy"
-# #!include "ally bot.opy"
+#!include "player revive.opy"
+#!include "secret shop.opy"
+#!include "hero text macro.opy"
+# 12 texts?
+#!include "hud.opy" 
+
+#!include "damage and healing.opy"
+#!include "money.opy"
+#!include "orbs.opy"
+#!include "match.opy"
+
 
 /*
 #!include "bots/zombie events.opy"
@@ -64,8 +67,11 @@
 # 2 texts:
 #!include "debug/utils.opy"
 #!include "debug/other.opy"
-#/*
+/*
 #!include "debug/noclip.opy"
 #!include "debug/positions measuring.opy"
 #!include "debug/vector list.opy"
 #*/
+
+
+# #!include "ally bot.opy"

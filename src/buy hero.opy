@@ -1,16 +1,10 @@
 #!mainFile "main.opy"
 
-#!define BUY_HERO_LEN 43
-
 #!define BUY_HERO_OFFSET_A 0
-#!define BUY_HERO_OFFSET_B 7
-#!define BUY_HERO_OFFSET_C 14
-#!define BUY_HERO_OFFSET_D 28
-
-#!define BUY_HERO_LEN_A BUY_HERO_OFFSET_B
-#!define BUY_HERO_LEN_B BUY_HERO_OFFSET_C - BUY_HERO_OFFSET_B
-#!define BUY_HERO_LEN_C BUY_HERO_OFFSET_D - BUY_HERO_OFFSET_C
-#!define BUY_HERO_LEN_D BUY_HERO_LEN - BUY_HERO_OFFSET_D
+#!define BUY_HERO_OFFSET_B VL_BUY_HERO_SPOTS_A_LEN
+#!define BUY_HERO_OFFSET_E BUY_HERO_OFFSET_B + VL_BUY_HERO_SPOTS_B_LEN
+#!define BUY_HERO_OFFSET_I BUY_HERO_OFFSET_E + VL_BUY_HERO_SPOTS_E_LEN
+#!define BUY_HERO_OFFSET_H BUY_HERO_OFFSET_I + VL_BUY_HERO_SPOTS_I_LEN
 
 rule "Create hero buy positions":
   heroesList = [Hero.DVA]
@@ -22,12 +16,12 @@ rule "Create hero buy positions":
   for I in range(len(heroesList)):
     heroesShopData[I] = [
       heroesList[I],
-      vectList[I + VI.BUY_HERO_OFFSET],
+      vectList[I + VL_BUY_HERO_SPOTS_OFFSET],
       floor((
-        7000 if I == 0 else (
+        7000 if I == 0 else ( # DVA
           random.randint(1000, 3500) if I < BUY_HERO_OFFSET_B else (
-            random.randint(2500, 5000) if I < BUY_HERO_OFFSET_C else (
-              random.randint(4000, 8000) if I < BUY_HERO_OFFSET_D else (
+            random.randint(2500, 5000) if I < BUY_HERO_OFFSET_E else (
+              random.randint(4000, 8000) if I < BUY_HERO_OFFSET_I else (
                 random.randint(6000, 13000)
               )
             )

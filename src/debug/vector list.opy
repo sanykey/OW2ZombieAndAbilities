@@ -7,8 +7,8 @@ rule "[debug] Create debbugging vectors list":
   # change here:
   
   
-  for I in range(VI.BUY_HERO_OFFSET, VI.BUY_HERO_OFFSET + BUY_HERO_LEN):
-    debugVectsArr[I - VI.BUY_HERO_OFFSET] = vectList[I]
+  for I in range(VL_BUY_HERO_SPOTS_OFFSET, VL_BUY_HERO_SPOTS_OFFSET + VL_BUY_HERO_SPOTS_LEN):
+    debugVectsArr[I - VL_BUY_HERO_SPOTS_OFFSET] = vectList[I]
   
   
     # end change here:

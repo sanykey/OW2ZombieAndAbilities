@@ -17,6 +17,11 @@ globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
 globalvar roundNumber = 0
 
+globalvar shopState
+
+globalvar buyHeroUpgradesData
+globalvar buyHeroUpgradesEffectsIds = []
+
 globalvar zombiesflyIOnandOff
 globalvar teamShields
 globalvar teamArmor
@@ -31,7 +36,7 @@ globalvar vipPlayers # List of players who received special privileges
 globalvar isBotsDisabled
 globalvar vectList
 globalvar lockedAreaEffectsArr
-globalvar shopState
+
 globalvar teamScore
 globalvar temp1
 globalvar temp2
@@ -67,6 +72,8 @@ globalvar debugCurrentVectEffectArr
 globalvar debugIsNoclip
 globalvar debugPos1
 globalvar debugPos2
+globalvar debugPos3
+globalvar debugSize3 = 1
 
 # detecting turrents and Bob damage for Bot fake death
 globalvar turretsDamageOwners

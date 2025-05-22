@@ -1,25 +1,19 @@
 #!mainFile "main.opy"
 
-rule "Inite shop upgrades effects and text":
-  createEffect(getPlayers(Team.1), Effect.RING, Color.LIME_GREEN, vectList[VI.BUY_HP], 1.5, EffectReeval.VISIBILITY)
-  createEffect(getPlayers(Team.1), Effect.RING, Color.RED, vectList[VI.BUY_DAMAGE], 1.5, EffectReeval.VISIBILITY)
-  createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[VI.BUY_HEALING], 1.5, EffectReeval.VISIBILITY)
-  createInWorldText(getPlayers(Team.1), "HP (+7%): $2500 ", vectList[VI.BUY_HP], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.LIME_GREEN)
-  createInWorldText(getPlayers(Team.1), "Damage (+5%): $2500", vectList[VI.BUY_DAMAGE], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.RED)
-  createInWorldText(getPlayers(Team.1), "Healing Dealt (+5%): $2500", vectList[VI.BUY_HEALING], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.ORANGE)
-
-  createEffect(getPlayers(Team.1), Effect.RING, Color.ORANGE, vectList[VI.BUY_TEAM_ARMOR], 1.5, EffectReeval.VISIBILITY)
-  createEffect(getPlayers(Team.1), Effect.RING, Color.BLUE, vectList[VI.BUY_TEAM_SHIELDS], 1.5, EffectReeval.VISIBILITY)
-  createInWorldText(getPlayers(Team.1), "+50 Armor [Team]: $7500", vectList[VI.BUY_TEAM_ARMOR], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.ORANGE)
-  createInWorldText(getPlayers(Team.1), "+50 Shields [Team]: $7500", vectList[VI.BUY_TEAM_SHIELDS], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.BLUE)
-
-  createEffect(getPlayers(Team.1), Effect.RING, Color.WHITE, vectList[VI.CHANGE_HERO], 1.5, EffectReeval.VISIBILITY)
-  createInWorldText(getPlayers(Team.1), "Change to a purchased hero", vectList[VI.CHANGE_HERO], 1, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.WHITE)
+rule "Init buyHeroUpgradesData":
+  buyHeroUpgradesData = [
+    ["HP (+7%): $2500", Color.LIME_GREEN, vectList[VL_BUY_HP]],
+    ["Damage (+5%): $2500", Color.RED, vectList[VL_BUY_DAMAGE]],
+    ["Healing Dealt (+5%): $2500", Color.YELLOW, vectList[VL_BUY_HEALING]],
+    ["+50 Armor [Team]: $7500", Color.ORANGE, vectList[VL_BUY_TEAM_ARMOR]],
+    ["+50 Shields [Team]: $7500", Color.BLUE, vectList[VL_BUY_TEAM_SHIELDS]],
+    ["Change to a purchased hero", Color.WHITE, vectList[VL_CHANGE_HERO]]
+  ]
 
 rule "Change hero from shop":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[VI.CHANGE_HERO]) < 1.8
+  @Condition distance(eventPlayer, vectList[VL_CHANGE_HERO]) < 1.8
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 1)
@@ -30,7 +24,7 @@ rule "Change hero from shop":
 rule "Buy damage upgrade":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[VI.BUY_DAMAGE]) < 1.8
+  @Condition distance(eventPlayer, vectList[VL_BUY_DAMAGE]) < 1.8
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 2500
   
@@ -44,7 +38,7 @@ rule "Buy damage upgrade":
 rule "Buy health upgrade":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[VI.BUY_HP]) < 1.8
+  @Condition distance(eventPlayer, vectList[VL_BUY_HP]) < 1.8
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 2500
   
@@ -60,7 +54,7 @@ rule "Buy health upgrade":
 rule "Buy healing upgrade":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[VI.BUY_HEALING]) < 1.8
+  @Condition distance(eventPlayer, vectList[VL_BUY_HEALING]) < 1.8
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 2500
   
@@ -77,7 +71,7 @@ rule "Buy team shields":
   @Team 1
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition eventPlayer.money >= 7500
-  @Condition distance(eventPlayer, vectList[VI.BUY_TEAM_SHIELDS]) <= 1.5
+  @Condition distance(eventPlayer, vectList[VL_BUY_TEAM_SHIELDS]) <= 1.5
   @Condition unlockedLocations >= 3
   
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.BLUE, eventPlayer, 2)
@@ -94,7 +88,7 @@ rule "Buy team armor":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition distance(eventPlayer, vectList[VI.BUY_TEAM_ARMOR]) <= 1.5
+  @Condition distance(eventPlayer, vectList[VL_BUY_TEAM_ARMOR]) <= 1.5
   @Condition eventPlayer.money >= 7500
   @Condition unlockedLocations >= 3
 

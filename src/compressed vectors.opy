@@ -63,17 +63,26 @@ rule "Create location buy positions":
     vect(123.312, 10.5, -27.364), # SHOP_TELEPORTER_TEXT
     vect(123.312, 9.176, -27.364), # SHOP_TELEPORTER_RING
 
-    # Buy hero stats [49-54] len = 5
-    vect(-31.204, 7.8, -87.474), # BUY_HP
-    vect(-26.235, 7.8, -90.938), # BUY_DAMAGE
-    vect(-27.198, 7.8, -96.303), # BUY_HEALING
-    vect(-27.94, 7.8, -85.89), # BUY_TEAM_ARMOR
-    vect(-24.27, 7.8, -84.38), # BUY_TEAM_SHIELDS
-    vect(-21.08, 7.8, -82.96), # CHANGE_HERO
+    # Buy hero upgrades [49-54] len = 5
+    #!define VL_BUY_UPRADES_OFFSET 49
+    #!define VL_BUY_UPRADES_LEN 6
+    vect(-31.204, 7.8, -87.474),
+    vect(-26.235, 7.8, -90.938),
+    vect(-27.198, 7.8, -96.303),
+    vect(-27.94, 7.8, -85.89),
+    vect(-24.27, 7.8, -84.38),
+    vect(-21.08, 7.8, -82.96),
+    #!define VL_BUY_HP 49
+    #!define VL_BUY_DAMAGE 50
+    #!define VL_BUY_HEALING 51
+    #!define VL_BUY_TEAM_ARMOR 52
+    #!define VL_BUY_TEAM_SHIELDS 53
+    #!define VL_CHANGE_HERO 54
 
     # It is good to place the hero purchase vectors at a height of 50 units from the floor
-    # Buy hero [55-97] len = 43
-    #   zone A (len = 7):
+    #!define VL_BUY_HERO_SPOTS_OFFSET VL_BUY_UPRADES_OFFSET + VL_BUY_UPRADES_LEN
+    #   zone A:
+    #!define VL_BUY_HERO_SPOTS_A_LEN 7
     vect(-18.268, 0.50, -10.4), # Baby DVA
     vect(-2.191, 2.50, -38.067),
     vect(26.385, 4.51, -32.792),
@@ -81,7 +90,8 @@ rule "Create location buy positions":
     vect(27.171, 1.43, -12.287),
     vect(-4.685, 0.50, -8.427),
     vect(-16.322, 2.50, -31.226),
-    #   zone B (len = 7):
+    #   zone B:
+    #!define VL_BUY_HERO_SPOTS_B_LEN 7
     vect(12.129, 6.51, -90.424),
     vect(10.56, 11.5, -84.54),
     vect(12.919, 11.51, -100.131),
@@ -89,55 +99,79 @@ rule "Create location buy positions":
     vect(1.675, 6.5, -47.434),
     vect(-0.898, 4.69, -90.515),
     vect(-1.751, 7, -71.73),
-    #   zone C (len = 14):
+    #   zone E:
+    #!define VL_BUY_HERO_SPOTS_E_LEN 12
     vect(59.56, 7.22, -72.899),
     vect(55.848, 12.25, -78.688),
-    vect(59.273, 12.20, -59.882), # todo: replace
     vect(53.699, 18.54, -80.776),
     vect(58.868, 5.22, -91.486),
     vect(80.335, 13.18, -72.643),
     vect(79.002, 11.15, -110.348), 
-    vect(43.664, 5.73, -50.346), # todo: replace
     vect(56.188, 18.22, -110.215),
     vect(33.25, 10.52, -93.513),
     vect(36.879, 13.22, -105.779),
     vect(54.407, 21.5, -67.496),
     vect(102.662, 10.07, -91.232),
     vect(60.62, 7.22, -108.23),
-    #   zone D (len = 15):
-    vect(83, 16.22, -32),
+    #   zone I:
+    #!define VL_BUY_HERO_SPOTS_I_LEN 8
     vect(122.079, 11.22, -64.267),
-    vect(113.847, 11.22, -19.674),
-    vect(135.735, 11.22, -28.177),
-    vect(126.145, 11.22, -16.063),
     vect(108.546, 13.22, -55.139),
-    vect(122.424, 13.22, -6.63),
-    vect(133.977, 13.22, -9.824),
-    vect(109.456, 13.22, -24.316),
     vect(129.875, 15.24, -36.803),
-    vect(97.61, 16.22, -23.23),
-    vect(139.03, 12.22, -54.51),
-    vect(136.347, 12.22, -61.239),
     vect(142.02, 12.22, -43.53),
-    vect(130.268, 12.22, -57.335),
+    vect(136.33, 12.22, -62.21),
+    vect(138.12, 12.22, -55.53),
+    vect(142.26, 12.22, -39.43),
+    vect(111.64, 13.22, -59.40),
 
-    # spawn points detectors [98-104] len = 7:
-    vect(-6.965, 2.94, -7.146), # SPAWN_POINTS_DETECTOR_A
-    vect(13.044, 9.697, -73.344), # SPAWN_POINTS_DETECTOR_B
-    vect(-22.86, 8.08, -88.854), # SPAWN_POINTS_DETECTOR_C
-    vect(59.416, 19.498, -77.513), # SPAWN_POINTS_DETECTOR_D
-    vect(75.315, 22.594, -101.637), # SPAWN_POINTS_DETECTOR_E
-    vect(108.196, 14.309, -22.096), # SPAWN_POINTS_DETECTOR_F
-    vect(140.011, 12.178, -61.257), # SPAWN_POINTS_DETECTOR_G
+    #   zone H
+    #!define VL_BUY_HERO_SPOTS_H_LEN 9
+    vect(132.44, 11.22, 7.48),
+    vect(129.50, 11.22, 8.29),
+    vect(126.59, 11.22, 9.00),
+    vect(135.33, 11.22, 6.72),
+    vect(138.23, 11.22, 5.93),
+    vect(141.17, 11.22, 5.25),
+    vect(123.66, 11.22, 9.80),
+    vect(130.42, 11.22, -0.26),
+    vect(133.33, 11.22, -1.04),
 
-    # spawn points A [105-109] len = 5:
+    #!define VL_BUY_HERO_SPOTS_LEN VL_BUY_HERO_SPOTS_A_LEN + VL_BUY_HERO_SPOTS_B_LEN + VL_BUY_HERO_SPOTS_E_LEN + VL_BUY_HERO_SPOTS_I_LEN + VL_BUY_HERO_SPOTS_H_LEN
+
+    # map zones [98-105]:
+    #!define VL_ACTIVATE_ZONES_OFFSET VL_BUY_HERO_SPOTS_OFFSET + VL_BUY_HERO_SPOTS_LEN
+    #!define VL_ACTIVATE_ZONES_LEN 9
+    vect(-6.965, 2.94, -7.146),
+    vect(13.044, 9.697, -73.344),
+    vect(-22.86, 8.08, -88.854),
+    vect(59.416, 19.498, -77.513),
+    vect(75.315, 22.594, -101.637),
+    vect(108.196, 14.309, -22.096),
+    vect(140.011, 12.178, -61.257),
+    vect(144.10, 10.36, 31.35),
+    vect(129.36, 11.72, -49.72),
+    #!define VL_ACTIVATE_ZONE_DETECTOR_A 98
+    #!define VL_ACTIVATE_ZONE_DETECTOR_B 99
+    #!define VL_ACTIVATE_ZONE_DETECTOR_C 100
+    #!define VL_ACTIVATE_ZONE_DETECTOR_D 101
+    #!define VL_ACTIVATE_ZONE_DETECTOR_E 102
+    #!define VL_ACTIVATE_ZONE_DETECTOR_F 103
+    #!define VL_ACTIVATE_ZONE_DETECTOR_G 104
+    #!define VL_ACTIVATE_ZONE_DETECTOR_H 105
+    #!define VL_ACTIVATE_ZONE_DETECTOR_I 106
+
+    # spawn points A
+    #!define VL_SPAWN_POINTS_A_OFFSET VL_ACTIVATE_ZONES_OFFSET + VL_ACTIVATE_ZONES_LEN
+    #!define VL_SPAWN_POINTS_A_LEN 5
     vect(14.282, 26.122, -19.096),
     vect(-25.084, 25.057, -28.765),
     vect(-2.267, 19.938, -41.17),
     vect(5.665, 17.621, 2.067),
     vect(16.374, 13.098, -40.81),
 
-    # spawn points B [109-116] len = 8:
+    # spawn points B:
+    #!define VL_SPAWN_POINTS_B_OFFSET VL_SPAWN_POINTS_A_OFFSET + VL_SPAWN_POINTS_A_LEN
+    #!define VL_SPAWN_POINTS_B_LEN 8
     vect(15.598, 30.551, -60.258),
     vect(-6.03, 18.558, -47.35),
     vect(11.556, 20.229, -87.682),
@@ -147,10 +181,14 @@ rule "Create location buy positions":
     vect(38.069, 13.312, -50.538),
     vect(19.593, 10.464, -98.064),
 
-    # spawn points C [117] len = 1:
+    # spawn points C:
+    #!define VL_SPAWN_POINTS_C_OFFSET VL_SPAWN_POINTS_B_OFFSET + VL_SPAWN_POINTS_B_LEN
+    #!define VL_SPAWN_POINTS_C_LEN 1
     vect(74.194, 17.928, -49.807),
 
-    # spawn points D [118-124] len = 7:
+    # spawn points D:
+    #!define VL_SPAWN_POINTS_D_OFFSET VL_SPAWN_POINTS_C_OFFSET + VL_SPAWN_POINTS_C_LEN
+    #!define VL_SPAWN_POINTS_D_LEN 7
     vect(60.556, 9.729, -92.999),
     vect(57.692, 14.745, -78.916),
     vect(37.146, 27.607, -58.074),
@@ -159,14 +197,18 @@ rule "Create location buy positions":
     vect(36.546, 14.432, -106.335),
     vect(60.876, 8.672, -74.696),
 
-    # spawn points E [125-129] len = 5:
+    # spawn points E:
+    #!define VL_SPAWN_POINTS_E_OFFSET VL_SPAWN_POINTS_D_OFFSET + VL_SPAWN_POINTS_D_LEN
+    #!define VL_SPAWN_POINTS_E_LEN 5
     vect(94.023, 34.402, -65.749),
     vect(74.277, 14.12, -110.609),
     vect(90.938, 30.988, -109.069),
     vect(57.687, 21.96, -76.518),
     vect(63.86, 16.823, -100.725),
 
-    # spawn points F [130-135] len = 6:
+    # spawn points F:
+    #!define VL_SPAWN_POINTS_F_OFFSET VL_SPAWN_POINTS_E_OFFSET + VL_SPAWN_POINTS_E_LEN
+    #!define VL_SPAWN_POINTS_F_LEN 6
     vect(74.194, 17.928, -49.807),
     vect(124.358, 23.829, -26.451),
     vect(97.865, 22.892, -42.244),
@@ -175,6 +217,8 @@ rule "Create location buy positions":
     vect(142.909, 17.319, -45),
 
     # spawn points G [136-141] len = 6:
+    #!define VL_SPAWN_POINTS_G_OFFSET VL_SPAWN_POINTS_F_OFFSET + VL_SPAWN_POINTS_F_LEN
+    #!define VL_SPAWN_POINTS_G_LEN 6
     vect(74.194, 17, -49.807),
     vect(124.358, 23, -26.451),
     vect(97.865, 22, -42.244),
@@ -206,26 +250,3 @@ rule "Create location buy positions":
     SHOP_TELEPORTER_TEXT = 47
     SHOP_TELEPORTER_RING = 48
 
-    BUY_HP = 49
-    BUY_DAMAGE = 50
-    BUY_HEALING = 51
-    BUY_TEAM_ARMOR = 52
-    BUY_TEAM_SHIELDS = 53
-    CHANGE_HERO = 54
-    BUY_HERO_OFFSET = 55
-
-    SPAWN_POINTS_DETECTOR_A = 98
-    SPAWN_POINTS_DETECTOR_B = 99
-    SPAWN_POINTS_DETECTOR_C = 100
-    SPAWN_POINTS_DETECTOR_D = 101
-    SPAWN_POINTS_DETECTOR_E = 102
-    SPAWN_POINTS_DETECTOR_F = 103
-    SPAWN_POINTS_DETECTOR_G = 104
-
-    SPAWN_POINTS_A_OFFSET = 105
-    SPAWN_POINTS_B_OFFSET = 109
-    SPAWN_POINTS_C_OFFSET = 117
-    SPAWN_POINTS_D_OFFSET = 118
-    SPAWN_POINTS_E_OFFSET = 125
-    SPAWN_POINTS_F_OFFSET = 130
-    SPAWN_POINTS_G_OFFSET = 136

@@ -4,17 +4,9 @@ rule "[debug] init positions measuring effects":
   # positions and distance info for hostplayer and debug vects
   hudSubtext(
     hostPlayer,
-    "pos: {}".format(hostPlayer.getPosition()),
+    "pos: {}\neye pos: {}".format(hostPlayer.getPosition(), hostPlayer.getEyePosition()),
     HudPosition.RIGHT,
     -10,
-    Color.ROSE,
-    HudReeval.VISIBILITY_AND_STRING
-  )
-  hudSubtext(
-    hostPlayer,
-    "eye pos: {}".format(hostPlayer.getEyePosition()),
-    HudPosition.RIGHT,
-    -9,
     Color.ROSE,
     HudReeval.VISIBILITY_AND_STRING
   )
@@ -43,8 +35,10 @@ rule "[debug] init positions measuring effects":
   createEffect(localPlayer, Effect.SPHERE, Color.ROSE, debugPos2, 0.05, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   createBeam(localPlayer, Beam.TORBJORN_TURRET_SIGHT, debugPos2, debugPos1, Color.WHITE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
 
+  createEffect(localPlayer, Effect.SPHERE, Color.LIME_GREEN, debugPos3, debugSize3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createInWorldText(localPlayer, "Sphere: {}, size: {}".format(debugPos3, debugSize3), debugPos3, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.LIME_GREEN)
 
-rule "set pos1":
+rule "[debug] set ruler pos1":
   @Event eachPlayer
   @Condition eventPlayer == hostPlayer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
@@ -55,7 +49,7 @@ rule "set pos1":
   playEffect(eventPlayer, DynamicEffect.SIGMA_HYPERSPHERE_IMPLOSION, Color.TEAM_1, debugPos1, true)
 
 
-rule "set pos2":
+rule "[debug] set ruler pos2":
   @Event eachPlayer
   @Condition eventPlayer == hostPlayer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
@@ -64,3 +58,29 @@ rule "set pos2":
   debugPos2 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 1000, getAllPlayers(), eventPlayer, true).getHitPosition()
   playEffect(eventPlayer, DynamicEffect.SOMBRA_TRANSLOCATOR_REAPPEAR_SOUND, Color.TEAM_1, debugPos2, 100)
   playEffect(eventPlayer, DynamicEffect.SIGMA_HYPERSPHERE_IMPLOSION, Color.TEAM_1, debugPos2, true)
+
+
+rule "[debug] set shpere pos":
+  @Event eachPlayer
+  @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.ABILITY_2)
+  
+  debugPos3 = eventPlayer.getPosition()
+  playEffect(eventPlayer, DynamicEffect.SOMBRA_TRANSLOCATOR_REAPPEAR_SOUND, Color.TEAM_1, debugPos3, 100)
+  playEffect(eventPlayer, DynamicEffect.SIGMA_HYPERSPHERE_IMPLOSION, Color.TEAM_1, debugPos3, true)
+
+rule "[debug] set shpere size+":
+  @Event eachPlayer
+  @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.ABILITY_1)
+  
+  debugSize3 +=1
+  playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, null, eventPlayer, 100)
+
+rule "[debug] set shpere size-":
+  @Event eachPlayer
+  @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.JUMP)
+  
+  debugSize3 -=1
+  playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, null, eventPlayer, 100)
