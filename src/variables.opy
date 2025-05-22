@@ -42,8 +42,13 @@ globalvar zombieRespawnI
 globalvar isGameStarted = false
 globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
+
+
 globalvar spawnPointsList = []
+globalvar spawnPI
+
 globalvar botSniperPositions
+globalvar delayerStartHudId
 
 # [Bot fake death]:
 globalvar botsDeathPlaceIcons
@@ -102,6 +107,7 @@ playervar recentStackedDamageDealtToSlot
 playervar damageAssitsToSlot
 playervar posBeforeChangeHero
 playervar purchasedHeroes
+playervar playerListHudId
 
 # Hero Info:
 playervar heroInfoText0
@@ -287,37 +293,36 @@ enum TI:
 
 # for playervar HUDs
 enum HI:
-  REVEALED_ICON = 0
-  WALLHACK_HEADSHOT_ZONE = 1
-  WALLHACK_SHOT = 2
-  PLAYER_LIST_STATUS_TEXT = 8
-  WIDOWMAKER_PHANTOM_BULLET_HIT = 9
-  WIDOWMAKER_PARTY_FAMOURS = 10
-  WIDOWMAKER_PHANTOM_BULLET_CHARGE = 11
-  DEBUG = 3
-  DEBUG2 = 4
-  DEBUG3 = 5
-  DEBUG4 = 6
-  DEBUG5 = 7
+  REVEALED_ICON
+  WALLHACK_HEADSHOT_ZONE
+  WALLHACK_SHOT
+  WIDOWMAKER_PHANTOM_BULLET_HIT
+  WIDOWMAKER_PARTY_FAMOURS
+  WIDOWMAKER_PHANTOM_BULLET_CHARGE
+  DEBUG
+  DEBUG2
+  DEBUG3
+  DEBUG4
+  DEBUG5
 
 # for [Widowmaker] wallhack calculation
 enum RI:
-  A = 1
-  B = 2
-  C = 3
-  DISC = 4
-  XPXS = 5
-  YPYS - 6
-  ZPYS - 7
-  RADIUS = 8
-  SPHERE_POS = 9
-  FACING_DIRECTION = 10
-  RESULT = 11
-  SQRT_RESULT = 12
-  T1 = 13
-  T2 = 14
+  A
+  B
+  C
+  DISC
+  XPXS
+  YPYS
+  ZPYS
+  RADIUS
+  SPHERE_POS
+  FACING_DIRECTION
+  RESULT
+  SQRT_RESULT
+  T1
+  T2
 
 enum ZI: # for globalvar zombieStats
-  DAMAGE_STAT = 0
-  HP_STAT = 1
-  ZOMBIE_RESPAWN_I = 2
+  DAMAGE_STAT
+  HP_STAT
+  ZOMBIE_RESPAWN_I
