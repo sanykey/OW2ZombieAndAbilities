@@ -73,7 +73,7 @@ rule "Create location buy positions":
 
     # It is good to place the hero purchase vectors at a height of 50 units from the floor
     # Buy hero [55-97] len = 43
-    #   zone A (len = 6):
+    #   zone A (len = 7):
     vect(-18.268, 0.50, -10.4), # Baby DVA
     vect(-2.191, 2.50, -38.067),
     vect(26.385, 4.51, -32.792),
@@ -92,12 +92,12 @@ rule "Create location buy positions":
     #   zone C (len = 14):
     vect(59.56, 7.22, -72.899),
     vect(55.848, 12.25, -78.688),
-    vect(59.273, 12.20, -59.882),
+    vect(59.273, 12.20, -59.882), # todo: replace
     vect(53.699, 18.54, -80.776),
     vect(58.868, 5.22, -91.486),
     vect(80.335, 13.18, -72.643),
     vect(79.002, 11.15, -110.348), 
-    vect(43.664, 5.73, -50.346),
+    vect(43.664, 5.73, -50.346), # todo: replace
     vect(56.188, 18.22, -110.215),
     vect(33.25, 10.52, -93.513),
     vect(36.879, 13.22, -105.779),

@@ -45,7 +45,10 @@ globalvar highloadServerPause
 
 
 globalvar spawnPointsList = []
-globalvar spawnPI
+globalvar zonesI
+globalvar zonesHeroBuyOffset
+globalvar zonesHeroBuyLen
+globalvar zonesEffectsIds = []
 
 globalvar botSniperPositions
 globalvar delayerStartHudId

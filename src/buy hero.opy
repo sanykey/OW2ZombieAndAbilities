@@ -1,6 +1,17 @@
 #!mainFile "main.opy"
 
 #!define BUY_HERO_LEN 43
+
+#!define BUY_HERO_OFFSET_A 0
+#!define BUY_HERO_OFFSET_B 7
+#!define BUY_HERO_OFFSET_C 14
+#!define BUY_HERO_OFFSET_D 28
+
+#!define BUY_HERO_LEN_A BUY_HERO_OFFSET_B
+#!define BUY_HERO_LEN_B BUY_HERO_OFFSET_C - BUY_HERO_OFFSET_B
+#!define BUY_HERO_LEN_C BUY_HERO_OFFSET_D - BUY_HERO_OFFSET_C
+#!define BUY_HERO_LEN_D BUY_HERO_LEN - BUY_HERO_OFFSET_D
+
 rule "Create hero buy positions":
   heroesList = [Hero.DVA]
   heroesList.append(random.shuffle(getAllHeroes().exclude(Hero.DVA))) # 43 heroes
@@ -14,9 +25,9 @@ rule "Create hero buy positions":
       vectList[I + VI.BUY_HERO_OFFSET],
       floor((
         7000 if I == 0 else (
-          random.randint(1000, 3500) if I < 6 else (
-            random.randint(2500, 5000) if I < 13 else (
-              random.randint(4000, 8000) if I < 27 else (
+          random.randint(1000, 3500) if I < BUY_HERO_OFFSET_B else (
+            random.randint(2500, 5000) if I < BUY_HERO_OFFSET_C else (
+              random.randint(4000, 8000) if I < BUY_HERO_OFFSET_D else (
                 random.randint(6000, 13000)
               )
             )
@@ -25,17 +36,17 @@ rule "Create hero buy positions":
       ) / 100) * 100
     ]
 
-    createInWorldText(
-      getPlayers(Team.1),
-      "Buy {} ${}\n\n\u3000\u3000\u202f\u202f\u202f\u202f\u202f<TX C00000000021660>".format(
-        "<TX C00000000004EAB>{}".format(heroIcon(Hero.DVA)) if heroesShopData[I][0] == Hero.DVA else heroIcon(heroesShopData[I][0]),
-        heroesShopData[I][2]
-      ),
-      heroesShopData[I][true],
-      true,
-      Clip.SURFACES,
-      WorldTextReeval.VISIBILITY
-    )
+    # createInWorldText(
+    #   getPlayers(Team.1),
+    #   "Buy {} ${}\n\n\u3000\u3000\u202f\u202f\u202f\u202f\u202f<TX C00000000021660>".format(
+    #     "<TX C00000000004EAB>{}".format(heroIcon(Hero.DVA)) if heroesShopData[I][0] == Hero.DVA else heroIcon(heroesShopData[I][0]),
+    #     heroesShopData[I][2]
+    #   ),
+    #   heroesShopData[I][true],
+    #   true,
+    #   Clip.SURFACES,
+    #   WorldTextReeval.VISIBILITY
+    # )
     # createEffect(getPlayers(Team.1), Effect.RING, Color.AQUA, heroesShopData[I][1], 1.7, EffectReeval.VISIBILITY)
 
 

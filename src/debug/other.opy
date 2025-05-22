@@ -37,7 +37,7 @@ rule "[debug] User starting stats":
 
 
 rule "[debug] debug objects":
-  # debug(spawnPointsList)
+  debug(spawnPointsList)
   # debug(hostPlayer.purchasedHeroes)
 
 # rule "[debug] Kill random zombie":
