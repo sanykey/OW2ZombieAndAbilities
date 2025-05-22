@@ -37,9 +37,9 @@ rule "[debug] User starting stats":
 
 
 rule "[debug] debug objects":
-  debug(zonesEffectsIds)
-  debug(zonesHeroBuyLen)
-  debug(zonesHeroBuyOffset)
+  # debug(secretShopZoneEffects)
+  # debug(zonesHeroBuyLen)
+  # debug(zonesHeroBuyOffset)
   # debug(hostPlayer.purchasedHeroes)
 
 # rule "[debug] Kill random zombie":

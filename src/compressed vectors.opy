@@ -49,22 +49,37 @@ rule "Create location buy positions":
     vect(106.979, 12.171, -37.458),
     vect(86.536, 14.171, -37.365),
 
-    # Shop [37-48] len = 12
-    vect(113.354, 16.189, -29.761), # Exit shop teleport to
-    vect(97.513, 16.972, -20.29), # Connect shop
-    vect(90.42, 17.169, -17.775), # Arrow to shop connector
-    vect(-8.216, 10.262, -76.205), # Exit shop text
-    vect(-11.251, 6.5, -87.359), # No exit shop text
-    vect(112.572, 10.034, -30.484), # Shop activator
-    vect(123.312, 9.176, -27.364), # ENTER_SHOP_TELEPORT_FROM
-    vect(-16.309, 8.115, -89.008), # ENTER_SHOP_TELEPORT_TO
-    vect(-8.2, 10.2, -76.2), # EXIT_SHOP_TELEPORT_FROM
-    vect(-20.695, 7.574, -86.552), # SHOP_HEAL_AREA
-    vect(123.312, 10.5, -27.364), # SHOP_TELEPORTER_TEXT
-    vect(123.312, 9.176, -27.364), # SHOP_TELEPORTER_RING
+    # [Secret shop]
+    #!define VL_SECRET_SHOP_OFFSET 37
+    #!define VL_SECRET_SHOP_LEN 12
+    vect(113.354, 16.189, -29.761),
+    vect(97.513, 16.972, -20.29),
+    vect(90.42, 17.169, -17.775),
+    vect(-8.216, 10.262, -76.205),
+    vect(-11.251, 6.5, -87.359),
+    vect(112.572, 10.034, -30.484),
+    vect(123.312, 9.176, -27.364),
+    vect(-16.309, 8.115, -89.008),
+    vect(-8.2, 10.2, -76.2),
+    vect(-20.695, 7.574, -86.552),
+    vect(123.312, 10.5, -27.364),
+    vect(123.312, 9.176, -27.364),
+    #!define VL_EXIT_SHOP_TELEPORT_TO 37
+    #!define VL_CONNECT_SHOP 38
+    #!define VL_CONNECT_SHOP_ARROW 39
+    #!define VL_EXIT_SHOP_TEXT 40
+    #!define VL_NO_EXIT_SHOP_TEXT 41
+    #!define VL_SHOP_ACTIVATOR 42
+    #!define VL_ENTER_SHOP_TELEPORT_FROM 43
+    #!define VL_ENTER_SHOP_TELEPORT_TO 44
+    #!define VL_EXIT_SHOP_TELEPORT_FROM 45
+    #!define VL_SHOP_HEAL_AREA 46
+    #!define VL_SHOP_TELEPORTER_TEXT 47
+    #!define VL_SHOP_TELEPORTER_RING 48
 
-    # Buy hero upgrades [49-54] len = 5
-    #!define VL_BUY_UPRADES_OFFSET 49
+
+    # Buy hero upgrades
+    #!define VL_BUY_UPRADES_OFFSET VL_SECRET_SHOP_OFFSET + VL_SECRET_SHOP_LEN
     #!define VL_BUY_UPRADES_LEN 6
     vect(-31.204, 7.8, -87.474),
     vect(-26.235, 7.8, -90.938),

@@ -99,7 +99,7 @@ rule "[Secret shop] Activate or Deactivate zone C":
   spawnPointsList.append(vectList[VL_SPAWN_POINTS_C_OFFSET])
 
   # create effects for Secret shop upgrades spots:
-  if buyHeroUpgradesEffectsIds:
+  if secretShopZoneEffects:
     smallMessage(hostPlayer, "[Error]: There were problems when creating spots for buying upgrades")
     return
 
@@ -112,7 +112,7 @@ rule "[Secret shop] Activate or Deactivate zone C":
       1.5,
       EffectReeval.VISIBILITY
     )
-    buyHeroUpgradesEffectsIds.append(getLastCreatedEntity())
+    secretShopZoneEffects.append(getLastCreatedEntity())
     createInWorldText(
       getPlayers(Team.1),
       buyHeroUpgradesData[zonesI][0],
@@ -122,7 +122,17 @@ rule "[Secret shop] Activate or Deactivate zone C":
       WorldTextReeval.VISIBILITY,
       buyHeroUpgradesData[zonesI][true]
     )
-    buyHeroUpgradesEffectsIds.append(getLastCreatedText())
+    secretShopZoneEffects.append(getLastCreatedText())
+
+  # Create shop exit effects
+  createInWorldText(
+    getAllPlayers(), "[Exit]", vectList[VL_EXIT_SHOP_TEXT], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN
+  )
+  secretShopZoneEffects.append(getLastCreatedText())
+  createInWorldText(
+    getAllPlayers(), "[No Exit]", vectList[VL_NO_EXIT_SHOP_TEXT], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED
+  )
+  secretShopZoneEffects.append(getLastCreatedText())
 
 
 rule "[Secret shop] Activate or Deactivate zone C-":
@@ -132,10 +142,18 @@ rule "[Secret shop] Activate or Deactivate zone C-":
   spawnPointsList.remove(vectList[VL_SPAWN_POINTS_C_OFFSET])
 
   # destroy effects for Secret shop upgrades spots:
-  for zonesI in range(0, len(buyHeroUpgradesEffectsIds), 2):
-    destroyEffect(buyHeroUpgradesEffectsIds[zonesI])
-    destroyInWorldText(buyHeroUpgradesEffectsIds[zonesI + 1])
-  buyHeroUpgradesEffectsIds = []
+  for zonesI in range(0, len(secretShopZoneEffects), 2):
+    # destroy shop exit effects
+    if zonesI > (len(secretShopZoneEffects) - 3):
+      destroyInWorldText(secretShopZoneEffects[zonesI])
+      destroyInWorldText(secretShopZoneEffects[zonesI + 1])
+      break
+
+    destroyEffect(secretShopZoneEffects[zonesI])
+    destroyInWorldText(secretShopZoneEffects[zonesI + 1])
+
+
+  secretShopZoneEffects = []
 
 
 rule "Activate or Deactivate zone D":

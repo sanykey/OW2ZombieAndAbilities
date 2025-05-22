@@ -17,10 +17,11 @@ globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
 globalvar roundNumber = 0
 
-globalvar shopState
+globalvar shopEffects = []
+globalvar shopStatus
 
 globalvar buyHeroUpgradesData
-globalvar buyHeroUpgradesEffectsIds = []
+globalvar secretShopZoneEffects = []
 
 globalvar zombiesflyIOnandOff
 globalvar teamShields

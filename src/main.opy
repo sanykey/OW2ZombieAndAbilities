@@ -28,7 +28,7 @@
 
 #!include "damage and healing.opy"
 #!include "money.opy"
-#!include "orbs.opy"
+
 #!include "match.opy"
 
 
@@ -75,3 +75,4 @@
 
 
 # #!include "ally bot.opy"
+# #!include "orbs.opy"
