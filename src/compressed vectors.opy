@@ -119,7 +119,68 @@ rule "Create location buy positions":
     vect(139.03, 12.22, -54.51),
     vect(136.347, 12.22, -61.239),
     vect(142.02, 12.22, -43.53),
-    vect(130.268, 12.22, -57.335)
+    vect(130.268, 12.22, -57.335),
+
+    # spawn points detectors [98-104] len = 7:
+    vect(-6.965, 2.94, -7.146), # SPAWN_POINTS_DETECTOR_A
+    vect(13.044, 9.697, -73.344), # SPAWN_POINTS_DETECTOR_B
+    vect(-22.86, 8.08, -88.854), # SPAWN_POINTS_DETECTOR_C
+    vect(59.416, 19.498, -77.513), # SPAWN_POINTS_DETECTOR_D
+    vect(75.315, 22.594, -101.637), # SPAWN_POINTS_DETECTOR_E
+    vect(108.196, 14.309, -22.096), # SPAWN_POINTS_DETECTOR_F
+    vect(140.011, 12.178, -61.257), # SPAWN_POINTS_DETECTOR_G
+
+    # spawn points A [105-109] len = 5:
+    vect(14.282, 26.122, -19.096),
+    vect(-25.084, 25.057, -28.765),
+    vect(-2.267, 19.938, -41.17),
+    vect(5.665, 17.621, 2.067),
+    vect(16.374, 13.098, -40.81),
+
+    # spawn points B [109-116] len = 8:
+    vect(15.598, 30.551, -60.258),
+    vect(-6.03, 18.558, -47.35),
+    vect(11.556, 20.229, -87.682),
+    vect(-5.797, 12.818, -90.005),
+    vect(9.321, 17.186, -40.356),
+    vect(29.662, 26.681, -74.951),
+    vect(38.069, 13.312, -50.538),
+    vect(19.593, 10.464, -98.064),
+
+    # spawn points C [117] len = 1:
+    vect(74.194, 17.928, -49.807),
+
+    # spawn points D [118-124] len = 7:
+    vect(60.556, 9.729, -92.999),
+    vect(57.692, 14.745, -78.916),
+    vect(37.146, 27.607, -58.074),
+    vect(94.023, 34.402, -65.749),
+    vect(29.377, 19.108, -81.452),
+    vect(36.546, 14.432, -106.335),
+    vect(60.876, 8.672, -74.696),
+
+    # spawn points E [125-129] len = 5:
+    vect(94.023, 34.402, -65.749),
+    vect(74.277, 14.12, -110.609),
+    vect(90.938, 30.988, -109.069),
+    vect(57.687, 21.96, -76.518),
+    vect(63.86, 16.823, -100.725),
+
+    # spawn points F [130-135] len = 6:
+    vect(74.194, 17.928, -49.807),
+    vect(124.358, 23.829, -26.451),
+    vect(97.865, 22.892, -42.244),
+    vect(128.632, 23.521, -7.378),
+    vect(122.998, 16.026, -66.952),
+    vect(142.909, 17.319, -45),
+
+    # spawn points G [136-141] len = 6:
+    vect(74.194, 17, -49.807),
+    vect(124.358, 23, -26.451),
+    vect(97.865, 22, -42.244),
+    vect(128.632, 23, -7.378),
+    vect(122.998, 16, -66.952),
+    vect(142.909, 17, -45)
   ])
 
   #!define LOCKED_AREA_EFFECTS_LEN 12
@@ -152,3 +213,19 @@ rule "Create location buy positions":
     BUY_TEAM_SHIELDS = 53
     CHANGE_HERO = 54
     BUY_HERO_OFFSET = 55
+
+    SPAWN_POINTS_DETECTOR_A = 98
+    SPAWN_POINTS_DETECTOR_B = 99
+    SPAWN_POINTS_DETECTOR_C = 100
+    SPAWN_POINTS_DETECTOR_D = 101
+    SPAWN_POINTS_DETECTOR_E = 102
+    SPAWN_POINTS_DETECTOR_F = 103
+    SPAWN_POINTS_DETECTOR_G = 104
+
+    SPAWN_POINTS_A_OFFSET = 105
+    SPAWN_POINTS_B_OFFSET = 109
+    SPAWN_POINTS_C_OFFSET = 117
+    SPAWN_POINTS_D_OFFSET = 118
+    SPAWN_POINTS_E_OFFSET = 125
+    SPAWN_POINTS_F_OFFSET = 130
+    SPAWN_POINTS_G_OFFSET = 136
