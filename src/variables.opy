@@ -2,22 +2,13 @@
 #####################################################
 ################ Global variables ###################
 #####################################################
-globalvar botsHealthBoostPercent
-globalvar botsDamageBoostPercent
 
-# Loop vars for creating last zombies icons:
-globalvar lastZombiesList
-globalvar lastZombiesI
 
-globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
 
-globalvar createDummyI
 
-globalvar botWidowmakerRespawnTime
-globalvar botEchoRespawnTime
 globalvar roundNumber = 0
 
-# [sectet shop]
+# [sectet shop]:
 globalvar shopEffects = []
 globalvar shopStatus
 globalvar buyHeroUpgradesData
@@ -25,27 +16,41 @@ globalvar secretShopZoneEffects = []
 
 globalvar heroesShopData
 
+# zombie bots vars:
+globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
+globalvar createDummyI
+globalvar botWidowmakerRespawnTime
+globalvar botEchoRespawnTime
+globalvar botsHealthBoostPercent
+globalvar botsDamageBoostPercent
+globalvar zombieRespawnI
 globalvar zombiesflyIOnandOff
+globalvar zombieStats
+enum ZI:
+  DAMAGE_STAT
+  HP_STAT
+  ZOMBIE_RESPAWN_I
+
+## Loop vars for creating last zombies icons:
+globalvar lastZombiesList
+globalvar lastZombiesI
+
 globalvar teamShields
 globalvar teamArmor
 globalvar matchIsOver = false
 globalvar unlockedLocations = 0
-globalvar orbs_arr
-globalvar hiddenVector = vect(500, 25, 500)
 globalvar roundRemainingBots = 0
-globalvar orbs_vectors_arr
 globalvar vipPlayers # List of players who received special privileges
 globalvar isBotsDisabled
-globalvar vectList
+globalvar vectList # See compressed vectors.opy
 globalvar lockedAreaEffectsArr
 
 globalvar teamScore
 globalvar temp1
 globalvar temp2
 globalvar temp3
-globalvar zombieStats
 globalvar heroesList
-globalvar zombieRespawnI
+
 globalvar isGameStarted = false
 globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
@@ -100,7 +105,8 @@ playervar damageDealtStat
 playervar deathsStat
 
 playervar zombiesfly
-playervar orb_roll # current orb drop chance when a bot dies
+playervar isZombieInHome
+
 playervar isInSecretShop
 playervar state # use with enum "SI"
 
@@ -290,11 +296,6 @@ enum SI:
   LAST_DAMAGE_TIME
   START_AUTO_HEAL_TIME
   IS_INVISIBLE
-
-  BARRIER_DAMAGE_FROM
-  BARRIER_DAMAGE_DIR
-  BARRIER_DAMAGE_STACK
-  BARRIER_ACTIVE
   CHANGED_SPEED_TIME
   CHANGED_SPEED_AMOUNT
   CHANGED_SPEED_AMOUNT_PREV
@@ -316,8 +317,3 @@ enum RI:
   SQRT_RESULT
   T1
   T2
-
-enum ZI: # for globalvar zombieStats
-  DAMAGE_STAT
-  HP_STAT
-  ZOMBIE_RESPAWN_I

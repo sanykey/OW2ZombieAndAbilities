@@ -239,7 +239,11 @@ rule "Create location buy positions":
     vect(97.865, 22, -42.244),
     vect(128.632, 23, -7.378),
     vect(122.998, 16, -66.952),
-    vect(142.909, 17, -45)
+    vect(142.909, 17, -45),
+
+    # zombie bots home point (the place they teleport to when they die)
+    #!define VL_ZOMBIE_BOT_HOME 145
+    vect(-16.80, 1.23, 18.75)
   ])
 
   #!define LOCKED_AREA_EFFECTS_LEN 12

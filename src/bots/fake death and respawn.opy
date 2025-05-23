@@ -8,11 +8,19 @@
 
 def postDeathTeleportEffects():
   @Name "[Bot fake death] post teleport effects"  
-  eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
+  # eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
   heal(eventPlayer, null, INFINITY)
   wait()
   eventPlayer.expectedHealth = eventPlayer.getHealth()
 
+def playEffectsForZombieTeleport():
+  playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR, Color.TEAM_2, eventPlayer.getEyePosition(), 1)
+  playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
+
+def teleportBotToHisHome():
+  playEffectsForZombieTeleport()
+  eventPlayer.teleport(vectList[VL_ZOMBIE_BOT_HOME])
+  eventPlayer.isZombieInHome = true
 
 def botFakeDeathRespawn():
   @Name "[Bot fake death] respawn"  
@@ -22,16 +30,16 @@ def botFakeDeathRespawn():
     INFINITY
   )
 
-  # Play teleport effects:
-  playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR, Color.TEAM_2, eventPlayer.getEyePosition(), 1)
-  playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
-
   # Respawn if there are available roundRemainingBots slots; otherwise, send to base:
   eventPlayer.list0 = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
   if len(eventPlayer.list0) >= roundRemainingBots:
-    eventPlayer.teleport(vect(-16.80, 1.23, 18.75))
+    if not eventPlayer.isZombieInHome:
+      teleportBotToHisHome()
     postDeathTeleportEffects()
     return
+
+  if not eventPlayer.isZombieInHome:
+    playEffectsForZombieTeleport()
 
   if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
     eventPlayer.startForcingHero(Hero.TORBJORN)
@@ -81,12 +89,11 @@ def botFakeDeathRespawn():
   else:
     eventPlayer.teleport(random.choice(spawnPointsList))
 
-  heal(eventPlayer, null, INFINITY)
-  wait()
-  eventPlayer.expectedHealth = eventPlayer.getHealth()
+  postDeathTeleportEffects()
   eventPlayer.clearStatusEffect(Status.KNOCKED_DOWN)
   eventPlayer.clearStatusEffect(Status.PHASED_OUT)
   eventPlayer.downedStartTime = false
+  eventPlayer.isZombieInHome = false
 
 def GenjiResetShiftStrikeCooldown():
   @Name "[Genji] Reset Shift strike cooldown"
