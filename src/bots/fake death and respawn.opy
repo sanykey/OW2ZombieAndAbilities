@@ -25,7 +25,6 @@ def botFakeDeathRespawn():
   # Play teleport effects:
   playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR, Color.TEAM_2, eventPlayer.getEyePosition(), 1)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
-  # botsDeathPlaceIcons[eventPlayer.getSlot()] = eventPlayer.getPosition()
 
   # Respawn if there are available roundRemainingBots slots; otherwise, send to base:
   eventPlayer.list0 = [player for player in getLivingPlayers(Team.2) if not player.downedStartTime]
@@ -113,10 +112,6 @@ def botFakeDeathHandle():
     eventPlayer.forceButtonPress(Button.ABILITY_1)
     wait(0.05)
 
-  eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITY) # Stop current zombie ability
-  wait()
-  eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITY) # Resetting continuing damage effects and disable the ability to interact with the "dead" bot.
-
   if isBotsDisabled == false:
     roundRemainingBots -= 1
 
@@ -134,7 +129,20 @@ def botFakeDeathHandle():
   eventPlayer.list0.lastKillTime = getTotalTimeElapsed()
   teamScore += MONEY_FOR_ZOMBIE_KILL
 
-  wait(1) # wait for turrets damage detect
+  # wait 1 second for: 
+  # - turrets damage detect
+  # - Set the zombie's Status.KNOCKED_DOWN to make it look like it was killed
+  # - After using some abilities against zombies, Status.KNOCKED_DOWN status may be reset - restore this status
+  eventPlayer.zombieWaitBeforeRespawnI = 0
+  while (eventPlayer.zombieWaitBeforeRespawnI < 1.1):
+    if not eventPlayer.hasStatus(Status.KNOCKED_DOWN):
+      eventPlayer.clearStatusEffect(Status.PHASED_OUT)
+      wait()
+      eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITY)
+      wait()
+      eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITY) # Resetting continuing damage effects and disable the ability to interact with the "dead" bot.
+    eventPlayer.zombieWaitBeforeRespawnI += 0.1
+    wait(0.1)
 
   # Turret damage has to be counted with a delay, so it is counted separately from other types of damage
   eventPlayer.list0 = [player for player in getPlayers(Team.1) if (

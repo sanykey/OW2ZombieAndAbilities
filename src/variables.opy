@@ -60,9 +60,6 @@ globalvar zonesEffectsIds = []
 globalvar botSniperPositions
 globalvar delayerStartHudId
 
-# [Bot fake death]:
-globalvar botsDeathPlaceIcons
-
 # workshop settings 
 globalvar wSettingsStartMoney
 globalvar wSettingsMaxZombieBots
@@ -169,6 +166,7 @@ playervar isReady
 
 playervar isDvaUltBought
 playervar lastZombieIcon
+playervar zombieWaitBeforeRespawnI
 
 playervar isHeroDescriptionOpened
 
