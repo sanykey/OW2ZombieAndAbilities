@@ -20,7 +20,7 @@ rule "[debug] User starting stats":
   # eventPlayer.healingBoostPercent = 100
   eventPlayer.healthBoostPercent = 10000
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  eventPlayer.damageBoostPercent = 10000
+  eventPlayer.damageBoostPercent = 200
   eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
   # eventPlayer.healingBoostPercent += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)

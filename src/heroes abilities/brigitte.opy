@@ -40,10 +40,7 @@ rule "[Brigitte] Barrier push enemies":
   )
   eventPlayer.list0.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
 
-  # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list0.lastCcAttacker = eventPlayer
-  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list0.lastCcWasInAir = false
+  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2

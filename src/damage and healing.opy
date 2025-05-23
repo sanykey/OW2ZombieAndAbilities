@@ -28,11 +28,7 @@ rule "player Dealt Knockback":
     smallMessage(eventPlayer, "{0} points".format(25))
     eventPlayer.money += 25
 
-  # Save last cc damage from player for fall damage
-  victim.lastCcAttacker = attacker
-  victim.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  victim.lastCcWasInAir = victim.isInAir()
-
+  victim.setCrowdControlAttack(attacker)
 
 rule "Zombie took damage":
   @Event playerTookDamage

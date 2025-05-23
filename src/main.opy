@@ -26,16 +26,15 @@
 # 12 texts?
 #!include "hud.opy" 
 
+#!include "bots/antifall and cc attacks.opy"
 #!include "damage and healing.opy"
+
 #!include "money.opy"
 
 #!include "match.opy"
-
-
 #/*
 #!include "bots/zombie events.opy"
 #!include "bots/zombie behavior.opy"
-
 #!include "bots/widowmaker.opy"
 #!include "bots/roadhog.opy"
 #!include "bots/mauga.opy"

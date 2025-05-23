@@ -189,9 +189,9 @@ rule "[Cassydy] lasso hit a player":
   eventPlayer.targetPlayer0.setStatusEffect(eventPlayer, Status.STUNNED, 1)
   eventPlayer.targetPlayer0.applyImpulse(directionTowards(eventPlayer.targetPlayer0, eventPlayer), 40, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   damage(eventPlayer.targetPlayer0, eventPlayer, 10)
-  eventPlayer.targetPlayer0.lastCcAttacker = eventPlayer
-  eventPlayer.targetPlayer0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.targetPlayer0.lastCcWasInAir = false
+
+  eventPlayer.targetPlayer0.setCrowdControlAttack(eventPlayer)
+
   eventPlayer.targetPlayer0.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 2)
 
   waitUntil(distance(eventPlayer, eventPlayer.targetPlayer0) <= 8, 2)
@@ -230,9 +230,8 @@ rule "[Cassydy] fan the hammer knockback":
   if victim.hasStatus(Status.KNOCKED_DOWN):
     return
 
-  victim.lastCcAttacker = eventPlayer
-  victim.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  victim.lastCcWasInAir = false
+  victim.setCrowdControlAttack(eventPlayer)
+
   victim.state[SI.LOW_GRAVITY] = 0.15 + getTotalTimeElapsed()
   if distance(eventPlayer, victim) <= 15:
     victim.applyImpulse(attacker.getFacingDirection(), 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)

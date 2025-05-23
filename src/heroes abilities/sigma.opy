@@ -71,10 +71,7 @@ rule "[Sigma] Barrier Effect":
   
   eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
 
-  # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list0.lastCcAttacker = eventPlayer
-  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list0.lastCcWasInAir = false
+  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   # calculate position for barier damaging
   eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilPos0 + Vector.UP * 1.8

@@ -168,12 +168,8 @@ rule "[Symmetra] Barrier push enemies":
       Relativity.TO_WORLD
     )
 
-
   eventPlayer.list1.append(eventPlayer.list2)
-  # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list1.lastCcAttacker = eventPlayer
-  eventPlayer.list1.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list1.lastCcWasInAir = false
+  eventPlayer.list1.setCrowdControlAttack(eventPlayer)
 
   # damage enemies on barrier deployment
   if eventPlayer.abilTemp1:

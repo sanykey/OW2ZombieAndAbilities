@@ -136,10 +136,7 @@ rule "[Mauga] Barrier push enemies":
       )
       eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
 
-      # save information about bots being pushed to account for damage when falling down
-      eventPlayer.list0[eventPlayer.I].lastCcAttacker = eventPlayer
-      eventPlayer.list0[eventPlayer.I].lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-      eventPlayer.list0[eventPlayer.I].lastCcWasInAir = false
+      eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
     else: # slow down players inside barrier
       eventPlayer.list0[eventPlayer.I].state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 0.5

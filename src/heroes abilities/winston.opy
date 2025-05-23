@@ -101,10 +101,7 @@ rule "[Winston] Barrier push enemies":
       normalize(eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0), 15 - distance(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I]), Relativity.TO_WORLD
     )
 
-  # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list0.lastCcAttacker = eventPlayer
-  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list0.lastCcWasInAir = false
+  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
 

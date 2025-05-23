@@ -182,10 +182,7 @@ rule "[Ramattra] Barrier push enemies":
   eventPlayer.list0 = getPlayersInRadius(eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_RIGHT_BACK], 3, Team.2)
   eventPlayer.list0.append([player for player in getPlayersInRadius(eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list0])
 
-  # save information about bots being pushed to account for damage when falling down
-  eventPlayer.list0.lastCcAttacker = eventPlayer
-  eventPlayer.list0.lastCcAttackTime = LAST_CC_ATTACK_DURATION + getTotalTimeElapsed()
-  eventPlayer.list0.lastCcWasInAir = false
+  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   [player for player in eventPlayer.list0 if (
     distance(player, eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_CHECK_BACK]) > 
