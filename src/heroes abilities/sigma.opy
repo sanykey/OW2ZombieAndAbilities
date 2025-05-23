@@ -32,7 +32,7 @@ rule "[Ramattra] init":
   @Hero sigma 
   @Condition updateEveryFrame(eventPlayer.isFiringSecondaryFire()) == true
 
-  eventPlayer.state[SI.BARRIER_ACTIVE] = true
+  eventPlayer.isActiveBarrier = true
   eventPlayer.abilPos0 = raycast(
     eventPlayer.getEyePosition(),
     eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2.25,
@@ -57,55 +57,55 @@ rule "[Ramattra] init":
   stopChasingVariable(eventPlayer.abilPos0)
 
   # calculate position for barier damaging
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilPos0
+  eventPlayer.barrierDamageFrom = eventPlayer.abilPos0
 
   waitUntil(updateEveryFrame(eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE)) != null, INFINITY)
-  eventPlayer.state[SI.BARRIER_ACTIVE] = false
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
+  eventPlayer.isActiveBarrier = false
+  eventPlayer.barrierDamageStack = false
 
 rule "[Sigma] Barrier Effect":
   @Event eachPlayer
   @Team 1
   @Hero sigma
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE] == true
+  @Condition eventPlayer.isActiveBarrier == true
   
   eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   # calculate position for barier damaging
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilPos0 + Vector.UP * 1.8
-  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = eventPlayer.abilDir0
+  eventPlayer.barrierDamageFrom = eventPlayer.abilPos0 + Vector.UP * 1.8
+  eventPlayer.barrierDamageDir = eventPlayer.abilDir0
 
   # calculate damage to barrier
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.barrierDamageStack += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
 
   if eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
     eventPlayer.list0.applyImpulse(
       normalize(eventPlayer.abilDir0 + vect(0, 0.2679, 0)), 16, Relativity.TO_WORLD
     )
-    eventPlayer.state[SI.BARRIER_DAMAGE_STACK] *= 1.5 # more damage when mooving 
+    eventPlayer.barrierDamageStack *= 1.5 # more damage when mooving 
 
   else:
     # Check is barrier exists
-    eventPlayer.temp1 = eventPlayer.state[SI.BARRIER_DAMAGE_FROM] + eventPlayer.abilDir0 * 0.8
+    eventPlayer.temp1 = eventPlayer.barrierDamageFrom + eventPlayer.abilDir0 * 0.8
     if (
       eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE) == null and (
         isInLoS(
-          eventPlayer.state[SI.BARRIER_DAMAGE_FROM],
+          eventPlayer.barrierDamageFrom,
           eventPlayer.temp1,
           BarrierLos.BLOCKED_BY_ALL_BARRIERS
         ) or 
         not isInLoS(
-          eventPlayer.state[SI.BARRIER_DAMAGE_FROM],
+          eventPlayer.barrierDamageFrom,
           eventPlayer.temp1,
           BarrierLos.PASS_THROUGH_BARRIERS
         )
       )
     ):
       smallMessage(eventPlayer, "Barrier deploy failed! Try again")
-      eventPlayer.state[SI.BARRIER_ACTIVE] = false
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
+      eventPlayer.isActiveBarrier = false
+      eventPlayer.barrierDamageStack = false
       return
 
     for eventPlayer.I in range(len(eventPlayer.list0)):
@@ -143,7 +143,7 @@ rule "[Sigma] Barrier Effect":
 #     getPlayersInSlot(0, Team.1),
 #     Effect.SPHERE,
 #     Color.LIGHT_RED,
-#     eventPlayer.state[SI.BARRIER_DAMAGE_FROM],
+#     eventPlayer.barrierDamageFrom,
 #     0.05,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )

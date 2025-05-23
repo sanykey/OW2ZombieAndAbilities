@@ -159,6 +159,12 @@ playervar lastZombieIcon
 
 playervar isHeroDescriptionOpened
 
+# new barriers damage took and push logic
+playervar barrierDamageFrom
+playervar barrierDamageDir
+playervar barrierDamageStack
+playervar isActiveBarrier
+
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp0
 playervar temp1

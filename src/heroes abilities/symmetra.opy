@@ -110,9 +110,9 @@ rule "[Symmetra] Create barrier (ultimate)":
       smallMessage(eventPlayer, "Barrier deploy failed! Try again")
       return
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilPos2
-  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.abilPos3 - eventPlayer.abilPos2)
-  eventPlayer.state[SI.BARRIER_ACTIVE] = true
+  eventPlayer.barrierDamageFrom = eventPlayer.abilPos2
+  eventPlayer.barrierDamageDir = normalize(eventPlayer.abilPos3 - eventPlayer.abilPos2)
+  eventPlayer.isActiveBarrier = true
   eventPlayer.abilTemp1 = true # For the first range check from players to deal damage to them
   # smallMessage(eventPlayer, "barrier up")
 
@@ -120,19 +120,19 @@ rule "[Symmetra] Check is barrier exists":
   @Event eachPlayer
   @Team 1
   @Hero symmetra
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.isActiveBarrier
   
   waitUntil(
     isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.BLOCKED_BY_ALL_BARRIERS), SYM_ULT_DURATION
   )
-  eventPlayer.state[SI.BARRIER_ACTIVE] = false
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
+  eventPlayer.isActiveBarrier = false
+  eventPlayer.barrierDamageStack = false
 
 rule "[Symmetra] Barrier push enemies":
   @Event eachPlayer
   @Team 1
   @Hero symmetra
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.isActiveBarrier
 
   eventPlayer.list0 = [player for player in getPlayers(Team.2) if player.isAlive()]
   eventPlayer.list1 = [] # players to push one side
@@ -146,7 +146,7 @@ rule "[Symmetra] Barrier push enemies":
 
     # get players to push from barrier
     if abs(eventPlayer.temp1) < 3:
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SYM_BARRIER_PUSH_ENENT_WAIT
+      eventPlayer.barrierDamageStack += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SYM_BARRIER_PUSH_ENENT_WAIT
 
       if eventPlayer.temp1 > 0:
         eventPlayer.list1.append(eventPlayer.list0[eventPlayer.I])
@@ -193,7 +193,7 @@ rule "[Symmetra] Barrier push enemies":
 #     "DIR: {}, Active: {}, USING ULT: {}
 #     ".format(
 #       eventPlayer.temp3,
-#       eventPlayer.state[SI.BARRIER_ACTIVE],
+#       eventPlayer.isActiveBarrier,
 #       eventPlayer.isUsingUltimate()
 #     ),
 #     HudPosition.TOP,

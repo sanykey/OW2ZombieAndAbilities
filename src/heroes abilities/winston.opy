@@ -48,9 +48,9 @@ rule "[Winston] Create barrier and save position":
   )
 
   waitUntil(eventPlayer.abilPos0 == eventPlayer.abilPos1, 12)
-  eventPlayer.state[SI.BARRIER_ACTIVE] = true
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.abilPos0 + Vector.UP * 5.5
-  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.abilPos0 - (eventPlayer.abilPos0 + Vector.UP * 5.5))
+  eventPlayer.isActiveBarrier = true
+  eventPlayer.barrierDamageFrom = eventPlayer.abilPos0 + Vector.UP * 5.5
+  eventPlayer.barrierDamageDir = normalize(eventPlayer.abilPos0 - (eventPlayer.abilPos0 + Vector.UP * 5.5))
   stopChasingVariable(eventPlayer.abilTemp1)
   wait(0.1)
 
@@ -84,15 +84,15 @@ rule "[Winston] Create barrier and save position":
     smallMessage(eventPlayer, "Barrier deploy failed! Try again")
     eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
 
-  eventPlayer.state[SI.BARRIER_ACTIVE] = false
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
+  eventPlayer.isActiveBarrier = false
+  eventPlayer.barrierDamageStack = false
 
 
 rule "[Winston] Barrier push enemies":
   @Event eachPlayer
   @Team 1
   @Hero winston
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.isActiveBarrier
 
   eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos0, 6, Team.2)
 
@@ -103,7 +103,7 @@ rule "[Winston] Barrier push enemies":
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.barrierDamageStack += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
 
   wait(WIN_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

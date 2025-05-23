@@ -167,17 +167,17 @@ rule "[Ramattra] Barrier up":
         eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 0)
         return
 
-  eventPlayer.state[SI.BARRIER_ACTIVE] = true
+  eventPlayer.isActiveBarrier = true
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_CHECK_FORWARD]
-  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_CHECK_BACK] - eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_CHECK_FORWARD])
+  eventPlayer.barrierDamageFrom = eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_CHECK_FORWARD]
+  eventPlayer.barrierDamageDir = normalize(eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_CHECK_BACK] - eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_CHECK_FORWARD])
 
 
 rule "[Ramattra] Barrier push enemies":
   @Event eachPlayer
   @Team 1
   @Hero ramattra
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.isActiveBarrier
 
   eventPlayer.list0 = getPlayersInRadius(eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_RIGHT_BACK], 3, Team.2)
   eventPlayer.list0.append([player for player in getPlayersInRadius(eventPlayer.heroEffects[RAMMATTRA_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list0])
@@ -202,7 +202,7 @@ rule "[Ramattra] Barrier push enemies":
     Relativity.TO_WORLD
   )
 
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.barrierDamageStack += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * RAM_BARRIER_PUSH_ENENT_WAIT
 
   wait(RAM_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
@@ -212,7 +212,7 @@ rule "[Ramattra] Check is barrier exists":
   @Event eachPlayer
   @Team 1
   @Hero ramattra
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.isActiveBarrier
   
   waitUntil(
     isInLoS(
@@ -222,5 +222,5 @@ rule "[Ramattra] Check is barrier exists":
     ),
     10
   )
-  eventPlayer.state[SI.BARRIER_ACTIVE] = false
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
+  eventPlayer.isActiveBarrier = false
+  eventPlayer.barrierDamageStack = false

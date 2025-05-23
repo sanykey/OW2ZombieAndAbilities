@@ -109,15 +109,15 @@ rule "[Mauga] Create barrier (ultimate)":
 
   # keep the position without height, for more accurate calculations in the cylindrical barrier:
   eventPlayer.abilPos1 = vect(eventPlayer.abilPos0.x, false, eventPlayer.abilPos0.z) 
-  eventPlayer.state[SI.BARRIER_ACTIVE] = true
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.temp2
-  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.temp3 - eventPlayer.temp2)
+  eventPlayer.isActiveBarrier = true
+  eventPlayer.barrierDamageFrom = eventPlayer.temp2
+  eventPlayer.barrierDamageDir = normalize(eventPlayer.temp3 - eventPlayer.temp2)
 
 rule "[Mauga] Barrier push enemies":
   @Event eachPlayer
   @Team 1
   @Hero mauga
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.isActiveBarrier
 
   eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos0, 10, Team.2)
   
@@ -134,7 +134,7 @@ rule "[Mauga] Barrier push enemies":
         15,
         Relativity.TO_WORLD
       )
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
+      eventPlayer.barrierDamageStack += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
 
       eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
@@ -151,13 +151,13 @@ rule "[Mauga] Check is barrier exists":
   @Event eachPlayer
   @Team 1
   @Hero mauga
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
+  @Condition eventPlayer.isActiveBarrier
   
   waitUntil(
     isInLoS(eventPlayer.temp2, eventPlayer.temp3, BarrierLos.BLOCKED_BY_ALL_BARRIERS), MAU_ULT_DURATION
   )
-  eventPlayer.state[SI.BARRIER_ACTIVE] = false
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
+  eventPlayer.isActiveBarrier = false
+  eventPlayer.barrierDamageStack = false
 
 
 # debug:

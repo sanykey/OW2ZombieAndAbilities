@@ -28,6 +28,7 @@
 
 #!include "bots/antifall and cc attacks.opy"
 #!include "damage and healing.opy"
+#!include "barriers damage.opy"
 
 #!include "money.opy"
 

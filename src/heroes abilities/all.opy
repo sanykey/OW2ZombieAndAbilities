@@ -1,7 +1,5 @@
 #!mainFile "../main.opy"
 
-#!define REI_BARRIER_PUSH_ENENT_WAIT 0.1
-
 def sqrtNewton():
   @Name "Subroutine: Calculate square root"
   eventPlayer.raycast[RI.SQRT_RESULT] = eventPlayer.raycast[RI.DISC] / 2
@@ -106,36 +104,6 @@ rule "Revealed zombies":
   eventPlayer.HUDs[HI.REVEALED_ICON] = false
   eventPlayer.stopForcingOutlineFor(getAllPlayers())
 
-rule "[Ramattra][Reinhardt][Sigma][Winston] Damage barrier":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.state[SI.BARRIER_ACTIVE]
-
-  if eventPlayer.state[SI.BARRIER_DAMAGE_STACK]:
-    createProjectile(
-      Projectile.ORISA_FUSION_DRIVER, # proj type
-      null, # owner
-      eventPlayer.state[SI.BARRIER_DAMAGE_FROM], # start position
-      eventPlayer.state[SI.BARRIER_DAMAGE_DIR] , # direction
-      Relativity.TO_WORLD, # position relative to
-      ModifyHealth.DAMAGE, # damage or heal
-      Team.ALL, # affectedTeam
-      eventPlayer.state[SI.BARRIER_DAMAGE_STACK], # damage
-      0, # damageScalar? for AOE?
-      0, # AOE radius
-      DynamicEffect.BAD_EXPLOSION, # explosionEffect
-      DynamicEffect.EXPLOSION_SOUND, # explosionSound
-      0, # oversize
-      100, # speed
-      5 # lifetime
-    )
-    eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = 0
-
-  wait(0.5)
-  if ruleCondition:
-      loop()
-
-
 rule "Changed player speed":
   @Event eachPlayer
   @Condition eventPlayer.state[SI.CHANGED_SPEED_TIME] > getTotalTimeElapsed()
@@ -163,42 +131,3 @@ rule "Low gravitation for player":
   eventPlayer.setGravity(0)
   waitUntil(eventPlayer.state[SI.LOW_GRAVITY] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
   eventPlayer.setGravity(100)
-
-
-rule "[Reinhardt] [Brigitte] Сheck if the barrier is on":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.getHero() == Hero.REINHARDT or eventPlayer.getHero() == Hero.BRIGITTE
-  @Condition eventPlayer.isFiringSecondaryFire()
-
-  eventPlayer.state[SI.BARRIER_ACTIVE] = true
-  waitUntil(not eventPlayer.isFiringSecondaryFire(), INFINITY)
-  eventPlayer.state[SI.BARRIER_ACTIVE] = false
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] = false
-
-rule "[Reinhardt] [Brigitte] Barrier push enemies":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.getHero() == Hero.REINHARDT or eventPlayer.getHero() == Hero.BRIGITTE
-  @Condition eventPlayer.isFiringSecondaryFire()
-
-  eventPlayer.list0 = (
-    [player for player in getPlayersInRadius(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * -1, 6, Team.2) if (
-      distance(player, eventPlayer.getPosition() + eventPlayer.getFacingDirection()) < 2 or (
-        not isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ALL_BARRIERS) and
-        isInLoS(eventPlayer, player, BarrierLos.PASS_THROUGH_BARRIERS) and
-        player != eventPlayer
-      )
-    )]
-  )
-  eventPlayer.list0.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
-
-  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-
-  eventPlayer.state[SI.BARRIER_DAMAGE_STACK] += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
-  eventPlayer.state[SI.BARRIER_DAMAGE_FROM] = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
-  eventPlayer.state[SI.BARRIER_DAMAGE_DIR] = normalize(eventPlayer.getEyePosition() - eventPlayer.state[SI.BARRIER_DAMAGE_FROM])
-
-  wait(REI_BARRIER_PUSH_ENENT_WAIT)
-  if ruleCondition:
-      loop()
