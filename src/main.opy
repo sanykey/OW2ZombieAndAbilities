@@ -64,6 +64,8 @@
 #!include "heroes abilities/kiriko.opy"
 #*/
 
+# #!include "ally bot.opy"
+
 # 2 texts:
 #!include "debug/utils.opy"
 #!include "debug/other.opy"
@@ -74,5 +76,5 @@
 #*/
 
 
-# #!include "ally bot.opy"
+
 # #!include "orbs.opy"

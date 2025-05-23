@@ -156,7 +156,7 @@ rule "Init huds":
   delayerStartHudId = getLastCreatedText()
 
 
-  setObjectiveDescription(localPlayer, "Round {0}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
+  
 
   # hotkey tip: open hero talents description 
   # hudText(
@@ -206,6 +206,8 @@ rule "Close hero talents info hud":
 rule "Create players effects":
   @Event eachPlayer
   @Team 1
+
+  setObjectiveDescription(eventPlayer, "Round {0}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
 
   # revive effects and icon
   createEffect(getPlayers(Team.1) if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)

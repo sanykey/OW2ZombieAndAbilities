@@ -35,8 +35,27 @@ rule "[debug] User starting stats":
   
 #   eventPlayer.setUltCharge(100)
 
+# rule "[debug] Create ally dummy":
+#   @Event eachPlayer
+#   @Team 1
+#   @Condition eventPlayer == hostPlayer
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+#   @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE) == true
+  
+#   createDummy(eventPlayer.getHero(), Team.1, getNumberOfPlayers(Team.1), nearestWalkablePosition(hostPlayer), hostPlayer.getPosition())
 
-rule "[debug] debug objects":
+# rule "[debug] Kill random ally dummy":
+#   @Event eachPlayer
+#   @Team 1
+#   @Condition eventPlayer == hostPlayer
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+#   @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE) == true
+  
+#   eventPlayer.temp1 = random.choice([player for player in getLivingPlayers(Team.1) if player.isDummy()])
+#   destroyDummy(Team.1, eventPlayer.temp1.getSlot())
+
+
+# rule "[debug] debug objects":
   # debug(secretShopZoneEffects)
   # debug(zonesHeroBuyLen)
   # debug(zonesHeroBuyOffset)

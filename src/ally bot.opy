@@ -23,7 +23,7 @@ rule "Ally bot: Start Facing":
   eventPlayer.startForcingName("Kitty")
   eventPlayer.B = getPlayers(Team.2)[0]
   eventPlayer.startFacing(
-    (vect(0, 0, 0) if eventPlayer.isTargetInLos else 1.5 * directionTowards(eventPlayer, eventPlayer.B)) + (directionTowards(eventPlayer.getEyePosition(), eventPlayer.B.getEyePosition() + 0.25 * Vector.UP)),
+    (vect(0, 0, 0) if eventPlayer.abilState0 else 1.5 * directionTowards(eventPlayer, eventPlayer.B)) + (directionTowards(eventPlayer.getEyePosition(), eventPlayer.B.getEyePosition() + 0.25 * Vector.UP)),
     300
   )
 
@@ -39,10 +39,10 @@ rule "Ally bot: Find Target":
     )
   )[0]
   if temp1:
-    eventPlayer.isTargetInLos = true
+    eventPlayer.abilState0 = true
     eventPlayer.B = temp1
   else:
-    eventPlayer.isTargetInLos = false
+    eventPlayer.abilState0 = false
   wait(0.5)
   if ruleCondition:
     loop()
@@ -52,10 +52,10 @@ rule "Ally bot: Start / Stop Shooting":
   @Event eachPlayer
   @Team 1
   @Slot ALLY_BOT_PLAYER_SLOT
-  @Condition (eventPlayer.isTargetInLos and not eventPlayer.isMoving()) == true
+  @Condition (eventPlayer.abilState0 and not eventPlayer.isMoving()) == true
   
   eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
-  waitUntil(not (eventPlayer.isTargetInLos and not eventPlayer.isMoving()), INFINITY)
+  waitUntil(not (eventPlayer.abilState0 and not eventPlayer.isMoving()), INFINITY)
   eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
   
 # todo: debug
