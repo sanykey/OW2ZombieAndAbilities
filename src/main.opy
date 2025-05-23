@@ -26,7 +26,7 @@
 # 12 texts?
 #!include "hud.opy" 
 
-#!include "bots/antifall and cc attacks.opy"
+
 #!include "damage and healing.opy"
 #!include "barriers damage.opy"
 
@@ -43,6 +43,8 @@
 #!include "bots/rounds.opy"
 #!include "bots/fake death and respawn.opy"
 #*/
+#!include "bots/antifall and cc attacks.opy"
+
 
 #/*
 #!include "portal.opy"

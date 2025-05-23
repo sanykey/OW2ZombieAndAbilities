@@ -12,6 +12,13 @@
 #   wait(5)
 #   loop()
 
+# save information about bots being pushed to account for damage when falling down
+macro Player.setCrowdControlAttack(self, attacker0, duration=LAST_CC_ATTACK_DURATION):
+  self.lastCcAttacker = attacker0
+  self.lastCcAttackTime = duration + getTotalTimeElapsed()
+  self.lastCcWasInAir = self.isInAir()
+
+
 rule "player Dealt Knockback":
   @Event playerDealtKnockback
   @Team 1

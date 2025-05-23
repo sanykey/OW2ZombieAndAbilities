@@ -1,11 +1,5 @@
 #!mainFile "../main.opy"
 
-# save information about bots being pushed to account for damage when falling down
-macro Player.setCrowdControlAttack(self, attacker0, duration=LAST_CC_ATTACK_DURATION):
-  self.lastCcAttacker = attacker0
-  self.lastCcAttackTime = duration + getTotalTimeElapsed()
-  self.lastCcWasInAir = self.isInAir()
-
 rule "Bots Antifall and fall damage from cc attacks from players":
   @Event eachPlayer
   @Team 2
@@ -33,6 +27,11 @@ rule "Bots Antifall and fall damage from cc attacks from players":
       damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
       eventPlayer.lastCcAttackTime = false
+
+      wait()
+      # [Bot fake death] If the bot is "dead", avoid having its corpse tossed over an abyss:
+      if eventPlayer.downedStartTime or eventPlayer.getHealth() < BOT_FAKE_DIE_HP_THRESHOLD:
+        teleportBotToHisHome()
     else:
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 

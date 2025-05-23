@@ -246,6 +246,9 @@ playervar juno_transfer_started
 #!define BOT_MAX_INACTIVITY_DURATION 60
 #!define LAST_CC_ATTACK_DURATION 5
 
+# [Bot fake death]
+#!define BOT_FAKE_DIE_HP_THRESHOLD 10
+
 # Player settings
 #!define MAX_PLAYERS 5
 #!define REVIVE_TIMER_TICK 5
