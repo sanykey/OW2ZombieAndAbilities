@@ -88,6 +88,11 @@ def botFakeDeathRespawn():
   eventPlayer.clearStatusEffect(Status.PHASED_OUT)
   eventPlayer.downedStartTime = false
 
+def GenjiResetShiftStrikeCooldown():
+  @Name "[Genji] Reset Shift strike cooldown"
+  wait(0.25)
+  eventPlayer.list0.setAbilityCooldown(Button.ABILITY_1, 0)
+  
 
 # [Bot fake death] I accidentally discovered that if preventing bots from being killed and just teleporting them to respawn - it makes the server noticeably more stable
 def botFakeDeathHandle():
@@ -127,6 +132,12 @@ def botFakeDeathHandle():
   eventPlayer.list0.money += MONEY_FOR_ZOMBIE_KILL
   eventPlayer.list0.kills += 1
   eventPlayer.list0.lastKillTime = getTotalTimeElapsed()
+
+  # [Genji] Reset Shift strike cooldown for native behavior since bots no longer die
+  eventPlayer.list0 = [player for player in eventPlayer.list0 if player.getHero() == Hero.GENJI]
+  if eventPlayer.list0:
+    async(GenjiResetShiftStrikeCooldown, AsyncBehavior.NOOP)
+
   teamScore += MONEY_FOR_ZOMBIE_KILL
 
   # wait 1 second for: 
