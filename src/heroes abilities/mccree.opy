@@ -58,50 +58,50 @@ rule "[Cassydy] Init":
     getPlayers(Team.1) if eventPlayer.abilPos0 else null, 
     Beam.GRAPPLE, eventPlayer, vect(1, 0, 0) + ((eventPlayer + eventPlayer.abilPos0) / 2), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_0] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_0] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, vect(1, 0, 0) + ((eventPlayer.abilPos0 + eventPlayer) / 2), eventPlayer.abilPos0, Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_1] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_1] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, eventPlayer.abilPos0, eventPlayer.abilPos0 + vect(1, 0, 0.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_2] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_2] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, eventPlayer.abilPos0 + vect(1, 0, 0.5), eventPlayer.abilPos0 + vect(1, 0, 1), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_3] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_3] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, eventPlayer.abilPos0 + vect(1, 0, 1), eventPlayer.abilPos0 + vect(0.1, 0, 1.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_4] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_4] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, eventPlayer.abilPos0 + vect(0.1, 0, 1.5), eventPlayer.abilPos0 + vect(-0.6, 0, 1.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_5] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_5] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, eventPlayer.abilPos0 + vect(-0.6, 0, 1.5), eventPlayer.abilPos0 + vect(-1, 0, 1), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_6] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_6] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, eventPlayer.abilPos0 + vect(-1, 0, 1), eventPlayer.abilPos0 + vect(-1, 0, 0.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_7] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_7] = getLastCreatedEntity()
   createBeam(
     getPlayers(Team.1) if eventPlayer.abilPos0 else null,
     Beam.GRAPPLE, eventPlayer.abilPos0 + vect(-1, 0, 0.5), eventPlayer.abilPos0, Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_8] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_8] = getLastCreatedEntity()
 
   hudText(
-    eventPlayer if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
+    eventPlayer if not eventPlayer.isHeroDescriptionOpened else null,
     null,
     "{}{} Lasso: {}".format(
       ABILITI_TEXT_INTEND,
@@ -115,7 +115,7 @@ rule "[Cassydy] Init":
     Color.WHITE,
     null
   )
-  eventPlayer.heroState[CASSIDY_I.LASSO_HUD] = getLastCreatedText()
+  eventPlayer.heroEffects[CASSIDY_I.LASSO_HUD] = getLastCreatedText()
 
   # debug(eventPlayer.targetPlayer0)
   # debug(eventPlayer.abilPos0)
@@ -125,9 +125,9 @@ rule "[Cassydy] Init":
 
   waitUntil(eventPlayer.getHero() != Hero.CASSIDY, INFINITY)
   clearHeroInfo()
-  destroyHudText(eventPlayer.heroState[CASSIDY_I.LASSO_HUD])
+  destroyHudText(eventPlayer.heroEffects[CASSIDY_I.LASSO_HUD])
   for eventPlayer.I in range(9):
-    destroyEffect(eventPlayer.heroState[eventPlayer.I])
+    destroyEffect(eventPlayer.heroEffects[eventPlayer.I])
 
 rule "[Cassydy] throw the lasso":
   @Event eachPlayer
@@ -258,16 +258,16 @@ rule "[Cassidy] Smoke Bomb":
   wait(0.25)
   playEffect(getAllPlayers(), DynamicEffect.WINSTON_JUMP_PACK_LANDING, Color.TEAM_1, eventPlayer.abilPos2, 1)
   createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.abilPos2, 6)
-  eventPlayer.heroState[CASSIDY_I.SMOKE_0] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.SMOKE_0] = getLastCreatedEntity()
   createEffect(getAllPlayers(), Effect.RING, Color.WHITE, eventPlayer.abilPos2, 6)
-  eventPlayer.heroState[CASSIDY_I.SMOKE_1] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.SMOKE_1] = getLastCreatedEntity()
   createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.abilPos2 + Vector.UP * 0.5, 6)
-  eventPlayer.heroState[CASSIDY_I.SMOKE_2] = getLastCreatedEntity()
+  eventPlayer.heroEffects[CASSIDY_I.SMOKE_2] = getLastCreatedEntity()
   eventPlayer.abilState2 = true
   wait(4)
-  destroyEffect(eventPlayer.heroState[CASSIDY_I.SMOKE_0])
-  destroyEffect(eventPlayer.heroState[CASSIDY_I.SMOKE_1])
-  destroyEffect(eventPlayer.heroState[CASSIDY_I.SMOKE_2])
+  destroyEffect(eventPlayer.heroEffects[CASSIDY_I.SMOKE_0])
+  destroyEffect(eventPlayer.heroEffects[CASSIDY_I.SMOKE_1])
+  destroyEffect(eventPlayer.heroEffects[CASSIDY_I.SMOKE_2])
   eventPlayer.abilState2 = false
 
 rule "[Cassidy] Smoke Bomb - Hide":

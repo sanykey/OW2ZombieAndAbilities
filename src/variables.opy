@@ -17,16 +17,17 @@ globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
 globalvar roundNumber = 0
 
+# [sectet shop]
 globalvar shopEffects = []
 globalvar shopStatus
-
 globalvar buyHeroUpgradesData
 globalvar secretShopZoneEffects = []
+
+globalvar heroesShopData
 
 globalvar zombiesflyIOnandOff
 globalvar teamShields
 globalvar teamArmor
-globalvar heroesShopData
 globalvar matchIsOver = false
 globalvar unlockedLocations = 0
 globalvar orbs_arr
@@ -49,7 +50,7 @@ globalvar isGameStarted = false
 globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
 
-
+# zones
 globalvar spawnPointsList = []
 globalvar zonesI
 globalvar zonesHeroBuyOffset
@@ -76,7 +77,7 @@ globalvar debugPos2
 globalvar debugPos3
 globalvar debugSize3 = 1
 
-# detecting turrents and Bob damage for Bot fake death
+# detecting turrents and Bob damage for [Bot fake death]
 globalvar turretsDamageOwners
 globalvar turretsDamageOwnersTime
 globalvar turretsVictimZombies
@@ -100,6 +101,7 @@ playervar damageBlockedStat
 playervar damageTakenStat
 playervar damageDealtStat
 playervar deathsStat
+
 playervar zombiesfly
 playervar orb_roll # current orb drop chance when a bot dies
 playervar isInSecretShop
@@ -131,7 +133,7 @@ playervar heroInfoHorFix1
 # [Bot fake death]:
 playervar kills # kills zombies stat for players 
 playervar lastKillTime # for kill icon near scope
-#   detecting turrents and Bob damage for Bot fake death
+## detecting turrents and Bob damage for Bot fake death
 playervar lastDamageDealtAmount
 playervar lastDamageDealtTime
 playervar expectedHealth
@@ -145,16 +147,17 @@ playervar lastCcWasInAir
 playervar HUDs
 playervar hasBadStatus
 playervar revealed
-playervar widowmakerChargeShot
 playervar money
 playervar raycast
-playervar heroState
+playervar heroEffects
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady
 
 playervar isDvaUltBought
 playervar lastZombieIcon
+
+playervar isHeroDescriptionOpened
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
 playervar temp0
@@ -265,12 +268,8 @@ enum SI:
   HEALING_TRACKER_THRESHOLD
   HEALING_RESULT
   WIDOWMAKER_SHOT_CHARGE
-  IS_TALENTS_HUD_OPENNED
   HACKED # hacked status to get money from killed hacked zombies
   MONEY_RECEIVED # money received
-  HP_STAT
-  DAMAGE_STAT
-  HEALING_STAT
   LAST_DAMAGE_TIME
   START_AUTO_HEAL_TIME
   IS_INVISIBLE
@@ -284,32 +283,9 @@ enum SI:
   CHANGED_SPEED_AMOUNT_PREV
   LOW_GRAVITY
 
-  HERO_INFO_TEXT
-  HERO_INFO_VERTICAL_FIX
-  HERO_INFO_HORIZONTAL_FIX
-  
-  HERO_INFO_TEXT2
-  HERO_INFO_VERTICAL_FIX2
-  HERO_INFO_HORIZONTAL_FIX2
-
-# for playervar talents
-enum TI:
-  WIDOWMAKER_PARTY_FAMOURS = 0
-  WIDOWMAKER_FALLING_STARS = 1
-  WIDOWMAKER_SILK_WEB = 2
-  WIDOWMAKER_FELT_MORE_ALIVE = 3
-  WIDOWMAKER_BRAISER_DE_SOIE = 4
-  WIDOWMAKER_PHANTOM_BULLETS = 5
-  WIDOWMAKER_TRACKER_VENOM = 6
-
 # for playervar HUDs
 enum HI:
   REVEALED_ICON
-  WALLHACK_HEADSHOT_ZONE
-  WALLHACK_SHOT
-  WIDOWMAKER_PHANTOM_BULLET_HIT
-  WIDOWMAKER_PARTY_FAMOURS
-  WIDOWMAKER_PHANTOM_BULLET_CHARGE
   DEBUG
   DEBUG2
   DEBUG3

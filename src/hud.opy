@@ -8,11 +8,17 @@ def clearHeroInfo():
   eventPlayer.heroInfoHorFix0 = 9
   eventPlayer.heroInfoVertFix1 = 3.5
   eventPlayer.heroInfoHorFix1 = 11
+  eventPlayer.abilPos0 = null
+  eventPlayer.abilPos1 = null
+  eventPlayer.abilPos2 = null
+  eventPlayer.abilPos3 = null
+  eventPlayer.abilPos4 = null
+  eventPlayer.abilityCD = null
 
 rule "Init huds":
   # zombies status hud (stats and remaining)
   hudText(
-    localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
+    localPlayer if not localPlayer.isHeroDescriptionOpened else null,
     heroIcon(Hero.TORBJORN),
     "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>".format(
       iconString(Icon.FIRE),
@@ -50,13 +56,13 @@ rule "Init huds":
 
   # Hero info
   createInWorldText(
-    localPlayer if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true and localPlayer.state[SI.HERO_INFO_TEXT] else null,
-    localPlayer.state[SI.HERO_INFO_TEXT],
+    localPlayer if localPlayer.isHeroDescriptionOpened == true and localPlayer.heroInfoText0 else null,
+    localPlayer.heroInfoText0,
     updateEveryFrame(
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
-      normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()), localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_VERTICAL_FIX] + # vertical
-      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX] # horizontal
+      normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()), localPlayer.getFacingDirection())) * localPlayer.heroInfoVertFix0 + # vertical
+      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * localPlayer.heroInfoHorFix0 # horizontal
     ),
     1,
     Clip.NONE,
@@ -66,13 +72,13 @@ rule "Init huds":
   )
   # Hero info part 2
   createInWorldText(
-    localPlayer if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true and localPlayer.state[SI.HERO_INFO_TEXT2] else null,
-    localPlayer.state[SI.HERO_INFO_TEXT2],
+    localPlayer if localPlayer.isHeroDescriptionOpened == true and localPlayer.heroInfoText1 else null,
+    localPlayer.heroInfoText1,
     updateEveryFrame(
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
-      normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()), localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_VERTICAL_FIX2] + # vertical
-      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * localPlayer.state[SI.HERO_INFO_HORIZONTAL_FIX2] # horizontal
+      normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()), localPlayer.getFacingDirection())) * localPlayer.heroInfoVertFix1 + # vertical
+      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * localPlayer.heroInfoHorFix1 # horizontal
     ),
     1,
     Clip.NONE,
@@ -112,7 +118,7 @@ rule "Init huds":
       inputBindingString(Button.INTERACT),
       ZOMBIE_FALL_DAMAGE
     ),
-    visibleTo=(localPlayer if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == true else null),
+    visibleTo=(localPlayer if localPlayer.isHeroDescriptionOpened == true else null),
     position=updateEveryFrame(
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
@@ -138,7 +144,7 @@ rule "Init huds":
 
   # delayed start
   hudHeader(
-    localPlayer if not localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
+    localPlayer if not localPlayer.isHeroDescriptionOpened else null,
     "\n\u2001{0}\n\n\u2001Hold {1} to Start\u2001\n".format(
       "Zombie survival", inputBindingString(Button.INTERACT)
     ), 
@@ -153,7 +159,7 @@ rule "Init huds":
   # hudText(
   #   localPlayer,
   #   null,
-  #   "Hold {0} + {1} to view hero info and help".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)) if localPlayer.state[SI.IS_TALENTS_HUD_OPENNED] == false else (
+  #   "Hold {0} + {1} to view hero info and help".format(inputBindingString(Button.INTERACT), inputBindingString(Button.CROUCH)) if localPlayer.isHeroDescriptionOpened == false else (
   #     "Press {0} to close hero info and help".format(inputBindingString(Button.INTERACT))
   #   ),
   #   null,
@@ -179,7 +185,7 @@ rule "Open hero talents info hud":
   
   wait(HERO_INFO_HOLD_DURATION, Wait.ABORT_WHEN_FALSE)
   eventPlayer.disableHeroHud()
-  eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = true
+  eventPlayer.isHeroDescriptionOpened = true
 
 rule "Close hero talents info hud":
   @Event eachPlayer
@@ -191,7 +197,7 @@ rule "Close hero talents info hud":
     return
 
   eventPlayer.enableHeroHud()
-  eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
+  eventPlayer.isHeroDescriptionOpened = false
 
 
 rule "Players list, upgrades and money":
@@ -204,7 +210,7 @@ rule "Players list, upgrades and money":
   clearHeroInfo()
 
   hudText(
-    getPlayers(Team.1) if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
+    getPlayers(Team.1) if not eventPlayer.isHeroDescriptionOpened else null,
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
     "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>, <fgEC9900FF>{4}{5}%</fg>,{6}{7}".format(
       iconString(Icon.FIRE),

@@ -48,11 +48,11 @@ rule "Show game tips in start":
   @Condition not eventPlayer.isReady
   waitUntil(distance(eventPlayer, vect(-27.33, -1.94, -12.68)) < 6)
 
-  eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = true
+  eventPlayer.isHeroDescriptionOpened = true
 
   while not eventPlayer.isReady: 
     if distance(eventPlayer, vect(-27.33, -1.94, -12.68)) > 6:
-      eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] = false
+      eventPlayer.isHeroDescriptionOpened = false
       eventPlayer.isReady = true
     wait(1)
 

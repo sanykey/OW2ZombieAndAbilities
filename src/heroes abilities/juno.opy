@@ -72,7 +72,7 @@ rule "[Juno] init":
   # 00000004AA3F  eventPlayer.abilState0
 
   hudText(
-    eventPlayer if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
+    eventPlayer if not eventPlayer.isHeroDescriptionOpened else null,
     null,
     "{}{} Hyper rift: {} {}".format(
       ABILITI_TEXT_INTEND,
@@ -93,21 +93,21 @@ rule "[Juno] init":
     Color.WHITE,
     Color.WHITE
   )
-  eventPlayer.heroState[JUN_I.RIFT_HUD] = getLastCreatedText()
+  eventPlayer.heroEffects[JUN_I.RIFT_HUD] = getLastCreatedText()
 
 
   waitUntil(eventPlayer.getHero() != Hero.JUNO, INFINITY)
   clearHeroInfo()
 
-  destroyHudText(eventPlayer.heroState[JUN_I.RIFT_HUD])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT0])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT1])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT2])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT3])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT0])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT1])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT2])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT3])
+  destroyHudText(eventPlayer.heroEffects[JUN_I.RIFT_HUD])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT0])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT1])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT2])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT3])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT0])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT1])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT2])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT3])
   eventPlayer.juno_rift2_active = false
   eventPlayer.juno_rift1_active = false
 
@@ -167,10 +167,10 @@ rule "[Juno] Hyper Rift placement":
   eventPlayer.cancelPrimaryAction()
   eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
   wait(0.24)
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT0])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT1])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT2])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT3])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT0])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT1])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT2])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT3])
   eventPlayer.juno_rift2_active = false
   eventPlayer.juno_last_rift = 2
   eventPlayer.juno_rift2_placement = eventPlayer.getEyePosition() + vect(0, -0.3, 0)
@@ -189,13 +189,13 @@ rule "[Juno] Hyper Rift placement":
   destroyEffect(eventPlayer.juno_rift2_fx)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION, eventPlayer.getTeam(), eventPlayer.juno_rift2_destination, 1)
   createEffect(getAllPlayers(), Effect.BAD_AURA, Color.WHITE, eventPlayer.juno_rift2_placement, 0.35, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  eventPlayer.heroState[JUN_I.RIFT0_EFFECT0] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT0] = getLastCreatedEntity()
   createProjectileEffect(getAllPlayers(), Projectile.SIGMA_HYPERSPHERE, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_rift2_placement), directionTowards(eventPlayer.juno_rift2_placement, eventPlayer.juno_rift1_destination), 0.15, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
-  eventPlayer.heroState[JUN_I.RIFT0_EFFECT1] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT1] = getLastCreatedEntity()
   createProjectileEffect(getAllPlayers(), Projectile.ZARYA_GRAVITON, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_rift2_placement), eventPlayer.getFacingDirection(), 0.135, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
-  eventPlayer.heroState[JUN_I.RIFT0_EFFECT2] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT2] = getLastCreatedEntity()
   createEffect(getAllPlayers(), Effect.GOOD_AURA, Color.TURQUOISE, eventPlayer.juno_rift2_destination, 0.65, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  eventPlayer.heroState[JUN_I.RIFT0_EFFECT3] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT3] = getLastCreatedEntity()
   eventPlayer.juno_rift2_active = true
   if eventPlayer.juno_rift1_active == true:
       smallMessage(getPlayers(eventPlayer.getTeam()), l"{0} {1} {2}".format(abilityIconString(Hero.JUNO, Button.ABILITY_2), "Hyper Rift created by", l"{0} {1}".format(eventPlayer.getHero(), l"({0})".format(eventPlayer))))
@@ -210,10 +210,10 @@ rule "[Juno] Hyper Rift second placement":
   eventPlayer.cancelPrimaryAction()
   eventPlayer.setAbilityCooldown(Button.ABILITY_2, 25)
   wait(0.24)
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT0])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT1])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT2])
-  destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT3])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT0])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT1])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT2])
+  destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT3])
   eventPlayer.juno_rift1_active = false
   eventPlayer.juno_last_rift = 1
   eventPlayer.juno_rift1_placement = eventPlayer.getEyePosition() + vect(0, -0.3, 0)
@@ -232,13 +232,13 @@ rule "[Juno] Hyper Rift second placement":
   destroyEffect(eventPlayer.juno_rift1_fx)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION, eventPlayer.getTeam(), eventPlayer.juno_rift1_destination, 1)
   createEffect(getAllPlayers(), Effect.BAD_AURA, Color.WHITE, eventPlayer.juno_rift1_placement, 0.35, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  eventPlayer.heroState[JUN_I.RIFT1_EFFECT0] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT0] = getLastCreatedEntity()
   createProjectileEffect(getAllPlayers(), Projectile.SIGMA_HYPERSPHERE, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_rift1_placement), directionTowards(eventPlayer.juno_rift1_placement, eventPlayer.juno_rift2_destination), 0.15, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
-  eventPlayer.heroState[JUN_I.RIFT1_EFFECT1] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT1] = getLastCreatedEntity()
   createProjectileEffect(getAllPlayers(), Projectile.ZARYA_GRAVITON, getPlayers(eventPlayer.getTeam()), updateEveryFrame(eventPlayer.juno_rift1_placement), eventPlayer.getFacingDirection(), 0.135, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
-  eventPlayer.heroState[JUN_I.RIFT1_EFFECT2] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT2] = getLastCreatedEntity()
   createEffect(getAllPlayers(), Effect.GOOD_AURA, eventPlayer.getTeam(), eventPlayer.juno_rift1_destination, 0.85, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  eventPlayer.heroState[JUN_I.RIFT1_EFFECT3] = getLastCreatedEntity()
+  eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT3] = getLastCreatedEntity()
   eventPlayer.juno_rift1_active = true
   if eventPlayer.juno_rift2_active == true:
     eventPlayer.abilState0 = 6
@@ -334,14 +334,14 @@ rule "[Juno] Get players for hyper Rift transfer":
     eventPlayer.abilState0 -= len(eventPlayer.list1)
 
   if eventPlayer.abilState0 < 1:
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT0])
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT1])
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT2])
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT0_EFFECT3])
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT0])
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT1])
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT2])
-    destroyEffect(eventPlayer.heroState[JUN_I.RIFT1_EFFECT3])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT0])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT1])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT2])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT0_EFFECT3])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT0])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT1])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT2])
+    destroyEffect(eventPlayer.heroEffects[JUN_I.RIFT1_EFFECT3])
     eventPlayer.juno_rift2_active = false
     eventPlayer.juno_rift1_active = false
     eventPlayer.juno_last_rift = false

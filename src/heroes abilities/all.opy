@@ -78,6 +78,8 @@ rule "Chase abilityCD":
     loop()
 
 
+macro Player.setRevealed(self, duration=REVEAL_DURATION):
+  self.revealed = duration + getTotalTimeElapsed()
 
 rule "Revealed zombies":
   @Event eachPlayer

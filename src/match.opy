@@ -16,14 +16,20 @@ rule "Match end":
   @Condition isGameStarted
   @Condition getNumberOfPlayers() > 1
   @Condition all(
-    [player.isDead() or not player.hasSpawned() for player in getPlayers(Team.1)]
+    [player.isDead() or (not player.hasSpawned() and not player.posBeforeChangeHero) for player in getPlayers(Team.1)]
   )
   
   matchIsOver = true
   destroyAllEffects()
   destroyAllInWorldTexts()
   wait(3)
-  bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Survived", roundNumber, l"Rounds"))
-  bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Total", l"{0}:".format(l"Score"), teamScore))
+  bigMessage(getAllPlayers(), "Survived {} rounds".format(roundNumber))
+  bigMessage(getAllPlayers(), "Total Score: {}".format(teamScore))
   wait(4)
   declareTeamVictory(Team.2)
+
+rule "Unlimited match time":
+  @Condition getMatchTime() < 10
+  @Condition matchIsOver == false
+  
+  setMatchTime(3599)

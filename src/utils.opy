@@ -75,10 +75,6 @@ rule "Show ServerLoad info":
 #   wait(1)
 #   disableInspector()
 
-# rule "Unlimited match time":
-#   @Condition getMatchTime() < 10
-#   @Condition matchIsOver == false
-  
-#   setMatchTime(3599)
+
 
 

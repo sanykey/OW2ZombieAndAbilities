@@ -1,17 +1,24 @@
 #!mainFile "../main.opy"
 
-enum WIDOWMAKER_SI:
-  LAST_HEADSHOT = 0
-  SILK_WEB = 1
-  PF_COOLDOWN = 2
-  PF_CHARGES = 3
+enum WID_I:
+  GRAPPLING_HOOK_HUD
+  WALLHACK_SHOT_BEAM
+  WALLHACK_SHOT_CHARGE_HUD
+  WALLHACK_SHOT_HIT_HUD
 
-rule "[Widowmaker] Talent texts":
+# eventPlayer.abilState0 - Grappling Hook charges
+# eventPlayer.abilState1 - is hooked to the wall after the grappling hook
+# eventPlayer.abilState2 - Wallhack shot charge
+# eventPlayer.abilState3 - Wallhack shot last headshot time
+
+rule "[Widowmaker] init":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
 
   wait(1) # waiting for the previous hero to clear hero data
+
+  # Hero info:
   eventPlayer.heroInfoVertFix0 = 3
   eventPlayer.heroInfoText0 = "{} <fgA686ABFF>Widowmaker</fg>:\n
   {} <fgA686ABFF>Widow's Kiss</fg>:
@@ -32,37 +39,70 @@ rule "[Widowmaker] Talent texts":
     abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2),
     REVEAL_DURATION
   )
-
   # {} <fgA686ABFF>Infra sight</fg>:
   #     - Allows shots to pierce through multiple enemies and walls.
-  waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
-  clearHeroInfo()
 
-# Party Favours: Gain a second hook charge
-rule "[Widowmaker] Party Favours":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
-  
+  # Grappling Hook charges hud
   hudText(
-    eventPlayer if not eventPlayer.state[SI.IS_TALENTS_HUD_OPENNED] else null,
+    eventPlayer if not eventPlayer.isHeroDescriptionOpened else null,
     null,
-    "{0}{1} Next Charge in: {2}".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1), floor(eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN])),
-    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES]]),
+    "{}{} Next Charge in: {}".format(
+      ABILITI_TEXT_INTEND, 
+      abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1),
+      floor(eventPlayer.abilityCD)
+    ),
+    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.abilState0]),
     HudPosition.TOP,
     2.5,
     null,
     Color.PURPLE,
     Color.VIOLET
   )
-  eventPlayer.HUDs[HI.WIDOWMAKER_PARTY_FAMOURS] = getLastCreatedText()
-  eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] = 1
+  eventPlayer.heroEffects[WID_I.GRAPPLING_HOOK_HUD] = getLastCreatedText()
+
+  eventPlayer.abilState0 = 1
+
+  # Wallhack huds
+  createInWorldText(
+    eventPlayer if eventPlayer.abilState3 > getTotalTimeElapsed() else null,
+    "X headshot",
+    updateEveryFrame(
+      localPlayer.getEyePosition() + (100 * (0 * worldVector(Vector.RIGHT, localPlayer, Transform.ROTATION) + ((-0.1 - 0.2) * (directionFromAngles(horizontalAngleOfDirection(localPlayer.getFacingDirection()), verticalAngleOfDirection(localPlayer.getFacingDirection()) - 190))) + 3 * localPlayer.getFacingDirection()))
+    ),
+    0.9,
+    Clip.NONE,
+    WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR,
+    Color.LIGHT_RED,
+    SpecVisibility.ALWAYS
+  )
+  eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_HIT_HUD] = getLastCreatedText()
+  hudText(
+    eventPlayer if eventPlayer.isFiringSecondaryFire() == true else null,
+    null,
+    "{0}{1} Phantom bullet charge: <fg00FF00FF>100%</fg>".format(
+      ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE)
+    ) if eventPlayer.abilState2 == 100 else
+    "{0}{1} Phantom bullet charge: {2}%".format(
+      ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE), floor(eventPlayer.abilState2)
+    ),
+    null,
+    HudPosition.TOP,
+    2.5,
+    null,
+    Color.PURPLE,
+    null
+  )
+  eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_CHARGE_HUD] = getLastCreatedText()
 
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
-  destroyHudText(eventPlayer.HUDs[HI.WIDOWMAKER_PARTY_FAMOURS])
+  destroyHudText(eventPlayer.heroEffects[WID_I.GRAPPLING_HOOK_HUD])
+  destroyHudText(eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_CHARGE_HUD])
+  destroyInWorldText(eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_HIT_HUD])
+
+  clearHeroInfo()
 
 
-rule "[Widowmaker] Party Favours - Deplete hook charge":
+rule "[Widowmaker] Deplete hook charge":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
@@ -72,25 +112,24 @@ rule "[Widowmaker] Party Favours - Deplete hook charge":
   if not eventPlayer.getAbilityCooldown(Button.ABILITY_1):
     return
 
-  if eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] > 0:
-    eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] -= 1
+  if eventPlayer.abilState0 > 0:
+    eventPlayer.abilState0 -= 1
     eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
 
 
-rule "[Widowmaker] Party Favours - Recharge hook ":
+rule "[Widowmaker] Recharge hook":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] < 1
+  @Condition eventPlayer.abilState0 < 1
   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
   
   wait(0.4, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN] = 12
-  while eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN] > 0:
-    wait(1)
-    eventPlayer.heroState[WIDOWMAKER_SI.PF_COOLDOWN] -= 1
 
-  eventPlayer.heroState[WIDOWMAKER_SI.PF_CHARGES] += 1
+  eventPlayer.abilityCD = 12
+  waitUntil(not eventPlayer.abilityCD, 12)
+
+  eventPlayer.abilState0 += 1
   if ruleCondition:
     loop()
   wait(0.25)
@@ -102,18 +141,54 @@ rule "[Widowmaker] Falling stars":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.isUsingAbility1() == true
+  @Condition eventPlayer.isUsingAbility1()
   @Condition eventPlayer.getSpeed() >= 20
   
   while eventPlayer.isUsingAbility1():
-    createProjectile(Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE, eventPlayer, null, Vector.UP, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 4, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND, 0, 10, 3, 0, 0, 35)
+    createProjectile(
+      Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE,
+      eventPlayer,
+      null,
+      Vector.UP,
+      Relativity.TO_WORLD,
+      ModifyHealth.DAMAGE,
+      Team.2,
+      30,
+      1,
+      4,
+      DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION,
+      DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND,
+      0,
+      10,
+      3,
+      0,
+      0,
+      35
+    )
     wait(0.15)
   for eventPlayer.abilTemp1 in range(4):
     wait(0.05)
-    createProjectile(Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE, eventPlayer, null, Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.abilTemp1 * 90, 0)), Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 3, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND, 0, 8, 3, 0, 0, 45)
+    createProjectile(
+      Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE,
+      eventPlayer,
+      null,
+      Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.abilTemp1 * 90, 0)),
+      Relativity.TO_WORLD,
+      ModifyHealth.DAMAGE,
+      Team.2,
+      30,
+      1,
+      3,
+      DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND,
+      0,
+      8,
+      3,
+      0,
+      0,
+      45
+    )
 
-# Silk web: When grappling hook ends, temporarily latch onto any nearby walls
-rule "[Widowmaker] Silk web":
+rule "[Widowmaker] When grappling hook ends, latch onto any nearby wall":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
@@ -125,62 +200,37 @@ rule "[Widowmaker] Silk web":
   if eventPlayer.getAltitude() < 1:
     return
 
-  eventPlayer.heroState[WIDOWMAKER_SI.SILK_WEB] = true
+  eventPlayer.abilState1 = true
   eventPlayer.applyImpulse(eventPlayer.getVelocity(), -0.01, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   eventPlayer.setGravity(0)
   eventPlayer.startForcingThrottle(0, 0, 0, 0, 0, 0)
 
-  waitUntil(eventPlayer.isHoldingButton(Button.JUMP) or true in [eventPlayer.hasStatus(Status.HACKED), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.STUNNED)], 10)
+  waitUntil( # todo: hasBadStatus?
+    eventPlayer.isHoldingButton(Button.JUMP) or true in [
+      eventPlayer.hasStatus(Status.HACKED),
+      eventPlayer.hasStatus(Status.KNOCKED_DOWN),
+      eventPlayer.hasStatus(Status.ASLEEP),
+      eventPlayer.hasStatus(Status.FROZEN),
+      eventPlayer.hasStatus(Status.STUNNED)
+    ],
+    10
+  )
   eventPlayer.setGravity(100)
   eventPlayer.stopForcingThrottle()
-  eventPlayer.heroState[WIDOWMAKER_SI.SILK_WEB] = false
+  eventPlayer.abilState1 = false
   playEffect(eventPlayer, DynamicEffect.DOOMFIST_RISING_UPPERCUT_IMPACT_SOUND, Color.WHITE, eventPlayer.getPosition(), 75)
 
 
-rule "[Widowmaker] Phantom bullets headshot hud":
-  @Event eachPlayer
-  @Hero widowmaker
-  @Team 1
-
-  createInWorldText(
-    eventPlayer if eventPlayer.heroState[WIDOWMAKER_SI.LAST_HEADSHOT] > getTotalTimeElapsed() else null,
-    "X headshot",
-    updateEveryFrame(localPlayer.getEyePosition() + (100 * (0 * worldVector(Vector.RIGHT, localPlayer, Transform.ROTATION) + ((-0.1 - 0.2) * (directionFromAngles(horizontalAngleOfDirection(localPlayer.getFacingDirection()), verticalAngleOfDirection(localPlayer.getFacingDirection()) - 190))) + 3 * localPlayer.getFacingDirection()))),
-    0.9,
-    Clip.NONE,
-    WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR,
-    Color.LIGHT_RED,
-    SpecVisibility.ALWAYS
-  )
-  eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_HIT] = getLastCreatedText()
-
-  hudText(
-    eventPlayer if eventPlayer.isFiringSecondaryFire() == true else null,
-    null,
-    "{0}{1} Phantom bullet charge: <fg00FF00FF>100%</fg>".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE)) if eventPlayer.widowmakerChargeShot == 100 else
-    "{0}{1} Phantom bullet charge: {2}%".format(ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE), floor(eventPlayer.widowmakerChargeShot)),
-    null,
-    HudPosition.TOP,
-    2.5,
-    null,
-    Color.PURPLE,
-    null
-  )
-  eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_CHARGE] = getLastCreatedText()
-
-  waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
-  destroyInWorldText(eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_HIT])
-  destroyHudText(eventPlayer.HUDs[HI.WIDOWMAKER_PHANTOM_BULLET_CHARGE])
-
-
 # You have to calculate the direction before you shoot. If you do it during the shot, the recoil from the shot can affect the counts
-rule "[Widowmaker] Phantom bullets - Aiming through walls":
+rule "[Widowmaker] Aiming through walls":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == false
-  @Condition len([player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()]) > 0
+  @Condition len([
+    player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()
+  ]) > 0
 
   eventPlayer.raycast[RI.FACING_DIRECTION] = eventPlayer.getFacingDirection()
   wait(0.016)
@@ -195,7 +245,7 @@ rule "[Widowmaker] Phantom bullets - Aiming through walls":
     return
   loop()
 
-rule "[Widowmaker] Phantom bullets - damage through walls":
+rule "[Widowmaker] damage through walls":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
@@ -203,13 +253,15 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
   @Condition eventPlayer.isFiringPrimaryFire() == true
   @Condition eventPlayer.raycast[RI.FACING_DIRECTION] == true
 
-  if eventPlayer.widowmakerChargeShot < 100:
+  if eventPlayer.abilState2 < 100:
     return
 
   eventPlayer.temp3 = false
-  eventPlayer.temp2 = [player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()]
+  eventPlayer.list0 = [
+    player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()
+  ]
 
-  for eventPlayer.temp1 in range(len(eventPlayer.temp2)):
+  for eventPlayer.temp1 in range(len(eventPlayer.list0)):
     # If eventPlayer.temp3 == true, it means there's already been a hit through a wall or an enemy. Cancel damage to others if no ultimates are present
     if eventPlayer.temp3 and eventPlayer.isUsingUltimate(): 
       break
@@ -220,31 +272,31 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
       getAllPlayers(),
       eventPlayer,
       true
-    ).getPlayerHit() == eventPlayer.temp2[eventPlayer.temp1]:
+    ).getPlayerHit() == eventPlayer.list0[eventPlayer.temp1]:
       # do nothing
     else:
-      eventPlayer.raycast[RI.SPHERE_POS] = eventPlayer.temp2[eventPlayer.temp1].getEyePosition() + (eventPlayer.temp2[eventPlayer.temp1].getFacingDirection() + vect(0, 0, -0.5)) * 0.25 # headshot shpere
+      eventPlayer.raycast[RI.SPHERE_POS] = eventPlayer.list0[eventPlayer.temp1].getEyePosition() + (eventPlayer.list0[eventPlayer.temp1].getFacingDirection() + vect(0, 0, -0.5)) * 0.25 # headshot shpere
       eventPlayer.raycast[RI.RADIUS] = ZOMBIE_HEAD_HITBOX_RADIUS
       rayIntersectionsWithSphere()
 
       if eventPlayer.raycast[RI.RESULT] == true:
         damage(
-          eventPlayer.temp2[eventPlayer.temp1],
+          eventPlayer.list0[eventPlayer.temp1],
           eventPlayer,
           300
         )
         if not eventPlayer.temp3:
           eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
-        eventPlayer.heroState[WIDOWMAKER_SI.LAST_HEADSHOT] = 0.5 + getTotalTimeElapsed() # for headshot message
+        eventPlayer.abilState3 = 0.5 + getTotalTimeElapsed() # for headshot message
       else:
 
-        eventPlayer.raycast[RI.SPHERE_POS] = eventPlayer.temp2[eventPlayer.temp1].getPosition() + vect(0, 0.6, 0) # player center shpere
+        eventPlayer.raycast[RI.SPHERE_POS] = eventPlayer.list0[eventPlayer.temp1].getPosition() + vect(0, 0.6, 0) # player center shpere
         eventPlayer.raycast[RI.RADIUS] = ZOMBIE_BODY_HITBOX_RADIUS
         rayIntersectionsWithSphere()
 
         if eventPlayer.raycast[RI.RESULT] == true:
           damage(
-            eventPlayer.temp2[eventPlayer.temp1],
+            eventPlayer.list0[eventPlayer.temp1],
             eventPlayer,
             120
           )
@@ -261,9 +313,9 @@ rule "[Widowmaker] Phantom bullets - damage through walls":
       Color.VIOLET,
       EffectReeval.COLOR
     )
-    eventPlayer.HUDs[HI.WALLHACK_SHOT] = getLastCreatedEntity()
+    eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_BEAM] = getLastCreatedEntity()
     wait(0.5)
-    destroyEffect(eventPlayer.HUDs[HI.WALLHACK_SHOT])
+    destroyEffect(eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_BEAM])
   
 
 rule "[Widowmaker] Felt More Alive":
@@ -272,7 +324,7 @@ rule "[Widowmaker] Felt More Alive":
   @Team 1
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isInAir() == true
-  @Condition eventPlayer.heroState[WIDOWMAKER_SI.SILK_WEB] == false
+  @Condition eventPlayer.abilState1 == false
   
   wait(0.333, Wait.ABORT_WHEN_FALSE)
   eventPlayer.setGravity(30)
@@ -283,42 +335,43 @@ rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
   @Event playerTookDamage
   @Condition attacker.getCurrentHero() == Hero.WIDOWMAKER
   @Condition eventAbility == Button.ABILITY_2
-  
-  victim.revealed = REVEAL_DURATION + getTotalTimeElapsed()
 
+  victim.setRevealed()
+
+  # todo: fix:
   eventPlayer.setMoveSpeed(ZOMBIE_SPEED / 3)
   wait(5)
   eventPlayer.setMoveSpeed(ZOMBIE_SPEED)
 
-rule "[Widowmaker] Baiser De Soie":
+rule "[Widowmaker] Reveal enemies when scoped hit":
   @Event playerDealtDamage
   @Hero widowmaker
   @Condition eventAbility == Button.PRIMARY_FIRE
   @Condition eventAbility == Button.SECONDARY_FIRE
 
-  victim.revealed = REVEAL_DURATION + getTotalTimeElapsed()
+  victim.setRevealed()
 
-rule "[Widowmaker] Phantom bullets - Charge":
+rule "[Widowmaker] Wallhack shot charge":
   @Event eachPlayer
   @Team 1
   @Hero widowmaker
-  @Condition eventPlayer.isFiringSecondaryFire() == true and eventPlayer.isFiringPrimaryFire() == false
+  @Condition eventPlayer.isFiringSecondaryFire() and not eventPlayer.isFiringPrimaryFire()
   
-  eventPlayer.widowmakerChargeShot = 0
+  eventPlayer.abilState2 = 0
   wait(0.27)
   if not ruleCondition:
     return
 
-  chaseAtRate(eventPlayer.widowmakerChargeShot, 100, 100, ChaseRateReeval.NONE)
+  chaseAtRate(eventPlayer.abilState2, 100, 100, ChaseRateReeval.NONE)
   waitUntil(eventPlayer.isFiringSecondaryFire() == false or eventPlayer.isFiringPrimaryFire() == true)
-  stopChasingVariable(eventPlayer.widowmakerChargeShot)
-  eventPlayer.widowmakerChargeShot = 0
+  stopChasingVariable(eventPlayer.abilState2)
+  eventPlayer.abilState2 = 0
   
   if (eventPlayer.isFiringSecondaryFire() == true and eventPlayer.isFiringPrimaryFire() == true):
-    eventPlayer.widowmakerChargeShot = 0
+    eventPlayer.abilState2 = 0
     wait(0.27)
-    chaseAtRate(eventPlayer.widowmakerChargeShot, 100, 100, ChaseRateReeval.NONE)
+    chaseAtRate(eventPlayer.abilState2, 100, 100, ChaseRateReeval.NONE)
     waitUntil(eventPlayer.isFiringSecondaryFire() == false or eventPlayer.isFiringPrimaryFire() == false)
-    stopChasingVariable(eventPlayer.widowmakerChargeShot)
-    eventPlayer.widowmakerChargeShot = 0
+    stopChasingVariable(eventPlayer.abilState2)
+    eventPlayer.abilState2 = 0
     goto RULE_START

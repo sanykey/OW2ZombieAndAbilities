@@ -12,7 +12,9 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
     isBotsDisabled = true
     for I in range(wSettingsMaxZombieBots):
       destroyDummy(Team.2, I)
-    roundNumber -= 1
+
+    if roundNumber > 0:
+      roundNumber -= 1
     roundRemainingBots = 0
     hostPlayer.setMoveSpeed(200)
     smallMessage(eventPlayer, "Bots disabled (ctrl + shift + interact)")
