@@ -19,16 +19,12 @@ rule "Player joined setup":
   eventPlayer.purchasedHeroes = [Hero.DVA]
   eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
 
-  createEffect(getAllPlayers() if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
-  createIcon(getAllPlayers().exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY, Color.YELLOW)
-
   # Change character for vip players
   # if "{0}".format(eventPlayer) in vipPlayers == true:
   #   wait(2)
   #   eventPlayer.startForcingHero(Hero.SOMBRA)
   # else:
   eventPlayer.startForcingHero(Hero.DVA)
-  
   eventPlayer.respawn()
   eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
@@ -87,8 +83,3 @@ rule "Late joiner catchup after round 15, 25, 50":
     eventPlayer.money += 50000
     eventPlayer.healthBoostPercent += 300
     eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-
-
-rule "All Teams: Player left Match, destroy hud text":
-  @Event playerLeft
-  destroyHudText(eventPlayer.playerListHudId)

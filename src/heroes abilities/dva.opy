@@ -14,7 +14,7 @@ rule "[DVA] Init":
 
   # Slide ability hud:
   hudText(
-    eventPlayer if not eventPlayer.isHeroDescriptionOpened else null,
+    eventPlayer if not eventPlayer.isHeroDescriptionOpened and eventPlayer.isInAlternateForm() else null,
     null,
     "{}{} Slide: {}".format(
       ABILITI_TEXT_INTEND,
@@ -28,7 +28,7 @@ rule "[DVA] Init":
     Color.WHITE,
     null
   )
-  eventPlayer.heroEffects[DVA_I.SLIDE_HUD] = getLastCreatedText()
+  eventPlayer.heroEffectsIds[DVA_I.SLIDE_HUD] = getLastCreatedText()
 
   wait(1) # waiting for the previous hero to clear hero data
 
@@ -46,7 +46,7 @@ rule "[DVA] Init":
   waitUntil(eventPlayer.getHero() != Hero.DVA, INFINITY)
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   clearHeroInfo()
-  destroyHudText(eventPlayer.heroEffects[DVA_I.SLIDE_HUD])
+  destroyHudText(eventPlayer.heroEffectsIds[DVA_I.SLIDE_HUD])
   if not eventPlayer.isDvaUltBought:
     eventPlayer.setUltEnabled(true)
 
@@ -57,6 +57,7 @@ rule "[DVA] Slide":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.DVA
   @Condition eventPlayer.isHoldingButton(Button.ABILITY_1)
+  @Condition eventPlayer.isInAlternateForm()
   @Condition not eventPlayer.abilState0
 
   if eventPlayer.abilityCD:
@@ -65,10 +66,10 @@ rule "[DVA] Slide":
   createEffect(
     getAllPlayers(), Effect.LUCIO_SOUND_BARRIER_PROTECTED, eventPlayer.getTeam(), eventPlayer, true/*=1*/, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
-  eventPlayer.heroEffects[DVA_I.SLIDE_EFFECT] = getLastCreatedEntity()
+  eventPlayer.heroEffectsIds[DVA_I.SLIDE_EFFECT] = getLastCreatedEntity()
 
   createEffect(getAllPlayers(), Effect.SIGMA_GRAVITIC_FLUX_TARGET_SOUND, Color.WHITE, eventPlayer, 200, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  eventPlayer.heroEffects[DVA_I.SLIDE_EFFECT2] = getLastCreatedEntity()
+  eventPlayer.heroEffectsIds[DVA_I.SLIDE_EFFECT2] = getLastCreatedEntity()
 
   createProjectileEffect(
     getAllPlayers(),
@@ -81,7 +82,7 @@ rule "[DVA] Slide":
     ),
     vect(0, 0, 0)
   )
-  eventPlayer.heroEffects[DVA_I.SLIDE_EFFECT3] = getLastCreatedEntity()
+  eventPlayer.heroEffectsIds[DVA_I.SLIDE_EFFECT3] = getLastCreatedEntity()
 
   eventPlayer.abilState0 = 3
   eventPlayer.setMoveSpeed(170)
@@ -117,7 +118,7 @@ rule "[DVA] Slide":
   eventPlayer.setGravity(100)
   eventPlayer.setMoveSpeed(100)
   for eventPlayer.temp0 in range(3):
-    destroyEffect(eventPlayer.heroEffects[eventPlayer.temp0])
+    destroyEffect(eventPlayer.heroEffectsIds[eventPlayer.temp0])
 
   eventPlayer.abilityCD = 8
   eventPlayer.abilState0 = 0

@@ -120,9 +120,8 @@ playervar recentStackedDamageDealtToSlot
 playervar damageAssitsToSlot
 playervar posBeforeChangeHero
 playervar purchasedHeroes
-playervar playerListHudId
 
-# Hero Info:
+# Hero Info:`
 playervar heroInfoText0
 playervar heroInfoVertFix0
 playervar heroInfoHorFix0
@@ -144,12 +143,26 @@ playervar lastCcAttacker
 playervar lastCcAttackTime
 playervar lastCcWasInAir
 
-playervar HUDs
+# effects ids
+playervar effectsIds
+enum HI:
+  REVEALED_ICON
+  PLAYER_STATUS
+  REVIVE_EFFECT
+  REVIVE_ICON
+  DEBUG
+  DEBUG2
+  DEBUG3
+  DEBUG4
+  DEBUG5
+
+playervar heroEffectsIds
+
 playervar hasBadStatus
 playervar revealed
 playervar money
 playervar raycast
-playervar heroEffects
+
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady
@@ -288,15 +301,6 @@ enum SI:
   CHANGED_SPEED_AMOUNT
   CHANGED_SPEED_AMOUNT_PREV
   LOW_GRAVITY
-
-# for playervar HUDs
-enum HI:
-  REVEALED_ICON
-  DEBUG
-  DEBUG2
-  DEBUG3
-  DEBUG4
-  DEBUG5
 
 # for [Widowmaker] wallhack calculation
 enum RI:

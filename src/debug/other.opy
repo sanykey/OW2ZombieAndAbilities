@@ -131,9 +131,9 @@ rule "[debug] debug objects":
 #   @Team 1
 #   @Condition eventPlayer.isFiringPrimaryFire() == true
 
-#   destroyEffect(eventPlayer.HUDs[HI.DEBUG])
-#   destroyEffect(eventPlayer.HUDs[HI.DEBUG2])
-#   destroyEffect(eventPlayer.HUDs[HI.DEBUG3])
+#   destroyEffect(eventPlayer.effectsIds[HI.DEBUG])
+#   destroyEffect(eventPlayer.effectsIds[HI.DEBUG2])
+#   destroyEffect(eventPlayer.effectsIds[HI.DEBUG3])
 
 #   temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
 
@@ -152,7 +152,7 @@ rule "[debug] debug objects":
 #     Color.GREEN,
 #     EffectReeval.COLOR
 #   )
-#   eventPlayer.HUDs[HI.DEBUG] = getLastCreatedEntity()
+#   eventPlayer.effectsIds[HI.DEBUG] = getLastCreatedEntity()
 
 #   createBeam(
 #     getAllPlayers(),
@@ -168,7 +168,7 @@ rule "[debug] debug objects":
 #     Color.RED,
 #     EffectReeval.COLOR
 #   )
-#   eventPlayer.HUDs[HI.DEBUG2] = getLastCreatedEntity()
+#   eventPlayer.effectsIds[HI.DEBUG2] = getLastCreatedEntity()
 
 #   createEffect(
 #     getAllPlayers(),
@@ -185,7 +185,7 @@ rule "[debug] debug objects":
 #     0.1,
 #     EffectReeval.VISIBILITY_AND_COLOR
 #   )
-#   eventPlayer.HUDs[HI.DEBUG3] = getLastCreatedEntity()
+#   eventPlayer.effectsIds[HI.DEBUG3] = getLastCreatedEntity()
 
 
 # rule "Debug: persistent dot":
@@ -193,7 +193,7 @@ rule "[debug] debug objects":
 #   @Slot 0
 #   @Team 1
 
-#   destroyEffect(eventPlayer.HUDs[HI.DEBUG4])
+#   destroyEffect(eventPlayer.effectsIds[HI.DEBUG4])
 #   temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
 
 #   createEffect(
@@ -213,7 +213,7 @@ rule "[debug] debug objects":
 #   )
 
 
-#   eventPlayer.HUDs[HI.DEBUG4] = getLastCreatedEntity()
+#   eventPlayer.effectsIds[HI.DEBUG4] = getLastCreatedEntity()
 
 #   wait(0.02)
 #   loop()

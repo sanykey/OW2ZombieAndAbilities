@@ -155,6 +155,9 @@ rule "Init huds":
   )
   delayerStartHudId = getLastCreatedText()
 
+
+  setObjectiveDescription(localPlayer, "Round {0}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
+
   # hotkey tip: open hero talents description 
   # hudText(
   #   localPlayer,
@@ -200,15 +203,23 @@ rule "Close hero talents info hud":
   eventPlayer.isHeroDescriptionOpened = false
 
 
-rule "Players list, upgrades and money":
+rule "Create players effects":
   @Event eachPlayer
   @Team 1
+
+  # revive effects and icon
+  createEffect(getPlayers(Team.1) if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
+  eventPlayer.effectsIds[HI.REVIVE_EFFECT] = getLastCreatedEntity()
+
+  createIcon(getPlayers(Team.1).exclude(eventPlayer) if eventPlayer.downedStartTime else [], eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.YELLOW)
+  eventPlayer.effectsIds[HI.REVIVE_ICON] = getLastCreatedEntity()
 
   if eventPlayer.isDummy() or eventPlayer.getSlot() > MAX_PLAYERS - 1:
     return
 
   clearHeroInfo()
 
+  # Players list, upgrades and money
   hudText(
     getPlayers(Team.1) if not eventPlayer.isHeroDescriptionOpened else null,
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
@@ -230,14 +241,19 @@ rule "Players list, upgrades and money":
     Color.WHITE,
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
-  eventPlayer.playerListHudId = getLastCreatedText()
+  eventPlayer.effectsIds[HI.PLAYER_STATUS] = getLastCreatedText()
 
-rule "[Tips & Tricks]":
-  @Event eachPlayer
-  @Team 1
 
-  setObjectiveDescription(eventPlayer, "Round {0}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
-  
+rule "Player left Match, destroy effects, texts and hud":
+  @Event playerLeft
+  destroyHudText(eventPlayer.effectsIds[HI.PLAYER_STATUS])
+  destroyEffect(eventPlayer.effectsIds[HI.REVIVE_EFFECT])
+  destroyIcon(eventPlayer.effectsIds[HI.REVIVE_ICON])
+
+
+# rule "[Tips & Tricks]":
+#   @Event eachPlayer
+#   @Team 1
 #   wait(1)
 #   setObjectiveDescription(eventPlayer, "Welcome to Zombies Unleashed! | Objective: Survive as many waves of zombies as possible!", HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
 #   wait(15)

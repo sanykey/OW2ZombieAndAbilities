@@ -78,11 +78,11 @@ rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
 #   eventPlayer.cancelPrimaryAction()
 #   createEffect(eventPlayer, Effect.MERCY_DAMAGE_BOOSTED, Color.TEAM_1, eventPlayer, 1)
 #   eventPlayer.Damage_Dealt += 50
-#   eventPlayer.Effects__[1] = getLastCreatedEntity()
+#   eventPlayer.effectsIds__[1] = getLastCreatedEntity()
 #   eventPlayer.Ability_Active = true
 #   waitUntil(eventPlayer.isDead() or not eventPlayer.Talent1, 3)
 #   eventPlayer.Damage_Dealt -= 50
-#   destroyEffect(eventPlayer.Effects__[1])
+#   destroyEffect(eventPlayer.effectsIds__[1])
 #   eventPlayer.Ability_Active = false
 
 # # From "Heat Street PvE Talents" (KFVAY)

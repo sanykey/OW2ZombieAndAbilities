@@ -58,7 +58,7 @@ rule "[Widowmaker] init":
     Color.PURPLE,
     Color.VIOLET
   )
-  eventPlayer.heroEffects[WID_I.GRAPPLING_HOOK_HUD] = getLastCreatedText()
+  eventPlayer.heroEffectsIds[WID_I.GRAPPLING_HOOK_HUD] = getLastCreatedText()
 
   eventPlayer.abilState0 = 1
 
@@ -75,7 +75,7 @@ rule "[Widowmaker] init":
     Color.LIGHT_RED,
     SpecVisibility.ALWAYS
   )
-  eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_HIT_HUD] = getLastCreatedText()
+  eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_HIT_HUD] = getLastCreatedText()
   hudText(
     eventPlayer if eventPlayer.isFiringSecondaryFire() == true else null,
     null,
@@ -92,12 +92,12 @@ rule "[Widowmaker] init":
     Color.PURPLE,
     null
   )
-  eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_CHARGE_HUD] = getLastCreatedText()
+  eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_CHARGE_HUD] = getLastCreatedText()
 
   waitUntil(eventPlayer.getHero() != Hero.WIDOWMAKER, INFINITY)
-  destroyHudText(eventPlayer.heroEffects[WID_I.GRAPPLING_HOOK_HUD])
-  destroyHudText(eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_CHARGE_HUD])
-  destroyInWorldText(eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_HIT_HUD])
+  destroyHudText(eventPlayer.heroEffectsIds[WID_I.GRAPPLING_HOOK_HUD])
+  destroyHudText(eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_CHARGE_HUD])
+  destroyInWorldText(eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_HIT_HUD])
 
   clearHeroInfo()
 
@@ -313,9 +313,9 @@ rule "[Widowmaker] damage through walls":
       Color.VIOLET,
       EffectReeval.COLOR
     )
-    eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_BEAM] = getLastCreatedEntity()
+    eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_BEAM] = getLastCreatedEntity()
     wait(0.5)
-    destroyEffect(eventPlayer.heroEffects[WID_I.WALLHACK_SHOT_BEAM])
+    destroyEffect(eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_BEAM])
   
 
 rule "[Widowmaker] Felt More Alive":

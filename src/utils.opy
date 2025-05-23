@@ -1,5 +1,9 @@
 #!mainFile "main.opy"
 
+rule "Disable inspector recording":
+  wait(1)
+  disableInspector()
+
 rule "Show ServerLoad info":
   hudSubheader(
     localPlayer if localPlayer == hostPlayer else false,
@@ -17,6 +21,19 @@ rule "Show ServerLoad info":
     rgb(255, 280 - getAverageServerLoad(), 0),
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
+
+rule "Server anti-crash system":
+  @Condition getServerLoad() > 240
+  
+  wait(0.5, Wait.ABORT_WHEN_FALSE)
+  if not ruleCondition:
+    return
+
+  smallMessage(getAllPlayers(), "[Server]: Anti crash system enabled to reduce server load")
+  setSlowMotion(75)
+  waitUntil(getServerLoad() < 230, INFINITY)
+  setSlowMotion(100)
+
 
 # rule "Crash Protection [ON]":
 #   @Condition getServerLoad() > 250
@@ -71,9 +88,7 @@ rule "Show ServerLoad info":
 
 
 
-# rule "Disable inspector recording - debug":
-#   wait(1)
-#   disableInspector()
+
 
 
 
