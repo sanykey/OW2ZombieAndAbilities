@@ -17,7 +17,7 @@ rule "[debug] User starting stats":
   # eventPlayer.healingBoostPercent = 100
   eventPlayer.healthBoostPercent = 10000
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  eventPlayer.damageBoostPercent = 200
+  eventPlayer.damageBoostPercent = 10000
   eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
   # eventPlayer.healingBoostPercent += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
@@ -53,6 +53,15 @@ rule "[debug] User starting stats":
 
 
 # rule "[debug] debug objects":
+#   debug(hostPlayer.isCommunicatingEmote())
+#   debug(hostPlayer.isCommunicatingVoiceline())
+#   debug(getPlayersInSlot(0, Team.2).zombiesfly)
+#   debug(getPlayersInSlot(0, Team.2).money)
+#   debug(getPlayersInSlot(0, Team.2).abilTemp1)
+#   debug(getTotalTimeElapsed())
+#   debug(getPlayersInSlot(0, Team.2).abilPos0)
+#   debug(isInLoS(getPlayersInSlot(0, Team.2), getPlayersInSlot(0, Team.2).targetPlayer0))
+
   # debug(secretShopZoneEffects)
   # debug(zonesHeroBuyLen)
   # debug(zonesHeroBuyOffset)

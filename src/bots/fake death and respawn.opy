@@ -51,7 +51,7 @@ def botFakeDeathRespawn():
     eventPlayer.startForcingHero(Hero.ROADHOG)
 
   # [Team2 Mauga] create bot:
-  elif roundNumber > 0 and len(getPlayersOnHero(Hero.MAUGA)) < 1:
+  elif roundNumber > 2 and len(getPlayersOnHero(Hero.MAUGA)) < 1:
     eventPlayer.startForcingHero(Hero.MAUGA)
 
   # [Team2 Widowmaker] respawn:
@@ -146,6 +146,8 @@ def botFakeDeathHandle():
 
   teamScore += MONEY_FOR_ZOMBIE_KILL
 
+  eventPlayer.stopAllDamageOverTime()
+
   # wait 1 second for: 
   # - turrets damage detect
   # - Set the zombie's Status.KNOCKED_DOWN to make it look like it was killed
@@ -234,9 +236,9 @@ rule "Setup created bots":
   eventPlayer.isReady = true
 
   # [debug]:
-  # createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.RED)
-  # wait()
-  # createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+  createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+  wait()
+  createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
 
 rule "Create bots":
   @Condition not isBotsDisabled

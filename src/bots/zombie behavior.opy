@@ -77,6 +77,7 @@ rule "Bots attack near player":
   @Team 2
   @Condition eventPlayer.isAlive()
   @Condition not eventPlayer.downedStartTime
+  @Condition not eventPlayer.zombiesfly
   @Condition eventPlayer.getHero() == Hero.TORBJORN
   @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
 
@@ -137,14 +138,20 @@ rule "Bots moves":
     goto lbl_0
 
 
-  eventPlayer.temp1 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
+  
 
   # Bots under player impulse
-  if eventPlayer.getVerticalFacingAngle() < -70 and getRealClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false: # no need to jump after players who use ultimates (doomfist, mercy and etc)
+  if (
+    eventPlayer.getVerticalFacingAngle() < -70 and
+    not getRealClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false and 
+    distance(eventPlayer, eventPlayer.targetPlayer0) < 2
+  ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
     eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    wait(0.5)
+    wait(0.2)
     eventPlayer.applyImpulse(Vector.UP, 18, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   
+
+  eventPlayer.temp1 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
   # bot unstuck
   if (
     eventPlayer.abilPos0 and
@@ -156,7 +163,12 @@ rule "Bots moves":
     if eventPlayer.money > 5:
       eventPlayer.forceButtonPress(Button.JUMP)
 
-    if eventPlayer.money > 60:
+    if eventPlayer.money == 10:
+      eventPlayer.forceButtonPress(Button.JUMP)
+      wait()
+      eventPlayer.applyImpulse(Vector.UP, 3, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
+
+    if eventPlayer.money > 30:
       eventPlayer.teleport(random.choice(spawnPointsList))
       eventPlayer.money = 0
   else:
@@ -193,11 +205,11 @@ rule "Zombies loS teleport (zombiesfly)":
   @Condition not eventPlayer.hasBadStatus
   @Condition not eventPlayer.hasStatus(Status.HACKED)
   @Condition not eventPlayer.hasStatus(Status.ROOTED)
-  @Condition not isInLoS(eventPlayer, eventPlayer.targetPlayer0)
+  @Condition not isInLoS(eventPlayer.targetPlayer0, eventPlayer)
   @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
   
   
-  wait(6, Wait.ABORT_WHEN_FALSE)
+  wait(5, Wait.ABORT_WHEN_FALSE)
   eventPlayer.zombiesfly = true
   eventPlayer.disallowButton(Button.PRIMARY_FIRE)
   eventPlayer.setGravity(0)
@@ -208,7 +220,7 @@ rule "Zombies loS teleport (zombiesfly)":
   wait(0.2)
   eventPlayer.applyImpulse(Vector.FORWARD, 5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   eventPlayer.setInvisibility(Invis.ALL)
-  waitUntil(isInLoS(eventPlayer, getRealClosestPlayer(eventPlayer, Team.1)), 30)
+  waitUntil(isInLoS(getRealClosestPlayer(eventPlayer, Team.1), eventPlayer), 30)
   wait(0.4)
   eventPlayer.setGravity(100)
   eventPlayer.enableEnvironmentCollision()

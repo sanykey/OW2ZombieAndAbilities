@@ -76,10 +76,11 @@ rule "Pause 3P camera during emote":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.state[0] > 2
-  @Condition eventPlayer.isCommunicatingEmote() == true
+  @Condition eventPlayer.isCommunicatingEmote()
 
   pause3PCamera()
-  waitUntil(eventPlayer.isCommunicatingEmote() == false, INFINITY)
+  wait()
+  waitUntil("{}".format(eventPlayer.isCommunicatingEmote()) == "0", INFINITY)
   unpause3PCamera()
 
 rule "Pause 3P Camera During Ultimate (junkrat and bastion)":

@@ -51,7 +51,7 @@ settings {
                 "enableAbility1": false,
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
-                "movementGravity%": 80,
+                "movementGravity%": 70,
                 "movementSpeed%": ZOMBIE_SPEED,
                 "enableAbility2": false,
                 "projectileSpeed%": 0,
@@ -64,14 +64,14 @@ settings {
             "roadhog": {
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
-                "movementGravity%": 80,
+                "movementGravity%": 70,
                 "movementSpeed%": ZOMBIE_SPEED - 10,
                 "ability1Cooldown%": 10
             },
             "mauga": {
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
-                "movementGravity%": 80,
+                "movementGravity%": 70,
                 "movementSpeed%": ZOMBIE_SPEED,
                 "ability1Cooldown%": 50
             },

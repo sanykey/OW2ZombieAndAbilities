@@ -13,6 +13,8 @@ rule "[Team2 Roadhog] trying to hook":
   @Team 2
   @Hero roadhog
   @Condition eventPlayer.isAlive()
+  @Condition not eventPlayer.downedStartTime
+  @Condition not eventPlayer.zombiesfly
 
   if (
     eventPlayer.targetPlayer0.isInvisible < getTotalTimeElapsed() and

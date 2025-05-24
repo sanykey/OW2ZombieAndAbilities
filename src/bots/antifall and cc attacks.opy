@@ -20,6 +20,11 @@ rule "Bots Antifall and fall damage from cc attacks from players":
       eventPlayer.temp1 = true
 
   if eventPlayer.temp1:
+    # [Bot fake death] If the bot is "dead", avoid having its corpse tossed over an abyss:
+    if eventPlayer.downedStartTime:
+      teleportBotToHisHome()
+      return
+
     # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
     if eventPlayer.lastCcAttackTime >= getTotalTimeElapsed():
       eventPlayer.setEnvironmentalKillCreditor(eventPlayer.lastCcAttacker) # Just to be safe.
