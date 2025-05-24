@@ -63,15 +63,6 @@ rule "Bots face target players and move":
   # Bots move toward players
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
-  # Bots face nearest players
-  # eventPlayer.startFacing(
-  #   directionTowards(
-  #     eventPlayer.getEyePosition(),
-  #     eventPlayer.targetPlayer0.getEyePosition()
-  #   ), 400
-  # )
-
-
 rule "Bots attack near player":
   @Event eachPlayer
   @Team 2
@@ -137,8 +128,6 @@ rule "Bots moves":
     eventPlayer.teleport(random.choice(spawnPointsList))
     goto lbl_0
 
-
-  
 
   # Bots under player impulse
   if (
