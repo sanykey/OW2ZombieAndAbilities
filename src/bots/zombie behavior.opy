@@ -143,12 +143,12 @@ rule "Bots moves":
   # Bots under player impulse
   if (
     eventPlayer.getVerticalFacingAngle() < -70 and
-    not getRealClosestPlayer(eventPlayer, Team.1).isUsingUltimate() == false and 
-    distance(eventPlayer, eventPlayer.targetPlayer0) < 2
+    not eventPlayer.targetPlayer0.isUsingUltimate() and 
+    distance(eventPlayer, eventPlayer.targetPlayer0) > 2
   ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
     eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
     wait(0.2)
-    eventPlayer.applyImpulse(Vector.UP, 18, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+    eventPlayer.applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   
 
   eventPlayer.temp1 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
@@ -235,6 +235,8 @@ rule "Zombies loS teleport (zombiesfly)":
   if getRealPlayersInRadius(eventPlayer, 4, Team.1): # If a zombie bot came out of the wall very close to the player, give the player time to react
     eventPlayer.setStatusEffect(null, Status.STUNNED, 1.5)
     wait(1.2)
+  else:
+    eventPlayer.setStatusEffect(null, Status.ROOTED, 0.5)
   eventPlayer.allowButton(Button.PRIMARY_FIRE)
   eventPlayer.enablePlayerCollision()
   eventPlayer.zombiesfly = false

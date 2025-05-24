@@ -5,13 +5,6 @@
 #!define LAST_ZOMBIES_ICONS_AMOUNT 5
 
 
-def postDeathTeleportEffects():
-  @Name "[Bot fake death] post teleport effects"  
-  # eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
-  heal(eventPlayer, null, INFINITY)
-  wait()
-  eventPlayer.expectedHealth = eventPlayer.getHealth()
-
 def playEffectsForZombieTeleport():
   playEffect(getAllPlayers(), DynamicEffect.MOIRA_FADE_DISAPPEAR, Color.TEAM_2, eventPlayer.getEyePosition(), 1)
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
@@ -23,6 +16,7 @@ def teleportBotToHisHome():
 
 def botFakeDeathRespawn():
   @Name "[Bot fake death] respawn"  
+
   # Attempt to prevent simultaneous respawning of several bots (prevent race condition):
   waitUntil(
     floor((getTotalTimeElapsed() - floor(getTotalTimeElapsed())) * 100) % (wSettingsMaxZombieBots * 5) == eventPlayer.getSlot() * 5,
@@ -34,7 +28,6 @@ def botFakeDeathRespawn():
   if len(eventPlayer.list0) >= roundRemainingBots:
     if not eventPlayer.isZombieInHome:
       teleportBotToHisHome()
-    postDeathTeleportEffects()
     return
 
   if not eventPlayer.isZombieInHome:
@@ -88,7 +81,19 @@ def botFakeDeathRespawn():
   else:
     eventPlayer.teleport(random.choice(spawnPointsList))
 
-  postDeathTeleportEffects()
+  # reset negative statuses and dot damage:
+  if eventPlayer.getHealth() < 2:
+    smallMessage(getAllPlayers(), "has dot damage?")
+    eventPlayer.temp0 = eventPlayer.getHero()
+    eventPlayer.startForcingHero(Hero.MOIRA)
+    wait()
+    eventPlayer.startForcingHero(eventPlayer.temp0)
+    eventPlayer.damageAssitsToSlot = []
+
+
+  heal(eventPlayer, null, INFINITY)
+  wait()
+  eventPlayer.expectedHealth = eventPlayer.getHealth()
   eventPlayer.clearStatusEffect(Status.KNOCKED_DOWN)
   eventPlayer.clearStatusEffect(Status.PHASED_OUT)
   eventPlayer.downedStartTime = false
@@ -160,6 +165,7 @@ def botFakeDeathHandle():
       eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITY)
       wait()
       eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITY) # Resetting continuing damage effects and disable the ability to interact with the "dead" bot.
+      heal(eventPlayer, null, 2) # heal for detect dot damage
     eventPlayer.zombieWaitBeforeRespawnI += 0.1
     wait(0.1)
 
