@@ -63,6 +63,7 @@ globalvar zonesHeroBuyLen
 globalvar zonesEffectsIds = []
 
 globalvar botSniperPositions
+globalvar botSniperPositionsPlayerisInLoS
 globalvar delayerStartHudId
 
 # workshop settings 

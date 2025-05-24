@@ -10,7 +10,7 @@ def playEffectsForZombieTeleport():
   playEffect(getAllPlayers(), DynamicEffect.ECHO_STICKY_BOMB_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
 
 def teleportBotToHisHome():
-  playEffectsForZombieTeleport()
+  # playEffectsForZombieTeleport()
   eventPlayer.teleport(vectList[VL_ZOMBIE_BOT_HOME])
   eventPlayer.isZombieInHome = true
 
@@ -18,6 +18,7 @@ def botFakeDeathRespawn():
   @Name "[Bot fake death] respawn"  
 
   # Attempt to prevent simultaneous respawning of several bots (prevent race condition):
+  wait(0.5)
   waitUntil(
     floor((getTotalTimeElapsed() - floor(getTotalTimeElapsed())) * 100) % (wSettingsMaxZombieBots * 5) == eventPlayer.getSlot() * 5,
     INFINITY
@@ -30,8 +31,8 @@ def botFakeDeathRespawn():
       teleportBotToHisHome()
     return
 
-  if not eventPlayer.isZombieInHome:
-    playEffectsForZombieTeleport()
+  # if not eventPlayer.isZombieInHome:
+    # playEffectsForZombieTeleport()
 
   if botWidowmakerRespawnTime > getTotalTimeElapsed() and eventPlayer.getHero() == Hero.WIDOWMAKER:
     eventPlayer.startForcingHero(Hero.TORBJORN)
@@ -47,6 +48,10 @@ def botFakeDeathRespawn():
   elif roundNumber > 2 and len(getPlayersOnHero(Hero.MAUGA)) < 1:
     eventPlayer.startForcingHero(Hero.MAUGA)
 
+  if eventPlayer.isDead():
+    eventPlayer.respawn()
+    eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
+
   # [Team2 Widowmaker] respawn:
   elif (
     roundNumber > 2 and
@@ -54,7 +59,7 @@ def botFakeDeathRespawn():
     botWidowmakerRespawnTime < getTotalTimeElapsed() and
     eventPlayer.getHero() != Hero.ROADHOG and
     eventPlayer.getHero() != Hero.MAUGA and
-    [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
+    botSniperPositionsPlayerisInLoS
   ):
     eventPlayer.startForcingHero(Hero.WIDOWMAKER)
     botWidowmakerRespawn()
@@ -72,23 +77,18 @@ def botFakeDeathRespawn():
   # ):
   #   eventPlayer.startForcingHero(Hero.ECHO)
 
-  if eventPlayer.isDead():
-    eventPlayer.respawn()
-    eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
-
-  if eventPlayer.getHero() == Hero.WIDOWMAKER or eventPlayer.getHero() == Hero.ECHO:
-    eventPlayer.teleport(random.choice(spawnPointsList))
-  else:
+  if eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO:
     eventPlayer.teleport(random.choice(spawnPointsList))
 
   # reset negative statuses and dot damage:
-  if eventPlayer.getHealth() < 2:
-    smallMessage(getAllPlayers(), "has dot damage?")
-    eventPlayer.temp0 = eventPlayer.getHero()
-    eventPlayer.startForcingHero(Hero.MOIRA)
-    wait()
-    eventPlayer.startForcingHero(eventPlayer.temp0)
-    eventPlayer.damageAssitsToSlot = []
+  # wait()
+  # if eventPlayer.getHealth() < 2:
+  #   smallMessage(getAllPlayers(), "has dot damage?")
+  #   eventPlayer.temp0 = eventPlayer.getHero()
+  #   eventPlayer.startForcingHero(Hero.MOIRA)
+  #   wait()
+  #   eventPlayer.startForcingHero(eventPlayer.temp0)
+  #   eventPlayer.damageAssitsToSlot = []
 
 
   heal(eventPlayer, null, INFINITY)
@@ -165,9 +165,10 @@ def botFakeDeathHandle():
       eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, INFINITY)
       wait()
       eventPlayer.setStatusEffect(null, Status.PHASED_OUT, INFINITY) # Resetting continuing damage effects and disable the ability to interact with the "dead" bot.
+      wait()
       heal(eventPlayer, null, 2) # heal for detect dot damage
-    eventPlayer.zombieWaitBeforeRespawnI += 0.1
-    wait(0.1)
+    eventPlayer.zombieWaitBeforeRespawnI += 0.2
+    wait(0.2)
 
   # Turret damage has to be counted with a delay, so it is counted separately from other types of damage
   eventPlayer.list0 = [player for player in getPlayers(Team.1) if (
@@ -217,7 +218,7 @@ rule "[Bot fake death] Bot died":
   @Team 2
   botFakeDeathHandle()
 
-rule "[Bot fake death] low hp (alternative way for turrets)":
+rule "[Bot fake death] low hp = die (for turrets)":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.getHealth() < BOT_FAKE_DIE_HP_THRESHOLD
@@ -237,14 +238,14 @@ rule "Setup created bots":
   eventPlayer.setDamageDealt(botsDamageBoostPercent)
   eventPlayer.setStatusEffect(null, Status.UNKILLABLE, INFINITY)
   eventPlayer.expectedHealth = eventPlayer.getHealth()
-  eventPlayer.startModifyingVoicelinePitch(0.5 * (sinDeg(getTotalTimeElapsed() * evalOnce(random.uniform(360, 720)))))
+  eventPlayer.startModifyingVoicelinePitch(0.3)
   wait()
   eventPlayer.isReady = true
 
-  # [debug]:
-  createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
-  wait()
-  createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+  # # [debug]:
+  # createIcon(getPlayers(Team.1) if not eventPlayer.downedStartTime else null, eventPlayer, Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
+  # wait()
+  # createIcon(getPlayers(Team.1) if eventPlayer.downedStartTime else null, eventPlayer, Icon.NO, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE)
 
 rule "Create bots":
   @Condition not isBotsDisabled
@@ -259,7 +260,7 @@ rule "Create bots":
   for createDummyI in range(wSettingsMaxZombieBots):
     if not getPlayersInSlot(createDummyI, Team.2):
       createDummy(Hero.TORBJORN, Team.2, createDummyI, random.choice(spawnPointsList))
-      wait(0.1)
+      wait(0.4)
 
 
 rule "Create icons for last zombies":
@@ -307,6 +308,13 @@ rule "[Bot fake death] Trigger bot respawn after round start":
 
   if eventPlayer.downedStartTime:
     botFakeDeathRespawn()
+
+
+# rule "[Bot fake death] Respawn bots":
+#   getPlayers
+
+#   wait(0.5, Wait.ABORT_WHEN_FALSE)
+#   loop()
 
 # rule "[debug] lastKillTime":
 #   @Event eachPlayer

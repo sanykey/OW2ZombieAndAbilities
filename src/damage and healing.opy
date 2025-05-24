@@ -1,6 +1,6 @@
 #!mainFile "main.opy"
 
-# rule "Player burning":
+# rule "7567567":
 #   @Event eachPlayer
 
 #   eventPlayer.defensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
@@ -84,18 +84,22 @@ rule "Player took damage":
     attacker.getHero() == Hero.MAUGA and
     eventAbility == Button.ABILITY_1
   ):
-    eventPlayer.setStatusEffect(null, Status.BURNING, 5)
+    eventPlayer.setStatusEffect(null, Status.BURNING, 10)
 
   eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
   wait(15, Wait.RESTART_WHEN_TRUE)
   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()
 
-
+# BURNING effect that triggered [Team2 Mauga]
 rule "Player burning":
   @Event eachPlayer
   @Condition eventPlayer.hasStatus(Status.BURNING)
 
   damage(eventPlayer, getPlayersOnHero(Hero.MAUGA, Team.2), 4)
+
+  if eventPlayer.hasStatus(Status.INVINCIBLE) or eventPlayer.hasStatus(Status.PHASED_OUT):
+    eventPlayer.clearStatusEffect(Status.BURNING)
+
   wait(0.2, Wait.ABORT_WHEN_FALSE)
   loop()
 
@@ -105,6 +109,11 @@ rule "HealthPack with auto heal and speed boost":
   @Event playerReceivedHealing
   @Team 1
   @Condition eventWasHealthPack == true
+
+  # Clear the BURNING effect that triggered [Team2 Mauga]
+  if eventPlayer.hasStatus(Status.BURNING):
+    eventPlayer.clearStatusEffect(Status.BURNING)
+  wait()
 
   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()
   eventPlayer.setMoveSpeed(150)

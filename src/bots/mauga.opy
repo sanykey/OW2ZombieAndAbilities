@@ -63,7 +63,8 @@ rule "[Team2 Mauga] Charge":
   eventPlayer.stopThrottleInDirection()
   eventPlayer.stopFacing()
   eventPlayer.forceButtonPress(Button.ABILITY_1)
-  # eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
+  wait(0.1)
+  eventPlayer.forceButtonPress(Button.ABILITY_1)
 
 
 rule "[Team2 Mauga] Charge knockback":

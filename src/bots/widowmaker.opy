@@ -39,14 +39,20 @@ def botWidowmakerRespawn():
 
 def botWidowmakerChangePositon():
   @Name "[Team2 Widowmaker] change position"
-  eventPlayer.list0 = (
+
+  if botSniperPositionsPlayerisInLoS:
+    eventPlayer.teleport(botSniperPositionsPlayerisInLoS[random.randint(0, len(eventPlayer.list0) - 1)])
+    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 2)
+    playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
+
+rule "[Team2 Widowmaker] check isInLoS players from botSniperPositions":
+  botSniperPositionsPlayerisInLoS = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   )
 
-  if eventPlayer.list0:
-    eventPlayer.teleport(eventPlayer.list0[random.randint(0, len(eventPlayer.list0) - 1)])
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 2)
-    playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
+  wait(1, Wait.ABORT_WHEN_FALSE)
+  if ruleCondition:
+    loop()
 
 rule "[Team2 Widowmaker] trigger change position":
   @Event eachPlayer
