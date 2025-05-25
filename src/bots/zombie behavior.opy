@@ -32,9 +32,9 @@ rule "Bots use ultimate at 100%":
 rule "[Team2 Roadhog][Team2 Mauga] Bot zombie melee":
   @Event eachPlayer
   @Team 2
-  @Condition getPlayersInRadius(eventPlayer, 3, Team.1) == true
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.getHero() == Hero.ROADHOG or eventPlayer.getHero() == Hero.MAUGA
+  @Condition getPlayersInRadius(eventPlayer, 3, Team.1)
 
   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.forceButtonPress(Button.MELEE)
@@ -67,10 +67,9 @@ rule "Bots attack near player":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.downedStartTime
   @Condition not eventPlayer.zombiesfly
   @Condition eventPlayer.getHero() == Hero.TORBJORN
-  @Condition getPlayersInRadius(eventPlayer, 4, Team.1) == true
+  @Condition getPlayersInRadius(eventPlayer, 4, Team.1)
 
   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
@@ -85,7 +84,6 @@ rule "Bots moves":
   @Team 2
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.downedStartTime
 
   if not RULE_CONDITION:
     eventPlayer.money = 0
@@ -122,11 +120,11 @@ rule "Bots moves":
     goto lbl_0
 
   # Perhaps the bot has fallen into a place it can't get out of and has not been interacted with in any way
-  if eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed():
-    eventPlayer.money = 0
-    eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
-    eventPlayer.teleport(random.choice(spawnPointsList))
-    goto lbl_0
+  # if eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed():
+  #   eventPlayer.money = 0
+  #   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
+  #   eventPlayer.teleport(random.choice(spawnPointsList))
+  #   goto lbl_0
 
 
   # Bots under player impulse
@@ -187,8 +185,7 @@ rule "Zombies loS teleport (zombiesfly)":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.downedStartTime
-  @Condition eventPlayer.zombiesfly == false
+  @Condition not eventPlayer.zombiesfly
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.targetPlayer0.isAlive()
   @Condition not eventPlayer.hasBadStatus
@@ -239,7 +236,6 @@ rule "Bot has bad status":
   @Team 2
   @Condition eventPlayer.hasSpawned()
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.downedStartTime
   @Condition eventPlayer.hasBadStatus == false
   @Condition (
     eventPlayer.hasStatus(Status.HACKED) or

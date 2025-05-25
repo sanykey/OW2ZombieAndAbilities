@@ -22,7 +22,7 @@ rule "Bots Antifall and fall damage from cc attacks from players":
   if eventPlayer.temp1:
     # [Bot fake death] If the bot is "dead", avoid having its corpse tossed over an abyss:
     if eventPlayer.downedStartTime:
-      teleportBotToHisHome()
+      # teleportBotToHisHome()
       return
 
     # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
@@ -36,7 +36,7 @@ rule "Bots Antifall and fall damage from cc attacks from players":
       wait()
       # [Bot fake death] If the bot is "dead", avoid having its corpse tossed over an abyss:
       if eventPlayer.downedStartTime or eventPlayer.getHealth() < BOT_FAKE_DIE_HP_THRESHOLD:
-        teleportBotToHisHome()
+        # teleportBotToHisHome()
     else:
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 

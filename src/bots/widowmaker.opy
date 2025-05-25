@@ -21,21 +21,6 @@ def botWidowmakerClear():
   @Name "[Team2 Widowmaker] clear after switch"
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
   destroyEffect(eventPlayer.abilPos1)
-  
-def botWidowmakerRespawn():
-  @Name "[Team2 Widowmaker] respawn"
-  createBeam(
-    null if eventPlayer.hasBadStatus else getAllPlayers(),
-    Beam.TORBJORN_TURRET_SIGHT,
-    eventPlayer.getEyePosition(),
-    updateEveryFrame(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 999, null, eventPlayer, false).getHitPosition()),
-    Color.RED,
-    EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  )
-  eventPlayer.abilPos1 = getLastCreatedEntity()
-  eventPlayer.stopForcingThrottle()
-  eventPlayer.startScalingSize(1, false)
-  eventPlayer.startForcingButton(Button.SECONDARY_FIRE)
 
 def botWidowmakerChangePositon():
   @Name "[Team2 Widowmaker] change position"

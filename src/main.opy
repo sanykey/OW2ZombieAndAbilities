@@ -41,9 +41,11 @@
 #!include "bots/mauga.opy"
 #!include "bots/echo.opy"
 #!include "bots/rounds.opy"
-#!include "bots/fake death and respawn.opy"
-#*/
+#!include "bots/create bots.opy"
+#!include "bots/respawn.opy"
 #!include "bots/antifall and cc attacks.opy"
+#*/
+
 
 
 #/*

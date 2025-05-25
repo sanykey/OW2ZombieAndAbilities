@@ -3,9 +3,6 @@
 ################ Global variables ###################
 #####################################################
 
-
-
-
 globalvar roundNumber = 0
 
 # [sectet shop]:
@@ -23,7 +20,10 @@ globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
 globalvar botsHealthBoostPercent
 globalvar botsDamageBoostPercent
-globalvar zombieRespawnI
+
+globalvar zombieRespI
+globalvar zombieRespawnList
+
 globalvar zombiesflyIOnandOff
 globalvar zombieStats
 enum ZI:
@@ -106,7 +106,6 @@ playervar damageDealtStat
 playervar deathsStat
 
 playervar zombiesfly
-playervar isZombieInHome
 
 playervar isInSecretShop
 playervar state # use with enum "SI"
@@ -114,6 +113,7 @@ playervar state # use with enum "SI"
 playervar revivers
 playervar reviveTimer
 playervar downedStartTime # die state for players and zombie bots
+playervar isZombieReadyToRespawn 
 
 playervar recentStackedHealingDealtToSlot
 playervar healingTracker
@@ -125,7 +125,7 @@ playervar damageAssitsToSlot
 playervar posBeforeChangeHero
 playervar purchasedHeroes
 
-# Hero Info:`
+# Hero Info:
 playervar heroInfoText0
 playervar heroInfoVertFix0
 playervar heroInfoHorFix0
@@ -173,7 +173,6 @@ playervar isReady
 
 playervar isDvaUltBought
 playervar lastZombieIcon
-playervar zombieWaitBeforeRespawnI
 
 playervar isHeroDescriptionOpened
 

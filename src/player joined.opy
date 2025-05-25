@@ -7,10 +7,8 @@ rule "Player joined setup":
   @Event playerJoined
   @Team 1
 
-  # eventPlayer.disableRespawn()
   eventPlayer.setRespawnTime(INFINITY)
 
-  eventPlayer.disableKillFeed() # coz [Bot fake death]
   eventPlayer.healthBoostPercent = 100
   eventPlayer.damageBoostPercent = 100
   eventPlayer.healingBoostPercent = 100
