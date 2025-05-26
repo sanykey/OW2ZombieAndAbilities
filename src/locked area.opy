@@ -33,9 +33,10 @@ rule "Create location buy positions":
 rule "Locked area 0":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[4]) < 10
   @Condition unlockedLocations == 0
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[4]) < 10
+
   
   eventPlayer.applyImpulse(directionTowards(vectList[4], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -46,9 +47,9 @@ rule "Locked area 0":
 rule "Locked area 1":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[5]) < 10
   @Condition unlockedLocations == 1
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[5]) < 10
   
   eventPlayer.applyImpulse(directionTowards(vectList[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -59,9 +60,10 @@ rule "Locked area 1":
 rule "Locked area 2":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[6]) < 15
   @Condition unlockedLocations == 1
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[6]) < 15
+
   
   eventPlayer.applyImpulse(directionTowards(vectList[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -72,9 +74,9 @@ rule "Locked area 2":
 rule "Locked area 3":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[7]) < 5
   @Condition unlockedLocations == 1
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[7]) < 5
   
   eventPlayer.applyImpulse(directionTowards(vectList[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -85,9 +87,10 @@ rule "Locked area 3":
 rule "Locked area 4":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[8]) < 10
   @Condition unlockedLocations == 2
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[8]) < 10
+
   
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -98,9 +101,9 @@ rule "Locked area 4":
 rule "Locked area 5":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[9]) < 10
   @Condition unlockedLocations == 2
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[9]) < 10
   
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -111,9 +114,10 @@ rule "Locked area 5":
 rule "Locked area 6":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[10]) < 10
   @Condition unlockedLocations == 2
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[10]) < 10
+
   
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -124,9 +128,10 @@ rule "Locked area 6":
 rule "Locked area 7":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[11]) < 4
   @Condition unlockedLocations != 4
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[11]) < 4
+
   
   eventPlayer.applyImpulse(directionTowards(vectList[11], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -137,9 +142,10 @@ rule "Locked area 7":
 rule "Locked area 8":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[12]) < 5
   @Condition unlockedLocations != 4
   @Condition matchIsOver == false
+  @Condition distance(eventPlayer, vectList[12]) < 5
+
   
   eventPlayer.applyImpulse(directionTowards(vectList[12], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -149,8 +155,9 @@ rule "Locked area 8":
 rule "Teleport from restricted area 0":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[25]) < 35
   @Condition unlockedLocations == 0
+  @Condition distance(eventPlayer, vectList[25]) < 35
+
   
   eventPlayer.teleport(vectList[31])
   wait(1)
@@ -161,8 +168,9 @@ rule "Teleport from restricted area 0":
 rule "Teleport from restricted area 1":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[26]) < 15
   @Condition unlockedLocations == 0
+  @Condition distance(eventPlayer, vectList[26]) < 15
+
   
   eventPlayer.teleport(vectList[32])
   wait(1)
@@ -173,8 +181,8 @@ rule "Teleport from restricted area 1":
 rule "Teleport from restricted area 2":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[27]) < 30
   @Condition unlockedLocations == 1
+  @Condition distance(eventPlayer, vectList[27]) < 30
   
   eventPlayer.teleport(vectList[33])
   wait(1)
@@ -185,8 +193,8 @@ rule "Teleport from restricted area 2":
 rule "Teleport from restricted area 3":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[28]) < 25
   @Condition unlockedLocations == 2
+  @Condition distance(eventPlayer, vectList[28]) < 25
   
   eventPlayer.teleport(vectList[34])
   wait(1)
@@ -197,8 +205,8 @@ rule "Teleport from restricted area 3":
 rule "Teleport from restricted area 4":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[29]) < 4
   @Condition unlockedLocations != 4
+  @Condition distance(eventPlayer, vectList[29]) < 4
   
   eventPlayer.teleport(vectList[35])
   wait(1)
@@ -209,8 +217,9 @@ rule "Teleport from restricted area 4":
 rule "Teleport from restricted area 5":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[30]) < 4
   @Condition unlockedLocations != 4
+  @Condition distance(eventPlayer, vectList[30]) < 4
+
   
   eventPlayer.teleport(vectList[36])
   wait(1)
@@ -221,10 +230,11 @@ rule "Teleport from restricted area 5":
 rule "Unlock next location A":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[VI.BUY_LOCATION_A], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 0
   @Condition eventPlayer.money >= 2500
+  @Condition distance(vectList[VI.BUY_LOCATION_A], eventPlayer) <= 2
+
   
   unlockedLocations = 1
   # Remove closed doorway effects:
@@ -244,10 +254,10 @@ rule "Unlock next location A":
 rule "Unlock next location B":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[VI.BUY_LOCATION_B], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 1
   @Condition eventPlayer.money >= 5000
+  @Condition distance(vectList[VI.BUY_LOCATION_B], eventPlayer) <= 2
   
   unlockedLocations = 2
   # Remove closed doorway effects:
@@ -269,10 +279,10 @@ rule "Unlock next location B":
 rule "Unlock next location C":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[VI.BUY_LOCATION_C], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 2
   @Condition eventPlayer.money >= 7500
+  @Condition distance(vectList[VI.BUY_LOCATION_C], eventPlayer) <= 2
   
   unlockedLocations = 3
   # Remove closed doorway effects:
@@ -293,10 +303,10 @@ rule "Unlock next location C":
 rule "Unlock next location D":
   @Event eachPlayer
   @Team 1
-  @Condition distance(vectList[VI.BUY_LOCATION_D], eventPlayer) <= 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 3
   @Condition eventPlayer.money >= 10000
+  @Condition distance(vectList[VI.BUY_LOCATION_D], eventPlayer) <= 2
   
   unlockedLocations = 4
   # Remove closed doorway effects:

@@ -37,8 +37,6 @@ rule "Zombie died":
   eventPlayer.list0 = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
   smallMessage(eventPlayer.list0, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL))
   eventPlayer.list0.money += MONEY_FOR_ZOMBIE_KILL
-  eventPlayer.list0.kills += 1
-  eventPlayer.list0.lastKillTime = getTotalTimeElapsed()
   eventPlayer.damageAssitsToSlot = []
   wait()
 
@@ -60,7 +58,7 @@ rule "Start round respawn zombies":
   zombieRespawnList = getDeadPlayers(Team.2)
   for zombieRespI in range(len(zombieRespawnList)):
     zombieRespawnList[zombieRespI].teleport(random.choice(spawnPointsList))
-    wait(0.1)
+    wait(0.3)
     zombieRespawnList[zombieRespI].resurrect()
 
 

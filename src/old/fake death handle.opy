@@ -54,8 +54,6 @@ def botFakeDeathHandle():
   eventPlayer.list0 = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
   smallMessage(eventPlayer.list0, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL))
   eventPlayer.list0.money += MONEY_FOR_ZOMBIE_KILL
-  eventPlayer.list0.kills += 1
-  eventPlayer.list0.lastKillTime = getTotalTimeElapsed()
 
   # [Genji] Reset Shift strike cooldown for native behavior since bots no longer die
   eventPlayer.list0 = [player for player in eventPlayer.list0 if player.getHero() == Hero.GENJI]
@@ -94,7 +92,6 @@ def botFakeDeathHandle():
   )]
   smallMessage(eventPlayer.list0, "<TX C00000000003389> +${}".format(MONEY_FOR_ZOMBIE_KILL))
   eventPlayer.list0.money += MONEY_FOR_ZOMBIE_KILL
-  eventPlayer.list0.kills += 1
   eventPlayer.damageAssitsToSlot = []
   eventPlayer.turretDamageTimeToSlot = []
 
@@ -150,14 +147,6 @@ rule "fix broken immortal bots":
 
 #   if eventPlayer.downedStartTime:
 #     botFakeDeathRespawn()
-
-# rule "[debug] lastKillTime":
-#   @Event eachPlayer
-#   @Team 1
-#   @Slot 0
-
-#   debug(floor((getTotalTimeElapsed() - floor(getTotalTimeElapsed())) * 100) % (wSettingsMaxZombieBots) * 2)
-
 
 # rule "[Bot fake death] Create bots death place icons and last zombies icons":
 #   botsDeathPlaceIcons = []

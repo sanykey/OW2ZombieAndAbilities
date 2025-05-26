@@ -1,35 +1,44 @@
 #!mainFile "main.opy"
 
+playervar prevCameraState
+playervar cameraState
+  # 0: OFF
+  # 1: Temporary OFF
+  # 2: Temporary OFF higher angle
+  # 3: ON
+  # 4: ON higher angle
+
+
 def pause3PCamera():
   @Name "Subroutine: Pause 3P Camera"
-  if eventPlayer.state[0] == 3:
-    eventPlayer.state[0] = 1
+  if eventPlayer.cameraState == 3:
+    eventPlayer.cameraState = 1
   else:
-    if eventPlayer.state[0] == 4:
-      eventPlayer.state[0] = 2
+    if eventPlayer.cameraState == 4:
+      eventPlayer.cameraState = 2
 
 def unpause3PCamera():
   @Name "Subroutine: Unpause 3P Camera"
 
-  if eventPlayer.state[0] == 1:
-    eventPlayer.state[0] = 3
+  if eventPlayer.cameraState == 1:
+    eventPlayer.cameraState = 3
     return
 
-  if eventPlayer.state[0] == 2:
-    eventPlayer.state[0] = 4
+  if eventPlayer.cameraState == 2:
+    eventPlayer.cameraState = 4
 
 
 rule "Change 3p Camera state":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[0] != eventPlayer.state[1]
+  @Condition eventPlayer.cameraState != eventPlayer.prevCameraState
 
-  eventPlayer.state[1] = eventPlayer.state[0]
-  if eventPlayer.state[0] == 3:
+  eventPlayer.prevCameraState = eventPlayer.cameraState
+  if eventPlayer.cameraState == 3:
     eventPlayer.startCamera(eventPlayer + worldVector(vect(-0.1, 0.8, -0.3), eventPlayer, Transform.ROTATION) + Vector.UP * 1.25 + eventPlayer.getFacingDirection() * -1.7, eventPlayer + eventPlayer.getFacingDirection() * 60)
     return
 
-  if eventPlayer.state[0] == 4:
+  if eventPlayer.cameraState == 4:
     eventPlayer.startCamera(eventPlayer + worldVector(vect(-0.3, 1, -0.5), eventPlayer, Transform.ROTATION) + Vector.UP * 1.45 + eventPlayer.getFacingDirection() * -1.9, eventPlayer + eventPlayer.getFacingDirection() * 60)
     return
   eventPlayer.stopCamera()
@@ -37,7 +46,7 @@ rule "Change 3p Camera state":
 rule "Switch 3P Camera (INTERACT + CROUCH)":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.CROUCH)
 
   waitUntil(
     (
@@ -51,20 +60,20 @@ rule "Switch 3P Camera (INTERACT + CROUCH)":
   if (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT) or eventPlayer.isHoldingButton(Button.MELEE)): 
     return
 
-  if eventPlayer.state[SI.CAMERA_3P] == 0:
-    eventPlayer.state[SI.CAMERA_3P] = 3
+  if eventPlayer.cameraState == 0:
+    eventPlayer.cameraState = 3
     smallMessage(eventPlayer, "3P Camera [ON]")
-  elif eventPlayer.state[SI.CAMERA_3P] == 3:
-    eventPlayer.state[SI.CAMERA_3P] = 4
+  elif eventPlayer.cameraState == 3:
+    eventPlayer.cameraState = 4
     smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
   else:
-    eventPlayer.state[SI.CAMERA_3P] = 0
+    eventPlayer.cameraState = 0
     smallMessage(eventPlayer, "3P Camera [OFF]")
   playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
 
 rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
   @Event eachPlayer
-  @Condition eventPlayer.state[0] > 2
+  @Condition eventPlayer.cameraState > 2
   @Condition eventPlayer.isFiringSecondaryFire() == true # @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
   @Condition (eventPlayer.getCurrentHero() == Hero.WIDOWMAKER or eventPlayer.getCurrentHero() == Hero.ASHE or eventPlayer.getCurrentHero() == Hero.ANA) == true
 
@@ -75,7 +84,7 @@ rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
 rule "Pause 3P camera during emote":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[0] > 2
+  @Condition eventPlayer.cameraState > 2
   @Condition eventPlayer.isCommunicatingEmote()
 
   pause3PCamera()
@@ -86,8 +95,8 @@ rule "Pause 3P camera during emote":
 rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[0] > 2
-  @Condition eventPlayer.isUsingUltimate() == true
+  @Condition eventPlayer.cameraState > 2
+  @Condition eventPlayer.isUsingUltimate()
   @Condition (
     eventPlayer.getCurrentHero() == Hero.BASTION or
     eventPlayer.getCurrentHero() == Hero.JUNKRAT or
@@ -101,8 +110,8 @@ rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
 rule "Pause 3P camera during rein barrier hold":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[0] > 2
-  @Condition eventPlayer.getCurrentHero() == Hero.REINHARDT
+  @Condition eventPlayer.cameraState > 2
+  @Condition eventPlayer.getCurrentHero() == Hero.REINHARDT or eventPlayer.getCurrentHero() == Hero.BRIGITTE
   @Condition eventPlayer.isFiringSecondaryFire()
 
   pause3PCamera()

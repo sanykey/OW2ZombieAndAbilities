@@ -1,5 +1,11 @@
 #!mainFile "./main.opy"
 
+globalvar spawnPointsList = []
+globalvar zonesI
+globalvar zonesHeroBuyOffset
+globalvar zonesHeroBuyLen
+globalvar zonesEffectsIds = []
+
 #!define ZONE_A_SIZE 48
 #!define ZONE_B_SIZE 35
 #!define ZONE_C_SIZE 15
@@ -56,7 +62,7 @@ def destroyHeroBuySpotsTexts():
     zonesEffectsIds[zonesI] = null
 
 rule "Activate or Deactivate zone A":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1)
 
   for zonesI in range(5):
     spawnPointsList.append(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
@@ -65,7 +71,7 @@ rule "Activate or Deactivate zone A":
   createHeroBuySpotsTexts()
 
 rule "Activate or Deactivate zone A-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1)
   for zonesI in range(5):
     spawnPointsList.remove(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
 
@@ -73,7 +79,7 @@ rule "Activate or Deactivate zone A-":
   destroyHeroBuySpotsTexts()
 
 rule "Activate or Deactivate zone B":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1)
 
   for zonesI in range(8):
     spawnPointsList.append(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
@@ -83,7 +89,7 @@ rule "Activate or Deactivate zone B":
 
 
 rule "Activate or Deactivate zone B-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1)
 
   for zonesI in range(8):
     spawnPointsList.remove(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
@@ -93,8 +99,7 @@ rule "Activate or Deactivate zone B-":
 
 
 rule "[Secret shop] Activate or Deactivate zone C":
-  @Condition unlockedLocations == 4
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1)
   
   spawnPointsList.append(vectList[VL_SPAWN_POINTS_C_OFFSET])
 
@@ -137,7 +142,7 @@ rule "[Secret shop] Activate or Deactivate zone C":
 
 rule "[Secret shop] Activate or Deactivate zone C-":
   @Condition unlockedLocations == 4
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1)
 
   spawnPointsList.remove(vectList[VL_SPAWN_POINTS_C_OFFSET])
 
@@ -157,20 +162,20 @@ rule "[Secret shop] Activate or Deactivate zone C-":
 
 
 rule "Activate or Deactivate zone D":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1)
   for zonesI in range(7):
     spawnPointsList.append(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
 
 
 rule "Activate or Deactivate zone D-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1)
 
   for zonesI in range(7):
     spawnPointsList.remove(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
 
 
 rule "Activate or Deactivate zone E":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1)
 
   for zonesI in range(5):
     spawnPointsList.append(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
@@ -180,7 +185,7 @@ rule "Activate or Deactivate zone E":
 
 
 rule "Activate or Deactivate zone E-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1)
 
   for zonesI in range(5):
     spawnPointsList.remove(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
@@ -190,50 +195,50 @@ rule "Activate or Deactivate zone E-":
 
 
 rule "Activate or Deactivate zone F":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1)
 
   for zonesI in range(6):
     spawnPointsList.append(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
 
 
 rule "Activate or Deactivate zone F-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1)
 
   for zonesI in range(6):
     spawnPointsList.remove(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
 
 
 rule "Activate or Deactivate zone G":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1)
   for zonesI in range(6):
     spawnPointsList.append(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
 
 
 rule "Activate or Deactivate zone G-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1)
   for zonesI in range(6):
     spawnPointsList.remove(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
 
 rule "Activate or Deactivate zone H":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1)
 
   zonesHeroBuyOffset = BUY_HERO_OFFSET_H
   createHeroBuySpotsTexts()
 
 rule "Activate or Deactivate zone H-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1)
 
   zonesHeroBuyOffset = BUY_HERO_OFFSET_H
   destroyHeroBuySpotsTexts()
 
 rule "Activate or Deactivate zone I":
-  @Condition getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1)
+  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1)
 
   zonesHeroBuyOffset = BUY_HERO_OFFSET_I
   createHeroBuySpotsTexts()
 
 rule "Activate or Deactivate zone I-":
-  @Condition not getRealPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1)
+  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1)
 
   zonesHeroBuyOffset = BUY_HERO_OFFSET_I
   destroyHeroBuySpotsTexts()

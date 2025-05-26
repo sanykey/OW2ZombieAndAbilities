@@ -1,17 +1,5 @@
 #!mainFile "main.opy"
 
-# rule "7567567":
-#   @Event eachPlayer
-
-#   eventPlayer.defensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
-#   eventPlayer.damageBlockedStat = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
-#   eventPlayer.damageTakenStat = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
-#   eventPlayer.damageDealtStat = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
-#   eventPlayer.deathsStat = eventPlayer.getStatistic(Stat.DEATHS)
-
-#   wait(5)
-#   loop()
-
 # save information about bots being pushed to account for damage when falling down
 macro Player.setCrowdControlAttack(self, attacker0, duration=LAST_CC_ATTACK_DURATION):
   self.lastCcAttacker = attacker0
@@ -40,19 +28,6 @@ rule "player Dealt Knockback":
 rule "Zombie took damage":
   @Event playerTookDamage
   @Team 2
-
-  # collect zombie health statistics for damage detection by turrets
-  if not victim.expectedHealth:
-    victim.expectedHealth = floor(victim.getHealth() - eventDamage)
-  else:
-    victim.expectedHealth -= floor(eventDamage)
-
-  # collect player damage statistics for damage detection by turrets
-  if not attacker.lastDamageDealtAmount:
-    attacker.lastDamageDealtAmount = floor(eventPlayer.getStatistic(Stat.DAMAGE_DEALT) + eventDamage)
-  else:
-    attacker.lastDamageDealtAmount += eventDamage
-  attacker.lastDamageDealtTime = getTotalTimeElapsed() + 0.5
 
   # [Cassydy] stun effect for flashbang
   if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):

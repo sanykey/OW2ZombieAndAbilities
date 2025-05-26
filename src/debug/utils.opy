@@ -4,9 +4,9 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   @Condition eventPlayer.isHoldingButton(Button.MELEE)
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   
   if isBotsDisabled == false:
     isBotsDisabled = true
@@ -26,9 +26,9 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
 rule "[debug] Trigger open Switch hero hud":
   @Event eachPlayer
   @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   @Condition eventPlayer.isHoldingButton(Button.RELOAD)
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
 
   eventPlayer.purchasedHeroes = getAllHeroes()
   openSwitchHeroHud()

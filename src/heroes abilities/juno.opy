@@ -1,5 +1,27 @@
 #!mainFile "../main.opy"
 
+## for juno rift ability:
+playervar juno_last_rift
+playervar juno_rift2_placement
+playervar juno_rift2_fx
+playervar juno_rift2_destination
+playervar juno_rift1_placement
+playervar juno_rift1_fx
+playervar juno_rift1_destination
+playervar juno_rift2_active
+playervar juno_rift1_active
+playervar juno_rift
+playervar juno_hyper_hud
+playervar juno_rift_icon
+
+## for juno rift ability:
+playervar juno_transfer_pos
+playervar juno_transfer_from
+playervar juno_transfer_to
+playervar juno_transfer_fx
+playervar juno_transfer_started
+
+
 enum JUN_I:
   RIFT0_EFFECT0
   RIFT0_EFFECT1

@@ -1,4 +1,4 @@
-#!mainFile "main.opy"
+#!mainFile "../main.opy"
 #####################################################
 ################ Global variables ###################
 #####################################################
@@ -10,8 +10,6 @@ globalvar shopEffects = []
 globalvar shopStatus
 globalvar buyHeroUpgradesData
 globalvar secretShopZoneEffects = []
-
-globalvar heroesShopData
 
 # zombie bots vars:
 globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
@@ -40,27 +38,19 @@ globalvar teamArmor
 globalvar matchIsOver = false
 globalvar unlockedLocations = 0
 globalvar roundRemainingBots = 0
-globalvar vipPlayers # List of players who received special privileges
+
 globalvar isBotsDisabled
-globalvar vectList # See compressed vectors.opy
+
 globalvar lockedAreaEffectsArr
 
 globalvar teamScore
 globalvar temp1
 globalvar temp2
 globalvar temp3
-globalvar heroesList
 
 globalvar isGameStarted = false
 globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
-
-# zones
-globalvar spawnPointsList = []
-globalvar zonesI
-globalvar zonesHeroBuyOffset
-globalvar zonesHeroBuyLen
-globalvar zonesEffectsIds = []
 
 globalvar botSniperPositions
 globalvar botSniperPositionsPlayerisInLoS
@@ -80,21 +70,9 @@ globalvar debugPos2
 globalvar debugPos3
 globalvar debugSize3 = 1
 
-# detecting turrents and Bob damage for [Bot fake death]
-globalvar turretsDamageOwners
-globalvar turretsDamageOwnersTime
-globalvar turretsVictimZombies
-globalvar turretsI
-globalvar turretsJ
-globalvar turretsK
-
 ##################################################
 ############## Player variables: #################
 ##################################################
-playervar healthBoostPercent
-playervar damageBoostPercent
-playervar healingBoostPercent
-
 playervar interactZoneVect
 playervar interactZoneText
 playervar interactZoneEffect
@@ -123,29 +101,16 @@ playervar recentStackedDamageDealtToSlot
 
 playervar damageAssitsToSlot
 playervar posBeforeChangeHero
-playervar purchasedHeroes
-
-# Hero Info:
-playervar heroInfoText0
-playervar heroInfoVertFix0
-playervar heroInfoHorFix0
-playervar heroInfoText1
-playervar heroInfoVertFix1
-playervar heroInfoHorFix1
-
-# [Bot fake death]:
-playervar kills # kills zombies stat for players 
-playervar lastKillTime # for kill icon near scope
-## detecting turrents and Bob damage for Bot fake death
-playervar lastDamageDealtAmount
-playervar lastDamageDealtTime
-playervar expectedHealth
-playervar turretDamageTimeToSlot
 
 # detecting crowd control abilities for bots fall damage
 playervar lastCcAttacker
 playervar lastCcAttackTime
 playervar lastCcWasInAir
+
+playervar purchasedHeroes
+playervar healthBoostPercent
+playervar damageBoostPercent
+playervar healingBoostPercent
 
 # effects ids
 playervar effectsIds
@@ -171,7 +136,6 @@ playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady
 
-playervar isDvaUltBought
 playervar lastZombieIcon
 
 playervar isHeroDescriptionOpened
@@ -211,29 +175,6 @@ playervar targetPlayer0
 playervar targetPlayer1
 playervar abilityCD
 
-
-
-## for juno rift ability:
-playervar juno_last_rift
-playervar juno_rift2_placement
-playervar juno_rift2_fx
-playervar juno_rift2_destination
-playervar juno_rift1_placement
-playervar juno_rift1_fx
-playervar juno_rift1_destination
-playervar juno_rift2_active
-playervar juno_rift1_active
-playervar juno_rift
-playervar juno_hyper_hud
-playervar juno_rift_icon
-
-## for juno rift ability:
-playervar juno_transfer_pos
-playervar juno_transfer_from
-playervar juno_transfer_to
-playervar juno_transfer_fx
-playervar juno_transfer_started
-
 # vanilla hero constants
 #!define TORBJORN_HAMMER_BASE_DMG 70
 
@@ -272,10 +213,8 @@ playervar juno_transfer_started
 #!define MONEY_FOR_KILL_HACKED_TEAM 10
 #!define SOMBRA_STEAL_MONEY 25
 
-# Hud:
+# HUD
 #!define HERO_INFO_HOLD_DURATION 0.5
-#!define ABILITI_TEXT_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
-#!define ABILITI_CHARGES_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
 
 # Other:
 #!define INFINITY 99999
@@ -283,13 +222,6 @@ playervar juno_transfer_started
 
 
 enum SI:
-  CAMERA_3P = 0 # number
-  # 0: OFF
-  # 1: Temporary OFF
-  # 2: Temporary OFF higher angle
-  # 3: ON
-  # 4: ON higher angle
-  CAMERA_3P_PREV # like as CAMERA_3P
   HEALING_TRACKER
   HEALING_TRACKER_THRESHOLD
   HEALING_RESULT

@@ -16,7 +16,7 @@ rule "Team 1 (Death)":
 rule "Revive, check player in radius, unset is downed":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.downedStartTime == true
+  @Condition eventPlayer.downedStartTime
   @Condition eventPlayer.downedStartTime + 1 < getTotalTimeElapsed()
   
   eventPlayer.revivers = [player for player in getPlayers(Team.1) if player.isAlive() and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3]
@@ -36,7 +36,7 @@ rule "Revive, check player in radius, unset is downed":
 rule "Team 1: Player gets up":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.downedStartTime == false
+  @Condition not eventPlayer.downedStartTime
   
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
   eventPlayer.setHealth(INFINITY)
@@ -44,7 +44,7 @@ rule "Team 1: Player gets up":
   unpause3PCamera()
   wait(2.5, Wait.ABORT_WHEN_FALSE)
   if not ruleCondition:
-      return
+    return
   if eventPlayer.getSlot() == ALLY_BOT_PLAYER_SLOT:
     eventPlayer.communicate(Comms.READY)
 

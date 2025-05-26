@@ -1,5 +1,17 @@
 #!mainFile "main.opy"
 
+#!define ABILITI_TEXT_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
+#!define ABILITI_CHARGES_INTEND "\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000"
+
+
+# Hero Info:
+playervar heroInfoText0
+playervar heroInfoVertFix0
+playervar heroInfoHorFix0
+playervar heroInfoText1
+playervar heroInfoVertFix1
+playervar heroInfoHorFix1
+
 def clearHeroInfo():
   @Name "Subroutine: Clear hero info"
   eventPlayer.heroInfoText0 = null
@@ -32,7 +44,40 @@ rule "Init huds":
     Color.WHITE,
     Color.WHITE,
     Color.WHITE,
-    HudReeval.VISIBILITY_STRING_AND_COLOR
+    HudReeval.VISIBILITY_AND_STRING
+  )
+  
+  # round stats
+  hudText(
+    localPlayer if not localPlayer.isHeroDescriptionOpened else null,
+    null,
+    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\n\n\n\n\n\n\n\n\nRound statistics:{}{}{}{}{}{}".format(
+      "\nEliminations: {} = <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundEliminations, localPlayer.roundEliminations * MONEY_FOR_ELIMINATIONS
+      ) if localPlayer.roundEliminations else "",
+      "\nDamage dealt: {} = <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundDamageDealtStat, localPlayer.roundDamageDealtStat * MONEY_FOR_DAMAGE_DEALT
+      ) if localPlayer.roundDamageDealtStat else "",
+      "\nDefensice assists: {} = <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundDefensiveAssistsStat, localPlayer.roundDefensiveAssistsStat * MONEY_FOR_DEFENSIVE_ASSISTS
+      ) if localPlayer.roundDefensiveAssistsStat else "",
+      "\nDeaths: {} = <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundDeathsStat, MONEY_FOR_ZERO_DEATHS if localPlayer.roundDeathsStat == 0 else 0
+      ),
+      "\nDamage blocked: {} = <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundDamageBlockedStat, localPlayer.roundDamageBlockedStat * MONEY_FOR_DAMAGE_BLOCKED
+      ) if localPlayer.roundDamageBlockedStat else "",
+      "\nDamage taken: {} = <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundDamageTakenStat, localPlayer.roundDamageTakenStat * MONEY_FOR_DAMAGE_TAKEN
+      ) if localPlayer.roundDamageTakenStat else ""
+    ),
+    null,
+    HudPosition.ACTUALLY_LEFT,
+    10,
+    null,
+    Color.WHITE,
+    null,
+    HudReeval.VISIBILITY_AND_STRING
   )
 
   # revive hud
@@ -66,7 +111,7 @@ rule "Init huds":
     ),
     1,
     Clip.NONE,
-    WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR,
+    WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
     Color.WHITE,
     SpecVisibility.ALWAYS
   )
@@ -82,7 +127,7 @@ rule "Init huds":
     ),
     1,
     Clip.NONE,
-    WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR,
+    WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
     Color.WHITE,
     SpecVisibility.ALWAYS
   )
@@ -129,7 +174,6 @@ rule "Init huds":
   )
 
   # push down hud texts for abilities
-  # localPlayer.lastKillTime
   hudSubtext(
     localPlayer if isGameStarted else null,
     "
@@ -139,7 +183,7 @@ rule "Init huds":
     HudPosition.TOP,
     1,
     Color.WHITE,
-    HudReeval.VISIBILITY_AND_COLOR
+    HudReeval.VISIBILITY
   )
 
   # delayed start
@@ -151,7 +195,7 @@ rule "Init huds":
     HudPosition.TOP,
     1,
     Color.WHITE,
-    HudReeval.VISIBILITY_AND_STRING
+    HudReeval.VISIBILITY
   )
   delayerStartHudId = getLastCreatedText()
 
@@ -225,23 +269,21 @@ rule "Create players effects":
   hudText(
     getPlayers(Team.1) if not eventPlayer.isHeroDescriptionOpened else null,
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
-    "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>, <fgEC9900FF>{4}{5}%</fg>,{6}{7}".format(
+    "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>, <fgEC9900FF>{4}{5}%</fg>".format(
       iconString(Icon.FIRE),
       eventPlayer.damageBoostPercent,
       iconString(Icon.HEART),
       eventPlayer.healthBoostPercent,
       iconString(Icon.PLUS),
-      eventPlayer.healingBoostPercent,
-      "<TX C00000000021569>",
-      eventPlayer.kills
+      eventPlayer.healingBoostPercent
     ),
     "{0}: ${1}".format(eventPlayer, eventPlayer.money),
     HudPosition.ACTUALLY_LEFT,
     1,
-    Color.BLUE if eventPlayer.getHealth() >= eventPlayer.getMaxHealth() / 2 else Color.RED,
+    Color.BLUE, # if eventPlayer.getHealth() >= eventPlayer.getMaxHealth() / 2 else Color.RED,
     Color.WHITE,
     Color.WHITE,
-    HudReeval.VISIBILITY_STRING_AND_COLOR
+    HudReeval.VISIBILITY_AND_STRING
   )
   eventPlayer.effectsIds[HI.PLAYER_STATUS] = getLastCreatedText()
 

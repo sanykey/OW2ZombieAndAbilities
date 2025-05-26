@@ -1,4 +1,4 @@
-#!mainFile "main.opy"
+#!mainFile "../main.opy"
 
 #!define DEFAULT_STARTING_MONEY 2000
 #!define DEFAULT_MAX_ZOMBIES 12

@@ -1,8 +1,6 @@
 #!mainFile "main.opy"
 
 rule "[Secret shop] init":
-  @Condition unlockedLocations == 4
-
   shopEffects = []
   enum SHOP_I:
     POWER_ON_EFFECT
@@ -25,10 +23,9 @@ rule "[Secret shop] init":
 rule "[Secret shop] Power switch ON":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[VL_CONNECT_SHOP]) <= 2
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition shopStatus == 0
-  @Condition unlockedLocations == 4
+  @Condition distance(eventPlayer, vectList[VL_CONNECT_SHOP]) <= 2
   
   destroyEffect(shopEffects[SHOP_I.POWER_ON_EFFECT])
   destroyInWorldText(shopEffects[SHOP_I.ARROW_LEFT_TEXT])
@@ -52,12 +49,11 @@ rule "[Secret shop] Show shop activator":
 rule "[Secret shop] Use shop activator":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[VL_SHOP_ACTIVATOR]) <= 1.5
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition shopStatus == 1
+  @Condition distance(eventPlayer, vectList[VL_SHOP_ACTIVATOR]) <= 1.5
   
   shopStatus = 2
-
 
 rule "[Secret shop] Show opened shop teleport area":
   @Condition shopStatus == 2
@@ -90,7 +86,6 @@ rule "[Secret shop] Teleport players to secret shop":
   @Team 1
   @Condition distance(eventPlayer, vectList[VL_ENTER_SHOP_TELEPORT_FROM]) <= 5
   @Condition shopStatus == 2
-  @Condition eventPlayer.isInSecretShop == false
   
   eventPlayer.isInSecretShop = true
   eventPlayer.teleport(vectList[VL_ENTER_SHOP_TELEPORT_TO])

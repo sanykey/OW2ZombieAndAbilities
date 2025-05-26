@@ -82,8 +82,8 @@ rule "Bots attack near player":
 rule "Bots moves":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
 
   if not RULE_CONDITION:
     eventPlayer.money = 0

@@ -1,12 +1,12 @@
 #!mainFile "main.opy"
 
-rule "Disable inspector recording":
-  wait(1)
+rule "init utils":
+  # Disable inspector recording
   disableInspector()
 
-rule "Show ServerLoad info":
+  # Show ServerLoad info
   hudSubheader(
-    localPlayer if localPlayer == hostPlayer else false,
+    localPlayer if localPlayer == hostPlayer else null,
     "Server load: {} / AVG: {}/ Max: {}
       Entities: {}, Texts: {}
     ".format(

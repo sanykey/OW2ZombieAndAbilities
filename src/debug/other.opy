@@ -7,7 +7,7 @@ rule "[debug] User starting stats":
 
   waitUntil(eventPlayer.hasSpawned(), INFINITY)
   wait(2)
-  # eventPlayer.state[0] = 4
+  # eventPlayer.cameraState = 4
 
     
   # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
