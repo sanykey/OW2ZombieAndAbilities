@@ -30,7 +30,6 @@ rule "[Ramattra][Reinhardt][Sigma][Winston] Damage barrier":
     loop()
 
 
-#!define REI_BARRIER_PUSH_ENENT_WAIT 0.1
 rule "[Reinhardt] [Brigitte] Сheck if the barrier is on":
   @Event eachPlayer
   @Team 1
@@ -42,6 +41,8 @@ rule "[Reinhardt] [Brigitte] Сheck if the barrier is on":
   eventPlayer.isActiveBarrier = false
   eventPlayer.barrierDamageStack = false
 
+
+#!define REI_BARRIER_PUSH_ENENT_WAIT 0.1
 rule "[Reinhardt] [Brigitte] Barrier push enemies":
   @Event eachPlayer
   @Team 1
@@ -50,21 +51,35 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
 
   eventPlayer.list0 = (
     [player for player in getPlayersInRadius(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * -1, 6, Team.2) if (
-      distance(player, eventPlayer.getPosition() + eventPlayer.getFacingDirection()) < 2 or (
+      distance(player, eventPlayer.getPosition() + eventPlayer.getFacingDirection()) < 2 or 
+      (
         not isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ALL_BARRIERS) and
-        isInLoS(eventPlayer, player, BarrierLos.PASS_THROUGH_BARRIERS) and
-        player != eventPlayer
+        isInLoS(eventPlayer, player, BarrierLos.PASS_THROUGH_BARRIERS)
       )
     )]
   )
-  eventPlayer.list0.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
+  eventPlayer.list0.applyImpulse(
+    normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)),
+    6,
+    Relativity.TO_WORLD
+  )
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
-  eventPlayer.barrierDamageStack += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.barrierDamageStack += (
+    len(eventPlayer.list0) *
+    (TORBJORN_HAMMER_BASE_DMG * REI_BARRIER_PUSH_ENENT_WAIT) *
+    (3 if eventPlayer.getHero() == Hero.BRIGITTE else 3.65) *
+    (botsDamageBoostPercent / 100)
+  )
+
   eventPlayer.barrierDamageFrom = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
   eventPlayer.barrierDamageDir = normalize(eventPlayer.getEyePosition() - eventPlayer.barrierDamageFrom)
 
   wait(REI_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
     loop()
+
+
+rule "[debug]":
+  debug((TORBJORN_HAMMER_BASE_DMG))

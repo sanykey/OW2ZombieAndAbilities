@@ -2,7 +2,7 @@
 
 #!define WIN_INNER_CHECK_RADIUS 4.9
 #!define WIN_OUTER_CHECK_RADIUS 5.1
-#!define WIN_BARRIER_PUSH_ENENT_WAIT 0.3
+
 
 rule "[Winston] init":
   @Event eachPlayer
@@ -24,7 +24,7 @@ rule "[Winston] init":
 
   waitUntil(eventPlayer.getHero() != Hero.WINSTON, INFINITY)
   clearHeroInfo()
-
+  
 # abilPos0: current Barrier projectile position
 # abilPos1: Barrier projectile drop location
 rule "[Winston] Create barrier and save position":
@@ -77,7 +77,7 @@ rule "[Winston] Create barrier and save position":
       eventPlayer.abilPos0 + Vector.BACKWARD * WIN_OUTER_CHECK_RADIUS,
       BarrierLos.BLOCKED_BY_ALL_BARRIERS
     ),
-    11.9
+    8
   )
 
   if eventPlayer.abilTemp1 >= getTotalTimeElapsed():
@@ -88,6 +88,7 @@ rule "[Winston] Create barrier and save position":
   eventPlayer.barrierDamageStack = false
 
 
+#!define WIN_BARRIER_PUSH_ENENT_WAIT 0.1
 rule "[Winston] Barrier push enemies":
   @Event eachPlayer
   @Team 1
@@ -98,12 +99,18 @@ rule "[Winston] Barrier push enemies":
 
   for eventPlayer.I in range(len(eventPlayer.list0)):
     eventPlayer.list0[eventPlayer.I].applyImpulse(
-      normalize(eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0), 15 - distance(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I]), Relativity.TO_WORLD
+      horDirectionTowards(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I].getPosition()) + vect(0, 0.2679, 0),
+      10 if distance(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I]) < 5 else 4,
+      Relativity.TO_WORLD
     )
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
-  eventPlayer.barrierDamageStack += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) / WIN_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.barrierDamageStack += (
+    len(eventPlayer.list0) *
+    (TORBJORN_HAMMER_BASE_DMG * WIN_BARRIER_PUSH_ENENT_WAIT * 2.3) * 
+    (botsDamageBoostPercent / 100)
+  )
 
   wait(WIN_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

@@ -1,5 +1,8 @@
 #!mainFile "../main.opy"
 
+macro horDirectionTowards(a, b):
+  normalize(vect(b.x, 0, b.z) - vect(a.x, 0, a.z))
+
 rule "[Echo - Freeze Beam]":
   @Event playerDealtDamage
   @Team 1

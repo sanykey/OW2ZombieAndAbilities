@@ -9,6 +9,7 @@ macro Player.setCrowdControlAttack(self, attacker0, duration=LAST_CC_ATTACK_DURA
   self.lastCcAttacker = attacker0
   self.lastCcAttackTime = duration + getTotalTimeElapsed()
   self.lastCcWasInAir = self.isInAir()
+  self.money = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
 
 
 rule "player Dealt Knockback":
