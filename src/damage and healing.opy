@@ -1,5 +1,9 @@
 #!mainFile "main.opy"
 
+# THRESHOLD
+playervar healingTracker
+playervar selfHealingTracker
+
 # save information about bots being pushed to account for damage when falling down
 macro Player.setCrowdControlAttack(self, attacker0, duration=LAST_CC_ATTACK_DURATION):
   self.lastCcAttacker = attacker0
@@ -112,20 +116,34 @@ rule "Start auto healing overеtime":
   eventPlayer.stopAllHealingOverTime()
 
 
-rule "Healing points":
+rule "Healing money":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[SI.HEALING_TRACKER] >= eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] 
+  @Condition eventPlayer.healingTracker >= eventPlayer.healingTrackerThreshold
 
-  eventPlayer.state[SI.HEALING_RESULT] = floor(eventPlayer.state[SI.HEALING_TRACKER] / HEAL_AMOUNT_FOR_MONEY) * MONEY_FOR_HEALING
-  eventPlayer.money += eventPlayer.state[SI.HEALING_RESULT]
-  smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.state[SI.HEALING_RESULT]))
-  teamScore += eventPlayer.state[SI.HEALING_RESULT]
-  eventPlayer.state[SI.HEALING_TRACKER] = 0
+  eventPlayer.temp0 = eventPlayer.healingTracker * MONEY_FOR_HEALING
+  eventPlayer.money += eventPlayer.temp0
+  smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
+  eventPlayer.healingTracker = 0
+
+rule "Self Healing money":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.selfHealingTracker >= eventPlayer.healingTrackerThreshold
+
+  eventPlayer.temp0 = eventPlayer.selfHealingTracker * MONEY_FOR_SELF_HEALING
+  eventPlayer.money += eventPlayer.temp0
+  smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
+  eventPlayer.selfHealingTracker = 0
 
 rule "Healing amount tracker":
   @Event playerDealtHealing
   @Team 1
   
   # healing yourself gives less points
-  eventPlayer.state[SI.HEALING_TRACKER] += eventHealing / 3 if healee == eventPlayer else eventHealing
+  if healee == eventPlayer:
+    eventPlayer.selfHealingTracker += eventHealing
+    eventPlayer.selfHealingCurrentStat += eventHealing
+  else:
+    eventPlayer.healingTracker += eventHealing
+    eventPlayer.healingCurrentStat += eventHealing

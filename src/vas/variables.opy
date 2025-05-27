@@ -77,12 +77,6 @@ playervar interactZoneVect
 playervar interactZoneText
 playervar interactZoneEffect
 
-playervar defensiveAssistsStat
-playervar damageBlockedStat
-playervar damageTakenStat
-playervar damageDealtStat
-playervar deathsStat
-
 playervar zombiesfly
 
 playervar isInSecretShop
@@ -94,7 +88,6 @@ playervar downedStartTime # die state for players and zombie bots
 playervar isZombieReadyToRespawn 
 
 playervar recentStackedHealingDealtToSlot
-playervar healingTracker
 playervar recentHealingDealtToSlot
 playervar recentDamageDealtToSlot
 playervar recentStackedDamageDealtToSlot
@@ -111,6 +104,9 @@ playervar purchasedHeroes
 playervar healthBoostPercent
 playervar damageBoostPercent
 playervar healingBoostPercent
+
+#!define HEAL_AMOUNT_FOR_MONEY 200
+playervar healingTrackerThreshold = HEAL_AMOUNT_FOR_MONEY
 
 # effects ids
 playervar effectsIds
@@ -180,9 +176,9 @@ playervar abilityCD
 
 # Zombie settings
 #!define ZOMBIE_SPEED 80
-#!define ZOMBIE_FALL_DAMAGE 200
+#!define ZOMBIE_FALL_DAMAGE 250
 #!define ZOMBIE_BASE_DAMAGE 20
-#!define ZOMBIE_BASE_HP 100
+#!define ZOMBIE_BASE_HP 50
 #!define ZOMBIE_BASE_MOVE_SPEED 70
 #!define BOT_MAX_INACTIVITY_DURATION 60
 #!define LAST_CC_ATTACK_DURATION 5
@@ -206,8 +202,7 @@ playervar abilityCD
 #!define MONEY_FOR_REVIVE 400
 #!define MONEY_FOR_ZOMBIE_KILL 300
 #!define MONEY_FOR_ZOMBIE_CRITICAL 375
-#!define MONEY_FOR_HEALING 100
-#!define HEAL_AMOUNT_FOR_MONEY 200
+
 # [Sombra] Money:
 #!define MONEY_FOR_KILL_HACKED 30
 #!define MONEY_FOR_KILL_HACKED_TEAM 10
@@ -222,9 +217,6 @@ playervar abilityCD
 
 
 enum SI:
-  HEALING_TRACKER
-  HEALING_TRACKER_THRESHOLD
-  HEALING_RESULT
   WIDOWMAKER_SHOT_CHARGE
   HACKED # hacked status to get money from killed hacked zombies
   MONEY_RECEIVED # money received

@@ -9,16 +9,15 @@ rule "[debug] User starting stats":
   wait(2)
   # eventPlayer.cameraState = 4
 
-    
   # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
-  eventPlayer.money = 500000
+  # eventPlayer.money = 500000
   # eventPlayer.healthBoostPercent = 100
   # eventPlayer.damageBoostPercent = 100
   # eventPlayer.healingBoostPercent = 100
-  eventPlayer.healthBoostPercent = 10000
-  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  eventPlayer.damageBoostPercent = 10000
-  eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
+  # eventPlayer.healthBoostPercent = 10000
+  # eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
+  # eventPlayer.damageBoostPercent = 10000
+  # eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
   # eventPlayer.healingBoostPercent += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))

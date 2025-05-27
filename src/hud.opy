@@ -51,23 +51,29 @@ rule "Init huds":
   hudText(
     localPlayer if not localPlayer.isHeroDescriptionOpened else null,
     null,
-    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\n\n\n\n\n\n\n\n\nRound statistics:{}{}{}{}{}{}".format(
-      "\nEliminations: {} = <fg84c951FF>+${}</fg>".format(
+    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\n\n\n\n\n\n\n\n\nRound statistics:{}{}{}{}{}{}{}{}".format(
+      "\nEliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundEliminations, localPlayer.roundEliminations * MONEY_FOR_ELIMINATIONS
       ) if localPlayer.roundEliminations else "",
-      "\nDamage dealt: {} = <fg84c951FF>+${}</fg>".format(
+      "\nDamage dealt: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDamageDealtStat, localPlayer.roundDamageDealtStat * MONEY_FOR_DAMAGE_DEALT
       ) if localPlayer.roundDamageDealtStat else "",
-      "\nDefensice assists: {} = <fg84c951FF>+${}</fg>".format(
+      "\nDefensice assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDefensiveAssistsStat, localPlayer.roundDefensiveAssistsStat * MONEY_FOR_DEFENSIVE_ASSISTS
       ) if localPlayer.roundDefensiveAssistsStat else "",
-      "\nDeaths: {} = <fg84c951FF>+${}</fg>".format(
+      "\nDeaths: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDeathsStat, MONEY_FOR_ZERO_DEATHS if localPlayer.roundDeathsStat == 0 else 0
       ),
-      "\nDamage blocked: {} = <fg84c951FF>+${}</fg>".format(
+      "\nHealing: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundHealingStat, localPlayer.roundHealingStat * MONEY_FOR_HEALING
+      ) if localPlayer.roundHealingStat else "",
+      "\nSelf healing: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundSelfHealingStat, localPlayer.roundSelfHealingStat * MONEY_FOR_SELF_HEALING
+      ) if localPlayer.roundSelfHealingStat else "",
+      "\nDamage blocked: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDamageBlockedStat, localPlayer.roundDamageBlockedStat * MONEY_FOR_DAMAGE_BLOCKED
       ) if localPlayer.roundDamageBlockedStat else "",
-      "\nDamage taken: {} = <fg84c951FF>+${}</fg>".format(
+      "\nDamage taken: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDamageTakenStat, localPlayer.roundDamageTakenStat * MONEY_FOR_DAMAGE_TAKEN
       ) if localPlayer.roundDamageTakenStat else ""
     ),
@@ -195,7 +201,7 @@ rule "Init huds":
     HudPosition.TOP,
     1,
     Color.WHITE,
-    HudReeval.VISIBILITY
+    HudReeval.VISIBILITY_AND_STRING
   )
   delayerStartHudId = getLastCreatedText()
 

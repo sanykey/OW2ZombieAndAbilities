@@ -15,7 +15,6 @@ rule "Player joined setup":
   eventPlayer.healingBoostPercent = 100
   eventPlayer.money = wSettingsStartMoney 
   eventPlayer.purchasedHeroes = [Hero.DVA]
-  eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY
 
   # Change character for vip players
   # if "{0}".format(eventPlayer) in vipPlayers == true:

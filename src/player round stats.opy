@@ -1,12 +1,14 @@
 #!mainFile "main.opy"
 
-#!define MONEY_FOR_ELIMINATIONS 300
+#!define MONEY_FOR_ELIMINATIONS 200
 #!define MONEY_FOR_DAMAGE_DEALT 0.3
-#!define MONEY_FOR_DAMAGE_BLOCKED 0.06
-#!define MONEY_FOR_DAMAGE_TAKEN 0.05
+#!define MONEY_FOR_DAMAGE_BLOCKED 0.07
+#!define MONEY_FOR_DAMAGE_TAKEN 0.04
 #!define MONEY_FOR_DEFENSIVE_ASSISTS 150
 #!define MONEY_FOR_ZERO_DEATHS 1000
 #!define SHOW_ROUND_STATS_DURATION 10
+#!define MONEY_FOR_HEALING 0.2
+#!define MONEY_FOR_SELF_HEALING 0.05
 
 playervar prevEliminations
 playervar prevDamageDealtStat
@@ -15,16 +17,19 @@ playervar prevDamageTakenStat
 playervar prevDefensiveAssistsStat
 playervar prevDeathsStat
 
+playervar healingCurrentStat
+playervar selfHealingCurrentStat
+
 playervar roundEliminations
 playervar roundDamageDealtStat
 playervar roundDamageBlockedStat
 playervar roundDamageTakenStat
 playervar roundDefensiveAssistsStat
 playervar roundDeathsStat
+playervar roundHealingStat
+playervar roundSelfHealingStat
 
 globalvar showPlayerStatsTime
-
-
 
 rule "calculate player round stats":
   @Event eachPlayer
@@ -49,6 +54,11 @@ rule "calculate player round stats":
 
   eventPlayer.roundDeathsStat = eventPlayer.getStatistic(Stat.DEATHS) - eventPlayer.prevDeathsStat
   eventPlayer.prevDeathsStat = eventPlayer.getStatistic(Stat.DEATHS)
+
+  eventPlayer.roundHealingStat = eventPlayer.healingCurrentStat
+  eventPlayer.healingCurrentStat = 0
+  eventPlayer.roundSelfHealingStat = eventPlayer.selfHealingCurrentStat
+  eventPlayer.selfHealingCurrentStat = 0
 
   eventPlayer.money += eventPlayer.roundDamageDealtStat * MONEY_FOR_DAMAGE_DEALT
   eventPlayer.money += eventPlayer.roundDamageBlockedStat * MONEY_FOR_DAMAGE_BLOCKED

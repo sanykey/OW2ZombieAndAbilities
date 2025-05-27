@@ -43,7 +43,7 @@ rule "Change hero from shop":
   elif distance(eventPlayer, vectList[VL_BUY_HEALING]) < 1.8 and eventPlayer.money >= 2500:
     eventPlayer.money -= 2500
     eventPlayer.healingBoostPercent += 5
-    eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
+    eventPlayer.healingTrackerThreshold = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
 
     eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, eventPlayer, 1)

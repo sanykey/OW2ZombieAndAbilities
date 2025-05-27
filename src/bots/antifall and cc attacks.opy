@@ -5,8 +5,8 @@ rule "Bots Antifall and fall damage from cc attacks from players":
   @Team 2
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.downedStartTime
 
+  wait(0.2)
   eventPlayer.temp1 = false
   # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
   if eventPlayer.getPosition().x < 0 and eventPlayer.getPosition().z > -35: 
@@ -19,26 +19,19 @@ rule "Bots Antifall and fall damage from cc attacks from players":
     if eventPlayer.getPosition().y < 0: # Other
       eventPlayer.temp1 = true
 
-  if eventPlayer.temp1:
-    # [Bot fake death] If the bot is "dead", avoid having its corpse tossed over an abyss:
-    if eventPlayer.downedStartTime:
-      # teleportBotToHisHome()
-      return
+  if not eventPlayer.temp1:
+    goto RULE_START
 
-    # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
-    if eventPlayer.lastCcAttackTime >= getTotalTimeElapsed():
-      eventPlayer.setEnvironmentalKillCreditor(eventPlayer.lastCcAttacker) # Just to be safe.
+  # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
+  if eventPlayer.lastCcAttackTime >= getTotalTimeElapsed():
+    if eventPlayer.getHealth() < ZOMBIE_FALL_DAMAGE * eventPlayer.lastCcAttacker.damageBoostPercent / 100:
+      eventPlayer.setEnvironmentalKillCreditor(eventPlayer.lastCcAttacker)
+      goto RULE_START
 
-      damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
-      eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-      eventPlayer.lastCcAttackTime = false
+    damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
+    eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+    eventPlayer.lastCcAttackTime = false
+  else:
+    eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
-      wait()
-      # [Bot fake death] If the bot is "dead", avoid having its corpse tossed over an abyss:
-      if eventPlayer.downedStartTime or eventPlayer.getHealth() < BOT_FAKE_DIE_HP_THRESHOLD:
-        # teleportBotToHisHome()
-    else:
-      eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-  wait(0.2)
   loop()

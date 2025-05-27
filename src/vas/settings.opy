@@ -45,6 +45,10 @@ settings {
                 "jumpVerticalSpeed%": 115,
                 "ability1Duration%": 150
             },
+            "moira": {
+                "ability2MaxDamage%": 500,
+                "ability2MaxHealing%": 500
+            },
         },
         "team2": {
             "torbjorn": {

@@ -131,7 +131,7 @@ rule "Bots moves":
   if (
     eventPlayer.getVerticalFacingAngle() < -70 and
     not eventPlayer.targetPlayer0.isUsingUltimate() and 
-    distance(eventPlayer, eventPlayer.targetPlayer0) > 2
+    distance(eventPlayer, eventPlayer.targetPlayer0) > 2 # todo: fix inRadius
   ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
     eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
     wait(0.2)
