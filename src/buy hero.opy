@@ -1,15 +1,6 @@
 #!mainFile "main.opy"
 
 globalvar heroesList = [Hero.DVA]
-globalvar heroesShopData = [] # [hero, buy_place_vector, price, buy_text_vector]
-
-playervar isDvaUltBought
-
-#!define BUY_HERO_OFFSET_A 0
-#!define BUY_HERO_OFFSET_B VL_BUY_HERO_SPOTS_A_LEN
-#!define BUY_HERO_OFFSET_E BUY_HERO_OFFSET_B + VL_BUY_HERO_SPOTS_B_LEN
-#!define BUY_HERO_OFFSET_I BUY_HERO_OFFSET_E + VL_BUY_HERO_SPOTS_E_LEN
-#!define BUY_HERO_OFFSET_H BUY_HERO_OFFSET_I + VL_BUY_HERO_SPOTS_I_LEN
 
 rule "Create hero buy positions":
   heroesList.append(random.shuffle(getAllHeroes().exclude(Hero.DVA))) # 43 heroes

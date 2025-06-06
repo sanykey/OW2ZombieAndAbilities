@@ -1,6 +1,5 @@
 #!mainFile "./main.opy"
 
-globalvar spawnPointsList = []
 globalvar zonesI
 globalvar zonesHeroBuyOffset
 globalvar zonesHeroBuyLen

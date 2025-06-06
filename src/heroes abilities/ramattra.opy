@@ -135,8 +135,8 @@ rule "[Ramattra] Barrier push enemies":
   
   eventPlayer.barrierDamageStack += (
     len(eventPlayer.list0) *
-    (TORBJORN_HAMMER_BASE_DMG  * RAM_BARRIER_PUSH_ENENT_WAIT) * 2.3
-    # (botsDamageBoostPercent / 100)
+    (TORBJORN_HAMMER_BASE_DMG  * RAM_BARRIER_PUSH_ENENT_WAIT * 2.2) *
+    (botsDamageBoostPercent / 100)
   )
 
   wait(RAM_BARRIER_PUSH_ENENT_WAIT)

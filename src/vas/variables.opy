@@ -5,6 +5,16 @@
 
 globalvar roundNumber = 0
 
+globalvar spawnPointsList = []
+
+# Buy hero
+globalvar heroesShopData = [] # [hero, buy_place_vector, price, buy_text_vector]
+#!define BUY_HERO_OFFSET_A 0
+#!define BUY_HERO_OFFSET_B VL_BUY_HERO_SPOTS_A_LEN
+#!define BUY_HERO_OFFSET_E BUY_HERO_OFFSET_B + VL_BUY_HERO_SPOTS_B_LEN
+#!define BUY_HERO_OFFSET_I BUY_HERO_OFFSET_E + VL_BUY_HERO_SPOTS_E_LEN
+#!define BUY_HERO_OFFSET_H BUY_HERO_OFFSET_I + VL_BUY_HERO_SPOTS_I_LEN
+
 # [sectet shop]:
 globalvar shopEffects = []
 globalvar shopStatus
@@ -100,6 +110,7 @@ playervar lastCcAttacker
 playervar lastCcAttackTime
 playervar lastCcWasInAir
 
+playervar isDvaUltBought
 playervar purchasedHeroes
 playervar healthBoostPercent
 playervar damageBoostPercent
@@ -215,11 +226,8 @@ playervar abilityCD
 #!define INFINITY 99999
 #!define ALLY_BOT_PLAYER_SLOT 7
 
-
 enum SI:
-  WIDOWMAKER_SHOT_CHARGE
   HACKED # hacked status to get money from killed hacked zombies
-  MONEY_RECEIVED # money received
   LAST_DAMAGE_TIME
   START_AUTO_HEAL_TIME
   IS_INVISIBLE

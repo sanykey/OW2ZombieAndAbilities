@@ -1,6 +1,6 @@
 #!mainFile "../main.opy"
 
-#!define SIG_BARRIER_PUSH_ENENT_WAIT 0.2
+
 
 rule "[Ramattra] init":
   @Event eachPlayer
@@ -30,7 +30,7 @@ rule "[Ramattra] init":
   @Event eachPlayer
   @Team 1
   @Hero sigma 
-  @Condition updateEveryFrame(eventPlayer.isFiringSecondaryFire()) == true
+  @Condition updateEveryFrame(eventPlayer.isFiringSecondaryFire())
 
   eventPlayer.isActiveBarrier = true
   eventPlayer.abilPos0 = raycast(
@@ -63,11 +63,13 @@ rule "[Ramattra] init":
   eventPlayer.isActiveBarrier = false
   eventPlayer.barrierDamageStack = false
 
+
+#!define SIG_BARRIER_PUSH_ENENT_WAIT 0.2
 rule "[Sigma] Barrier Effect":
   @Event eachPlayer
   @Team 1
   @Hero sigma
-  @Condition eventPlayer.isActiveBarrier == true
+  @Condition eventPlayer.isActiveBarrier
   
   eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
 
@@ -78,11 +80,15 @@ rule "[Sigma] Barrier Effect":
   eventPlayer.barrierDamageDir = eventPlayer.abilDir0
 
   # calculate damage to barrier
-  eventPlayer.barrierDamageStack += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SIG_BARRIER_PUSH_ENENT_WAIT
+  eventPlayer.barrierDamageStack += (
+    len(eventPlayer.list0) *
+    (TORBJORN_HAMMER_BASE_DMG * SIG_BARRIER_PUSH_ENENT_WAIT * 1.5)
+    * (botsDamageBoostPercent / 100)
+  )
 
   if eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
     eventPlayer.list0.applyImpulse(
-      normalize(eventPlayer.abilDir0 + vect(0, 0.2679, 0)), 16, Relativity.TO_WORLD
+      normalize(vect(eventPlayer.abilDir0.x, 0.2679, eventPlayer.abilDir0.z)), 16, Relativity.TO_WORLD
     )
     eventPlayer.barrierDamageStack *= 1.5 # more damage when mooving 
 
@@ -106,17 +112,20 @@ rule "[Sigma] Barrier Effect":
       smallMessage(eventPlayer, "Barrier deploy failed! Try again")
       eventPlayer.isActiveBarrier = false
       eventPlayer.barrierDamageStack = false
+      wait(0.2)
+      eventPlayer.forceButtonPress(Button.SECONDARY_FIRE)
+      wait()
+      eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 0)
       return
 
     for eventPlayer.I in range(len(eventPlayer.list0)):
       eventPlayer.list0[eventPlayer.I].applyImpulse(
         normalize(
-          eventPlayer.abilDir0 *
+          vect(eventPlayer.abilDir0.x, 0, eventPlayer.abilDir0.z) *
           (-1 if isInLoS(eventPlayer.list0[eventPlayer.I], eventPlayer.abilPos0, BarrierLos.BLOCKED_BY_ALL_BARRIERS) else 1)
           + vect(0, 0.2679, 0)
-        ) 
-        ,
-        10,
+        ), 
+        4,
         Relativity.TO_WORLD
       )
 

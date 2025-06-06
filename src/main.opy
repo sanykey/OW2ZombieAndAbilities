@@ -12,22 +12,26 @@
 #!include "match.opy"
 #!include "hud.opy" 
 
+#/*
+#!include "zones.opy"
 #!include "switch hero.opy"
 #!include "buy hero.opy" 
-#!include "zones.opy"
 #!include "buy hero upgrades.opy" 
 #!include "portal.opy"
 #!include "locked area.opy" 
 #!include "restricted areas.opy" 
 #!include "secret shop.opy"
+#*/
 
+#/*
 #!include "damage and healing.opy"
 #!include "barriers damage.opy"
+#*/
 
 #/*
 #!include "bots/zombie events.opy"
 #!include "bots/zombie behavior.opy"
-#!include "bots/widowmaker.opy"
+##!include "bots/widowmaker.opy"
 #!include "bots/roadhog.opy"
 #!include "bots/mauga.opy"
 #!include "bots/echo.opy"
@@ -56,9 +60,10 @@
 #!include "heroes abilities/kiriko.opy"
 #*/
 
-# 2 texts:
+#/*
 #!include "debug/utils.opy"
 #!include "debug/other.opy"
+#*/
 /*
 #!include "debug/noclip.opy"
 #!include "debug/positions measuring.opy"

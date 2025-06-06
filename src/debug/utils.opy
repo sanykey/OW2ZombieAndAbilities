@@ -23,7 +23,7 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
     hostPlayer.setMoveSpeed(100)
     smallMessage(eventPlayer, "Bots enabled (ctrl + shift + interact)")
 
-rule "[debug] Trigger open Switch hero hud":
+rule "[debug] open switch hero hud":
   @Event eachPlayer
   @Condition eventPlayer == hostPlayer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
