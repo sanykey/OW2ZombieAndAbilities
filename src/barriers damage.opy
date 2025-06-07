@@ -79,7 +79,3 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
   wait(REI_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
     loop()
-
-
-rule "[debug]":
-  debug((TORBJORN_HAMMER_BASE_DMG))

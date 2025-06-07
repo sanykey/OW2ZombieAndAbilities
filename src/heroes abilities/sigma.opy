@@ -1,8 +1,6 @@
 #!mainFile "../main.opy"
 
-
-
-rule "[Ramattra] init":
+rule "[Sigma] init":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.getHero() == Hero.SIGMA
@@ -26,14 +24,14 @@ rule "[Ramattra] init":
   clearHeroInfo()
 
 
-rule "[Ramattra] init":
+rule "[Sigma] start barrier":
   @Event eachPlayer
   @Team 1
   @Hero sigma 
   @Condition updateEveryFrame(eventPlayer.isFiringSecondaryFire())
 
   eventPlayer.isActiveBarrier = true
-  eventPlayer.abilPos0 = raycast(
+  eventPlayer.barrierDamageFrom = raycast(
     eventPlayer.getEyePosition(),
     eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2.25,
     null,
@@ -43,21 +41,26 @@ rule "[Ramattra] init":
   eventPlayer.abilDir0 = eventPlayer.getFacingDirection()
   
   chaseAtRate(
-    eventPlayer.abilPos0,
+    eventPlayer.barrierDamageFrom,
     raycast(
-      eventPlayer.abilPos0,
-      eventPlayer.abilPos0 + evalOnce(eventPlayer.getFacingDirection()),
+      eventPlayer.barrierDamageFrom,
+      eventPlayer.barrierDamageFrom + evalOnce(eventPlayer.getFacingDirection()),
       null,
       eventPlayer,
       true
     ).getHitPosition() + evalOnce(eventPlayer.getFacingDirection()) * -0.01,
     20
   )
-  waitUntil(not eventPlayer.isFiringSecondaryFire(), 99999)
-  stopChasingVariable(eventPlayer.abilPos0)
 
-  # calculate position for barier damaging
-  eventPlayer.barrierDamageFrom = eventPlayer.abilPos0
+  waitUntil(not eventPlayer.isFiringSecondaryFire(), INFINITY)
+  stopChasingVariable(eventPlayer.barrierDamageFrom)
+
+  eventPlayer.abilPos0 = eventPlayer.barrierDamageFrom
+  # calculate position for barier damaging. place barrier damage points above the center of the barrier to avoid accidentally damaging players and bots on both teams
+  eventPlayer.barrierDamageFrom = eventPlayer.barrierDamageFrom + normalize(crossProduct(eventPlayer.abilDir0, crossProduct(Vector.UP, eventPlayer.abilDir0))) * 1.8
+  eventPlayer.barrierDamageDir = eventPlayer.abilDir0
+  eventPlayer.abilPos1 = eventPlayer.barrierDamageFrom + eventPlayer.abilDir0
+
 
   waitUntil(updateEveryFrame(eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE)) != null, INFINITY)
   eventPlayer.isActiveBarrier = false
@@ -72,18 +75,14 @@ rule "[Sigma] Barrier Effect":
   @Condition eventPlayer.isActiveBarrier
   
   eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
-
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-
-  # calculate position for barier damaging
-  eventPlayer.barrierDamageFrom = eventPlayer.abilPos0 + Vector.UP * 1.8
-  eventPlayer.barrierDamageDir = eventPlayer.abilDir0
 
   # calculate damage to barrier
   eventPlayer.barrierDamageStack += (
     len(eventPlayer.list0) *
     (TORBJORN_HAMMER_BASE_DMG * SIG_BARRIER_PUSH_ENENT_WAIT * 1.5)
     * (botsDamageBoostPercent / 100)
+    * (100 / eventPlayer.healthBoostPercent)
   )
 
   if eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
@@ -94,17 +93,16 @@ rule "[Sigma] Barrier Effect":
 
   else:
     # Check is barrier exists
-    eventPlayer.temp1 = eventPlayer.barrierDamageFrom + eventPlayer.abilDir0 * 0.8
     if (
       eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE) == null and (
         isInLoS(
           eventPlayer.barrierDamageFrom,
-          eventPlayer.temp1,
+          eventPlayer.abilPos1,
           BarrierLos.BLOCKED_BY_ALL_BARRIERS
         ) or 
         not isInLoS(
           eventPlayer.barrierDamageFrom,
-          eventPlayer.temp1,
+          eventPlayer.abilPos1,
           BarrierLos.PASS_THROUGH_BARRIERS
         )
       )
@@ -140,7 +138,7 @@ rule "[Sigma] Barrier Effect":
 #   @Hero sigma 
 
 #   createEffect(
-#     getPlayersInSlot(0, Team.1),
+#     hostPlayer,
 #     Effect.SPHERE,
 #     Color.BLUE,
 #     eventPlayer.abilPos0,
@@ -149,7 +147,7 @@ rule "[Sigma] Barrier Effect":
 #   )
 
 #   createEffect(
-#     getPlayersInSlot(0, Team.1),
+#     hostPlayer,
 #     Effect.SPHERE,
 #     Color.LIGHT_RED,
 #     eventPlayer.barrierDamageFrom,
@@ -157,35 +155,11 @@ rule "[Sigma] Barrier Effect":
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )
 
-
 #   createEffect(
-#     getPlayersInSlot(0, Team.1),
+#     hostPlayer,
 #     Effect.SPHERE,
 #     Color.GREEN,
-#     eventPlayer.temp1,
+#     eventPlayer.abilPos1,
 #     0.05,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )
-
-  # hudHeader(
-  #   eventPlayer,
-  #   "CD {} : {}".format(
-  #     eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE),
-  #     eventPlayer.isFiringSecondaryFire()
-  #   ),
-  #   HudPosition.TOP,
-  #   0,
-  #   Color.WHITE,
-  #   HudReeval.VISIBILITY_AND_STRING,
-  #   SpecVisibility.ALWAYS
-  # )
-
-  # createEffect(
-  #   getPlayersInSlot(0, Team.1),
-  #   Effect.SPHERE,
-  #   Color.GREEN,
-  #   eventPlayer.abilPos0,
-  #   0.05,
-  #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
-  # )
-
