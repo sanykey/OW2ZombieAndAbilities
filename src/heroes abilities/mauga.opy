@@ -3,7 +3,7 @@
 #!define MAU_INNER_CHECK_RADIUS 7.2
 #!define MAU_OUTER_CHECK_RADIUS 8.2
 #!define MAU_ULT_DURATION 8
-#!define MAU_BARRIER_PUSH_ENENT_WAIT 0.3
+
 
 
 rule "[Mauga] init":
@@ -46,11 +46,12 @@ rule "[Mauga] Create barrier (ultimate)":
     ).getHitPosition()
   )
 
-  if (eventPlayer.temp2 < 1.85):
+  if (
+    eventPlayer.temp2 < 1.85
+  ):
     eventPlayer.temp3 = 1.26 - (1.85 - eventPlayer.temp2)
   else:
     eventPlayer.temp3 = 1.26
-
 
   eventPlayer.abilPos0 = raycast(
     eventPlayer.getEyePosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3,
@@ -67,7 +68,6 @@ rule "[Mauga] Create barrier (ultimate)":
   if distance(
     eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3
   ) > 2.58:
-    # smallMessage(eventPlayer, "too far")
     eventPlayer.abilPos0 = raycast(
       eventPlayer.getEyePosition(),
       eventPlayer.getEyePosition() + Vector.DOWN * 25,
@@ -113,6 +113,8 @@ rule "[Mauga] Create barrier (ultimate)":
   eventPlayer.barrierDamageFrom = eventPlayer.temp2
   eventPlayer.barrierDamageDir = normalize(eventPlayer.temp3 - eventPlayer.temp2)
 
+#!define MAU_BARRIER_PUSH_ENENT_WAIT 0.1
+
 rule "[Mauga] Barrier push enemies":
   @Event eachPlayer
   @Team 1
@@ -129,14 +131,19 @@ rule "[Mauga] Barrier push enemies":
     ) > 7:
       eventPlayer.list0[eventPlayer.I].applyImpulse(
         normalize(
-          eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0
+          (eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0) + vect(0, 0.2679, 0)
         ),
-        15,
+        7,
         Relativity.TO_WORLD
       )
-      eventPlayer.barrierDamageStack += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * MAU_BARRIER_PUSH_ENENT_WAIT
+      eventPlayer.barrierDamageStack += (
+        TORBJORN_HAMMER_BASE_DMG 
+        * 2.2
+        * MAU_BARRIER_PUSH_ENENT_WAIT 
+        * (botsDamageBoostPercent / 100)
+      )
 
-      eventPlayer.list0.setCrowdControlAttack(eventPlayer)
+      eventPlayer.list0[eventPlayer.I].setCrowdControlAttack(eventPlayer)
 
     else: # slow down players inside barrier
       eventPlayer.list0[eventPlayer.I].state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 0.5

@@ -53,8 +53,8 @@ rule "[Winston] Create barrier and save position":
   eventPlayer.barrierDamageFrom = null
   eventPlayer.list0 = [Vector.UP, vect(0, 1, 1), vect(0, 1, -1), vect(1, 1, 0), vect(-1, 1, 0)]
 
-  for eventPlayer.temp0 in range(len(eventPlayer.list0)):
-    eventPlayer.barrierDamageDir = eventPlayer.list0[eventPlayer.temp0]
+  for eventPlayer.I in range(len(eventPlayer.list0)):
+    eventPlayer.barrierDamageDir = eventPlayer.list0[eventPlayer.I]
     eventPlayer.abilPos1 = eventPlayer.abilPos0 + eventPlayer.barrierDamageDir * WIN_INNER_CHECK_RADIUS
     if (
       not isInLoS(
