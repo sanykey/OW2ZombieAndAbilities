@@ -1,9 +1,5 @@
 #!mainFile "../main.opy"
 
-#!define WIN_INNER_CHECK_RADIUS 4.9
-#!define WIN_OUTER_CHECK_RADIUS 5.1
-
-
 rule "[Winston] init":
   @Event eachPlayer
   @Team 1
@@ -25,8 +21,10 @@ rule "[Winston] init":
   waitUntil(eventPlayer.getHero() != Hero.WINSTON, INFINITY)
   clearHeroInfo()
   
-# abilPos0: current Barrier projectile position
-# abilPos1: Barrier projectile drop location
+
+#!define WIN_INNER_CHECK_RADIUS 4.9
+#!define WIN_OUTER_CHECK_RADIUS 5.1
+
 rule "[Winston] Create barrier and save position":
   @Event eachPlayer
   @Team 1
@@ -48,41 +46,44 @@ rule "[Winston] Create barrier and save position":
   )
 
   waitUntil(eventPlayer.abilPos0 == eventPlayer.abilPos1, 12)
-  eventPlayer.isActiveBarrier = true
-  eventPlayer.barrierDamageFrom = eventPlayer.abilPos0 + Vector.UP * 5.5
-  eventPlayer.barrierDamageDir = normalize(eventPlayer.abilPos0 - (eventPlayer.abilPos0 + Vector.UP * 5.5))
   stopChasingVariable(eventPlayer.abilTemp1)
+  stopChasingVariable(eventPlayer.abilPos0)
   wait(0.1)
 
-  eventPlayer.abilTemp1 = getTotalTimeElapsed()
+  eventPlayer.barrierDamageFrom = null
+  eventPlayer.list0 = [Vector.UP, vect(0, 1, 1), vect(0, 1, -1), vect(1, 1, 0), vect(-1, 1, 0)]
+
+  for eventPlayer.temp0 in range(len(eventPlayer.list0)):
+    eventPlayer.barrierDamageDir = eventPlayer.list0[eventPlayer.temp0]
+    eventPlayer.abilPos1 = eventPlayer.abilPos0 + eventPlayer.barrierDamageDir * WIN_INNER_CHECK_RADIUS
+    if (
+      not isInLoS(
+        eventPlayer.abilPos1,
+        eventPlayer.abilPos1 + eventPlayer.barrierDamageDir,
+        BarrierLos.BLOCKED_BY_ALL_BARRIERS
+      ) and isInLoS(
+        eventPlayer.abilPos1,
+        eventPlayer.abilPos1 + eventPlayer.barrierDamageDir,
+        BarrierLos.PASS_THROUGH_BARRIERS
+      )
+    ):
+      eventPlayer.barrierDamageFrom = eventPlayer.abilPos1
+      break
+
+  if not eventPlayer.barrierDamageFrom:
+    smallMessage(eventPlayer, "Barrier deploy failed! Try again")
+    eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
+
+  eventPlayer.isActiveBarrier = true
+
   waitUntil(
     isInLoS(
-      eventPlayer.abilPos0 + Vector.UP * WIN_INNER_CHECK_RADIUS,
-      eventPlayer.abilPos0 + Vector.UP * WIN_OUTER_CHECK_RADIUS,
-      BarrierLos.BLOCKED_BY_ALL_BARRIERS
-    ) and isInLoS(
-      eventPlayer.abilPos0 + Vector.LEFT * WIN_INNER_CHECK_RADIUS,
-      eventPlayer.abilPos0 + Vector.LEFT * WIN_OUTER_CHECK_RADIUS,
-      BarrierLos.BLOCKED_BY_ALL_BARRIERS
-    ) and isInLoS(
-      eventPlayer.abilPos0 + Vector.RIGHT * WIN_INNER_CHECK_RADIUS,
-      eventPlayer.abilPos0 + Vector.RIGHT * WIN_OUTER_CHECK_RADIUS,
-      BarrierLos.BLOCKED_BY_ALL_BARRIERS
-    ) and isInLoS(
-      eventPlayer.abilPos0 + Vector.FORWARD * WIN_INNER_CHECK_RADIUS,
-      eventPlayer.abilPos0 + Vector.FORWARD * WIN_OUTER_CHECK_RADIUS,
-      BarrierLos.BLOCKED_BY_ALL_BARRIERS
-    ) and isInLoS(
-      eventPlayer.abilPos0 + Vector.BACKWARD * WIN_INNER_CHECK_RADIUS,
-      eventPlayer.abilPos0 + Vector.BACKWARD * WIN_OUTER_CHECK_RADIUS,
+      eventPlayer.barrierDamageFrom,
+      eventPlayer.barrierDamageFrom + eventPlayer.barrierDamageDir,
       BarrierLos.BLOCKED_BY_ALL_BARRIERS
     ),
     8
   )
-
-  if eventPlayer.abilTemp1 >= getTotalTimeElapsed():
-    smallMessage(eventPlayer, "Barrier deploy failed! Try again")
-    eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
 
   eventPlayer.isActiveBarrier = false
   eventPlayer.barrierDamageStack = false
@@ -115,3 +116,38 @@ rule "[Winston] Barrier push enemies":
   wait(WIN_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
     loop()
+
+# rule "[Winston] debug":
+#   @Event eachPlayer
+#   @Team 1
+#   @Hero winston 
+
+#   debug(eventPlayer.barrierDamageFrom)
+#   debug(eventPlayer.barrierDamageDir)
+
+#   createEffect(
+#     hostPlayer,
+#     Effect.SPHERE,
+#     Color.BLUE,
+#     eventPlayer.barrierDamageFrom,
+#     0.05,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )
+
+#   createEffect(
+#     hostPlayer,
+#     Effect.SPHERE,
+#     Color.LIGHT_RED,
+#     eventPlayer.barrierDamageFrom + eventPlayer.barrierDamageDir,
+#     0.05,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )
+
+#   createEffect(
+#     hostPlayer,
+#     Effect.SPHERE,
+#     Color.GREEN,
+#     eventPlayer.abilPos0,
+#     0.5,
+#     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+#   )
