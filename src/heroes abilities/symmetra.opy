@@ -4,7 +4,7 @@
 # - [Shield Tracking](https://workshop.codes/XQG9N)
 
 #!define SYM_ULT_DURATION 12
-#!define SYM_BARRIER_PUSH_ENENT_WAIT 0.3
+
 
 rule "[Symmetra] init":
   @Event eachPlayer
@@ -71,7 +71,6 @@ rule "[Symmetra] Create barrier (ultimate)":
     wait(0.1)
 
   # start creating barrier::
-
   eventPlayer.abilPos0 = raycast( # get barrier position
     raycast(
       eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 25, null, eventPlayer, true
@@ -128,6 +127,8 @@ rule "[Symmetra] Check is barrier exists":
   eventPlayer.isActiveBarrier = false
   eventPlayer.barrierDamageStack = false
 
+#!define SYM_BARRIER_PUSH_ENENT_WAIT 0.1
+
 rule "[Symmetra] Barrier push enemies":
   @Event eachPlayer
   @Team 1
@@ -146,7 +147,12 @@ rule "[Symmetra] Barrier push enemies":
 
     # get players to push from barrier
     if abs(eventPlayer.temp1) < 3:
-      eventPlayer.barrierDamageStack += (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * SYM_BARRIER_PUSH_ENENT_WAIT
+      eventPlayer.barrierDamageStack += (
+        TORBJORN_HAMMER_BASE_DMG 
+        * 3
+        * SYM_BARRIER_PUSH_ENENT_WAIT
+        * (botsDamageBoostPercent / 100)
+      )
 
       if eventPlayer.temp1 > 0:
         eventPlayer.list1.append(eventPlayer.list0[eventPlayer.I])
@@ -156,15 +162,15 @@ rule "[Symmetra] Barrier push enemies":
 
   if (len(eventPlayer.list1)):
     eventPlayer.list1.applyImpulse(
-      eventPlayer.abilDir1 + vect(0, 0.2679, 0),
-      7,
+      eventPlayer.abilDir1 + barrierPushVectUpFix,
+      5,
       Relativity.TO_WORLD
     )
     wait(0.016)
   if (len(eventPlayer.list2)):
     eventPlayer.list2.applyImpulse(
-      eventPlayer.abilDir1 * -1 + vect(0, 0.2679, 0),
-      7,
+      eventPlayer.abilDir1 * -1 + barrierPushVectUpFix,
+      5,
       Relativity.TO_WORLD
     )
 

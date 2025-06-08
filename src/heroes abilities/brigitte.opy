@@ -38,7 +38,7 @@ rule "[Brigitte] Barrier push enemies":
       )
     )]
   )
-  eventPlayer.list0.applyImpulse(normalize(eventPlayer.getFacingDirection() + vect(0, 0.2679, 0)), 6, Relativity.TO_WORLD)
+  eventPlayer.list0.applyImpulse(normalize(eventPlayer.getFacingDirection() + barrierPushVectUpFix), 6, Relativity.TO_WORLD)
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 

@@ -121,7 +121,7 @@ rule "[Sigma] Barrier Effect":
         normalize(
           vect(eventPlayer.abilDir0.x, 0, eventPlayer.abilDir0.z) *
           (-1 if isInLoS(eventPlayer.list0[eventPlayer.I], eventPlayer.abilPos0, BarrierLos.BLOCKED_BY_ALL_BARRIERS) else 1)
-          + vect(0, 0.2679, 0)
+          + barrierPushVectUpFix
         ), 
         4,
         Relativity.TO_WORLD

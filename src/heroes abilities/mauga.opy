@@ -131,7 +131,7 @@ rule "[Mauga] Barrier push enemies":
     ) > 7:
       eventPlayer.list0[eventPlayer.I].applyImpulse(
         normalize(
-          (eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0) + vect(0, 0.2679, 0)
+          (eventPlayer.list0[eventPlayer.I].getEyePosition() - eventPlayer.abilPos0) + barrierPushVectUpFix
         ),
         7,
         Relativity.TO_WORLD

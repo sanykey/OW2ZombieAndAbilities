@@ -148,6 +148,7 @@ playervar lastZombieIcon
 playervar isHeroDescriptionOpened
 
 # new barriers damage took and push logic
+globalvar barrierPushVectUpFix = vect(0, 0.2679, 0) # When pushing characters horizontally, we add a bit of upward displacement so that the pushing is not hindered by the floor
 playervar barrierDamageFrom
 playervar barrierDamageDir
 playervar barrierDamageStack

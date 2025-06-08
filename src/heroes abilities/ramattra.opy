@@ -64,13 +64,13 @@ rule "[Ramattra] Barrier up":
   
   eventPlayer.heroEffectsIds[RAM_I.BARRIER_PUSH_DIRECTION] = (
     normalize(
-      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] + vect(0, 0.2679, 0)
+      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] + barrierPushVectUpFix
     )
   )
 
   eventPlayer.heroEffectsIds[RAM_I.BARRIER_PUSH_BACK_DIRECTION] = (
     normalize(
-      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] + vect(0, 0.2679, 0)
+      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] + barrierPushVectUpFix
     )
   )
 

@@ -100,7 +100,7 @@ rule "[Winston] Barrier push enemies":
 
   for eventPlayer.I in range(len(eventPlayer.list0)):
     eventPlayer.list0[eventPlayer.I].applyImpulse(
-      horDirectionTowards(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I].getPosition()) + vect(0, 0.2679, 0),
+      horDirectionTowards(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I].getPosition()) + barrierPushVectUpFix,
       10 if distance(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I]) < 5 else 4,
       Relativity.TO_WORLD
     )
