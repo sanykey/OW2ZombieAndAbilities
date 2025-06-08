@@ -64,11 +64,14 @@
 #!include "debug/utils.opy"
 #!include "debug/other.opy"
 #*/
+
+#!include "debug/ally bot.opy"
+
 /*
 #!include "debug/noclip.opy"
 #!include "debug/positions measuring.opy"
 #!include "debug/vector list.opy"
-# #!include "debug/ally bot.opy"
+
 #*/
 
 
