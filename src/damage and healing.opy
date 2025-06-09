@@ -15,6 +15,8 @@ macro Player.setCrowdControlAttack(self, attacker0, duration=LAST_CC_ATTACK_DURA
 rule "player Dealt Knockback":
   @Event playerDealtKnockback
   @Team 1
+
+  victim.setCrowdControlAttack(attacker)
   
   # [Sombra] melee from invisible - steal money and stun:
   if (
@@ -28,7 +30,14 @@ rule "player Dealt Knockback":
     smallMessage(eventPlayer, "{0} points".format(25))
     eventPlayer.money += 25
 
-  victim.setCrowdControlAttack(attacker)
+  # [Reinhardt] Shield bash:
+  if eventPlayer.getHero() == Hero.REINHARDT and eventPlayer.isFiringSecondaryFire():
+    victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
+
+  # [Brigitte] Shield bash:
+  if eventPlayer.getHero() == Hero.BRIGITTE and eventPlayer.isFiringSecondaryFire():
+    victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
+    getRealPlayersInRadius(victim, 2, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.STUNNED, 2)
 
 rule "Zombie took damage":
   @Event playerTookDamage

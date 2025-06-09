@@ -83,7 +83,7 @@ rule "[Widowmaker] init":
       ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE)
     ) if eventPlayer.abilState2 == 100 else
     "{0}{1} Phantom bullet charge: {2}%".format(
-      ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE), floor(eventPlayer.abilState2)
+      ABILITI_CHARGES_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE), floor(eventPlayer.abilState2)
     ),
     null,
     HudPosition.TOP,
@@ -106,7 +106,7 @@ rule "[Widowmaker] Deplete hook charge":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.isUsingAbility1() == true
+  @Condition eventPlayer.isUsingAbility1()
   
   waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
   if not eventPlayer.getAbilityCooldown(Button.ABILITY_1):

@@ -9,7 +9,9 @@ rule "[Reinhardt] init":
   eventPlayer.heroInfoVertFix0 = -3
   eventPlayer.heroInfoText0 = "{} <fg94a1a5FF>Reinhardt</fg>:\n
   {} {}Barrier field{}:
-      - Pushes back enemies and takes damage on contact.
+      - Pushes back enemies and takes damage on contact.\n\n
+  Perk <TX C0000000005E4B2> <fg94a1a5FF>Shield Slam</fg>:
+      - Stuns enemies for 2 seconds.
   ".format(
     heroIcon(Hero.REINHARDT),
     abilityIconString(Hero.REINHARDT, Button.SECONDARY_FIRE),

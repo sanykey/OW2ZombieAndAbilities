@@ -12,6 +12,16 @@ playervar heroInfoText1
 playervar heroInfoVertFix1
 playervar heroInfoHorFix1
 
+macro setHeroInfoText0(text, vert = 3, horFix = 9):
+  eventPlayer.heroInfoVertFix0 = vert
+  eventPlayer.heroInfoHorFix0 = horFix
+  eventPlayer.heroInfoText0 = text
+
+macro setHeroInfoText1(text, vert = 3.5, horFix = 9):
+  eventPlayer.heroInfoVertFix1 = vert
+  eventPlayer.heroInfoHorFix1 = horFix
+  eventPlayer.heroInfoText1 = text
+
 def clearHeroInfo():
   @Name "Subroutine: Clear hero info"
   eventPlayer.heroInfoText0 = null
@@ -178,9 +188,9 @@ rule "Init huds":
       50% for 5 seconds.
 
     - The mod is still in development. Some heroes already have unique abilities:
-      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (2), <fg721fa3FF>Juno</fg> (4), <fgad5a5fFF>Cassidy</fg> (7)
-      <fgdc847dFF>Mauga</fg> (2), <fg9d8cd0FF>Rammatra</fg> (1), <fg94a1a5FF>Reinhardt</fg> (1), <fg94a0a5FF>Sigma</fg> (2), <fg6d7995FF>Soldier 76</fg> (1), 
-      <fg765dbdFF>Sombra</fg> (4), <fg91bbd1FF>Symmetra</fg> (2), 
+      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (5), <fg721fa3FF>Juno</fg> (4), <fgad5a5fFF>Cassidy</fg> (7)
+      <fgdc847dFF>Mauga</fg> (2), <fg6dabebFF>Mei</fg> (2), <fg9d8cd0FF>Rammatra</fg> (1), <fg94a1a5FF>Reinhardt</fg> (2),
+      <fg94a0a5FF>Sigma</fg> (2), <fg6d7995FF>Soldier 76</fg> (1), <fg765dbdFF>Sombra</fg> (4), <fg91bbd1FF>Symmetra</fg> (2), 
       <fgA686ABFF>Widowmaker</fg> (8), <fga0a9baFF>Winston</fg> (1).
     ".format(
       inputBindingString(Button.CROUCH),

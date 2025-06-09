@@ -14,18 +14,6 @@ rule "[Echo - Freeze Beam]":
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_EXPLOSION, Color.SKY_BLUE, victim, 5)
   wait(2.1)
 
-rule "Mei frosty jet pack":
-  @Event eachPlayer
-  @Condition eventPlayer.getCurrentHero() == Hero.MEI
-  @Condition eventPlayer.isFiringPrimaryFire() == true
-  @Condition eventPlayer.isInAir() == true
-  
-  eventPlayer.applyImpulse(eventPlayer.getFacingDirection(), -2, Relativity.TO_WORLD, Impulse.INCORPORATE_CONTRARY_MOTION)
-  wait(0.1)
-  if RULE_CONDITION:
-      goto RULE_START
-
-
 def sqrtNewton():
   @Name "Subroutine: Calculate square root"
   eventPlayer.raycast[RI.SQRT_RESULT] = eventPlayer.raycast[RI.DISC] / 2
