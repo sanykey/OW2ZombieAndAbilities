@@ -58,6 +58,7 @@
 #!include "heroes abilities/ana.opy"
 #!include "heroes abilities/mccree.opy"
 #!include "heroes abilities/kiriko.opy"
+#!include "heroes abilities/soldier.opy"
 #*/
 
 #/*
