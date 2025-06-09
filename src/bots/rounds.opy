@@ -10,8 +10,8 @@ rule "Round start":
   @Condition not isBotsDisabled
   
   roundNumber += 1
-  bigMessage(getAllPlayers(), l"Round {0}".format(roundNumber))
-  setObjectiveDescription(localPlayer, "Round {}".format(roundNumber), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
+  bigMessage(getAllPlayers(), "Round {}".format(roundNumber))
+  setObjectiveDescription(localPlayer, "Round {}, Team score: {}".format(roundNumber, teamScore), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   
   # Resurrect and heal all players
   temp2 = [player for player in getPlayers(Team.1) if player.downedStartTime]

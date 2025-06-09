@@ -1,5 +1,8 @@
 #!mainFile "main.opy"
 
+playervar currentRevivesStat
+
+
 rule "Team 1 (Death)":
   @Event playerDied
   @Team 1
@@ -27,6 +30,7 @@ rule "Revive, check player in radius, unset is downed":
     if eventPlayer.reviveTimer >= 100:
       smallMessage(getAllPlayers(), "{0} has been revived!".format(eventPlayer))
       eventPlayer.downedStartTime = 0
+      eventPlayer.revivers.currentRevivesStat += 1
       eventPlayer.resurrect()
   wait(0.2)
   if ruleCondition:

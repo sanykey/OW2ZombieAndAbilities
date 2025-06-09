@@ -81,7 +81,7 @@ rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
   waitUntil(eventPlayer.isFiringSecondaryFire() == false, INFINITY)
   unpause3PCamera()
 
-rule "Pause 3P camera during emote":
+rule "Pause 3P camera and charge ult during emote":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.cameraState > 2
@@ -89,7 +89,10 @@ rule "Pause 3P camera during emote":
 
   pause3PCamera()
   wait()
-  waitUntil("{}".format(eventPlayer.isCommunicatingEmote()) == "0", INFINITY)
+  while "{}".format(eventPlayer.isCommunicatingEmote()) != "0": 
+    eventPlayer.setUltCharge(eventPlayer.getUltCharge() + 1)
+    waitUntil("{}".format(eventPlayer.isCommunicatingEmote()) == "0", EMOTE_ULT_CHARE_PER_SECONDS)
+
   unpause3PCamera()
 
 rule "Pause 3P Camera During Ultimate (junkrat and bastion)":

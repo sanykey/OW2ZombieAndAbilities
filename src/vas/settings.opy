@@ -33,9 +33,12 @@ settings {
     },
     "heroes": {
         "team1": {
-            # "ramattra": {
-            #     "secondaryFireCooldown%": 0
-            # },
+            "general": {
+                "ultGen%": 10,
+                "combatUltGen%": 0,
+                "passiveUltGen%": 0,
+                "passiveHealthRegen": false
+            },
             "dva": {
                 "damageReceived%": 85,
                 "projectileSpeed%": 500,
@@ -89,10 +92,7 @@ settings {
         },
         "allTeams": {
             "general": {
-                "passiveHealthRegen": false,
-                "ultGen%": 30,
-                "combatUltGen%": 30,
-                "passiveUltGen%": 30
+                "passiveHealthRegen": false
             }
         }
     }

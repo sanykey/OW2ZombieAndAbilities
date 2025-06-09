@@ -35,7 +35,7 @@ rule "[DVA] Init":
   eventPlayer.heroInfoVertFix0 = 1
   eventPlayer.heroInfoText0 = "{} <fged93c7FF>DVA</fg>:\n
   {} {}Slide{}: 
-      - Start sliding in the direction you're moving. Press Jump to trigger a high-jump.
+      - Start sliding in the direction you're moving. Press Jump to activate a high jump.
   ".format(
     heroIcon(Hero.DVA),
     abilityIconString(Hero.TRACER, Button.ABILITY_1),

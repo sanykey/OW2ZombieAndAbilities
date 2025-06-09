@@ -16,7 +16,7 @@ rule "player Dealt Knockback":
   @Event playerDealtKnockback
   @Team 1
   
-  # [Sombra] melee from invisible - steal money and stun
+  # [Sombra] melee from invisible - steal money and stun:
   if (
     eventPlayer.getHero() == Hero.SOMBRA and
     eventPlayer.isInvisible and
@@ -38,7 +38,7 @@ rule "Zombie took damage":
   if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
 
-  victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed() # save damage stats for money
+  # victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed() # save damage stats for money
   # todo: ??
   victim.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed() # for check zombie out of map safety
 
@@ -148,3 +148,62 @@ rule "Healing amount tracker":
   else:
     eventPlayer.healingTracker += eventHealing
     eventPlayer.healingCurrentStat += eventHealing
+
+rule "Zombie elimination money and ult charge":
+  @Event playerEarnedElimination
+  @Team 1
+
+  eventPlayer.temp0 = (
+    MONEY_FOR_ELIMINATIONS +
+    (MONEY_FOR_CRITICAL_FINAL_BLOW if eventWasCriticalHit else 0) +
+    (MONEY_FOR_MELEE_FINAL_BLOW if eventAbility == Button.MELEE else 0) +
+    (MONEY_FOR_HACKED_FINAL_BLOW if victim.isHacked else 0)
+  )
+  if victim.isHacked:
+    eventPlayer.currentHackedElims += 1
+
+  if eventWasCriticalHit:
+    eventPlayer.currentCriticalFinalBlows += 1
+  elif eventAbility == Button.MELEE:
+    eventPlayer.currentMeleeFinalBlows += 1
+
+  smallMessage(eventPlayer, "<TX C00000000021569> +${}".format(eventPlayer.temp0))
+  eventPlayer.money += eventPlayer.temp0
+
+  
+  if not eventPlayer.isUsingUltimate():
+    eventPlayer.setUltCharge(eventPlayer.getUltCharge() + ULT_CHARGE_FOR_KILL)
+
+playervar currentOffensiveAssistsStat
+
+rule "Offensive assists money and ult charge":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS) > eventPlayer.currentOffensiveAssistsStat
+
+  eventPlayer.temp0 = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS) - eventPlayer.currentOffensiveAssistsStat
+  eventPlayer.currentOffensiveAssistsStat = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
+
+  eventPlayer.temp1 = MONEY_FOR_OFFENSIVE_ASSISTS * eventPlayer.temp0
+  smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
+  eventPlayer.money += eventPlayer.temp1
+
+  if not eventPlayer.isUsingUltimate():
+    eventPlayer.setUltCharge(eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * eventPlayer.temp0))
+
+playervar currentDefensiveAssistsStat
+
+rule "Defensive assists money and ult charge":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS) > eventPlayer.currentDefensiveAssistsStat
+
+  eventPlayer.temp0 = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS) - eventPlayer.currentDefensiveAssistsStat
+  eventPlayer.currentDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
+
+  eventPlayer.temp1 = MONEY_FOR_DEFENSIVE_ASSISTS * eventPlayer.temp0
+  smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
+  eventPlayer.money += eventPlayer.temp1
+
+  if not eventPlayer.isUsingUltimate():
+    eventPlayer.setUltCharge(eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * eventPlayer.temp0))

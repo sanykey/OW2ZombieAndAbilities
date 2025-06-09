@@ -23,6 +23,7 @@ rule "Create hero buy positions":
     ]
 
 
+
 rule "Buy hero":
   @Event eachPlayer
   @Team 1
@@ -43,6 +44,8 @@ rule "Buy hero":
       ):
         eventPlayer.isDvaUltBought = true
         eventPlayer.money -= heroesShopData[I][2]
+        eventPlayer.damageResistPercent += DAMAGE_RESISTANCE_BY_OWNED_HERO
+        eventPlayer.setDamageReceived(100 - eventPlayer.damageResistPercent)
         eventPlayer.setUltEnabled(true)
         eventPlayer.setUltCharge(100)
         wait()
@@ -57,6 +60,8 @@ rule "Buy hero":
           wait()
           eventPlayer.money -= heroesShopData[I][2]
           eventPlayer.purchasedHeroes.append(heroesShopData[I][0])
+          eventPlayer.damageResistPercent += DAMAGE_RESISTANCE_BY_OWNED_HERO
+          eventPlayer.setDamageReceived(100 - eventPlayer.damageResistPercent)
       
       wait(0.25)
       heal(eventPlayer, null, INFINITY)

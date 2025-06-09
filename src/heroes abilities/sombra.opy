@@ -14,15 +14,14 @@ rule "[Sombra] Init":
       - A melee stuns enemies and steals ${}\n\n
   {} <fg765dbdFF>Hack:</fg>
       - Allies and Sombra deal an additional 30% damage to hacked targets
-      - Killing hacked enemies gives attackers an extra ${} and ${} for the rest of allies\n\n
+      - Killing hacked enemies gives attackers an extra ${}\n\n
   About vanilla Perks:
       - Minor <fg765dbdFF>Uncripted upload</fg> is useless, doesn't work in this mode
   ".format(
     heroIcon(Hero.SOMBRA),
     SOMBRA_STEAL_MONEY,
     abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE),
-    MONEY_FOR_KILL_HACKED,
-    MONEY_FOR_KILL_HACKED_TEAM
+    MONEY_FOR_HACKED_FINAL_BLOW
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)
@@ -57,11 +56,11 @@ rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
   @Team 2
   @Condition eventPlayer.hasStatusEffect(Status.HACKED) == true
   eventPlayer.setDamageReceived(130)
-  eventPlayer.state[SI.HACKED] = true # for money
-  waitUntil(eventPlayer.hasStatus(Status.HACKED) == false, INFINITY)
+  eventPlayer.isHacked = true # for money
+  waitUntil(not eventPlayer.hasStatus(Status.HACKED), INFINITY)
   eventPlayer.setDamageReceived(100)
   wait(0.1, Wait.RESTART_WHEN_TRUE)
-  eventPlayer.state[SI.HACKED] = false
+  eventPlayer.isHacked = false
 
 # From "Heat Street PvE Talents" (KFVAY)
 # rule "[Sombra] Stack Overflow":

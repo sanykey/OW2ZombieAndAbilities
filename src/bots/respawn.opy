@@ -33,11 +33,8 @@ rule "Zombie died":
   eventPlayer.lastCcAttackTime = false
   eventPlayer.lastCcWasInAir = false
 
-  # money, effects and team score for kills:
-  eventPlayer.list0 = [player for player in getPlayers(Team.1) if eventPlayer.damageAssitsToSlot[player.getSlot()] > getTotalTimeElapsed()]
-  smallMessage(eventPlayer.list0, "<TX C00000000021569> +${}".format(MONEY_FOR_ZOMBIE_KILL))
-  eventPlayer.list0.money += MONEY_FOR_ZOMBIE_KILL
-  eventPlayer.damageAssitsToSlot = []
+  teamScore += 1
+
   wait()
 
   # Attempt to prevent simultaneous respawning of several bots (prevent race condition):

@@ -20,8 +20,8 @@ rule "Ally bot: Start Facing":
 
   eventPlayer.startForcingName("Kitty")
   eventPlayer.isReady = true
-  eventPlayer.healthBoostPercent += 10000
-  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
+  # eventPlayer.healthBoostPercent += 10000
+  # eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   eventPlayer.targetPlayer0 = getPlayers(Team.2)[0]
   eventPlayer.startFacing(
     (vect(0, 0, 0) if eventPlayer.abilState0 else 1.5 * directionTowards(eventPlayer, eventPlayer.targetPlayer0)) + (directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition() + 0.25 * Vector.UP)),

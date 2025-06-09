@@ -95,14 +95,14 @@ playervar state # use with enum "SI"
 playervar revivers
 playervar reviveTimer
 playervar downedStartTime # die state for players and zombie bots
-playervar isZombieReadyToRespawn 
+playervar isZombieReadyToRespawn
+playervar isHacked
 
 playervar recentStackedHealingDealtToSlot
 playervar recentHealingDealtToSlot
 playervar recentDamageDealtToSlot
 playervar recentStackedDamageDealtToSlot
 
-playervar damageAssitsToSlot
 playervar posBeforeChangeHero
 
 # detecting crowd control abilities for bots fall damage
@@ -115,6 +115,7 @@ playervar purchasedHeroes
 playervar healthBoostPercent
 playervar damageBoostPercent
 playervar healingBoostPercent
+playervar damageResistPercent
 
 #!define HEAL_AMOUNT_FOR_MONEY 200
 playervar healingTrackerThreshold = HEAL_AMOUNT_FOR_MONEY
@@ -183,6 +184,10 @@ playervar targetPlayer0
 playervar targetPlayer1
 playervar abilityCD
 
+#!define ULT_CHARGE_FOR_KILL 5
+#!define EMOTE_ULT_CHARE_PER_SECONDS 1
+#!define DAMAGE_RESISTANCE_BY_OWNED_HERO 0.349
+
 # vanilla hero constants
 #!define TORBJORN_HAMMER_BASE_DMG 70
 
@@ -210,14 +215,7 @@ playervar abilityCD
 #!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
 #!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
 
-# Money:
-#!define MONEY_FOR_REVIVE 400
-#!define MONEY_FOR_ZOMBIE_KILL 300
-#!define MONEY_FOR_ZOMBIE_CRITICAL 375
-
 # [Sombra] Money:
-#!define MONEY_FOR_KILL_HACKED 30
-#!define MONEY_FOR_KILL_HACKED_TEAM 10
 #!define SOMBRA_STEAL_MONEY 25
 
 # HUD

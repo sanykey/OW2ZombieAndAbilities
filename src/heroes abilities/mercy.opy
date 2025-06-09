@@ -1,5 +1,7 @@
 #!mainFile "../main.opy"
 
+
+
 rule "[Mercy] Immune during revive":
   @Event eachPlayer
   @Team 1
@@ -15,24 +17,33 @@ rule "[Mercy] Immune during revive":
       return
   getPlayersInRadius(eventPlayer, 10, Team.2).setStatusEffect(null, Status.STUNNED, 4)
 
-# rule "Mercy: revive ability (player)":
-#   @Event eachPlayer
-#   @Team 1
-#   @Hero mercy
-#   @Condition eventPlayer.isHoldingButton(Button.ABILITY_2) == true
-#   @Condition eventPlayer.getAbilityCooldown(Button.ABILITY_2) == 0
-#   #Workaround: Check Cooldown for Controller Players
-#   @Condition eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE) == 0
-#   @Condition eventPlayer.downedStartTime == false
-#   @Condition eventPlayer.hasStatus(Status.HACKED) == false
-#   @Condition eventPlayer.hasStatus(Status.STUNNED) == false
+rule "Mercy: revive":
+  @Event eachPlayer
+  @Team 1
+  @Hero mercy
+  @Condition eventPlayer.isUsingAbility2()
   
-#   eventPlayer.targetPlayer0 = (sorted([player for player in getPlayersInRadius(eventPlayer, 8, Team.1) if player.downedStartTime and player.downedStartTime + 0.1 < getTotalTimeElapsed() and eventPlayer.isInViewAngle(player, 45)], lambda i: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i)))).last()
-#   if eventPlayer.targetPlayer0:
-#     smallMessage(getAllPlayers(), "{0} has been resurrected by {1}!".format(eventPlayer.targetPlayer0, eventPlayer))
-#     eventPlayer.targetPlayer0.downedStartTime = 0
-#     playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.SKY_BLUE, eventPlayer.targetPlayer0, 1)
-#     eventPlayer.setAbilityCooldown(Button.ABILITY_2, 30)
-#     #Workaround: Set Cooldown for Controller Players
-#     eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 30)
-#   wait(0.05)
+  eventPlayer.targetPlayer0 = (
+    sorted([
+      player for player in getPlayersInRadius(eventPlayer, 8, Team.1) if player.isDead() and eventPlayer.isInViewAngle(player, 45)
+    ], 
+    lambda i: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i)))
+  ).last()
+
+  if not eventPlayer.targetPlayer0:
+    return
+
+  waitUntil(not eventPlayer.isUsingAbility2(), 2)
+
+  if eventPlayer.targetPlayer0.isAlive():
+    eventPlayer.targetPlayer0.downedStartTime = 0
+    eventPlayer.currentRevivesStat += 1
+
+rule "Mercy: revive":
+  @Event eachPlayer
+  @Team 1
+  @Hero mercy
+
+  debug(eventPlayer.isUsingAbility2())
+  debug(eventPlayer.targetPlayer0)
+  debug(eventPlayer.currentRevivesStat)

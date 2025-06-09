@@ -51,19 +51,34 @@ rule "Init huds":
   hudText(
     localPlayer if not localPlayer.isHeroDescriptionOpened else null,
     null,
-    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\n\n\n\n\n\n\n\n\nRound statistics:{}{}{}{}{}{}{}{}".format(
+    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\n\n\n\n\n\n\n\n\nRound statistics:{}{}{}{}{}{}{}{}{}{}{}{}".format(
       "\nEliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundEliminations, localPlayer.roundEliminations * MONEY_FOR_ELIMINATIONS
       ) if localPlayer.roundEliminations else "",
       "\nDamage dealt: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDamageDealtStat, localPlayer.roundDamageDealtStat * MONEY_FOR_DAMAGE_DEALT
       ) if localPlayer.roundDamageDealtStat else "",
-      "\nDefensice assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+      "\nCritical final blows: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundCriticalFinalBlows, localPlayer.roundCriticalFinalBlows * MONEY_FOR_CRITICAL_FINAL_BLOW
+      ) if localPlayer.roundCriticalFinalBlows else "",
+      "\nMelee final blows: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundMeleeFinalBlows, localPlayer.roundMeleeFinalBlows * MONEY_FOR_MELEE_FINAL_BLOW
+      ) if localPlayer.roundMeleeFinalBlows else "",
+      "\nHacked eliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundHackedElims, localPlayer.roundHackedElims * MONEY_FOR_HACKED_FINAL_BLOW
+      ) if localPlayer.roundHackedElims else "",
+      "\nOffensive assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundOffensiveAssistsStat, localPlayer.roundOffensiveAssistsStat * MONEY_FOR_OFFENSIVE_ASSISTS
+      ) if localPlayer.roundOffensiveAssistsStat else "",
+      "\nDefensive assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDefensiveAssistsStat, localPlayer.roundDefensiveAssistsStat * MONEY_FOR_DEFENSIVE_ASSISTS
       ) if localPlayer.roundDefensiveAssistsStat else "",
       "\nDeaths: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDeathsStat, MONEY_FOR_ZERO_DEATHS if localPlayer.roundDeathsStat == 0 else 0
       ),
+      "\nRevives: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundRevivesStat, localPlayer.roundRevivesStat * MONEY_FOR_REVIVE
+      ) if localPlayer.roundRevivesStat else "",
       "\nHealing: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundHealingStat, localPlayer.roundHealingStat * MONEY_FOR_HEALING
       ) if localPlayer.roundHealingStat else "",
@@ -147,6 +162,11 @@ rule "Init huds":
 
     - To buy a hero, stand in the circle near them and press <fgdb9342FF>{}</fg>, if you can afford it.
 
+    - Ultimate charge increases by {}% for participating in kills, defense assists, and offense assists. 
+      It also increases by 1% for every {} seconds of playing emotes.
+
+    - Damage resistance is increased by {}% for each hero you have purchased.
+
     - Hero prices and locations are randomized each match.
 
     - Barriers push zombies back but take damage while doing so.
@@ -167,6 +187,9 @@ rule "Init huds":
       inputBindingString(Button.CROUCH),
       inputBindingString(Button.INTERACT),
       inputBindingString(Button.INTERACT),
+      ULT_CHARGE_FOR_KILL,
+      EMOTE_ULT_CHARE_PER_SECONDS,
+      DAMAGE_RESISTANCE_BY_OWNED_HERO,
       ZOMBIE_FALL_DAMAGE
     ),
     visibleTo=(localPlayer if localPlayer.isHeroDescriptionOpened == true else null),
@@ -257,7 +280,7 @@ rule "Create players effects":
   @Event eachPlayer
   @Team 1
 
-  setObjectiveDescription(eventPlayer, "Round {0}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
+  setObjectiveDescription(eventPlayer, "Round: {}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
 
   # revive effects and icon
   createEffect(getPlayers(Team.1) if eventPlayer.downedStartTime else [], Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.VISIBILITY)
@@ -275,13 +298,14 @@ rule "Create players effects":
   hudText(
     getPlayers(Team.1) if not eventPlayer.isHeroDescriptionOpened else null,
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
-    "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>, <fgEC9900FF>{4}{5}%</fg>".format(
+    "<fgC80013FF>{}{}%</fg>, <fgA0E81BFF>{}{}%</fg>, <fgece580FF>{}{}%</fg>, <fgEC9900FF><TX C00000000004120>{}%</fg>".format(
       iconString(Icon.FIRE),
       eventPlayer.damageBoostPercent,
       iconString(Icon.HEART),
       eventPlayer.healthBoostPercent,
       iconString(Icon.PLUS),
-      eventPlayer.healingBoostPercent
+      eventPlayer.healingBoostPercent,
+      eventPlayer.damageResistPercent
     ),
     "{0}: ${1}".format(eventPlayer, eventPlayer.money),
     HudPosition.ACTUALLY_LEFT,
