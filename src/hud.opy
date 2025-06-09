@@ -307,7 +307,7 @@ rule "Create players effects":
 
   # Players list, upgrades and money
   hudText(
-    getPlayers(Team.1) if not eventPlayer.isHeroDescriptionOpened else null,
+    [player for player in getPlayers(Team.1) if player != eventPlayer or not eventPlayer.isHeroDescriptionOpened],
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
     "<fgC80013FF>{}{}%</fg>, <fgA0E81BFF>{}{}%</fg>, <fgece580FF>{}{}%</fg>, <fgEC9900FF><TX C00000000004120>{}%</fg>".format(
       iconString(Icon.FIRE),

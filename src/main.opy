@@ -67,7 +67,7 @@
 #!include "debug/other.opy"
 #*/
 
-#!include "debug/ally bot.opy"
+##!include "debug/ally bot.opy"
 
 /*
 #!include "debug/noclip.opy"
