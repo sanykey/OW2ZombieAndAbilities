@@ -110,8 +110,8 @@ rule "[Ramattra] Barrier push enemies":
   @Hero ramattra
   @Condition eventPlayer.isActiveBarrier
 
-  eventPlayer.list0 = getPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK], 3, Team.2)
-  eventPlayer.list0.append([player for player in getPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list0])
+  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK], 3, Team.2)
+  eventPlayer.list0.append([player for player in getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list0])
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 

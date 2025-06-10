@@ -121,7 +121,7 @@ rule "[Mauga] Barrier push enemies":
   @Hero mauga
   @Condition eventPlayer.isActiveBarrier
 
-  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos0, 10, Team.2)
+  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.abilPos0, 10, Team.2)
   
   for eventPlayer.I in range(len(eventPlayer.list0)):
     # pushes back enemies outside barrier:

@@ -93,7 +93,7 @@ rule "[Brigitte] Barrier push enemies":
   @Condition eventPlayer.isFiringSecondaryFire()
 
   eventPlayer.list0 = (
-    [player for player in getPlayersInRadius(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * -1, 6, Team.2) if (
+    [player for player in getRealPlayersInRadius(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * -1, 6, Team.2) if (
       distance(player, eventPlayer.getPosition() + eventPlayer.getFacingDirection()) < 2 or (
         not isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ALL_BARRIERS) and
         isInLoS(eventPlayer, player, BarrierLos.PASS_THROUGH_BARRIERS) and

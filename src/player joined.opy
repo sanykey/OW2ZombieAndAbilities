@@ -76,3 +76,9 @@ rule "Show game tips in start":
       eventPlayer.isHeroDescriptionOpened = false
       eventPlayer.isReady = true
     wait(1)
+
+rule "Player left Match, destroy effects, texts and hud":
+  @Event playerLeft
+  destroyHudText(eventPlayer.effectsIds[HI.PLAYER_STATUS])
+  destroyEffect(eventPlayer.effectsIds[HI.REVIVE_EFFECT])
+  destroyIcon(eventPlayer.effectsIds[HI.REVIVE_ICON])

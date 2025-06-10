@@ -329,13 +329,6 @@ rule "Create players effects":
   eventPlayer.effectsIds[HI.PLAYER_STATUS] = getLastCreatedText()
 
 
-rule "Player left Match, destroy effects, texts and hud":
-  @Event playerLeft
-  destroyHudText(eventPlayer.effectsIds[HI.PLAYER_STATUS])
-  destroyEffect(eventPlayer.effectsIds[HI.REVIVE_EFFECT])
-  destroyIcon(eventPlayer.effectsIds[HI.REVIVE_ICON])
-
-
 # rule "[Tips & Tricks]":
 #   @Event eachPlayer
 #   @Team 1

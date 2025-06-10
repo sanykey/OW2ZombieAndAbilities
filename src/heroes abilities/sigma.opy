@@ -74,7 +74,7 @@ rule "[Sigma] Barrier Effect":
   @Hero sigma
   @Condition eventPlayer.isActiveBarrier
   
-  eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
+  eventPlayer.list0 = [player for player in getRealPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.2) if player.isAlive()]
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   # calculate damage to barrier

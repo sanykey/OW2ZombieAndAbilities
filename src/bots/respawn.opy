@@ -65,6 +65,9 @@ rule "Create bots":
 
   smallMessage(hostPlayer, "[Server]: Create zombie bots")
   for createDummyI in range(wSettingsMaxZombieBots):
+    if isBotsDisabled:
+      goto lbl_0
+
     if not getPlayersInSlot(createDummyI, Team.2):
       createDummy(Hero.TORBJORN, Team.2, createDummyI, random.choice(spawnPointsList))
       wait(0.4)

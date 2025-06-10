@@ -38,7 +38,7 @@ rule "Create development mode text":
     localPlayer,
     null,
     "The server is running in development mode.
-    The mod is not ready yet.",
+    The mod is not ready yet. Code: 8X63K",
     null,
     HudPosition.RIGHT,
     -10,
