@@ -1,6 +1,7 @@
 #!mainFile "main.opy"
 
 playervar facingBeforeChangeHero
+playervar beforeChangeHero
 
 def openSwitchHeroHud():
   @Name "Open Switch hero hud"
@@ -9,14 +10,20 @@ def openSwitchHeroHud():
   wait()
   eventPlayer.posBeforeChangeHero = eventPlayer.getPosition()
   eventPlayer.facingBeforeChangeHero = eventPlayer.getFacingDirection()
+  eventPlayer.beforeChangeHero = eventPlayer.getHero()
   eventPlayer.setRespawnTime(0)
   eventPlayer.stopForcingCurrentHero()
   eventPlayer.setAllowedHeroes(getAllHeroes().exclude(eventPlayer.getHero()))
   wait()
   eventPlayer.setAllowedHeroes(eventPlayer.purchasedHeroes)
 
-  # eventPlayer.resetHeroAvailability()
-  waitUntil(eventPlayer.hasSpawned(), INFINITY)
+
+
+  waitUntil(eventPlayer.hasSpawned(), 20)
+  if not eventPlayer.hasSpawned():
+    eventPlayer.startForcingHero(eventPlayer.beforeChangeHero)
+    # eventPlayer.resurrect()
+    heal(getPlayers(Team.1), null, INFINITY)
   eventPlayer.teleport(eventPlayer.posBeforeChangeHero)
   eventPlayer.setFacing(eventPlayer.facingBeforeChangeHero, Relativity.TO_WORLD)
   eventPlayer.setRespawnTime(INFINITY)
