@@ -35,7 +35,7 @@ rule "Unlimited match time":
   setMatchTime(3599)
 
 #!define ROUND_START_DELAY 5
-#!define MAX_REMAINING_ZOMBIES_IN_ROUND 75
+#!define MAX_REMAINING_ZOMBIES_IN_ROUND 60
 
 rule "Round start":
   @Condition isGameStarted == true
@@ -44,6 +44,7 @@ rule "Round start":
   @Condition not isBotsDisabled
   
   roundNumber += 1
+  
   bigMessage(getAllPlayers(), "Round {}".format(roundNumber))
   setObjectiveDescription(localPlayer, "Round {}, Team score: {}".format(roundNumber, teamScore), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   
