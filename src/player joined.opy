@@ -15,6 +15,7 @@ rule "Player joined setup":
   eventPlayer.healingBoostPercent = 100
   eventPlayer.money = wSettingsStartMoney 
   eventPlayer.purchasedHeroes = [Hero.DVA]
+  
 
   # Change character for vip players
   # if "{0}".format(eventPlayer) in vipPlayers == true:
@@ -53,6 +54,9 @@ rule "Player joined setup":
   eventPlayer.startForcingHero(Hero.DVA)
   eventPlayer.respawn()
   eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
+  wait(1)
+  eventPlayer.setFacing(vect(0.93, 0.05, -0.35), Relativity.TO_WORLD)
+
 
 rule "Player spawned setup":
   @Event eachPlayer
