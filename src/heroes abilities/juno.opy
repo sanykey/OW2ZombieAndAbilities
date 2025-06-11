@@ -329,17 +329,17 @@ rule "[Juno] Hyper Rift transfer":
 rule "[Juno] Get players for hyper Rift transfer":
   @Event eachPlayer
   @Condition eventPlayer.getHero() == Hero.JUNO
-  @Condition eventPlayer.juno_rift2_active == true and eventPlayer.juno_rift1_active
+  @Condition eventPlayer.juno_rift2_active and eventPlayer.juno_rift1_active
 
   eventPlayer.list0 = [player for player in getPlayersInRadius(eventPlayer.juno_rift1_destination, 2, Team.1) if (
     player.isAlive() and
     not player.juno_transfer_started and
-    eventPlayer.isHoldingButton(Button.INTERACT)
+    player.isHoldingButton(Button.INTERACT)
   )]
   eventPlayer.list1 = [player for player in getPlayersInRadius(eventPlayer.juno_rift2_destination, 2, Team.1) if (
     player.isAlive() and
     not player.juno_transfer_started and
-    eventPlayer.isHoldingButton(Button.INTERACT)
+    player.isHoldingButton(Button.INTERACT)
   )]
 
   if (eventPlayer.list0):
