@@ -36,7 +36,6 @@ rule "[Team2 Roadhog][Team2 Mauga] Bot zombie melee":
   @Condition eventPlayer.getHero() == Hero.ROADHOG or eventPlayer.getHero() == Hero.MAUGA
   @Condition getPlayersInRadius(eventPlayer, 3, Team.1)
 
-  eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.forceButtonPress(Button.MELEE)
 
   wait(1)
@@ -71,7 +70,6 @@ rule "Bots attack near player":
   @Condition eventPlayer.getHero() == Hero.TORBJORN
   @Condition getPlayersInRadius(eventPlayer, 4, Team.1)
 
-  eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
   eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
 
@@ -119,14 +117,6 @@ rule "Bots moves":
   if not eventPlayer.targetPlayer0:
     goto lbl_0
 
-  # Perhaps the bot has fallen into a place it can't get out of and has not been interacted with in any way
-  # if eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed():
-  #   eventPlayer.money = 0
-  #   eventPlayer.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed()
-  #   eventPlayer.teleport(random.choice(spawnPointsList))
-  #   goto lbl_0
-
-
   # Bots under player impulse
   if (
     eventPlayer.getVerticalFacingAngle() < -70 and
@@ -142,7 +132,7 @@ rule "Bots moves":
   # bot unstuck
   if (
     eventPlayer.abilPos0 and
-    distance(eventPlayer.abilPos0, eventPlayer.temp1) < 2 and
+    distance(eventPlayer.abilPos0, eventPlayer.temp1) < 4 and
     not eventPlayer.hasBadStatus
   ):
     eventPlayer.money += 1
@@ -192,8 +182,6 @@ rule "Zombies loS teleport (zombiesfly)":
   @Condition not eventPlayer.hasStatus(Status.HACKED)
   @Condition not eventPlayer.hasStatus(Status.ROOTED)
   @Condition not isInLoS(eventPlayer.targetPlayer0, eventPlayer)
-  @Condition not (eventPlayer.abilTemp1 and eventPlayer.abilTemp1 < getTotalTimeElapsed())
-  
   
   wait(5, Wait.ABORT_WHEN_FALSE)
   eventPlayer.zombiesfly = true
