@@ -17,12 +17,9 @@ def openSwitchHeroHud():
   wait()
   eventPlayer.setAllowedHeroes(eventPlayer.purchasedHeroes)
 
-
-
   waitUntil(eventPlayer.hasSpawned(), 20)
   if not eventPlayer.hasSpawned():
     eventPlayer.startForcingHero(eventPlayer.beforeChangeHero)
-    # eventPlayer.resurrect()
     heal(getPlayers(Team.1), null, INFINITY)
   eventPlayer.teleport(eventPlayer.posBeforeChangeHero)
   eventPlayer.setFacing(eventPlayer.facingBeforeChangeHero, Relativity.TO_WORLD)
