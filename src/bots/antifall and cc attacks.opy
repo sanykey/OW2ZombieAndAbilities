@@ -24,13 +24,19 @@ rule "Bots Antifall and fall damage from cc attacks from players":
 
   # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
   if eventPlayer.lastCcAttackTime >= getTotalTimeElapsed():
+
+    # Allow the bot to fall if expected fall damage is greater than its current health
     if eventPlayer.getHealth() < ZOMBIE_FALL_DAMAGE * eventPlayer.lastCcAttacker.damageBoostPercent / 100:
-      eventPlayer.setEnvironmentalKillCreditor(eventPlayer.lastCcAttacker)
+
+      # If no vanilla knockback would grant the kill, assign it using setEnvironmentalKillCreditor
+      if not eventPlayer.lastCcVanilaKnockback:
+        eventPlayer.setEnvironmentalKillCreditor(eventPlayer.lastCcAttacker)
       goto RULE_START
 
-    damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
-    eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    eventPlayer.lastCcAttackTime = false
+    else:
+      damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
+      eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+      eventPlayer.lastCcAttackTime = false
   else:
     eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 

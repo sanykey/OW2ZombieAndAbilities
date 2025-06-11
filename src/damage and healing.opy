@@ -1,22 +1,26 @@
 #!mainFile "main.opy"
 
-# THRESHOLD
 playervar healingTracker
 playervar selfHealingTracker
+playervar lastCcVanilaKnockback
 
 # save information about bots being pushed to account for damage when falling down
-macro Player.setCrowdControlAttack(self, attacker0, duration=LAST_CC_ATTACK_DURATION):
+macro Player.setCrowdControlAttack(self, attacker0, isVanilaKnockback=false, duration=LAST_CC_ATTACK_DURATION):
   self.lastCcAttacker = attacker0
   self.lastCcAttackTime = duration + getTotalTimeElapsed()
   self.lastCcWasInAir = self.isInAir()
+  self.lastCcVanilaKnockback = isVanilaKnockback
   self.money = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
-
 
 rule "player Dealt Knockback":
   @Event playerDealtKnockback
   @Team 1
 
-  victim.setCrowdControlAttack(attacker)
+  # Some attacks can hurt the attackers themselves, such as Sigma's accretion attacks
+  if victim.getTeam() == Team.1:
+    return
+
+  victim.setCrowdControlAttack(attacker, true)
   
   # [Sombra] melee from invisible - steal money and stun:
   if (
