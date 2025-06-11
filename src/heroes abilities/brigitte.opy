@@ -86,33 +86,6 @@ rule "[Brigitte] Recharge whip shot":
   if ruleCondition:
     loop()
 
-rule "[Brigitte] Barrier push enemies":
-  @Event eachPlayer
-  @Team 1
-  @Hero brigitte
-  @Condition eventPlayer.isFiringSecondaryFire()
-
-  eventPlayer.list0 = (
-    [player for player in getRealPlayersInRadius(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * -1, 6, Team.2) if (
-      distance(player, eventPlayer.getPosition() + eventPlayer.getFacingDirection()) < 2 or (
-        not isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ALL_BARRIERS) and
-        isInLoS(eventPlayer, player, BarrierLos.PASS_THROUGH_BARRIERS) and
-        player != eventPlayer
-      )
-    )]
-  )
-  eventPlayer.list0.applyImpulse(normalize(eventPlayer.getFacingDirection() + barrierPushVectUpFix), 6, Relativity.TO_WORLD)
-
-  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-
-  eventPlayer.barrierDamageStack += len(eventPlayer.list0) * (TORBJORN_HAMMER_BASE_DMG * (botsDamageBoostPercent / 100)) * REI_BARRIER_PUSH_ENENT_WAIT
-  eventPlayer.barrierDamageFrom = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
-  eventPlayer.barrierDamageDir = normalize(eventPlayer.getEyePosition() - eventPlayer.barrierDamageFrom)
-
-  wait(REI_BARRIER_PUSH_ENENT_WAIT)
-  if ruleCondition:
-      loop()
-
 rule "[Brigitte] Whip Shot position":
   @Event eachPlayer
   @Hero brigitte
