@@ -47,13 +47,18 @@ rule "Zombie took damage":
   @Event playerTookDamage
   @Team 2
 
-  # [Cassydy] stun effect for flashbang
+  # [Cassydy] stun effect for flashbang:
   if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
 
-  # victim.damageAssitsToSlot[attacker.getSlot()] = 5 + getTotalTimeElapsed() # save damage stats for money
-  # todo: ??
-  victim.abilTemp1 = BOT_MAX_INACTIVITY_DURATION + getTotalTimeElapsed() # for check zombie out of map safety
+  # [Doomfist] Ult Knock Down:
+  if (attacker.getHero() == Hero.DOOMFIST):
+    if eventAbility == Button.ULTIMATE:
+      victim.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 3)
+    elif eventAbility == Button.ABILITY_1:
+      victim.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 3
+      victim.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 2
+
 
 rule "Player took damage":
   @Event playerTookDamage
