@@ -77,14 +77,14 @@ rule "Create bots":
   loop()
 
 
-rule "[debug]":
-  @Event eachPlayer
-  @Team 2
+# rule "[debug]":
+#   @Event eachPlayer
+#   @Team 2
 
-  createIcon(
-    getPlayers(Team.1) if eventPlayer.isAlive() else null,
-    eventPlayer,
-    Icon.HAPPY,
-    IconReeval.VISIBILITY_POSITION_AND_COLOR,
-    Color.WHITE
-  )
+#   createIcon(
+#     getPlayers(Team.1) if eventPlayer.isAlive() else null,
+#     eventPlayer,
+#     Icon.HAPPY,
+#     IconReeval.VISIBILITY_POSITION_AND_COLOR,
+#     Color.WHITE
+#   )
