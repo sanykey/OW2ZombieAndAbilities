@@ -136,6 +136,7 @@ rule "[Mauga] Barrier push enemies":
         7,
         Relativity.TO_WORLD
       )
+      damage(eventPlayer.list0[eventPlayer.I], eventPlayer, 0.1)
       eventPlayer.barrierDamageStack += (
         TORBJORN_HAMMER_BASE_DMG 
         * 2.2

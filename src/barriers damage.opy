@@ -64,6 +64,7 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
     Relativity.TO_WORLD
   )
 
+  damage(eventPlayer.list0, eventPlayer, 0.1)
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   eventPlayer.barrierDamageStack += (

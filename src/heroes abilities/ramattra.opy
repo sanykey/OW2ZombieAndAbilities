@@ -114,6 +114,7 @@ rule "[Ramattra] Barrier push enemies":
   eventPlayer.list0.append([player for player in getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list0])
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
+  damage(eventPlayer.list0, eventPlayer, 0.1)
 
   [player for player in eventPlayer.list0 if (
     distance(player, eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK]) > 

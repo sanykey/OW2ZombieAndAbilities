@@ -176,6 +176,7 @@ rule "[Symmetra] Barrier push enemies":
 
   eventPlayer.list1.append(eventPlayer.list2)
   eventPlayer.list1.setCrowdControlAttack(eventPlayer)
+  damage(eventPlayer.list1, eventPlayer, 0.1)
 
   # damage enemies on barrier deployment
   if eventPlayer.abilTemp1:

@@ -106,6 +106,7 @@ rule "[Winston] Barrier push enemies":
     )
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
+  damage(eventPlayer.list0, eventPlayer, 0.1)
 
   eventPlayer.barrierDamageStack += (
     len(eventPlayer.list0) *
