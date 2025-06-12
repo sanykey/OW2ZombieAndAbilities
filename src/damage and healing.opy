@@ -170,7 +170,7 @@ rule "Zombie elimination money and ult charge":
     MONEY_FOR_ELIMINATIONS +
     (MONEY_FOR_CRITICAL_FINAL_BLOW if eventWasCriticalHit else 0) +
     (MONEY_FOR_MELEE_FINAL_BLOW if eventAbility == Button.MELEE else 0) +
-    (MONEY_FOR_HACKED_FINAL_BLOW if victim.isHacked else 0)
+    (MONEY_FOR_HACKED_ELIMS if victim.isHacked else 0)
   )
   if victim.isHacked:
     eventPlayer.currentHackedElims += 1

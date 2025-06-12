@@ -6,7 +6,7 @@
 globalvar roundNumber = 0
 
 globalvar spawnPointsList = []
-
+globalvar roundMaxBots
 # Buy hero
 globalvar heroesShopData = [] # [hero, buy_place_vector, price, buy_text_vector]
 #!define BUY_HERO_OFFSET_A 0
@@ -92,6 +92,7 @@ playervar zombiesfly
 playervar isInSecretShop
 playervar state # use with enum "SI"
 
+playervar developer
 playervar revivers
 playervar reviveTimer
 playervar downedStartTime # die state for players and zombie bots

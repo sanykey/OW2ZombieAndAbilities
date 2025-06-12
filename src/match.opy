@@ -74,3 +74,4 @@ rule "Round start":
   roundRemainingBots = (
     wSettingsMaxZombieBots + roundNumber if (wSettingsMaxZombieBots + roundNumber) < MAX_REMAINING_ZOMBIES_IN_ROUND else MAX_REMAINING_ZOMBIES_IN_ROUND
   )
+  roundMaxBots = roundRemainingBots

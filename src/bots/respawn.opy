@@ -75,3 +75,16 @@ rule "Create bots":
   lbl_0:
   wait(0.5, Wait.ABORT_WHEN_FALSE)
   loop()
+
+
+rule "[debug]":
+  @Event eachPlayer
+  @Team 2
+
+  createIcon(
+    getPlayers(Team.1) if eventPlayer.isAlive() else null,
+    eventPlayer,
+    Icon.HAPPY,
+    IconReeval.VISIBILITY_POSITION_AND_COLOR,
+    Color.WHITE
+  )

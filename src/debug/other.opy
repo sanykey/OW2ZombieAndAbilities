@@ -1,5 +1,6 @@
 #!mainFile "../main.opy"
 
+
 rule "[debug] User starting stats":
   @Event playerJoined
   @Team 1
@@ -11,9 +12,6 @@ rule "[debug] User starting stats":
 
   # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
   # eventPlayer.money = 500000
-  # eventPlayer.healthBoostPercent = 100
-  # eventPlayer.damageBoostPercent = 100
-  # eventPlayer.healingBoostPercent = 100
   # eventPlayer.healthBoostPercent = 10000
   # eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   # eventPlayer.damageBoostPercent = 10000
@@ -23,6 +21,12 @@ rule "[debug] User starting stats":
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
   wait()
   heal(eventPlayer, null, INFINITY)
+
+
+# rule "[debug]":
+#   @Event eachPlayer
+#   @Team 1
+#   debug(hostPlayer.getFacingDirection())
 
 # rule "[debug] Charge ultimate":
 #   @Event eachPlayer

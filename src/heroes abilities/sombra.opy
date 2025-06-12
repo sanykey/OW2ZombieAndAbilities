@@ -21,7 +21,7 @@ rule "[Sombra] Init":
     heroIcon(Hero.SOMBRA),
     SOMBRA_STEAL_MONEY,
     abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE),
-    MONEY_FOR_HACKED_FINAL_BLOW
+    MONEY_FOR_HACKED_ELIMS
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)

@@ -48,7 +48,7 @@ rule "Init huds":
       iconString(Icon.HEART),
       botsHealthBoostPercent
     ),
-    "{0} Enemies".format(roundRemainingBots),
+    "{}/{} Enemies".format(roundRemainingBots, roundMaxBots),
     HudPosition.RIGHT,
     -2,
     Color.WHITE,
@@ -61,7 +61,7 @@ rule "Init huds":
   hudText(
     localPlayer if not localPlayer.isHeroDescriptionOpened else null,
     null,
-    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\n\n\n\n\n\n\n\n\nRound statistics:{}{}{}{}{}{}{}{}{}{}{}{}".format(
+    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\nRound statistics:{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(
       "\nEliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundEliminations, localPlayer.roundEliminations * MONEY_FOR_ELIMINATIONS
       ) if localPlayer.roundEliminations else "",
@@ -75,7 +75,7 @@ rule "Init huds":
         localPlayer.roundMeleeFinalBlows, localPlayer.roundMeleeFinalBlows * MONEY_FOR_MELEE_FINAL_BLOW
       ) if localPlayer.roundMeleeFinalBlows else "",
       "\nHacked eliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundHackedElims, localPlayer.roundHackedElims * MONEY_FOR_HACKED_FINAL_BLOW
+        localPlayer.roundHackedElims, localPlayer.roundHackedElims * MONEY_FOR_HACKED_ELIMS
       ) if localPlayer.roundHackedElims else "",
       "\nOffensive assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundOffensiveAssistsStat, localPlayer.roundOffensiveAssistsStat * MONEY_FOR_OFFENSIVE_ASSISTS
@@ -100,7 +100,10 @@ rule "Init huds":
       ) if localPlayer.roundDamageBlockedStat else "",
       "\nDamage taken: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
         localPlayer.roundDamageTakenStat, localPlayer.roundDamageTakenStat * MONEY_FOR_DAMAGE_TAKEN
-      ) if localPlayer.roundDamageTakenStat else ""
+      ) if localPlayer.roundDamageTakenStat else "",
+      "\nRound bonus: <fg84c951FF>+${}</fg>".format(
+        localPlayer.roundTeamEliminatedBots * MONEY_FOR_ELIMINATIONS_TEAM
+      )
     ),
     null,
     HudPosition.ACTUALLY_LEFT,

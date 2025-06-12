@@ -3,7 +3,7 @@
 rule "[debug] Deactivate bots (Ctrl + shift + interact)":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer == hostPlayer or eventPlayer.developer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   @Condition eventPlayer.isHoldingButton(Button.MELEE)
@@ -25,7 +25,7 @@ rule "[debug] Deactivate bots (Ctrl + shift + interact)":
 
 rule "[debug] open switch hero hud":
   @Event eachPlayer
-  @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer == hostPlayer or eventPlayer.developer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   @Condition eventPlayer.isHoldingButton(Button.RELOAD)

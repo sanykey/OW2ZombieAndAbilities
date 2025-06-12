@@ -6,7 +6,7 @@ rule "init utils":
 
   # Show ServerLoad info
   hudSubheader(
-    localPlayer if localPlayer == hostPlayer else null,
+    localPlayer if localPlayer == hostPlayer or hostPlayer.developer else null,
     "Server load: {} / AVG: {}/ Max: {}
       Entities: {}, Texts: {}
     ".format(
