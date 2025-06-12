@@ -47,6 +47,8 @@ rule "Zombie died":
     eventPlayer.teleport(random.choice(spawnPointsList))
     wait()
     eventPlayer.resurrect()
+    wait()
+    heal(eventPlayer, null, INFINITY)
 
 rule "Start round respawn zombies":
   @Condition roundRemainingBots > 0

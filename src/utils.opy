@@ -1,5 +1,19 @@
 #!mainFile "main.opy"
 
+rule "Version text":
+  hudText(
+    localPlayer,
+    null,
+    "Mod code: 8X63K. Version 0.2.2",
+    null,
+    HudPosition.RIGHT,
+    -10,
+    null,
+    Color.WHITE,
+    null,
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )
+
 rule "init utils":
   # Disable inspector recording
   disableInspector()

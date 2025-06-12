@@ -32,18 +32,3 @@ rule "[debug] open switch hero hud":
 
   eventPlayer.purchasedHeroes = getAllHeroes()
   openSwitchHeroHud()
-
-rule "Create development mode text":
-  hudText(
-    localPlayer,
-    null,
-    "The server is running in development mode.
-    The mod is not ready yet. Code: 8X63K",
-    null,
-    HudPosition.RIGHT,
-    -10,
-    null,
-    rgb(241, 134, 39),
-    null,
-    HudReeval.VISIBILITY_STRING_AND_COLOR
-  )

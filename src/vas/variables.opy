@@ -186,8 +186,8 @@ playervar targetPlayer1
 playervar abilityCD
 
 #!define ULT_CHARGE_FOR_KILL 5
-#!define EMOTE_ULT_CHARE_PER_SECONDS 1
-#!define DAMAGE_RESISTANCE_BY_OWNED_HERO 0.349
+#!define EMOTE_ULT_CHARE_PER_SECONDS 0.5
+#!define DAMAGE_RESISTANCE_BY_OWNED_HERO 0.5
 
 # vanilla hero constants
 #!define TORBJORN_HAMMER_BASE_DMG 70
