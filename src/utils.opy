@@ -4,7 +4,7 @@ rule "Version text":
   hudText(
     localPlayer,
     null,
-    "Mod code: 8X63K. Version 0.2.2",
+    "Mod code: 8X63K. Version: {}".format(MODE_VERSION),
     null,
     HudPosition.RIGHT,
     -10,
