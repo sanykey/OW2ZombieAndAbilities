@@ -5,8 +5,7 @@ rule "[Mei] init":
   @Team 1
   @Condition eventPlayer.getHero() == Hero.MEI
 
-  setHeroInfoText0(
-    "
+  setHeroInfoText0("
     {} <fg6dabebFF>Mei</fg>:\n
     {} <fg6dabebFF>Endothermic blaster</fg>
       - While in the air, slightly pushes Mei in the opposite direction of the shot.\n\n

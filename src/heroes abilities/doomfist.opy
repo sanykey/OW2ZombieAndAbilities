@@ -5,15 +5,21 @@ rule "[Doomfist] init":
   @Team 1
   @Condition eventPlayer.getHero() == Hero.DOOMFIST
 
-  eventPlayer.heroInfoVertFix0 = -3
-  eventPlayer.heroInfoText0 = "{} <fg83534cFF>Doomfist</fg>:\n
-  {} {}...{}:
-    - ....
-  ".format(
-    heroIcon(Hero.DOOMFIST),
-    abilityIconString(Hero.DOOMFIST, Button.SECONDARY_FIRE),
-    "<fg83534cFF>",
-    "</fg>"
+  setHeroInfoText0("
+    {} <fg83534cFF>Doomfist</fg>:\n
+    {} <fg83534cFF>Seismic slam</fg>:
+      - Slows enemies who have taken damage.\n\n
+    {} <fg83534cFF>Power block</fg>:
+      - While using this ability, press Jump to perform an uppercut 
+        that launches enemies and deals damage.\n\n
+    {} <fg83534cFF>Meteor strike</fg>:
+      - Knocks down players who have taken damage.\n\n
+    ".format(
+      heroIcon(Hero.DOOMFIST),
+      abilityIconString(Hero.DOOMFIST, Button.ABILITY_1),
+      abilityIconString(Hero.DOOMFIST, Button.ABILITY_2),
+      abilityIconString(Hero.DOOMFIST, Button.ULTIMATE)
+    )
   )
 
   waitUntil(eventPlayer.getHero() != Hero.DOOMFIST, INFINITY)

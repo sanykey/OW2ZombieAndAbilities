@@ -4,8 +4,8 @@
 
 settings {
     "main": {
-        "description": "Under development",
-        "modeName": "Zombies"
+        "description": "Try to survive more than 100 rounds. Version 0.2.0",
+        "modeName": "Zombie Survival & Talents"
     },
     "lobby": {
         "allowPlayersInQueue": true,
