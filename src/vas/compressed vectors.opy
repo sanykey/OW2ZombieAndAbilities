@@ -241,8 +241,8 @@ globalvar vectList = compressed([
   vect(142.909, 17, -45),
 
   # zombie bots home point (the place they teleport to when they die)
-  #!define VL_ZOMBIE_BOT_HOME 145
-  vect(-16.80, 1.23, 18.75)
+  #!define VL_REFUND 145
+  vect(-19.91, 6.50, -93.88)
 ])
 
 #!define LOCKED_AREA_EFFECTS_LEN 12

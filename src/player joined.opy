@@ -8,7 +8,6 @@ rule "Player joined setup":
   @Team 1
 
   eventPlayer.setRespawnTime(INFINITY)
-
   eventPlayer.healthBoostPercent = 100 + (5 * roundNumber)
   eventPlayer.damageBoostPercent = 100 + (3 * roundNumber)
   eventPlayer.healingBoostPercent = 100 + (3 * roundNumber)
@@ -29,10 +28,11 @@ rule "Player spawned setup":
   @Team 1
   @Condition eventPlayer.hasSpawned()
 
-  if teamShields:
-    eventPlayer.addHealthPool(Health.SHIELDS, teamShields, true)
-  if teamArmor:
-    eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
+  eventPlayer.addHealthPool(Health.SHIELDS, teamShields, true)
+  eventPlayer.boostStats[PV_TEAM_SHIELDS_POOL] = getLastCreatedHealthPool()
+  wait()
+  eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
+  eventPlayer.boostStats[PV_TEAM_ARMOR_POOL] = getLastCreatedHealthPool()
 
   if not eventPlayer.isReady:
     wait(1.5)

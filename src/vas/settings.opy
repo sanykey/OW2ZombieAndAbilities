@@ -2,10 +2,10 @@
 
 # settings.heroes.allTeams.general.passiveHealthRegen false is not working. You must manually enter this parameter = "Disabled"
 
-#!define MODE_VERSION "0.2.3"
+#!define MODE_VERSION "0.3.3"
 settings {
     "main": {
-        "description": "Try to survive more than 100 rounds. Version 0.2.3",
+        "description": "Try to survive more than 100 rounds. v0.3.3",
         "modeName": "Zombie Survival & Talents"
     },
     "lobby": {

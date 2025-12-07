@@ -116,6 +116,13 @@ playervar purchasedHeroes
 playervar healthBoostPercent
 playervar damageBoostPercent
 playervar healingBoostPercent
+
+#!define PV_SHIELDS_FOR_TEAM 0
+#!define PV_ARMOR_FOR_TEAM 1
+#!define PV_TEAM_SHIELDS_POOL 2
+#!define PV_TEAM_ARMOR_POOL 3
+playervar boostStats # [shieldsForTeam, armorForTeam, teamShieldsPool, teamArmorPool]
+
 playervar damageResistPercent
 
 #!define HEAL_AMOUNT_FOR_MONEY 200

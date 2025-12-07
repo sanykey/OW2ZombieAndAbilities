@@ -1,6 +1,6 @@
 #!mainFile "../main.opy"
 
-rule "[debug] toggle noclip":
+rule "[debug] toggle noclip [interact + ultimate]":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer == hostPlayer

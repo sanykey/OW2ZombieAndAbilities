@@ -1,5 +1,7 @@
 #!mainFile "main.opy"
 
+#!define MAX_SHOP_TIME 60
+
 rule "[Secret shop] init":
   shopEffects = []
   enum SHOP_I:
@@ -89,7 +91,7 @@ rule "[Secret shop] Teleport players to secret shop":
   
   eventPlayer.isInSecretShop = true
   eventPlayer.teleport(vectList[VL_ENTER_SHOP_TELEPORT_TO])
-  wait(30)
+  wait(MAX_SHOP_TIME)
   if eventPlayer.isInSecretShop == false or isBotsDisabled:
     return
       
