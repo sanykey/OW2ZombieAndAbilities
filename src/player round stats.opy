@@ -5,11 +5,11 @@
 #!define MONEY_FOR_OFFENSIVE_ASSISTS 150
 #!define MONEY_FOR_DEFENSIVE_ASSISTS 150
 
-#!define MONEY_FOR_HACKED_ELIMS 50
+#!define MONEY_FOR_HACKED_ELIMS 75
 #!define MONEY_FOR_MELEE_FINAL_BLOW 75
 #!define MONEY_FOR_CRITICAL_FINAL_BLOW 75
 
-#!define MONEY_FOR_REVIVE 300
+#!define MONEY_FOR_REVIVE 500
 
 #!define MONEY_FOR_DAMAGE_DEALT 0.5
 #!define MONEY_FOR_DAMAGE_BLOCKED 0.1
@@ -60,6 +60,7 @@ rule "calculate player round stats":
   @Condition roundRemainingBots < 1
 
   wait(0.5)
+
   eventPlayer.roundEliminations = eventPlayer.getStatistic(Stat.ELIMINATIONS) - eventPlayer.prevEliminations
   eventPlayer.prevEliminations = eventPlayer.getStatistic(Stat.ELIMINATIONS)
 

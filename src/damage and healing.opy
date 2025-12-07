@@ -31,8 +31,7 @@ rule "player Dealt Knockback":
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
     damage(victim, eventPlayer, 40)
     playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
-    smallMessage(eventPlayer, "{0} points".format(25))
-    eventPlayer.money += 25
+    eventPlayer.money += 50
 
   # [Reinhardt] Shield bash:
   if eventPlayer.getHero() == Hero.REINHARDT and eventPlayer.isFiringSecondaryFire():
@@ -142,7 +141,7 @@ rule "Healing money":
 
   eventPlayer.temp0 = eventPlayer.healingTracker * MONEY_FOR_HEALING
   eventPlayer.money += eventPlayer.temp0
-  smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
+  # smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
   eventPlayer.healingTracker = 0
 
 rule "Self Healing money":
@@ -152,7 +151,7 @@ rule "Self Healing money":
 
   eventPlayer.temp0 = eventPlayer.selfHealingTracker * MONEY_FOR_SELF_HEALING
   eventPlayer.money += eventPlayer.temp0
-  smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
+  # smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
   eventPlayer.selfHealingTracker = 0
 
 rule "Healing amount tracker":
@@ -185,7 +184,7 @@ rule "Zombie elimination money and ult charge":
   elif eventAbility == Button.MELEE:
     eventPlayer.currentMeleeFinalBlows += 1
 
-  smallMessage(eventPlayer, "<TX C00000000021569> +${}".format(eventPlayer.temp0))
+  # smallMessage(eventPlayer, "<TX C00000000021569> +${}".format(eventPlayer.temp0))
   eventPlayer.money += eventPlayer.temp0
 
   
@@ -203,7 +202,7 @@ rule "Offensive assists money and ult charge":
   eventPlayer.currentOffensiveAssistsStat = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
 
   eventPlayer.temp1 = MONEY_FOR_OFFENSIVE_ASSISTS * eventPlayer.temp0
-  smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
+  # smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
   eventPlayer.money += eventPlayer.temp1
 
   if not eventPlayer.isUsingUltimate():
@@ -220,7 +219,7 @@ rule "Defensive assists money and ult charge":
   eventPlayer.currentDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
 
   eventPlayer.temp1 = MONEY_FOR_DEFENSIVE_ASSISTS * eventPlayer.temp0
-  smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
+  # smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
   eventPlayer.money += eventPlayer.temp1
 
   if not eventPlayer.isUsingUltimate():
