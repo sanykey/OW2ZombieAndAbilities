@@ -105,7 +105,7 @@ globalvar vectList = compressed([
   vect(-4.685, 0.50, -8.427),
   vect(-16.322, 2.50, -31.226),
   #   zone B:
-  #!define VL_BUY_HERO_SPOTS_B_LEN 7
+  #!define VL_BUY_HERO_SPOTS_B_LEN 8
   vect(12.129, 6.51, -90.424),
   vect(10.56, 11.5, -84.54),
   vect(12.919, 11.51, -100.131),
@@ -113,6 +113,7 @@ globalvar vectList = compressed([
   vect(1.675, 6.5, -47.434),
   vect(-0.898, 4.69, -90.515),
   vect(-1.751, 7, -71.73),
+  vect(-7.94, 4.94, -83.07),
   #   zone E:
   #!define VL_BUY_HERO_SPOTS_E_LEN 12
   vect(59.56, 7.22, -72.899),
@@ -152,7 +153,7 @@ globalvar vectList = compressed([
 
   #!define VL_BUY_HERO_SPOTS_LEN VL_BUY_HERO_SPOTS_A_LEN + VL_BUY_HERO_SPOTS_B_LEN + VL_BUY_HERO_SPOTS_E_LEN + VL_BUY_HERO_SPOTS_I_LEN + VL_BUY_HERO_SPOTS_H_LEN
 
-  # map zones [98-105]:
+  # map zones:
   #!define VL_ACTIVATE_ZONES_OFFSET VL_BUY_HERO_SPOTS_OFFSET + VL_BUY_HERO_SPOTS_LEN
   #!define VL_ACTIVATE_ZONES_LEN 9
   vect(-6.965, 2.94, -7.146),
@@ -164,15 +165,15 @@ globalvar vectList = compressed([
   vect(140.011, 12.178, -61.257),
   vect(144.10, 10.36, 31.35),
   vect(129.36, 11.72, -49.72),
-  #!define VL_ACTIVATE_ZONE_DETECTOR_A 98
-  #!define VL_ACTIVATE_ZONE_DETECTOR_B 99
-  #!define VL_ACTIVATE_ZONE_DETECTOR_C 100
-  #!define VL_ACTIVATE_ZONE_DETECTOR_D 101
-  #!define VL_ACTIVATE_ZONE_DETECTOR_E 102
-  #!define VL_ACTIVATE_ZONE_DETECTOR_F 103
-  #!define VL_ACTIVATE_ZONE_DETECTOR_G 104
-  #!define VL_ACTIVATE_ZONE_DETECTOR_H 105
-  #!define VL_ACTIVATE_ZONE_DETECTOR_I 106
+  #!define VL_ACTIVATE_ZONE_DETECTOR_A 99
+  #!define VL_ACTIVATE_ZONE_DETECTOR_B 100
+  #!define VL_ACTIVATE_ZONE_DETECTOR_C 101
+  #!define VL_ACTIVATE_ZONE_DETECTOR_D 102
+  #!define VL_ACTIVATE_ZONE_DETECTOR_E 103
+  #!define VL_ACTIVATE_ZONE_DETECTOR_F 104
+  #!define VL_ACTIVATE_ZONE_DETECTOR_G 105
+  #!define VL_ACTIVATE_ZONE_DETECTOR_H 106
+  #!define VL_ACTIVATE_ZONE_DETECTOR_I 107
 
   # spawn points A
   #!define VL_SPAWN_POINTS_A_OFFSET VL_ACTIVATE_ZONES_OFFSET + VL_ACTIVATE_ZONES_LEN
@@ -241,7 +242,7 @@ globalvar vectList = compressed([
   vect(142.909, 17, -45),
 
   # zombie bots home point (the place they teleport to when they die)
-  #!define VL_REFUND 145
+  #!define VL_REFUND 146
   vect(-19.91, 6.50, -93.88)
 ])
 
