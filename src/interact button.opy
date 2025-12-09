@@ -3,7 +3,7 @@
 #!define UPGRADE_PRICE 2500
 #!define TEAM_UPGRADE_PRICE 10000
 
-#!define HEALTH_UPGRADE_AMOUNT 7
+#!define HEALTH_UPGRADE_AMOUNT 8
 #!define DAMAGE_UPGRADE_AMOUNT 5
 #!define HEALING_UPGRADE_AMOUNT 5
 #!define TEAM_ARMOR_UPGRADE_AMOUNT 25
@@ -17,19 +17,19 @@ rule "Interact button":
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
 
   # [shop] switch hero:
-  if distance(eventPlayer, vectList[VL_CHANGE_HERO]) < 1.8:
+  if secretShopZoneEffects and distance(eventPlayer, vectList[VL_CHANGE_HERO]) < 1.8:
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 1)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
     openSwitchHeroHud()
 
   # [shop] upgrade damage:
-  elif distance(eventPlayer, vectList[VL_BUY_DAMAGE]) < 1.8 :
+  elif secretShopZoneEffects and distance(eventPlayer, vectList[VL_BUY_DAMAGE]) < 1.8 :
     if eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.money >= UPGRADE_PRICE * BUNCH_BUY_MULTIPLY:
       eventPlayer.money -= UPGRADE_PRICE * BUNCH_BUY_MULTIPLY
-      eventPlayer.damageBoostPercent += 5 * BUNCH_BUY_MULTIPLY
+      eventPlayer.damageBoostPercent += DAMAGE_UPGRADE_AMOUNT * BUNCH_BUY_MULTIPLY
     elif not eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.money >= UPGRADE_PRICE:
       eventPlayer.money -= UPGRADE_PRICE
-      eventPlayer.damageBoostPercent += 5
+      eventPlayer.damageBoostPercent += DAMAGE_UPGRADE_AMOUNT
     else:
       return
     eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
@@ -37,13 +37,13 @@ rule "Interact button":
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.RED, eventPlayer, 100)
 
   # [shop] upgrade health:
-  elif distance(eventPlayer, vectList[VL_BUY_HP]) < 1.8:
+  elif secretShopZoneEffects and distance(eventPlayer, vectList[VL_BUY_HP]) < 1.8:
     if eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.money >= UPGRADE_PRICE * BUNCH_BUY_MULTIPLY:
       eventPlayer.money -= UPGRADE_PRICE * BUNCH_BUY_MULTIPLY
-      eventPlayer.healthBoostPercent += 8 * BUNCH_BUY_MULTIPLY
+      eventPlayer.healthBoostPercent += HEALTH_UPGRADE_AMOUNT * BUNCH_BUY_MULTIPLY
     elif not eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.money >= UPGRADE_PRICE:
       eventPlayer.money -= UPGRADE_PRICE
-      eventPlayer.healthBoostPercent += 8
+      eventPlayer.healthBoostPercent += HEALTH_UPGRADE_AMOUNT
     else:
       return
     eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
@@ -53,13 +53,13 @@ rule "Interact button":
     heal(eventPlayer, null, INFINITY)
 
   # [shop] upgrade healing:
-  elif distance(eventPlayer, vectList[VL_BUY_HEALING]) < 1.8:
+  elif secretShopZoneEffects and distance(eventPlayer, vectList[VL_BUY_HEALING]) < 1.8:
     if eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.money >= UPGRADE_PRICE * BUNCH_BUY_MULTIPLY:
       eventPlayer.money -= UPGRADE_PRICE * BUNCH_BUY_MULTIPLY
-      eventPlayer.healingBoostPercent += 5 * BUNCH_BUY_MULTIPLY
+      eventPlayer.healingBoostPercent += HEALING_UPGRADE_AMOUNT * BUNCH_BUY_MULTIPLY
     elif not eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.money >= UPGRADE_PRICE:
       eventPlayer.money -= UPGRADE_PRICE
-      eventPlayer.healingBoostPercent += 5
+      eventPlayer.healingBoostPercent += HEALING_UPGRADE_AMOUNT
     else:
       return
 
@@ -69,7 +69,7 @@ rule "Interact button":
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, eventPlayer, 100)
 
   # [shop] upgrade team shields:
-  elif distance(eventPlayer, vectList[VL_BUY_TEAM_SHIELDS]) <= 1.5 and eventPlayer.money >= TEAM_UPGRADE_PRICE:
+  elif secretShopZoneEffects and distance(eventPlayer, vectList[VL_BUY_TEAM_SHIELDS]) <= 1.5 and eventPlayer.money >= TEAM_UPGRADE_PRICE:
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.BLUE, eventPlayer, 2)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.BLUE, getPlayers(Team.1), 100)
     eventPlayer.money -= TEAM_UPGRADE_PRICE
@@ -81,7 +81,7 @@ rule "Interact button":
     heal(getLivingPlayers(Team.1), null, INFINITY)
 
   # [shop] upgrade team armor:
-  elif distance(eventPlayer, vectList[VL_BUY_TEAM_ARMOR]) <= 1.5 and eventPlayer.money >= TEAM_UPGRADE_PRICE:
+  elif secretShopZoneEffects and distance(eventPlayer, vectList[VL_BUY_TEAM_ARMOR]) <= 1.5 and eventPlayer.money >= TEAM_UPGRADE_PRICE:
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, getPlayers(Team.1), 2)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, getPlayers(Team.1), 100)
     eventPlayer.money -= TEAM_UPGRADE_PRICE
@@ -93,7 +93,7 @@ rule "Interact button":
     heal(getLivingPlayers(Team.1), null, INFINITY)
 
   # [shop] refund upgrades
-  elif distance(eventPlayer, vectList[VL_REFUND]) <= 1.5:
+  elif secretShopZoneEffects and distance(eventPlayer, vectList[VL_REFUND]) <= 1.5:
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, getPlayers(Team.1), 2)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, getPlayers(Team.1), 100)
     

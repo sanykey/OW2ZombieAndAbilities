@@ -19,7 +19,6 @@
 #!include "interact button.opy" 
 #!include "portal.opy"
 #!include "locked area.opy" 
-#!include "restricted areas.opy" 
 #!include "secret shop.opy"
 #*/
 

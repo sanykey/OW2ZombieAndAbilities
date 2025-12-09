@@ -27,7 +27,7 @@ rule "Create hero buy positions":
 rule "Buy hero":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
 
   for I in range(len(heroesShopData)):
     wait()

@@ -4,6 +4,9 @@ globalvar zonesI
 globalvar zonesHeroBuyOffset
 globalvar zonesHeroBuyLen
 globalvar zonesEffectsIds = []
+globalvar isZoneActiveD
+globalvar isZoneActiveF
+globalvar isZoneActiveG
 
 #!define ZONE_A_SIZE 48
 #!define ZONE_B_SIZE 35
@@ -71,193 +74,171 @@ def destroyHeroBuySpotsTexts():
     destroyInWorldText(zonesEffectsIds[zonesI])
     zonesEffectsIds[zonesI] = null
 
-rule "Activate or Deactivate zone A":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1)
 
-  for zonesI in range(5):
-    spawnPointsList.append(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
-
+rule "Activate or Deactivate zones":
+  # Activate zone A:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_A
-  createHeroBuySpotsTexts()
+  if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1):
+    for zonesI in range(VL_SPAWN_POINTS_A_LEN):
+      spawnPointsList.append(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
+    createHeroBuySpotsTexts()
+  # Deactivate zone A:
+  elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1):
+    for zonesI in range(VL_SPAWN_POINTS_A_LEN):
+      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
+    destroyHeroBuySpotsTexts()
 
-rule "Activate or Deactivate zone A-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1)
-  for zonesI in range(5):
-    spawnPointsList.remove(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
-
-  zonesHeroBuyOffset = BUY_HERO_OFFSET_A
-  destroyHeroBuySpotsTexts()
-
-rule "Activate or Deactivate zone B":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1)
-
-  for zonesI in range(8):
-    spawnPointsList.append(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
-
+  # Activate zone B:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_B
-  createHeroBuySpotsTexts()
+  if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1):
+    for zonesI in range(VL_SPAWN_POINTS_B_LEN):
+      spawnPointsList.append(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
+    createHeroBuySpotsTexts()
+  # Deactivate zone B:
+  elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1):
+    for zonesI in range(VL_SPAWN_POINTS_B_LEN):
+      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
+    destroyHeroBuySpotsTexts()
 
+  # Activate zone C (Shop):
+  if not secretShopZoneEffects and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1):
+    # create effects for Secret shop upgrades spots:
+    for zonesI in range(len(buyHeroUpgradesData)):
+      createEffect(
+        getPlayers(Team.1),
+        Effect.RING,
+        buyHeroUpgradesData[zonesI][true],
+        buyHeroUpgradesData[zonesI][2],
+        1.5,
+        EffectReeval.VISIBILITY
+      )
+      secretShopZoneEffects.append(getLastCreatedEntity())
+      createInWorldText(
+        getPlayers(Team.1),
+        buyHeroUpgradesData[zonesI][0],
+        buyHeroUpgradesData[zonesI][2],
+        1,
+        Clip.SURFACES,
+        WorldTextReeval.VISIBILITY,
+        buyHeroUpgradesData[zonesI][true]
+      )
+      secretShopZoneEffects.append(getLastCreatedText())
 
-rule "Activate or Deactivate zone B-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1)
-
-  for zonesI in range(8):
-    spawnPointsList.remove(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
-
-  zonesHeroBuyOffset = BUY_HERO_OFFSET_B
-  destroyHeroBuySpotsTexts()
-
-
-rule "[Secret shop] Activate or Deactivate zone C":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1)
-  
-  spawnPointsList.append(vectList[VL_SPAWN_POINTS_C_OFFSET])
-
-  # create effects for Secret shop upgrades spots:
-  if secretShopZoneEffects:
-    smallMessage(hostPlayer, "[Error]: There were problems when creating spots for buying upgrades")
-    return
-
-  for zonesI in range(len(buyHeroUpgradesData)):
-    createEffect(
-      getPlayers(Team.1),
-      Effect.RING,
-      buyHeroUpgradesData[zonesI][true],
-      buyHeroUpgradesData[zonesI][2],
-      1.5,
-      EffectReeval.VISIBILITY
-    )
-    secretShopZoneEffects.append(getLastCreatedEntity())
+    # Create shop exit and tips effects
     createInWorldText(
-      getPlayers(Team.1),
-      buyHeroUpgradesData[zonesI][0],
-      buyHeroUpgradesData[zonesI][2],
-      1,
-      Clip.SURFACES,
-      WorldTextReeval.VISIBILITY,
-      buyHeroUpgradesData[zonesI][true]
+      getAllPlayers(), "[Exit]", vectList[VL_EXIT_SHOP_TEXT], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN
+    )
+    secretShopZoneEffects.append(getLastCreatedText())
+    createInWorldText(
+      getAllPlayers(), "[No Exit]", vectList[VL_NO_EXIT_SHOP_TEXT], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED
     )
     secretShopZoneEffects.append(getLastCreatedText())
 
-  # Create shop exit effects
-  createInWorldText(
-    getAllPlayers(), "[Exit]", vectList[VL_EXIT_SHOP_TEXT], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN
-  )
-  secretShopZoneEffects.append(getLastCreatedText())
-  createInWorldText(
-    getAllPlayers(), "[No Exit]", vectList[VL_NO_EXIT_SHOP_TEXT], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED
-  )
-  secretShopZoneEffects.append(getLastCreatedText())
+    createInWorldText(
+      getAllPlayers(), "[Interact] to buy\n[Interact] + [Crouch] to buy x20", vectList[VL_SHOP_TIP], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.WHITE
+    )
+    secretShopZoneEffects.append(getLastCreatedText())
 
-  createInWorldText(
-    getAllPlayers(), "[Interact] to buy\n[Interact] + [Crouch] to buy x20", vectList[VL_SHOP_TIP], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.WHITE
-  )
-  secretShopZoneEffects.append(getLastCreatedText())
+  # Deactivate zone C (Shop):
+  elif secretShopZoneEffects and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1):
+    # destroy effects for Secret shop upgrades spots:
+    for zonesI in range(0, len(secretShopZoneEffects), 2):
+      # destroy shop exit and tip text effects
+      if zonesI > (len(secretShopZoneEffects) - 4):
+        destroyInWorldText(secretShopZoneEffects[zonesI])
+        destroyInWorldText(secretShopZoneEffects[zonesI + 1])
+        destroyInWorldText(secretShopZoneEffects[zonesI + 2])
+        break
 
-
-rule "[Secret shop] Activate or Deactivate zone C-":
-  @Condition unlockedLocations == 4
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1)
-
-  spawnPointsList.remove(vectList[VL_SPAWN_POINTS_C_OFFSET])
-
-  # destroy effects for Secret shop upgrades spots:
-  for zonesI in range(0, len(secretShopZoneEffects), 2):
-    # destroy shop exit and tip text effects
-    if zonesI > (len(secretShopZoneEffects) - 4):
-      destroyInWorldText(secretShopZoneEffects[zonesI])
+      destroyEffect(secretShopZoneEffects[zonesI])
       destroyInWorldText(secretShopZoneEffects[zonesI + 1])
-      destroyInWorldText(secretShopZoneEffects[zonesI + 2])
-      break
 
-    destroyEffect(secretShopZoneEffects[zonesI])
-    destroyInWorldText(secretShopZoneEffects[zonesI + 1])
+    secretShopZoneEffects = []
 
-  secretShopZoneEffects = []
-
-
-rule "Activate or Deactivate zone D":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1)
-  for zonesI in range(7):
-    spawnPointsList.append(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
-
-
-rule "Activate or Deactivate zone D-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1)
-
-  for zonesI in range(7):
-    spawnPointsList.remove(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
-
-
-rule "Activate or Deactivate zone E":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1)
-
-  for zonesI in range(5):
-    spawnPointsList.append(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
-
+  # Activate zone D:
+  if not isZoneActiveD and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1):
+    isZoneActiveD = true
+    for zonesI in range(VL_SPAWN_POINTS_D_LEN):
+      spawnPointsList.append(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
+  # Deactivate zone D:
+  elif isZoneActiveD and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1):
+    isZoneActiveD = false
+    for zonesI in range(VL_SPAWN_POINTS_D_LEN):
+      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
+  
+  # Activate zone E:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_E
-  createHeroBuySpotsTexts()
+  if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1):
+    for zonesI in range(VL_SPAWN_POINTS_E_LEN):
+      spawnPointsList.append(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
+    createHeroBuySpotsTexts()
+  # Deactivate zone E:
+  elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1):
+    for zonesI in range(VL_SPAWN_POINTS_E_LEN):
+      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
+    destroyHeroBuySpotsTexts()
+
+  # Activate zone F:
+  if not isZoneActiveF and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1):
+    isZoneActiveF = true
+    for zonesI in range(VL_SPAWN_POINTS_F_LEN):
+      spawnPointsList.append(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
+  # Deactivate zone F:
+  elif isZoneActiveF and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1):
+    isZoneActiveF = false
+    for zonesI in range(VL_SPAWN_POINTS_F_LEN):
+      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
+
+  # Activate zone G:
+  if not isZoneActiveG and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1):
+    isZoneActiveG = true
+    for zonesI in range(VL_SPAWN_POINTS_G_LEN):
+      spawnPointsList.append(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
+  # Deactivate zone G:
+  elif isZoneActiveG and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1):
+    isZoneActiveG = false
+    for zonesI in range(VL_SPAWN_POINTS_G_LEN):
+      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
 
 
-rule "Activate or Deactivate zone E-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1)
-
-  for zonesI in range(5):
-    spawnPointsList.remove(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
-
-  zonesHeroBuyOffset = BUY_HERO_OFFSET_E
-  destroyHeroBuySpotsTexts()
-
-
-rule "Activate or Deactivate zone F":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1)
-
-  for zonesI in range(6):
-    spawnPointsList.append(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
-
-
-rule "Activate or Deactivate zone F-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1)
-
-  for zonesI in range(6):
-    spawnPointsList.remove(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
-
-
-rule "Activate or Deactivate zone G":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1)
-  for zonesI in range(6):
-    spawnPointsList.append(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
-
-
-rule "Activate or Deactivate zone G-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1)
-  for zonesI in range(6):
-    spawnPointsList.remove(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
-
-rule "Activate or Deactivate zone H":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1)
-
+  # Activate zone H:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_H
-  createHeroBuySpotsTexts()
+  if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1):
+    createHeroBuySpotsTexts()
+  # Deactivate zone H:
+  elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1):
+    destroyHeroBuySpotsTexts()
 
-rule "Activate or Deactivate zone H-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_H], ZONE_H_SIZE, Team.1)
-
-  zonesHeroBuyOffset = BUY_HERO_OFFSET_H
-  destroyHeroBuySpotsTexts()
-
-rule "Activate or Deactivate zone I":
-  @Condition getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1)
-
+  # Activate zone I:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_I
-  createHeroBuySpotsTexts()
+  if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1):
+    createHeroBuySpotsTexts()
+  # Deactivate zone I:
+  elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1):
+    destroyHeroBuySpotsTexts()
 
-rule "Activate or Deactivate zone I-":
-  @Condition not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_I], ZONE_I_SIZE, Team.1)
+  wait(1)
+  loop()
 
-  zonesHeroBuyOffset = BUY_HERO_OFFSET_I
-  destroyHeroBuySpotsTexts()
 
+rule "Teleport from restricted areas":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.isAlive() and eventPlayer.hasSpawned()
+    if not eventPlayer.posBeforeChangeHero and distance(eventPlayer, vect(101.397, 14.21, -110.834)) < 14: # vanilla Team.1 spawn room 
+      eventPlayer.teleport(vect(-27.412, 2, -12.564))
+    if zonesEffectsIds[BUY_HERO_OFFSET_E]:
+      if distance(eventPlayer, vect(83.1, 11.88, -111.642)) < 3: # vanilla Team.1 spawn room entrance
+        eventPlayer.teleport(vect(79.382, 13.147, -110.093))
+      if distance(eventPlayer, vect(89.731, 13.228, -102.377)) < 2: # vanilla Team.1 spawn room second entrance
+        eventPlayer.teleport(vect(86.903, 14.219, -101.238))
+  wait(0.3)
+  if ruleCondition:
+    loop()
+
+rule "Restricted areas affects":
+  createInWorldText(getPlayers(Team.1), iconString(Icon.NO), vect(89.62, 13.973, -102.524), 1.7, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+  createInWorldText(getPlayers(Team.1), iconString(Icon.NO), vect(81.612, 12.094, -110.819), 1.7, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.ROSE)
 
 /*
 rule "[debug]: Show spawn zones":
