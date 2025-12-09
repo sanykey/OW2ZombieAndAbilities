@@ -17,8 +17,8 @@
 
 #!define MONEY_FOR_ZERO_DEATHS 1000
 #!define SHOW_ROUND_STATS_DURATION 10
-#!define MONEY_FOR_HEALING 0.5
-#!define MONEY_FOR_SELF_HEALING 0.25
+#!define MONEY_FOR_HEALING 0.6
+#!define MONEY_FOR_SELF_HEALING 0.3
 
 playervar prevEliminations
 playervar prevDamageDealtStat
