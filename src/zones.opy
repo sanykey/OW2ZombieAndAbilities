@@ -20,11 +20,11 @@ globalvar isZoneActiveG
 
 rule "Init buyHeroUpgradesData":
   buyHeroUpgradesData = [
-    ["HP (+8%): $2500", Color.LIME_GREEN, vectList[VL_BUY_HP]],
-    ["Damage (+5%): $2500", Color.RED, vectList[VL_BUY_DAMAGE]],
-    ["Healing Dealt (+5%): $2500", Color.YELLOW, vectList[VL_BUY_HEALING]],
-    ["+25 Armor [Team]: $10000", Color.ORANGE, vectList[VL_BUY_TEAM_ARMOR]],
-    ["+25 Shields [Team]: $10000", Color.BLUE, vectList[VL_BUY_TEAM_SHIELDS]],
+    [f"HP (+{HEALTH_UPGRADE_AMOUNT}%): ${UPGRADE_PRICE}", Color.LIME_GREEN, vectList[VL_BUY_HP]],
+    [f"Damage (+{DAMAGE_UPGRADE_AMOUNT}%): ${UPGRADE_PRICE}", Color.RED, vectList[VL_BUY_DAMAGE]],
+    [f"Healing Dealt (+{HEALING_UPGRADE_AMOUNT}%): ${UPGRADE_PRICE}", Color.YELLOW, vectList[VL_BUY_HEALING]],
+    [f"+{TEAM_ARMOR_UPGRADE_AMOUNT} Armor [Team]: ${TEAM_UPGRADE_PRICE}", Color.ORANGE, vectList[VL_BUY_TEAM_ARMOR]],
+    [f"+{TEAM_SHIELDS_UPGRADE_AMOUNT} Shields [Team]: ${TEAM_UPGRADE_PRICE}", Color.BLUE, vectList[VL_BUY_TEAM_SHIELDS]],
     ["Change to a purchased hero", Color.WHITE, vectList[VL_CHANGE_HERO]],
     ["Refund", Color.WHITE, vectList[VL_REFUND]],
   ]
@@ -135,7 +135,7 @@ rule "Activate or Deactivate zones":
     secretShopZoneEffects.append(getLastCreatedText())
 
     createInWorldText(
-      getAllPlayers(), "[Interact] to buy\n[Interact] + [Crouch] to buy x20", vectList[VL_SHOP_TIP], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.WHITE
+      getAllPlayers(), f"[Interact] to buy\n[Interact] + [Crouch] to buy x{BUNCH_BUY_MULTIPLY}", vectList[VL_SHOP_TIP], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.WHITE
     )
     secretShopZoneEffects.append(getLastCreatedText())
 

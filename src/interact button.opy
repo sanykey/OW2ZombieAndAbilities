@@ -1,16 +1,5 @@
 #!mainFile "main.opy"
 
-#!define UPGRADE_PRICE 2500
-#!define TEAM_UPGRADE_PRICE 10000
-
-#!define HEALTH_UPGRADE_AMOUNT 8
-#!define DAMAGE_UPGRADE_AMOUNT 5
-#!define HEALING_UPGRADE_AMOUNT 5
-#!define TEAM_ARMOR_UPGRADE_AMOUNT 25
-#!define TEAM_SHIELDS_UPGRADE_AMOUNT 25
-
-#!define BUNCH_BUY_MULTIPLY 20
-
 rule "Interact button":
   @Event eachPlayer
   @Condition not eventPlayer.isDummy()
