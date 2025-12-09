@@ -1,9 +1,5 @@
 #!mainFile "main.opy"
 
-playervar healingTracker
-playervar selfHealingTracker
-playervar lastCcVanilaKnockback
-
 # save information about bots being pushed to account for damage when falling down
 macro Player.setCrowdControlAttack(self, attacker0, isVanilaKnockback=false, duration=LAST_CC_ATTACK_DURATION):
   self.lastCcAttacker = attacker0

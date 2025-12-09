@@ -30,7 +30,7 @@ def unpause3PCamera():
 
 rule "Change 3p Camera state":
   @Event eachPlayer
-  @Team 1
+  @Condition not eventPlayer.isDummy()
   @Condition eventPlayer.cameraState != eventPlayer.prevCameraState
 
   eventPlayer.prevCameraState = eventPlayer.cameraState
@@ -43,36 +43,37 @@ rule "Change 3p Camera state":
     return
   eventPlayer.stopCamera()
 
-rule "Switch 3P Camera (INTERACT + CROUCH)":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.CROUCH)
+# rule "Switch 3P Camera (INTERACT + CROUCH)":
+#   @Event eachPlayer
+#   @Condition not eventPlayer.isDummy()
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.CROUCH)
 
-  waitUntil(
-    (
-      not (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)) or 
-      eventPlayer.isHoldingButton(Button.MELEE)
-    ),
-    HERO_INFO_HOLD_DURATION
-  )
+#   waitUntil(
+#     (
+#       not (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)) or 
+#       eventPlayer.isHoldingButton(Button.MELEE)
+#     ),
+#     HERO_INFO_HOLD_DURATION
+#   )
 
-  # The player has called up the hero information window, the camera does not need to be changed
-  if (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT) or eventPlayer.isHoldingButton(Button.MELEE)): 
-    return
+#   # The player has called up the hero information window, the camera does not need to be changed
+#   if (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT) or eventPlayer.isHoldingButton(Button.MELEE)): 
+#     return
 
-  if eventPlayer.cameraState == 0:
-    eventPlayer.cameraState = 3
-    smallMessage(eventPlayer, "3P Camera [ON]")
-  elif eventPlayer.cameraState == 3:
-    eventPlayer.cameraState = 4
-    smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
-  else:
-    eventPlayer.cameraState = 0
-    smallMessage(eventPlayer, "3P Camera [OFF]")
-  playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
+#   if eventPlayer.cameraState == 0:
+#     eventPlayer.cameraState = 3
+#     smallMessage(eventPlayer, "3P Camera [ON]")
+#   elif eventPlayer.cameraState == 3:
+#     eventPlayer.cameraState = 4
+#     smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
+#   else:
+#     eventPlayer.cameraState = 0
+#     smallMessage(eventPlayer, "3P Camera [OFF]")
+#   playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
 
 rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
   @Event eachPlayer
+  @Condition not eventPlayer.isDummy()
   @Condition eventPlayer.cameraState > 2
   @Condition eventPlayer.isFiringSecondaryFire() == true # @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
   @Condition (eventPlayer.getCurrentHero() == Hero.WIDOWMAKER or eventPlayer.getCurrentHero() == Hero.ASHE or eventPlayer.getCurrentHero() == Hero.ANA) == true
@@ -83,7 +84,7 @@ rule "Pause 3p camera when player is aiming (for Ana, Ashe, Widowmaker)":
 
 rule "Pause 3P camera and charge ult during emote":
   @Event eachPlayer
-  @Team 1
+  @Condition not eventPlayer.isDummy()
   @Condition eventPlayer.cameraState > 2
   @Condition eventPlayer.isCommunicatingEmote()
 
@@ -97,7 +98,7 @@ rule "Pause 3P camera and charge ult during emote":
 
 rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
   @Event eachPlayer
-  @Team 1
+  @Condition not eventPlayer.isDummy()
   @Condition eventPlayer.cameraState > 2
   @Condition eventPlayer.isUsingUltimate()
   @Condition (
@@ -112,7 +113,7 @@ rule "Pause 3P Camera During Ultimate (junkrat and bastion)":
 
 rule "Pause 3P camera during rein barrier hold":
   @Event eachPlayer
-  @Team 1
+  @Condition not eventPlayer.isDummy()
   @Condition eventPlayer.cameraState > 2
   @Condition eventPlayer.getCurrentHero() == Hero.REINHARDT or eventPlayer.getCurrentHero() == Hero.BRIGITTE
   @Condition eventPlayer.isFiringSecondaryFire()

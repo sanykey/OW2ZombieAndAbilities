@@ -27,4 +27,4 @@ rule "[Soldier] Helix rockets with ultimate":
   eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 0)
   wait(1)
   if ruleCondition:
-      loop()
+    loop()

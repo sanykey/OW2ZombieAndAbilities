@@ -78,8 +78,7 @@ rule "[Team2 Echo] respawn":
     botEchoRespawn()
 
   wait(15, Wait.ABORT_WHEN_FALSE)
-  if ruleCondition:
-    loop()
+  loop()
 
 
 rule "[Team2 Echo] can see player":
@@ -188,4 +187,4 @@ rule "[Team2 Echo] main logic loop":
   lbl_0:
   wait(0.4)
   if ruleCondition:
-      loop()
+    loop()

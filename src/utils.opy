@@ -43,7 +43,7 @@ rule "Server anti-crash system":
   if not ruleCondition:
     return
 
-  smallMessage(getAllPlayers(), "[Server]: Anti crash system enabled to reduce server load")
+  smallMessage(getAllPlayers(), "[Anti crash enabled]")
   setSlowMotion(75)
   waitUntil(getServerLoad() < 230, INFINITY)
   setSlowMotion(100)

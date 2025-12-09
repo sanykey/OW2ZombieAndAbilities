@@ -109,14 +109,14 @@ rule "Revealed zombies":
       Color.TEAM_2
     )
     eventPlayer.effectsIds[HI.REVEALED_ICON] = getLastCreatedText()
-  eventPlayer.startForcingOutlineFor(getAllPlayers(), true, Color.VIOLET, OutlineVisibility.OCCLUDED)
+  eventPlayer.startForcingOutlineFor(getPlayers(Team.1), true, Color.VIOLET, OutlineVisibility.OCCLUDED)
 
   waitUntil(eventPlayer.revealed < getTotalTimeElapsed() or eventPlayer.isAlive() == false, INFINITY)
 
   eventPlayer.revealed = false
   destroyInWorldText(eventPlayer.effectsIds[HI.REVEALED_ICON])
   eventPlayer.effectsIds[HI.REVEALED_ICON] = false
-  eventPlayer.stopForcingOutlineFor(getAllPlayers())
+  eventPlayer.stopForcingOutlineFor(getPlayers(Team.1))
 
 rule "Changed player speed":
   @Event eachPlayer

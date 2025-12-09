@@ -50,7 +50,7 @@ globalvar vectList = compressed([
 
   # [Secret shop]
   #!define VL_SECRET_SHOP_OFFSET 37
-  #!define VL_SECRET_SHOP_LEN 12
+  #!define VL_SECRET_SHOP_LEN 13
   vect(113.354, 16.189, -29.761),
   vect(97.513, 16.972, -20.29),
   vect(90.42, 17.169, -17.775),
@@ -63,19 +63,20 @@ globalvar vectList = compressed([
   vect(-20.695, 7.574, -86.552),
   vect(123.312, 10.5, -27.364),
   vect(123.312, 9.176, -27.364),
-  #!define VL_EXIT_SHOP_TELEPORT_TO 37
-  #!define VL_CONNECT_SHOP 38
-  #!define VL_CONNECT_SHOP_ARROW 39
-  #!define VL_EXIT_SHOP_TEXT 40
-  #!define VL_NO_EXIT_SHOP_TEXT 41
-  #!define VL_SHOP_ACTIVATOR 42
-  #!define VL_ENTER_SHOP_TELEPORT_FROM 43
-  #!define VL_ENTER_SHOP_TELEPORT_TO 44
-  #!define VL_EXIT_SHOP_TELEPORT_FROM 45
-  #!define VL_SHOP_HEAL_AREA 46
-  #!define VL_SHOP_TELEPORTER_TEXT 47
-  #!define VL_SHOP_TELEPORTER_RING 48
-
+  vect(-30.87, 12.00, -91.50),
+  #!define VL_EXIT_SHOP_TELEPORT_TO VL_SECRET_SHOP_OFFSET
+  #!define VL_CONNECT_SHOP VL_SECRET_SHOP_OFFSET + 1
+  #!define VL_CONNECT_SHOP_ARROW VL_SECRET_SHOP_OFFSET + 2
+  #!define VL_EXIT_SHOP_TEXT VL_SECRET_SHOP_OFFSET + 3
+  #!define VL_NO_EXIT_SHOP_TEXT VL_SECRET_SHOP_OFFSET + 4
+  #!define VL_SHOP_ACTIVATOR VL_SECRET_SHOP_OFFSET + 5
+  #!define VL_ENTER_SHOP_TELEPORT_FROM VL_SECRET_SHOP_OFFSET + 6
+  #!define VL_ENTER_SHOP_TELEPORT_TO VL_SECRET_SHOP_OFFSET + 7
+  #!define VL_EXIT_SHOP_TELEPORT_FROM VL_SECRET_SHOP_OFFSET + 8
+  #!define VL_SHOP_HEAL_AREA VL_SECRET_SHOP_OFFSET + 9
+  #!define VL_SHOP_TELEPORTER_TEXT VL_SECRET_SHOP_OFFSET + 10
+  #!define VL_SHOP_TELEPORTER_RING VL_SECRET_SHOP_OFFSET + 11
+  #!define VL_SHOP_TIP VL_SECRET_SHOP_OFFSET + 12
 
   # Buy hero upgrades
   #!define VL_BUY_UPRADES_OFFSET VL_SECRET_SHOP_OFFSET + VL_SECRET_SHOP_LEN
@@ -86,12 +87,12 @@ globalvar vectList = compressed([
   vect(-27.94, 7.8, -85.89),
   vect(-24.27, 7.8, -84.38),
   vect(-21.08, 7.8, -82.96),
-  #!define VL_BUY_HP 49
-  #!define VL_BUY_DAMAGE 50
-  #!define VL_BUY_HEALING 51
-  #!define VL_BUY_TEAM_ARMOR 52
-  #!define VL_BUY_TEAM_SHIELDS 53
-  #!define VL_CHANGE_HERO 54
+  #!define VL_BUY_HP VL_BUY_UPRADES_OFFSET
+  #!define VL_BUY_DAMAGE VL_BUY_UPRADES_OFFSET + 1
+  #!define VL_BUY_HEALING VL_BUY_UPRADES_OFFSET + 2
+  #!define VL_BUY_TEAM_ARMOR VL_BUY_UPRADES_OFFSET + 3
+  #!define VL_BUY_TEAM_SHIELDS VL_BUY_UPRADES_OFFSET + 4
+  #!define VL_CHANGE_HERO VL_BUY_UPRADES_OFFSET + 5
 
   # It is good to place the hero purchase vectors at a height of 50 units from the floor
   #!define VL_BUY_HERO_SPOTS_OFFSET VL_BUY_UPRADES_OFFSET + VL_BUY_UPRADES_LEN
@@ -165,15 +166,15 @@ globalvar vectList = compressed([
   vect(140.011, 12.178, -61.257),
   vect(144.10, 10.36, 31.35),
   vect(129.36, 11.72, -49.72),
-  #!define VL_ACTIVATE_ZONE_DETECTOR_A 99
-  #!define VL_ACTIVATE_ZONE_DETECTOR_B 100
-  #!define VL_ACTIVATE_ZONE_DETECTOR_C 101
-  #!define VL_ACTIVATE_ZONE_DETECTOR_D 102
-  #!define VL_ACTIVATE_ZONE_DETECTOR_E 103
-  #!define VL_ACTIVATE_ZONE_DETECTOR_F 104
-  #!define VL_ACTIVATE_ZONE_DETECTOR_G 105
-  #!define VL_ACTIVATE_ZONE_DETECTOR_H 106
-  #!define VL_ACTIVATE_ZONE_DETECTOR_I 107
+  #!define VL_ACTIVATE_ZONE_DETECTOR_A 100
+  #!define VL_ACTIVATE_ZONE_DETECTOR_B 101
+  #!define VL_ACTIVATE_ZONE_DETECTOR_C 102
+  #!define VL_ACTIVATE_ZONE_DETECTOR_D 103
+  #!define VL_ACTIVATE_ZONE_DETECTOR_E 104
+  #!define VL_ACTIVATE_ZONE_DETECTOR_F 105
+  #!define VL_ACTIVATE_ZONE_DETECTOR_G 106
+  #!define VL_ACTIVATE_ZONE_DETECTOR_H 107
+  #!define VL_ACTIVATE_ZONE_DETECTOR_I 108
 
   # spawn points A
   #!define VL_SPAWN_POINTS_A_OFFSET VL_ACTIVATE_ZONES_OFFSET + VL_ACTIVATE_ZONES_LEN
@@ -242,7 +243,7 @@ globalvar vectList = compressed([
   vect(142.909, 17, -45),
 
   # zombie bots home point (the place they teleport to when they die)
-  #!define VL_REFUND 146
+  #!define VL_REFUND 147
   vect(-19.91, 6.50, -93.88)
 ])
 

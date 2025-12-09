@@ -15,7 +15,8 @@ rule "Teleport from restricted areas":
     if distance(eventPlayer, vect(103.937, 11.178, -30.358)) < 2:
       eventPlayer.teleport(vect(107.719, 11.178, -33.024))
   wait(0.3)
-  loop()
+  if ruleCondition:
+    loop()
 
 rule "Restricted areas affects":
   createInWorldText(getPlayers(Team.1), iconString(Icon.NO), vect(89.62, 13.973, -102.524), 1.7, Clip.SURFACES, WorldTextReeval.VISIBILITY)

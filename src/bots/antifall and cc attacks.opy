@@ -7,19 +7,19 @@ rule "Bots Antifall and fall damage from cc attacks from players":
   @Condition eventPlayer.isAlive()
 
   wait(0.2)
-  eventPlayer.temp1 = false
+  eventPlayer.abilState0 = false
   # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
   if eventPlayer.getPosition().x < 0 and eventPlayer.getPosition().z > -35: 
     if eventPlayer.getPosition().y < -6:
-      eventPlayer.temp1 = true
+      eventPlayer.abilState0 = true
   elif eventPlayer.getPosition().x > 43: # ZONE B
     if eventPlayer.getPosition().y < 4.7:
-      eventPlayer.temp1 = true
+      eventPlayer.abilState0 = true
   else:
     if eventPlayer.getPosition().y < 0: # Other
-      eventPlayer.temp1 = true
+      eventPlayer.abilState0 = true
 
-  if not eventPlayer.temp1:
+  if not eventPlayer.abilState0:
     goto RULE_START
 
   # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
@@ -40,4 +40,5 @@ rule "Bots Antifall and fall damage from cc attacks from players":
   else:
     eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
-  loop()
+  if ruleCondition:
+    loop()

@@ -11,7 +11,9 @@ rule "[debug] User starting stats":
   # eventPlayer.cameraState = 4
 
   # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
-  # eventPlayer.money = 500000
+
+  eventPlayer.teleport(vect(-20.63, 6.50, -88.95)) # to shop 
+  eventPlayer.money = 500000
   # eventPlayer.healthBoostPercent = 10000
   # eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   # eventPlayer.damageBoostPercent = 10000

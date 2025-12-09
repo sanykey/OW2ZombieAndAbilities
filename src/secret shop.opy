@@ -86,13 +86,14 @@ rule "[Secret shop] Close shop":
 rule "[Secret shop] Teleport players to secret shop":
   @Event eachPlayer
   @Team 1
-  @Condition distance(eventPlayer, vectList[VL_ENTER_SHOP_TELEPORT_FROM]) <= 5
   @Condition shopStatus == 2
+  @Condition distance(eventPlayer, vectList[VL_ENTER_SHOP_TELEPORT_FROM]) <= 5
   
   eventPlayer.isInSecretShop = true
   eventPlayer.teleport(vectList[VL_ENTER_SHOP_TELEPORT_TO])
-  wait(MAX_SHOP_TIME)
-  if eventPlayer.isInSecretShop == false or isBotsDisabled:
+
+  waitUntil(eventPlayer.isInSecretShop == false, MAX_SHOP_TIME)
+  if eventPlayer.isInSecretShop == false:
     return
       
   smallMessage(eventPlayer, "Leaving in 5...")

@@ -130,7 +130,7 @@ rule "[Sigma] Barrier Effect":
 
   wait(SIG_BARRIER_PUSH_ENENT_WAIT)
 
-  if RULE_CONDITION:
+  if ruleCondition:
     loop()
 
 # rule "[Ramattra] debug":

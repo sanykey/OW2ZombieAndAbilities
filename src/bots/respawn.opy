@@ -1,11 +1,12 @@
 #!mainFile "../main.opy"
 
-rule "Clear effects for destroed dummy bots":
-  @Event playerLeft
-  @Condition getNumberOfPlayers(Team.2) < wSettingsMaxZombieBots
+#!define LAST_ZOMBIES_ICONS_AMOUNT 5
+# rule "Clear effects for destroed dummy bots":
+#   @Event playerLeft
+#   @Condition getNumberOfPlayers(Team.2) < wSettingsMaxZombieBots
   
-  for lastZombiesI in range(LAST_ZOMBIES_ICONS_AMOUNT):
-    destroyIcon(lastZombiesIcons[lastZombiesI])
+#   for lastZombiesI in range(LAST_ZOMBIES_ICONS_AMOUNT):
+#     destroyIcon(lastZombiesIcons[lastZombiesI])
 
 rule "Setup new bots": 
   @Event playerJoined

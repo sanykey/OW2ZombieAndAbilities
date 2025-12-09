@@ -23,6 +23,16 @@ rule "Player joined setup":
   eventPlayer.respawn()
   eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
+  # debug:
+  # wait(10)
+  # eventPlayer.moveToTeam(Team.2, -1)
+
+# rule "Player joined zombie team": 
+#   @Event playerJoined
+#   @Team 2
+#   eventPlayer.startForcingHero(Hero.TORBJORN)
+#   eventPlayer.isHeroDescriptionOpened = false
+
 rule "Player spawned setup":
   @Event eachPlayer
   @Team 1
@@ -40,6 +50,7 @@ rule "Player spawned setup":
 
 rule "Show game tips in start":
   @Event eachPlayer
+  @Team 1 
   @Condition not eventPlayer.isReady
   waitUntil(distance(eventPlayer, vect(-27.33, -1.94, -12.68)) < 6)
 

@@ -83,9 +83,11 @@ globalvar debugSize3 = 1
 ##################################################
 ############## Player variables: #################
 ##################################################
-playervar interactZoneVect
-playervar interactZoneText
-playervar interactZoneEffect
+playervar healingTracker
+playervar selfHealingTracker
+playervar lastCcVanilaKnockback
+playervar zomDistancesToPlayersArr
+playervar zomIsInLoSPlayersArr
 
 playervar zombiesfly
 
@@ -152,8 +154,6 @@ playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady
 
-playervar lastZombieIcon
-
 playervar isHeroDescriptionOpened
 
 # new barriers damage took and push logic
@@ -180,7 +180,7 @@ playervar abilPos1
 playervar abilPos2
 playervar abilPos3
 playervar abilPos4
-playervar abilState0
+playervar abilState0 # also zombie bots antifall state
 playervar abilState1
 playervar abilState2
 playervar abilState3

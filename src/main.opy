@@ -16,7 +16,7 @@
 #!include "zones.opy"
 #!include "switch hero.opy"
 #!include "buy hero.opy" 
-#!include "buy hero upgrades.opy" 
+#!include "interact button.opy" 
 #!include "portal.opy"
 #!include "locked area.opy" 
 #!include "restricted areas.opy" 
@@ -32,10 +32,9 @@
 #!include "bots/zombie events.opy"
 #!include "bots/zombie behavior.opy"
 ##!include "bots/widowmaker.opy"
-#!include "bots/roadhog.opy"
-#!include "bots/mauga.opy"
-#!include "bots/echo.opy"
-#!include "bots/create bots.opy"
+##!include "bots/roadhog.opy"
+##!include "bots/mauga.opy"
+##!include "bots/echo.opy"
 #!include "bots/respawn.opy"
 #!include "bots/antifall and cc attacks.opy"
 #*/
@@ -62,21 +61,15 @@
 #!include "heroes abilities/doomfist.opy"
 #*/
 
-#/*
-#!include "debug/utils.opy"
-#!include "debug/other.opy"
+#/* 
+##!include "debug/utils.opy"
+##!include "debug/other.opy"
 #*/
 
 ##!include "debug/ally bot.opy"
 
-/*
-#!include "debug/noclip.opy"
-#!include "debug/positions measuring.opy"
-#!include "debug/vector list.opy"
-
+#/*
+##!include "debug/noclip.opy"
+##!include "debug/positions measuring.opy"
+##!include "debug/vector list.opy"
 #*/
-
-
-
-# #!include "orbs.opy"
-# #!include "money.opy"

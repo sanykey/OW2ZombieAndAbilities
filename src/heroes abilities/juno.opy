@@ -175,7 +175,7 @@ rule "[Juno] Ultimate - abduct enemies":
     )
   wait(0.1)
   if ruleCondition:
-      loop()
+    loop()
 
 
 # Hyper Rift code from [What If... Overwatch 3?](https://workshop.codes/4MZP7)
@@ -370,7 +370,7 @@ rule "[Juno] Get players for hyper Rift transfer":
 
   wait(0.1)
   if ruleCondition:
-      loop()
+    loop()
 
 
 # rule "[Juno] debug":

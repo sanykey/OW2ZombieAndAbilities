@@ -15,6 +15,17 @@ globalvar zonesEffectsIds = []
 #!define ZONE_H_SIZE 50
 #!define ZONE_I_SIZE 27
 
+rule "Init buyHeroUpgradesData":
+  buyHeroUpgradesData = [
+    ["HP (+8%): $2500", Color.LIME_GREEN, vectList[VL_BUY_HP]],
+    ["Damage (+5%): $2500", Color.RED, vectList[VL_BUY_DAMAGE]],
+    ["Healing Dealt (+5%): $2500", Color.YELLOW, vectList[VL_BUY_HEALING]],
+    ["+25 Armor [Team]: $10000", Color.ORANGE, vectList[VL_BUY_TEAM_ARMOR]],
+    ["+25 Shields [Team]: $10000", Color.BLUE, vectList[VL_BUY_TEAM_SHIELDS]],
+    ["Change to a purchased hero", Color.WHITE, vectList[VL_CHANGE_HERO]],
+    ["Refund", Color.WHITE, vectList[VL_REFUND]],
+  ]
+
 def getHeroBuySpotsLen():
   @Name "Get hero buy spots len"
   zonesHeroBuyLen = (
@@ -138,6 +149,11 @@ rule "[Secret shop] Activate or Deactivate zone C":
   )
   secretShopZoneEffects.append(getLastCreatedText())
 
+  createInWorldText(
+    getAllPlayers(), "[Interact] to buy\n[Interact] + [Crouch] to buy x20", vectList[VL_SHOP_TIP], 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.WHITE
+  )
+  secretShopZoneEffects.append(getLastCreatedText())
+
 
 rule "[Secret shop] Activate or Deactivate zone C-":
   @Condition unlockedLocations == 4
@@ -147,15 +163,15 @@ rule "[Secret shop] Activate or Deactivate zone C-":
 
   # destroy effects for Secret shop upgrades spots:
   for zonesI in range(0, len(secretShopZoneEffects), 2):
-    # destroy shop exit effects
-    if zonesI > (len(secretShopZoneEffects) - 3):
+    # destroy shop exit and tip text effects
+    if zonesI > (len(secretShopZoneEffects) - 4):
       destroyInWorldText(secretShopZoneEffects[zonesI])
       destroyInWorldText(secretShopZoneEffects[zonesI + 1])
+      destroyInWorldText(secretShopZoneEffects[zonesI + 2])
       break
 
     destroyEffect(secretShopZoneEffects[zonesI])
     destroyInWorldText(secretShopZoneEffects[zonesI + 1])
-
 
   secretShopZoneEffects = []
 

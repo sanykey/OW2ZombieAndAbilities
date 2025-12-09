@@ -187,7 +187,7 @@ rule "[Symmetra] Barrier push enemies":
   
   wait(SYM_BARRIER_PUSH_ENENT_WAIT) # Higher values cause enemies to pass through the barrier
   if ruleCondition:
-      loop()
+    loop()
 
 
 # rule "[Symmetra] debug":

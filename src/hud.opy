@@ -59,7 +59,7 @@ rule "Init huds":
   
   # round stats
   hudText(
-    localPlayer if not localPlayer.isHeroDescriptionOpened else null,
+    localPlayer if not localPlayer.isHeroDescriptionOpened and localPlayer.getTeam() == Team.1 else null,
     null,
     "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\nRound statistics:{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(
       "\nEliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
