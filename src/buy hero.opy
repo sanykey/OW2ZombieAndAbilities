@@ -53,7 +53,10 @@ rule "Buy hero":
       eventPlayer.temp0 = heroesShopData[I][0] in eventPlayer.purchasedHeroes
       if eventPlayer.temp0 or eventPlayer.money >= heroesShopData[I][2]:
         eventPlayer.startForcingHero(heroesShopData[I][0])
-        wait()
+        wait(0.1)
+
+        eventPlayer.isTank = any([hero == eventPlayer.getCurrentHero() for hero in getTankHeroes()])
+
         playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
         playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)
         if not eventPlayer.temp0:

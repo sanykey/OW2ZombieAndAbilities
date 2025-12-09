@@ -103,6 +103,7 @@ playervar selfHealingTracker
 playervar lastCcVanilaKnockback
 playervar zomDistancesToPlayersArr
 playervar zomIsInLoSPlayersArr
+playervar isTank
 
 playervar zombiesfly
 

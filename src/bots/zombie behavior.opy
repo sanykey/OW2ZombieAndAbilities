@@ -109,12 +109,14 @@ rule "Bots moves":
   eventPlayer.targetPlayer0 = (
     sorted(
       eventPlayer.list0,
-      lambda i: eventPlayer.zomDistancesToPlayersArr[i.getSlot()] + (
-        10 if not eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] else 0
+      lambda i: eventPlayer.zomDistancesToPlayersArr[i.getSlot()] + ( 
+        10 if not eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] else 0 # Low priority for targets behind walls
       ) + (
         200 if not i.isReady else 0
       ) + (
         100 if i.isInvisible > getTotalTimeElapsed() and (eventPlayer.zomDistancesToPlayersArr[i.getSlot()] > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
+      ) - (
+        7 if eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] and i.isTank and not (i.getCurrentHero() == Hero.DVA and i.isInAlternateForm()) else 0 # High priority for tank targets (except Baby D.Va)
       )
     )
   )[0]

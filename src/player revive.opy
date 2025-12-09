@@ -2,7 +2,6 @@
 
 playervar currentRevivesStat
 
-
 rule "Team 1 (Death)":
   @Event playerDied
   @Team 1

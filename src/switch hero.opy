@@ -27,3 +27,4 @@ def openSwitchHeroHud():
   eventPlayer.posBeforeChangeHero = false
   wait(0.1)
   unpause3PCamera()
+  eventPlayer.isTank = any([hero == eventPlayer.getCurrentHero() for hero in getTankHeroes()])
