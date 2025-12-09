@@ -46,7 +46,6 @@ settings {
                 "spawnWithoutMech": true
             },
             "juno": {
-                "jumpVerticalSpeed%": 115,
                 "ability1Duration%": 150
             },
             "moira": {

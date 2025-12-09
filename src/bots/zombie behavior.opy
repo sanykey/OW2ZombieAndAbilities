@@ -116,7 +116,7 @@ rule "Bots moves":
       ) + (
         100 if i.isInvisible > getTotalTimeElapsed() and (eventPlayer.zomDistancesToPlayersArr[i.getSlot()] > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
       ) - (
-        7 if eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] and i.isTank and not (i.getCurrentHero() == Hero.DVA and i.isInAlternateForm()) else 0 # High priority for tank targets (except Baby D.Va)
+        5 if eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] and i.isTank and not (i.getCurrentHero() == Hero.DVA and i.isInAlternateForm()) else 0 # High priority for tank targets (except Baby D.Va)
       )
     )
   )[0]

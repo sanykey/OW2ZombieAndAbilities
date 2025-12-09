@@ -86,10 +86,7 @@ rule "[Juno] init":
 
   eventPlayer.heroInfoVertFix1 = 3.5
   eventPlayer.heroInfoHorFix1 = 11
-  eventPlayer.heroInfoText1 = "
-  <TX C0000000004E37B> <fg721fa3FF>Martian overboots</fg>:
-    - Jump strength and levitation are increased\n\n
-  " 
+  eventPlayer.heroInfoText1 = "" 
 
   # 00000004AA3F  eventPlayer.abilState0
 
