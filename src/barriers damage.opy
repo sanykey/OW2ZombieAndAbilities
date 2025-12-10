@@ -58,13 +58,16 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
       )
     )]
   )
-  eventPlayer.list0.applyImpulse(
-    normalize(eventPlayer.getFacingDirection() + barrierPushVectUpFix),
-    6,
-    Relativity.TO_WORLD
-  )
 
-  damage(eventPlayer.list0, eventPlayer, 0.1)
+  eventPlayer.list0.pushInFacingDirectionAndUp(eventPlayer, 6)
+
+  # eventPlayer.list0.applyImpulse(
+  #   normalize(eventPlayer.getFacingDirection() + barrierPushVectUpFix),
+  #   6,
+  #   Relativity.TO_WORLD
+  # )
+
+  damage(eventPlayer.list0, eventPlayer, 0.1) # Deal a small amount of damage to earn assist money while holding a shield
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
 
   eventPlayer.barrierDamageStack += (

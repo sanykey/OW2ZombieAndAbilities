@@ -141,7 +141,7 @@ globalvar vectList = compressed([
   vect(111.64, 13.22, -59.40),
 
   #   zone H
-  #!define VL_BUY_HERO_SPOTS_H_LEN 9
+  #!define VL_BUY_HERO_SPOTS_H_LEN 10
   vect(132.44, 11.22, 7.48),
   vect(129.50, 11.22, 8.29),
   vect(126.59, 11.22, 9.00),
@@ -151,6 +151,7 @@ globalvar vectList = compressed([
   vect(123.66, 11.22, 9.80),
   vect(130.42, 11.22, -0.26),
   vect(133.33, 11.22, -1.04),
+  vect(127.75, 11.22, 0.40),
 
   #!define VL_BUY_HERO_SPOTS_LEN VL_BUY_HERO_SPOTS_A_LEN + VL_BUY_HERO_SPOTS_B_LEN + VL_BUY_HERO_SPOTS_E_LEN + VL_BUY_HERO_SPOTS_I_LEN + VL_BUY_HERO_SPOTS_H_LEN
 
@@ -238,7 +239,7 @@ globalvar vectList = compressed([
   vect(142.909, 17, -45),
 
   # zombie bots home point (the place they teleport to when they die)
-  #!define VL_REFUND 146
+  #!define VL_REFUND 147
   vect(-19.91, 6.50, -93.88)
 ])
 

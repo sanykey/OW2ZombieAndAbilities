@@ -14,13 +14,14 @@ rule "[debug] User starting stats":
 
   # eventPlayer.teleport(vect(-20.63, 6.50, -88.95)) # to shop 
   eventPlayer.money = 500000
-  # eventPlayer.healthBoostPercent = 10000
-  # eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
+  eventPlayer.healthBoostPercent = 10000
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   # eventPlayer.damageBoostPercent = 10000
   # eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
   # eventPlayer.healingBoostPercent += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
+  eventPlayer.startForcingHero(newHero)
   wait()
   heal(eventPlayer, null, INFINITY)
 
