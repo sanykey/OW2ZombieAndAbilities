@@ -58,6 +58,7 @@
 #!include "heroes abilities/soldier.opy"
 #!include "heroes abilities/mei.opy"
 #!include "heroes abilities/doomfist.opy"
+#!include "heroes abilities/vendetta.opy"
 #*/
 
 #/* 
