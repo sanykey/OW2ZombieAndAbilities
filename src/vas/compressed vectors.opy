@@ -80,19 +80,17 @@ globalvar vectList = compressed([
 
   # Buy hero upgrades
   #!define VL_BUY_UPRADES_OFFSET VL_SECRET_SHOP_OFFSET + VL_SECRET_SHOP_LEN
-  #!define VL_BUY_UPRADES_LEN 6
+  #!define VL_BUY_UPRADES_LEN 5
   vect(-31.204, 7.8, -87.474),
   vect(-26.235, 7.8, -90.938),
   vect(-27.198, 7.8, -96.303),
   vect(-27.94, 7.8, -85.89),
-  vect(-24.27, 7.8, -84.38),
   vect(-21.08, 7.8, -82.96),
   #!define VL_BUY_HP VL_BUY_UPRADES_OFFSET
   #!define VL_BUY_DAMAGE VL_BUY_UPRADES_OFFSET + 1
   #!define VL_BUY_HEALING VL_BUY_UPRADES_OFFSET + 2
   #!define VL_BUY_TEAM_ARMOR VL_BUY_UPRADES_OFFSET + 3
-  #!define VL_BUY_TEAM_SHIELDS VL_BUY_UPRADES_OFFSET + 4
-  #!define VL_CHANGE_HERO VL_BUY_UPRADES_OFFSET + 5
+  #!define VL_CHANGE_HERO VL_BUY_UPRADES_OFFSET + 4
 
   # It is good to place the hero purchase vectors at a height of 50 units from the floor
   #!define VL_BUY_HERO_SPOTS_OFFSET VL_BUY_UPRADES_OFFSET + VL_BUY_UPRADES_LEN
@@ -114,7 +112,7 @@ globalvar vectList = compressed([
   vect(1.675, 6.5, -47.434),
   vect(-0.898, 4.69, -90.515),
   vect(-1.751, 7, -71.73),
-  vect(-7.94, 4.94, -83.07),
+  vect(-7.94, 4, -83.07),
   #   zone E:
   #!define VL_BUY_HERO_SPOTS_E_LEN 12
   vect(59.56, 7.22, -72.899),
@@ -160,7 +158,7 @@ globalvar vectList = compressed([
   #!define VL_ACTIVATE_ZONES_LEN 9
   vect(-6.965, 2.94, -7.146),
   vect(13.044, 9.697, -73.344),
-  vect(-22.86, 8.08, -88.854),
+  vect(-23.86, 8.08, -89.854),
   vect(59.416, 19.498, -77.513),
   vect(75.315, 22.594, -101.637),
   vect(108.196, 14.309, -22.096),
@@ -239,8 +237,11 @@ globalvar vectList = compressed([
   vect(142.909, 17, -45),
 
   # zombie bots home point (the place they teleport to when they die)
-  #!define VL_REFUND 147
-  vect(-19.91, 6.50, -93.88)
+  #!define VL_REFUND 146
+  vect(-19.91, 6.50, -93.88),
+
+  #!define VL_SHOP_ZONE2 VL_REFUND + 1
+  vect(-11.54, 11.30, -76.66),
 ])
 
 #!define LOCKED_AREA_EFFECTS_LEN 12

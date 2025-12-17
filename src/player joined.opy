@@ -7,7 +7,7 @@ rule "Player joined setup":
   @Event playerJoined
   @Team 1
 
-  eventPlayer.setRespawnTime(INFINITY)
+  eventPlayer.setRespawnTime(PLAYER_RESPAWN_TIME)
   eventPlayer.healthBoostPercent = 100 + (5 * roundNumber)
   eventPlayer.damageBoostPercent = 100 + (3 * roundNumber)
   eventPlayer.healingBoostPercent = 100 + (3 * roundNumber)
@@ -18,8 +18,11 @@ rule "Player joined setup":
   if "{0}".format(eventPlayer) in devPlayers:
     eventPlayer.developer = true
     bigMessage(getAllPlayers(), "Mod developer [{}] joined the game".format(eventPlayer))
+    # eventPlayer.startScalingSize(0.7, false)
+    eventPlayer.startForcingHero(Hero.VENDETTA)
+  else:
+    eventPlayer.startForcingHero(Hero.DVA)
 
-  eventPlayer.startForcingHero(Hero.DVA)
   eventPlayer.respawn()
   eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
@@ -38,9 +41,6 @@ rule "Player spawned setup":
   @Team 1
   @Condition eventPlayer.hasSpawned()
 
-  eventPlayer.addHealthPool(Health.SHIELDS, teamShields, true)
-  eventPlayer.boostStats[PV_TEAM_SHIELDS_POOL] = getLastCreatedHealthPool()
-  wait()
   eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
   eventPlayer.boostStats[PV_TEAM_ARMOR_POOL] = getLastCreatedHealthPool()
 
@@ -64,6 +64,6 @@ rule "Show game tips in start":
 
 rule "Player left Match, destroy effects, texts and hud":
   @Event playerLeft
-  destroyHudText(eventPlayer.effectsIds[HI.PLAYER_STATUS])
-  destroyEffect(eventPlayer.effectsIds[HI.REVIVE_EFFECT])
-  destroyIcon(eventPlayer.effectsIds[HI.REVIVE_ICON])
+  destroyHudText(eventPlayer.effectsIds[PLAYER_STATUS_HUD])
+  destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])
+  destroyInWorldText(eventPlayer.effectsIds[REVIVE_TEXT])

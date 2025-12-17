@@ -82,7 +82,7 @@ rule "Bots attack near player":
 
   # [Vendetta] pushes and damages enemies in front of her if an attack was blocked by her guard
   eventPlayer.temp3 = [
-    player for player in eventPlayer.list1 if newHero == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
+    player for player in eventPlayer.list1 if Hero.VENDETTA == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
   ]
   if eventPlayer.temp3:
     eventPlayer.temp3.list0 = [

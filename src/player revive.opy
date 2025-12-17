@@ -7,13 +7,29 @@ rule "Team 1 (Death)":
   @Team 1
   @Condition not isDebugAutoRespawn
 
+  eventPlayer.isReady = true
   if not eventPlayer.downedStartTime:
     pause3PCamera()
     smallMessage(getAllPlayers(), "{0} was downed!".format(eventPlayer))
     eventPlayer.downedStartTime = getTotalTimeElapsed()
     eventPlayer.reviveTimer = 0
-  if eventWasEnvironment:
     eventPlayer.teleport(nearestWalkablePosition(eventPlayer))
+
+    # revive effects and icon
+    createEffect(getPlayers(Team.1), Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.NONE)
+    eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT] = getLastCreatedEntity()
+
+    createInWorldText(
+      getPlayers(Team.1).exclude(eventPlayer),
+      "{}{}".format(iconString(Icon.SKULL), eventPlayer),
+      vect(eventPlayer.getPosition().x, eventPlayer.getPosition().y + 1.7, eventPlayer.getPosition().z),
+      1,
+      Clip.NONE,
+      WorldTextReeval.NONE,
+      Color.YELLOW
+    )
+
+    eventPlayer.effectsIds[REVIVE_TEXT] = getLastCreatedText()
 
 rule "Revive, check player in radius, unset is downed":
   @Event eachPlayer
@@ -41,6 +57,9 @@ rule "Team 1: Player gets up":
   @Team 1
   @Condition not eventPlayer.downedStartTime
   
+  destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])
+  destroyInWorldText(eventPlayer.effectsIds[REVIVE_TEXT])
+
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
   eventPlayer.setHealth(INFINITY)
   eventPlayer.revivers = []

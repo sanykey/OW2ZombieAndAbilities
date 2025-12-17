@@ -24,7 +24,6 @@ rule "Init buyHeroUpgradesData":
     [f"Damage (+{DAMAGE_UPGRADE_AMOUNT}%): ${UPGRADE_PRICE}", Color.RED, vectList[VL_BUY_DAMAGE]],
     [f"Healing Dealt (+{HEALING_UPGRADE_AMOUNT}%): ${UPGRADE_PRICE}", Color.YELLOW, vectList[VL_BUY_HEALING]],
     [f"+{TEAM_ARMOR_UPGRADE_AMOUNT} Armor [Team]: ${TEAM_UPGRADE_PRICE}", Color.ORANGE, vectList[VL_BUY_TEAM_ARMOR]],
-    [f"+{TEAM_SHIELDS_UPGRADE_AMOUNT} Shields [Team]: ${TEAM_UPGRADE_PRICE}", Color.BLUE, vectList[VL_BUY_TEAM_SHIELDS]],
     ["Change to a purchased hero", Color.WHITE, vectList[VL_CHANGE_HERO]],
     ["Refund", Color.WHITE, vectList[VL_REFUND]],
   ]
@@ -139,7 +138,7 @@ rule "Activate or Deactivate zones":
     )
     secretShopZoneEffects.append(getLastCreatedText())
 
-  # Deactivate zone C (Shop):
+  # [shop] Deactivate zone C:
   elif secretShopZoneEffects and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_C], ZONE_C_SIZE, Team.1):
     # destroy effects for Secret shop upgrades spots:
     for zonesI in range(0, len(secretShopZoneEffects), 2):

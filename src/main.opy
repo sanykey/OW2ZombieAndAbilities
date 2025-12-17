@@ -23,6 +23,8 @@
 #*/
 
 #/*
+#!include "rayIntersectionsWithSphere.opy"
+#!include "heroes abilities/all.opy"
 #!include "damage and healing.opy"
 #!include "barriers damage.opy"
 #*/
@@ -39,17 +41,14 @@
 #*/
 
 #/*
-#!include "heroes abilities/all.opy"
+
 #!include "heroes abilities/dva.opy"
 #!include "heroes abilities/mercy.opy"
-#!include "heroes abilities/widowmaker.opy"
 #!include "heroes abilities/juno.opy"
 #!include "heroes abilities/sombra.opy"
 #!include "heroes abilities/reinhardt.opy"
-#!include "heroes abilities/winston.opy"
 #!include "heroes abilities/ramattra.opy"
 #!include "heroes abilities/sigma.opy"
-#!include "heroes abilities/symmetra.opy"
 #!include "heroes abilities/mauga.opy"
 #!include "heroes abilities/brigitte.opy"
 #!include "heroes abilities/ana.opy"
@@ -58,18 +57,18 @@
 #!include "heroes abilities/soldier.opy"
 #!include "heroes abilities/mei.opy"
 #!include "heroes abilities/doomfist.opy"
+#!include "heroes abilities/symmetra.opy"
 #!include "heroes abilities/vendetta.opy"
+#!include "heroes abilities/widowmaker.opy"
+#!include "heroes abilities/winston.opy"
+#!include "heroes abilities/wuyang.opy"
 #*/
 
 #/* 
-##!include "debug/utils.opy"
+#!include "debug/utils.opy"
 ##!include "debug/other.opy"
-#*/
-
-##!include "debug/ally bot.opy"
-
-#/*
 ##!include "debug/noclip.opy"
 ##!include "debug/positions measuring.opy"
+##!include "debug/ally bot.opy"
 ##!include "debug/vector list.opy"
 #*/

@@ -2,7 +2,10 @@
 
 # settings.heroes.allTeams.general.passiveHealthRegen false is not working. You must manually enter this parameter = "Disabled"
 
-#!define MODE_VERSION "0.7.0 beta (10.12.2025)"
+#!define MODE_VERSION "0.8.0 beta (15.12.2025)"
+#!define BASE_ZOMBIE_SPEED 85
+
+
 settings {
     "main": {
         "description": f"Try to survive more than 100 rounds. v{MODE_VERSION}",
@@ -59,7 +62,7 @@ settings {
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
                 "movementGravity%": 70,
-                "movementSpeed%": ZOMBIE_SPEED,
+                "movementSpeed%": BASE_ZOMBIE_SPEED,
                 "enableAbility2": false,
                 "projectileSpeed%": 0,
                 "combatUltGen%": 50,
@@ -72,14 +75,14 @@ settings {
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
                 "movementGravity%": 70,
-                "movementSpeed%": ZOMBIE_SPEED - 10,
+                "movementSpeed%": BASE_ZOMBIE_SPEED - 10,
                 "ability1Cooldown%": 10
             },
             "mauga": {
                 "healingReceived%": 10,
                 "jumpVerticalSpeed%": 150,
                 "movementGravity%": 70,
-                "movementSpeed%": ZOMBIE_SPEED,
+                "movementSpeed%": BASE_ZOMBIE_SPEED,
                 "ability1Cooldown%": 50
             },
             "echo": {

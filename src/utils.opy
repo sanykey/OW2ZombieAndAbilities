@@ -1,13 +1,6 @@
 #!mainFile "main.opy"
 
-globalvar newHero
 
-macro Player.pushInFacingDirectionAndUp(self, attacker0, speed):
-  self.applyImpulse(
-    vect(attacker0.getFacingDirection().x, 0.2679 if attacker0.getFacingDirection().y < 0.2679 else attacker0.getFacingDirection().y, attacker0.getFacingDirection().z),
-    speed,
-    Relativity.TO_WORLD
-  )
 
 rule "Version text":
   hudText(
@@ -29,7 +22,7 @@ rule "init utils":
 
   # Show ServerLoad info
   hudSubheader(
-    localPlayer if localPlayer == hostPlayer or hostPlayer.developer else null,
+    localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
     "Server load: {} / AVG: {}/ Max: {}
       Entities: {}, Texts: {}
     ".format(
@@ -57,53 +50,54 @@ rule "Server anti-crash system":
   waitUntil(getServerLoad() < 230, INFINITY)
   setSlowMotion(100)
 
-rule "Get new hero - Vendetta":
-  newHero = getAllHeroes().exclude([
-    Hero.ANA,
-    Hero.ASHE,
-    Hero.BAPTISTE,
-    Hero.BASTION,
-    Hero.BRIGITTE,
-    Hero.CASSIDY,
-    Hero.DOOMFIST,
-    Hero.DVA,
-    Hero.ECHO,
-    Hero.FREJA,
-    Hero.GENJI,
-    Hero.HANZO,
-    Hero.HAZARD,
-    Hero.ILLARI,
-    Hero.JUNKER_QUEEN,
-    Hero.JUNKRAT,
-    Hero.JUNO,
-    Hero.KIRIKO,
-    Hero.LIFEWEAVER,
-    Hero.LUCIO,
-    Hero.MAUGA,
-    Hero.MEI,
-    Hero.MERCY,
-    Hero.MOIRA,
-    Hero.ORISA,
-    Hero.PHARAH,
-    Hero.RAMATTRA,
-    Hero.REAPER,
-    Hero.REINHARDT,
-    Hero.ROADHOG,
-    Hero.SIGMA,
-    Hero.SOJOURN,
-    Hero.SOLDIER,
-    Hero.SOMBRA,
-    Hero.SYMMETRA,
-    Hero.TORBJORN,
-    Hero.TRACER,
-    Hero.VENTURE,
-    Hero.WIDOWMAKER,
-    Hero.WINSTON,
-    Hero.WRECKING_BALL,
-    Hero.WUYANG,
-    Hero.ZARYA,
-    Hero.ZENYATTA
-  ])[0]
+# globalvar newHero
+# rule "Get new hero":
+#   newHero = getAllHeroes().exclude([
+#     Hero.ANA,
+#     Hero.ASHE,
+#     Hero.BAPTISTE,
+#     Hero.BASTION,
+#     Hero.BRIGITTE,
+#     Hero.CASSIDY,
+#     Hero.DOOMFIST,
+#     Hero.DVA,
+#     Hero.ECHO,
+#     Hero.FREJA,
+#     Hero.GENJI,
+#     Hero.HANZO,
+#     Hero.HAZARD,
+#     Hero.ILLARI,
+#     Hero.JUNKER_QUEEN,
+#     Hero.JUNKRAT,
+#     Hero.JUNO,
+#     Hero.KIRIKO,
+#     Hero.LIFEWEAVER,
+#     Hero.LUCIO,
+#     Hero.MAUGA,
+#     Hero.MEI,
+#     Hero.MERCY,
+#     Hero.MOIRA,
+#     Hero.ORISA,
+#     Hero.PHARAH,
+#     Hero.RAMATTRA,
+#     Hero.REAPER,
+#     Hero.REINHARDT,
+#     Hero.ROADHOG,
+#     Hero.SIGMA,
+#     Hero.SOJOURN,
+#     Hero.SOLDIER,
+#     Hero.SOMBRA,
+#     Hero.SYMMETRA,
+#     Hero.TORBJORN,
+#     Hero.TRACER,
+#     Hero.VENTURE,
+#     Hero.WIDOWMAKER,
+#     Hero.WINSTON,
+#     Hero.WRECKING_BALL,
+#     Hero.WUYANG,
+#     Hero.ZARYA,
+#     Hero.ZENYATTA
+#   ])[0]
 
 # rule "Crash Protection [ON]":
 #   @Condition getServerLoad() > 250

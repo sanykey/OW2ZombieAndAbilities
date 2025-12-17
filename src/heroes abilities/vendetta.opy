@@ -5,24 +5,23 @@
 rule "[Vendetta] init":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.getHero() == newHero
+  @Condition eventPlayer.getHero() == Hero.VENDETTA
 
   wait(1) # waiting for the previous hero to clear hero data
-  # todo: find Vendetta color:
   eventPlayer.heroInfoVertFix0 = -3
-  eventPlayer.heroInfoText0 = "{} <fga0a9baFF>Vendetta</fg>:\n
+  eventPlayer.heroInfoText0 = "{} <fg701315FF>Vendetta</fg>:\n
   ".format(
-    heroIcon(newHero)
+    heroIcon(Hero.VENDETTA)
   )
 
-  waitUntil(eventPlayer.getHero() != newHero, INFINITY)
+  waitUntil(eventPlayer.getHero() != Hero.VENDETTA, INFINITY)
   clearHeroInfo()
 
 
 rule "[Vendetta] Swirlwind without dash [Ability_1] + [Crouch]":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.getHero() == newHero
+  @Condition eventPlayer.getHero() == Hero.VENDETTA
   @Condition eventPlayer.isHoldingButton(Button.ABILITY_1) and eventPlayer.getAbilityCooldown(Button.ABILITY_1) == 0
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   

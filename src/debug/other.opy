@@ -12,16 +12,16 @@ rule "[debug] User starting stats":
 
   # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
-  # eventPlayer.teleport(vect(-20.63, 6.50, -88.95)) # to shop 
+  eventPlayer.teleport(vect(-20.63, 6.50, -88.95)) # to shop 
   eventPlayer.money = 500000
-  eventPlayer.healthBoostPercent = 10000
-  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
+  # eventPlayer.healthBoostPercent = 10000
+  # eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   # eventPlayer.damageBoostPercent = 10000
   # eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
   # eventPlayer.healingBoostPercent += 10000
   # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
   # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
-  eventPlayer.startForcingHero(newHero)
+  # eventPlayer.startForcingHero(Hero.VENDETTA)
   wait()
   heal(eventPlayer, null, INFINITY)
 
@@ -31,12 +31,15 @@ rule "[debug] User starting stats":
 #   @Team 1
 #   debug(hostPlayer.getFacingDirection())
 
-# rule "[debug] Charge ultimate":
-#   @Event eachPlayer
-#   @Team 1
-#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+rule "[debug] Charge ultimate":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
-#   eventPlayer.setUltCharge(100)
+  eventPlayer.setUltCharge(100)
+
+  damage([player for player in getPlayers(Team.1) if player.isDummy()], null, INFINITY)
+  
 
 # rule "[debug] Create ally dummy":
 #   @Event eachPlayer
@@ -166,7 +169,29 @@ rule "[debug] User starting stats":
 #   destroyEffect(eventPlayer.effectsIds[HI.DEBUG2])
 #   destroyEffect(eventPlayer.effectsIds[HI.DEBUG3])
 
-#   temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
+#   wait(2)
+#   createBeam(
+#     getAllPlayers(),
+#     Beam.TORBJORN_TURRET_SIGHT,
+#     eventPlayer.getEyePosition() + vect(0, -0.45, 0),
+#     eventPlayer.raycast[RI.FACING_DIRECTION] * 50,
+#     Color.TEAM_2,
+#     EffectReeval.COLOR
+#   )
+#   eventPlayer.effectsIds[HI.DEBUG] = getLastCreatedEntity()
+
+#   createBeam(
+#     getAllPlayers(),
+#     Beam.BAD,
+#     eventPlayer.getEyePosition() + vect(0, -0.45, 0),
+#     eventPlayer.raycast[RI.RESULT],
+#     Color.TEAM_1,
+#     EffectReeval.COLOR
+#   )
+#   eventPlayer.effectsIds[HI.DEBUG2] = getLastCreatedEntity()
+  
+
+  # temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
 
 #   createBeam(
 #     getAllPlayers(),

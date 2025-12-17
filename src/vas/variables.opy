@@ -13,6 +13,53 @@
 #!define TEAM_SHIELDS_UPGRADE_AMOUNT 25
 #!define BUNCH_BUY_MULTIPLY 20
 
+# Dificultly settings
+#!define PLAYER_RESPAWN_TIME 180
+#!define ULT_CHARGE_FOR_KILL 5
+#!define EMOTE_ULT_CHARE_PER_SECONDS  0.3
+#!define DAMAGE_RESISTANCE_BY_OWNED_HERO 0.5
+
+# vanilla hero constants
+#!define TORBJORN_HAMMER_BASE_DMG 70
+
+# Zombie settings
+#!define ZOMBIE_FALL_DAMAGE 250
+#!define ZOMBIE_BASE_DAMAGE 20
+#!define ZOMBIE_BASE_HP 50
+#!define ZOMBIE_BASE_MOVE_SPEED 70
+#!define BOT_MAX_INACTIVITY_DURATION 60
+#!define LAST_CC_ATTACK_DURATION 5
+
+# [Bot fake death]
+#!define BOT_FAKE_DIE_HP_THRESHOLD 10
+
+# Player settings
+#!define MAX_PLAYERS 5
+#!define REVIVE_TIMER_TICK 5
+#!define AUTO_HEALING_OVERTIME_DURATION 20
+#!define REVEAL_DURATION 10
+
+
+# [Sombra] Money:
+#!define SOMBRA_STEAL_MONEY 25
+
+# HUD
+#!define HERO_INFO_HOLD_DURATION 0.5
+
+# Other:
+#!define INFINITY 99999
+#!define ALLY_BOT_PLAYER_SLOT 7
+
+enum SI:
+  HACKED # hacked status to get money from killed hacked zombies
+  LAST_DAMAGE_TIME
+  START_AUTO_HEAL_TIME
+  IS_INVISIBLE
+  CHANGED_SPEED_TIME
+  CHANGED_SPEED_AMOUNT
+  CHANGED_SPEED_AMOUNT_PREV
+  LOW_GRAVITY
+
 
 #####################################################
 ################ Global variables ###################
@@ -58,7 +105,6 @@ enum ZI:
 globalvar lastZombiesList
 globalvar lastZombiesI
 
-globalvar teamShields
 globalvar teamArmor
 globalvar matchIsOver = false
 globalvar unlockedLocations = 0
@@ -90,10 +136,7 @@ globalvar debugVectsArr
 globalvar debugCurrentVectNum
 globalvar debugCurrentVectEffectArr
 globalvar debugIsNoclip
-globalvar debugPos1
-globalvar debugPos2
-globalvar debugPos3
-globalvar debugSize3 = 1
+
 
 ##################################################
 ############## Player variables: #################
@@ -135,9 +178,9 @@ playervar healthBoostPercent
 playervar damageBoostPercent
 playervar healingBoostPercent
 
-#!define PV_SHIELDS_FOR_TEAM 0
+##!define PV_SHIELDS_FOR_TEAM 0
 #!define PV_ARMOR_FOR_TEAM 1
-#!define PV_TEAM_SHIELDS_POOL 2
+##!define PV_TEAM_SHIELDS_POOL 2
 #!define PV_TEAM_ARMOR_POOL 3
 playervar boostStats # [shieldsForTeam, armorForTeam, teamShieldsPool, teamArmorPool]
 
@@ -148,11 +191,12 @@ playervar healingTrackerThreshold = HEAL_AMOUNT_FOR_MONEY
 
 # effects ids
 playervar effectsIds
+#!define PLAYER_STATUS_HUD 0
+#!define REVIVE_CIRCLE_EFFECT 1
+#!define REVIVE_TEXT 2
+#!define REVEALED_ICON 3
+
 enum HI:
-  REVEALED_ICON
-  PLAYER_STATUS
-  REVIVE_EFFECT
-  REVIVE_ICON
   DEBUG
   DEBUG2
   DEBUG3
@@ -164,7 +208,6 @@ playervar heroEffectsIds
 playervar hasBadStatus
 playervar revealed
 playervar money
-playervar raycast
 
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
@@ -207,71 +250,3 @@ playervar abilDir3
 playervar targetPlayer0
 playervar targetPlayer1
 playervar abilityCD
-
-#!define ULT_CHARGE_FOR_KILL 5
-#!define EMOTE_ULT_CHARE_PER_SECONDS 0.5
-#!define DAMAGE_RESISTANCE_BY_OWNED_HERO 0.5
-
-# vanilla hero constants
-#!define TORBJORN_HAMMER_BASE_DMG 70
-
-# Zombie settings
-#!define ZOMBIE_SPEED 80
-#!define ZOMBIE_FALL_DAMAGE 250
-#!define ZOMBIE_BASE_DAMAGE 20
-#!define ZOMBIE_BASE_HP 50
-#!define ZOMBIE_BASE_MOVE_SPEED 70
-#!define BOT_MAX_INACTIVITY_DURATION 60
-#!define LAST_CC_ATTACK_DURATION 5
-
-# [Bot fake death]
-#!define BOT_FAKE_DIE_HP_THRESHOLD 10
-
-# Player settings
-#!define MAX_PLAYERS 5
-#!define REVIVE_TIMER_TICK 5
-#!define AUTO_HEALING_OVERTIME_DURATION 20
-#!define REVEAL_DURATION 10
-#!define PLAYER_SPEED 100
-
-# [Widowmaker] hitbox position for wallhack shots
-#!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
-#!define ZOMBIE_HEAD_HITBOX_RADIUS 0.15
-#!define WALLHACK_SHOT_IN_VIEW_ANGLE 4
-
-# [Sombra] Money:
-#!define SOMBRA_STEAL_MONEY 25
-
-# HUD
-#!define HERO_INFO_HOLD_DURATION 0.5
-
-# Other:
-#!define INFINITY 99999
-#!define ALLY_BOT_PLAYER_SLOT 7
-
-enum SI:
-  HACKED # hacked status to get money from killed hacked zombies
-  LAST_DAMAGE_TIME
-  START_AUTO_HEAL_TIME
-  IS_INVISIBLE
-  CHANGED_SPEED_TIME
-  CHANGED_SPEED_AMOUNT
-  CHANGED_SPEED_AMOUNT_PREV
-  LOW_GRAVITY
-
-# for [Widowmaker] wallhack calculation
-enum RI:
-  A
-  B
-  C
-  DISC
-  XPXS
-  YPYS
-  ZPYS
-  RADIUS
-  SPHERE_POS
-  FACING_DIRECTION
-  RESULT
-  SQRT_RESULT
-  T1
-  T2

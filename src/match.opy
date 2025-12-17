@@ -60,17 +60,17 @@ rule "Round start":
   botsDamageBoostPercent = (
     ZOMBIE_BASE_DAMAGE + 8 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   )
+  getPlayers(Team.2).setMaxHealth(botsHealthBoostPercent)
+  getPlayers(Team.2).setDamageDealt(botsDamageBoostPercent)
 
   wait()
   heal(getPlayers(Team.1), null, INFINITY)
   wait(ROUND_START_DELAY)
   bigMessage(getPlayers(Team.1), "Starting Round!")
-  
-  getPlayers(Team.2).setMaxHealth(botsHealthBoostPercent)
-  getPlayers(Team.2).setDamageDealt(botsDamageBoostPercent)
-  wait() # At the start of the round, bots spawn with incomplete health after the max health buff. This respawn delay is an attempt to fix that
-  # As soon as the "roundRemainingBots" is greater than 0 they will start respawning again
+  # wait() # At the start of the round, bots spawn with incomplete health after the max health buff. This respawn delay is an attempt to fix that
+  # # As soon as the "roundRemainingBots" is greater than 0 they will start respawning again
   roundRemainingBots = (
     wSettingsMaxZombieBots + roundNumber if (wSettingsMaxZombieBots + roundNumber) < MAX_REMAINING_ZOMBIES_IN_ROUND else MAX_REMAINING_ZOMBIES_IN_ROUND
   )
   roundMaxBots = roundRemainingBots
+

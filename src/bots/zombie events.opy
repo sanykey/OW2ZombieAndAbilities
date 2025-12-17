@@ -41,3 +41,21 @@ rule "Zombie Event description":
     bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.WARNING), "All Zombies are now permanently Enraged! ", iconString(Icon.WARNING)))
   elif roundNumber == 50:
     bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.FIRE), "The Zombies are furious! (...Is someone playing DPS Moira?) ", iconString(Icon.FIRE)))
+
+
+# rule "test":
+#   @Condition roundRemainingBots <= 0 and roundNumber > 0 and roundNumber < 6
+
+#   [player for player in getPlayers(Team.2) if player.getCurrentHero() != Hero.SYMMETRA].startForcingHero(Hero.SYMMETRA)
+
+
+# rule "test2":
+#   @Condition roundNumber > 0 and roundNumber < 6
+
+#   temp1 = [player for player in getPlayers(Team.2) if player.getCurrentHero() == Hero.SYMMETRA]
+#   temp1.forceButtonPress(Button.ABILITY_1)
+#   wait()
+#   temp1.forceButtonPress(Button.PRIMARY_FIRE)
+
+#   wait(5, Wait.ABORT_WHEN_FALSE)
+#   loop()

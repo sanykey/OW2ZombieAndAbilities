@@ -148,7 +148,7 @@ rule "[Mauga] Barrier push enemies":
 
     else: # slow down players inside barrier
       eventPlayer.list0[eventPlayer.I].state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 0.5
-      eventPlayer.list0[eventPlayer.I].state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 4
+      eventPlayer.list0[eventPlayer.I].state[SI.CHANGED_SPEED_AMOUNT] = 25
 
   wait(MAU_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

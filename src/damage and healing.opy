@@ -45,15 +45,22 @@ rule "Zombie took damage":
   # [Cassydy] stun effect for flashbang:
   if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
-
   # [Doomfist] Ult Knock Down:
-  if (attacker.getHero() == Hero.DOOMFIST):
+  elif (attacker.getHero() == Hero.DOOMFIST):
     if eventAbility == Button.ULTIMATE:
       victim.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 3)
     elif eventAbility == Button.ABILITY_1:
-      victim.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 3
-      victim.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 2
-
+      victim.setSpeedState(50, 3)
+  # [Widowmaker]:
+  elif attacker.getHero() == Hero.WIDOWMAKER: 
+    # widow mines slow and reveal enemy
+    if eventAbility == Button.ABILITY_2: 
+      victim.setRevealed()
+      victim.setSpeedState(30, 1)
+    # todo: fix:
+    # Reveal enemies when scoped hit
+    elif eventAbility == Button.PRIMARY_FIRE and eventAbility == Button.SECONDARY_FIRE: 
+      victim.setRevealed()
 
 rule "Player took damage":
   @Event playerTookDamage
@@ -86,6 +93,7 @@ rule "Player took damage":
 # BURNING effect that triggered [Team2 Mauga]
 rule "Player burning":
   @Event eachPlayer
+  @Team 1
   @Condition eventPlayer.hasStatus(Status.BURNING)
 
   damage(eventPlayer, getPlayersOnHero(Hero.MAUGA, Team.2), 4)

@@ -10,6 +10,7 @@ enum WID_I:
 # eventPlayer.abilState1 - is hooked to the wall after the grappling hook
 # eventPlayer.abilState2 - Wallhack shot charge
 # eventPlayer.abilState3 - Wallhack shot last headshot time
+# eventPlayer.abilDir0   - Facing direction before shoot
 
 rule "[Widowmaker] init":
   @Event eachPlayer
@@ -226,22 +227,24 @@ rule "[Widowmaker] Aiming through walls":
   @Event eachPlayer
   @Hero widowmaker
   @Team 1
-  @Condition eventPlayer.isFiringSecondaryFire() == true
-  @Condition eventPlayer.isFiringPrimaryFire() == false
-  @Condition len([
-    player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()
-  ]) > 0
-
-  eventPlayer.raycast[RI.FACING_DIRECTION] = eventPlayer.getFacingDirection()
+  @Condition eventPlayer.isFiringSecondaryFire()
+  @Condition not eventPlayer.isFiringPrimaryFire()
+  @Condition eventPlayer.abilState2 >= 100
+  @Condition any([
+    player for player in getLivingPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
+  ])
+  
+  eventPlayer.abilDir0 = eventPlayer.getFacingDirection()
   wait(0.016)
   if (
-    eventPlayer.isFiringSecondaryFire() == false or
-    eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.2), WALLHACK_SHOT_IN_VIEW_ANGLE) == false
+    not eventPlayer.isFiringSecondaryFire() or
+    eventPlayer.abilState2 < 100 or
+    not eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.2), WALLHACK_SHOT_IN_VIEW_ANGLE)
   ):
-    eventPlayer.raycast[RI.FACING_DIRECTION] = false
+    eventPlayer.abilDir0 = false
     return
 
-  if (eventPlayer.isFiringPrimaryFire() == true):
+  if (eventPlayer.isFiringPrimaryFire()):
     return
   loop()
 
@@ -251,65 +254,77 @@ rule "[Widowmaker] damage through walls":
   @Team 1
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == true
-  @Condition eventPlayer.raycast[RI.FACING_DIRECTION] == true
+  @Condition eventPlayer.abilDir0 == true
 
+  # rule triggers only when the weapon is fully charged
   if eventPlayer.abilState2 < 100:
     return
 
+  # determine the target that received direct damage
+  eventPlayer.temp2 = raycast(
+    eventPlayer.getEyePosition(),
+    eventPlayer.getEyePosition() + eventPlayer.abilDir0 * 200,
+    getPlayers(Team.2),
+    eventPlayer,
+    true
+  ).getPlayerHit()
+
   eventPlayer.temp3 = false
   eventPlayer.list0 = [
-    player for player in getPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE) and player.isAlive()
+    player for player in getPlayers(Team.2) if player.isAlive() and eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
   ]
 
   for eventPlayer.temp1 in range(len(eventPlayer.list0)):
-    # If eventPlayer.temp3 == true, it means there's already been a hit through a wall or an enemy. Cancel damage to others if no ultimates are present
-    if eventPlayer.temp3 and eventPlayer.isUsingUltimate(): 
+    # If true, it means there's already been a hit through a wall or an enemy. Cancel damage to others if no widowmaker's ultimate are present:
+    if not eventPlayer.isUsingUltimate() and eventPlayer.temp3: 
       break
 
-    if raycast(
-      eventPlayer.getEyePosition(),
-      eventPlayer.getEyePosition() + eventPlayer.raycast[RI.FACING_DIRECTION] * 200,
-      getAllPlayers(),
-      eventPlayer,
-      true
-    ).getPlayerHit() == eventPlayer.list0[eventPlayer.temp1]:
+    # a direct hit prevents wall penetration damage for this target
+    if eventPlayer.temp2 == eventPlayer.list0[eventPlayer.temp1]:
       # do nothing
     else:
-      eventPlayer.raycast[RI.SPHERE_POS] = eventPlayer.list0[eventPlayer.temp1].getEyePosition() + (eventPlayer.list0[eventPlayer.temp1].getFacingDirection() + vect(0, 0, -0.5)) * 0.25 # headshot shpere
-      eventPlayer.raycast[RI.RADIUS] = ZOMBIE_HEAD_HITBOX_RADIUS
-      rayIntersectionsWithSphere()
+      # Check for headshot through obstacles
+      eventPlayer.calcRayIntersectsSphere(
+        eventPlayer.abilDir0,
+        eventPlayer.list0[eventPlayer.temp1].getEyePosition() + (eventPlayer.list0[eventPlayer.temp1].getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
+        ZOMBIE_HEAD_HITBOX_RADIUS
+      )
 
-      if eventPlayer.raycast[RI.RESULT] == true:
+      if eventPlayer.rayIntersectsSphere[RESULT]:
         damage(
           eventPlayer.list0[eventPlayer.temp1],
           eventPlayer,
           300
         )
         if not eventPlayer.temp3:
-          eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
+          # Store hit info to show the effect and prevent redundant penetrations
+          eventPlayer.temp3 = eventPlayer.abilDir0
         eventPlayer.abilState3 = 0.5 + getTotalTimeElapsed() # for headshot message
       else:
+        # Check for bodyshot through obstacles
+        eventPlayer.calcRayIntersectsSphere(
+          eventPlayer.abilDir0,
+          eventPlayer.list0[eventPlayer.temp1].getPosition() + vect(0, 0.6, 0),
+          ZOMBIE_BODY_HITBOX_RADIUS
+        )
 
-        eventPlayer.raycast[RI.SPHERE_POS] = eventPlayer.list0[eventPlayer.temp1].getPosition() + vect(0, 0.6, 0) # player center shpere
-        eventPlayer.raycast[RI.RADIUS] = ZOMBIE_BODY_HITBOX_RADIUS
-        rayIntersectionsWithSphere()
-
-        if eventPlayer.raycast[RI.RESULT] == true:
+        if eventPlayer.rayIntersectsSphere[RESULT]:
           damage(
             eventPlayer.list0[eventPlayer.temp1],
             eventPlayer,
             120
           )
           if not eventPlayer.temp3:
-            eventPlayer.temp3 = eventPlayer.raycast[RI.FACING_DIRECTION]
+            # Store hit info to show the effect and prevent redundant penetrations
+            eventPlayer.temp3 = eventPlayer.abilDir0
 
-
-  if eventPlayer.temp3 == true:
+  # Create a beam effect if there was a hit through obstacles
+  if eventPlayer.temp3:
     createBeam(
       getAllPlayers(),
       Beam.BAD,
       eventPlayer.getEyePosition() + vect(0, -0.45, 0),
-      eventPlayer.raycast[RI.RESULT],
+      eventPlayer.rayIntersectsSphere[RESULT],
       Color.VIOLET,
       EffectReeval.COLOR
     )
@@ -330,26 +345,6 @@ rule "[Widowmaker] Felt More Alive":
   eventPlayer.setGravity(30)
   waitUntil(not eventPlayer.isFiringSecondaryFire() or not eventPlayer.isInAir(), INFINITY)
   eventPlayer.setGravity(100)
-
-rule "[Widowmaker] Tracker Venom - widow mines slow and reveal enemy for all":
-  @Event playerTookDamage
-  @Condition attacker.getCurrentHero() == Hero.WIDOWMAKER
-  @Condition eventAbility == Button.ABILITY_2
-
-  victim.setRevealed()
-
-  # todo: fix:
-  eventPlayer.setMoveSpeed(ZOMBIE_SPEED / 3)
-  wait(5)
-  eventPlayer.setMoveSpeed(ZOMBIE_SPEED)
-
-rule "[Widowmaker] Reveal enemies when scoped hit":
-  @Event playerDealtDamage
-  @Hero widowmaker
-  @Condition eventAbility == Button.PRIMARY_FIRE
-  @Condition eventAbility == Button.SECONDARY_FIRE
-
-  victim.setRevealed()
 
 rule "[Widowmaker] Wallhack shot charge":
   @Event eachPlayer

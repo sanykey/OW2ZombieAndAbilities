@@ -1,10 +1,8 @@
 #!mainFile "../main.opy"
 
 rule "Create ally bot":
-  @Condition hostPlayer.hasSpawned()
-  
-  wait(2)
-  createDummy(Hero.ORISA, Team.1, ALLY_BOT_PLAYER_SLOT, nearestWalkablePosition(hostPlayer), hostPlayer.getPosition())
+  wait(5)
+  createDummy(Hero.ORISA, Team.1, ALLY_BOT_PLAYER_SLOT, vect(-27.412, 8.678, -12.564), vect(-27.412, 8.678, -12.564))
 
 # rule "Destroy ally bot when max players":
 #   @Event eachPlayer

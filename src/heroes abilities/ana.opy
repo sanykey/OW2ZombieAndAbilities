@@ -35,9 +35,7 @@ rule "[Ana] Nano'd target gains speed boost":
   @Hero ana
   @Condition eventAbility == Button.ULTIMATE
 
-  healee.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 8
-  healee.state[SI.CHANGED_SPEED_AMOUNT] = PLAYER_SPEED + 30
-
+  healee.setSpeedState(130, 8)
 
 rule "[Ana] Nano damage for detect":
   @Event eachPlayer
@@ -58,8 +56,7 @@ rule "[Ana]: Mass sleep dart, slowdown nade, sleep melee":
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.BLACK, victim, 6)
     getPlayersInRadius(victim.getEyePosition(), 3, Team.2, LosCheck.SURFACES).setStatusEffect(null, Status.ASLEEP, 5)
   if eventAbility == Button.ABILITY_2:
-    victim.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + 3
-    victim.state[SI.CHANGED_SPEED_AMOUNT] = ZOMBIE_SPEED / 2
+    victim.setSpeedState(50)
   elif eventAbility == Button.MELEE and random.randint(1, 100) <= 20:
     victim.setStatusEffect(null, Status.ASLEEP, 5)
 

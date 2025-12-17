@@ -1,6 +1,7 @@
 #!mainFile "main.opy"
 
-#!define MAX_SHOP_TIME 60
+globalvar playersInShop
+globalvar playerEjectFromShop
 
 rule "[Secret shop] init":
   shopEffects = []
@@ -25,8 +26,8 @@ rule "[Secret shop] init":
 rule "[Secret shop] Power switch ON":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition shopStatus == 0
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition distance(eventPlayer, vectList[VL_CONNECT_SHOP]) <= 2
   
   destroyEffect(shopEffects[SHOP_I.POWER_ON_EFFECT])
@@ -51,8 +52,8 @@ rule "[Secret shop] Show shop activator":
 rule "[Secret shop] Use shop activator":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition shopStatus == 1
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition distance(eventPlayer, vectList[VL_SHOP_ACTIVATOR]) <= 1.5
   
   shopStatus = 2
@@ -89,37 +90,19 @@ rule "[Secret shop] Teleport players to secret shop":
   @Condition shopStatus == 2
   @Condition distance(eventPlayer, vectList[VL_ENTER_SHOP_TELEPORT_FROM]) <= 5
   
-  eventPlayer.isInSecretShop = true
   eventPlayer.teleport(vectList[VL_ENTER_SHOP_TELEPORT_TO])
-
-  waitUntil(eventPlayer.isInSecretShop == false, MAX_SHOP_TIME)
-  if eventPlayer.isInSecretShop == false:
-    return
-      
-  smallMessage(eventPlayer, "Leaving in 5...")
-  wait(true/*=1*/)
-  smallMessage(eventPlayer, 4)
-  wait(true/*=1*/)
-  smallMessage(eventPlayer, 3)
-  wait(true/*=1*/)
-  smallMessage(eventPlayer, 2)
-  wait(true/*=1*/)
-  smallMessage(eventPlayer, 1)
-  wait(true/*=1*/)
-  if eventPlayer.isInSecretShop == false:
-    return
-
-  eventPlayer.teleport(vectList[VL_EXIT_SHOP_TELEPORT_TO])
-  eventPlayer.isInSecretShop = false
-
 
 rule "[Secret shop] Exit secret shop":
   @Event eachPlayer
   @Team 1
+  @Condition eventPlayer.isInSecretShop
   @Condition distance(eventPlayer, vectList[VL_EXIT_SHOP_TELEPORT_FROM]) <= 2.5
   
+  # teleport and prevent a player from falling into the shop teleport zone immediately after exiting the shop:
   eventPlayer.teleport(vectList[VL_EXIT_SHOP_TELEPORT_TO])
-  eventPlayer.isInSecretShop = false
+  eventPlayer.setStatusEffect(eventPlayer, Status.STUNNED, 0.05)
+  wait()
+  eventPlayer.setFacing(vect(0.85, false, -0.53), Relativity.TO_WORLD)
 
 rule "[Secret shop] Auto heal secret shop":
   @Event eachPlayer
@@ -129,3 +112,39 @@ rule "[Secret shop] Auto heal secret shop":
   wait(true)
   heal(eventPlayer, null, INFINITY)
   wait(2)
+
+
+rule "shop players management":
+  playersInShop = [player for player in getPlayers(Team.1) if player.isInSecretShop]
+
+  # Rule only works if the shop is closed or there is more than one player in Team 1
+  if shopStatus != 3 or getNumberOfPlayers(Team.1) < 2 or not playersInShop or not getDeadPlayers(Team.1):
+    goto lbl_0
+
+  if len(getLivingPlayers(Team.1)) == len(playersInShop):
+    playerEjectFromShop = random.choice([player for player in playersInShop if player.isInSecretShop < getTotalTimeElapsed()])
+    if playerEjectFromShop:
+      if playerEjectFromShop.posBeforeChangeHero:
+        playerEjectFromShop.respawn()
+        wait()
+      playerEjectFromShop.teleport(vectList[VL_EXIT_SHOP_TELEPORT_TO])
+      bigMessage(getAllPlayers(), "A random player was ejected from the closed shop to revive a fallen teammate")
+
+  lbl_0:
+  wait(1)
+  loop()
+
+
+rule "Enter/Leave shop zone":
+  @Event eachPlayer
+  @Team 1
+
+  if eventPlayer.posBeforeChangeHero or (eventPlayer.isAlive() and (distance(eventPlayer, vectList[VL_ACTIVATE_ZONE_DETECTOR_C]) < ZONE_C_SIZE or distance(eventPlayer, vectList[VL_SHOP_ZONE2]) < 5)):
+    if not eventPlayer.isInSecretShop:
+      eventPlayer.isInSecretShop = getTotalTimeElapsed() + 30
+      heal(eventPlayer, null, INFINITY)
+  else:
+    eventPlayer.isInSecretShop = false
+
+  wait(1)
+  loop()

@@ -23,7 +23,7 @@ def openSwitchHeroHud():
     heal(getPlayers(Team.1), null, INFINITY)
   eventPlayer.teleport(eventPlayer.posBeforeChangeHero)
   eventPlayer.setFacing(eventPlayer.facingBeforeChangeHero, Relativity.TO_WORLD)
-  eventPlayer.setRespawnTime(INFINITY)
+  eventPlayer.setRespawnTime(PLAYER_RESPAWN_TIME)
   eventPlayer.posBeforeChangeHero = false
   wait(0.1)
   unpause3PCamera()

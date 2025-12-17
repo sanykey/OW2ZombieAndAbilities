@@ -3,6 +3,13 @@
 macro horDirectionTowards(a, b):
   normalize(vect(b.x, 0, b.z) - vect(a.x, 0, a.z))
 
+macro Player.pushInFacingDirectionAndUp(self, attacker0, speed):
+  self.applyImpulse(
+    vect(attacker0.getFacingDirection().x, 0.2679 if attacker0.getFacingDirection().y < 0.2679 else attacker0.getFacingDirection().y, attacker0.getFacingDirection().z),
+    speed,
+    Relativity.TO_WORLD
+  )
+
 rule "[Echo - Freeze Beam]":
   @Event playerDealtDamage
   @Team 1
@@ -14,65 +21,6 @@ rule "[Echo - Freeze Beam]":
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_EXPLOSION, Color.SKY_BLUE, victim, 5)
   wait(2.1)
 
-def sqrtNewton():
-  @Name "Subroutine: Calculate square root"
-  eventPlayer.raycast[RI.SQRT_RESULT] = eventPlayer.raycast[RI.DISC] / 2
-  for eventPlayer.temp3 in range(5):
-    eventPlayer.raycast[RI.SQRT_RESULT] = (eventPlayer.raycast[RI.SQRT_RESULT] + (eventPlayer.raycast[RI.DISC] / eventPlayer.raycast[RI.SQRT_RESULT])) / 2
-
-def rayIntersectionsWithSphere():
-  @Name "Subroutine: Сalculate the intersections of the ray with the sphere"
-
-  eventPlayer.raycast[RI.RESULT] = false
-  eventPlayer.raycast[RI.A] = (
-    (eventPlayer.raycast[RI.FACING_DIRECTION].x * eventPlayer.raycast[RI.FACING_DIRECTION].x) +
-    (eventPlayer.raycast[RI.FACING_DIRECTION].y * eventPlayer.raycast[RI.FACING_DIRECTION].y) +
-    (eventPlayer.raycast[RI.FACING_DIRECTION].z * eventPlayer.raycast[RI.FACING_DIRECTION].z)
-  )
-
-  eventPlayer.raycast[RI.XPXS] = eventPlayer.getEyePosition().x - eventPlayer.raycast[RI.SPHERE_POS].x
-  eventPlayer.raycast[RI.YPYS] = eventPlayer.getEyePosition().y - eventPlayer.raycast[RI.SPHERE_POS].y
-  eventPlayer.raycast[RI.ZPYS] = eventPlayer.getEyePosition().z - eventPlayer.raycast[RI.SPHERE_POS].z
-
-  eventPlayer.raycast[RI.B] = 2 * (
-    (eventPlayer.raycast[RI.FACING_DIRECTION].x * eventPlayer.raycast[RI.XPXS]) +
-    (eventPlayer.raycast[RI.FACING_DIRECTION].y * eventPlayer.raycast[RI.YPYS]) + 
-    (eventPlayer.raycast[RI.FACING_DIRECTION].z * eventPlayer.raycast[RI.ZPYS])
-  )
-
-  eventPlayer.raycast[RI.C] = (
-    (eventPlayer.raycast[RI.XPXS] * eventPlayer.raycast[RI.XPXS]) +
-    (eventPlayer.raycast[RI.YPYS] * eventPlayer.raycast[RI.YPYS]) +
-    (eventPlayer.raycast[RI.ZPYS] * eventPlayer.raycast[RI.ZPYS]) -
-    (eventPlayer.raycast[RI.RADIUS] * eventPlayer.raycast[RI.RADIUS])
-  )
-
-  eventPlayer.raycast[RI.DISC] = (eventPlayer.raycast[RI.B] * eventPlayer.raycast[RI.B]) - (4 * eventPlayer.raycast[RI.A] * eventPlayer.raycast[RI.C])
-
-  if eventPlayer.raycast[RI.DISC] < 0:
-    return
-  
-  sqrtNewton()
-
-  eventPlayer.raycast[RI.T1] = ((eventPlayer.raycast[RI.B] * -1) - eventPlayer.raycast[RI.SQRT_RESULT]) / (2 * eventPlayer.raycast[RI.A])
-  eventPlayer.raycast[RI.T2] = ((eventPlayer.raycast[RI.B] * -1) + eventPlayer.raycast[RI.SQRT_RESULT]) / (2 * eventPlayer.raycast[RI.A])
-
-  eventPlayer.raycast[RI.C] = 0
-
-  if (eventPlayer.raycast[RI.T1] >= 0 and eventPlayer.raycast[RI.T2] >= 0):
-    eventPlayer.raycast[RI.C] = eventPlayer.raycast[RI.T1] if eventPlayer.raycast[RI.T1] < eventPlayer.raycast[RI.T2] else eventPlayer.raycast[RI.T2]
-  elif eventPlayer.raycast[RI.T1] >= 0:
-    eventPlayer.raycast[RI.C] = eventPlayer.raycast[RI.T1]
-  elif eventPlayer.raycast[RI.T2] >= 0:
-    eventPlayer.raycast[RI.C] = eventPlayer.raycast[RI.T2]
-  else:
-    return
-
-  eventPlayer.raycast[RI.RESULT] = vect(
-    eventPlayer.getEyePosition().x + eventPlayer.raycast[RI.C] * eventPlayer.raycast[RI.FACING_DIRECTION].x,
-    eventPlayer.getEyePosition().y + eventPlayer.raycast[RI.C] * eventPlayer.raycast[RI.FACING_DIRECTION].y,
-    eventPlayer.getEyePosition().z + eventPlayer.raycast[RI.C] * eventPlayer.raycast[RI.FACING_DIRECTION].z
-  )
 
 
 rule "Chase abilityCD":
@@ -98,40 +46,38 @@ rule "Revealed zombies":
   @Team 2
   @Condition eventPlayer.revealed >= getTotalTimeElapsed()
   
-  if eventPlayer.effectsIds[HI.REVEALED_ICON] == false:
+  if not eventPlayer.effectsIds[REVEALED_ICON]:
     createInWorldText(
       getAllPlayers(),
-      "o",
+      "+",
       eventPlayer.getEyePosition() + (eventPlayer.getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
       0.6,
       Clip.NONE,
       WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
       Color.TEAM_2
     )
-    eventPlayer.effectsIds[HI.REVEALED_ICON] = getLastCreatedText()
-  eventPlayer.startForcingOutlineFor(getPlayers(Team.1), true, Color.VIOLET, OutlineVisibility.OCCLUDED)
+    eventPlayer.effectsIds[REVEALED_ICON] = getLastCreatedText()
 
-  waitUntil(eventPlayer.revealed < getTotalTimeElapsed() or eventPlayer.isAlive() == false, INFINITY)
-
+  waitUntil(eventPlayer.revealed < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
   eventPlayer.revealed = false
-  destroyInWorldText(eventPlayer.effectsIds[HI.REVEALED_ICON])
-  eventPlayer.effectsIds[HI.REVEALED_ICON] = false
-  eventPlayer.stopForcingOutlineFor(getPlayers(Team.1))
+  destroyInWorldText(eventPlayer.effectsIds[REVEALED_ICON])
 
-rule "Changed player speed":
+macro Player.setSpeedState(self, speed = 30, duration = 5):
+  self.state[SI.CHANGED_SPEED_AMOUNT_PREV] = self.state[SI.CHANGED_SPEED_AMOUNT]
+  self.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + duration
+  self.state[SI.CHANGED_SPEED_AMOUNT] = speed
+
+rule "Changed player speed state":
   @Event eachPlayer
   @Condition eventPlayer.state[SI.CHANGED_SPEED_TIME] > getTotalTimeElapsed()
-  @Condition not eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV]
+  @Condition eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] != eventPlayer.state[SI.CHANGED_SPEED_AMOUNT]
 
   eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_TIME]
 
   waitUntil(eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
 
-  if eventPlayer.getTeam() == Team.2:
-    eventPlayer.setMoveSpeed(ZOMBIE_SPEED)
-  else:
-    eventPlayer.setMoveSpeed(PLAYER_SPEED)
+  eventPlayer.setMoveSpeed(100)
 
   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = false
