@@ -1,5 +1,7 @@
 #!mainFile "main.opy"
 
+globalvar playersInShop
+
 rule "Interact button":
   @Event eachPlayer
   @Condition not eventPlayer.isDummy()
@@ -52,6 +54,8 @@ rule "Interact button":
     else:
       return
 
+    eventPlayer.healingTracker = 0
+    eventPlayer.selfHealingTracker = 0
     eventPlayer.healingTrackerThreshold = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
     eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, eventPlayer, 1)
@@ -71,10 +75,11 @@ rule "Interact button":
     else:
       return
 
-    playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, getPlayers(Team.1), 2)
-    playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, getPlayers(Team.1), 100)
+    playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, eventPlayer, 1)
+    playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, eventPlayer, 100)
     
     wait(1, Wait.RESTART_WHEN_TRUE)
+    heal(playersInShop, null, INFINITY)
     bigMessage(getPlayers(Team.1), "{} has awarded the team +{} Armor!".format(eventPlayer, eventPlayer.boostStats[PV_ARMOR_FOR_TEAM]))
 
   # [shop] refund upgrades
@@ -82,47 +87,23 @@ rule "Interact button":
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, getPlayers(Team.1), 2)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, getPlayers(Team.1), 100)
     
-    eventPlayer.money += (eventPlayer.damageBoostPercent - 100) / DAMAGE_UPGRADE_AMOUNT * UPGRADE_PRICE
-    eventPlayer.money += (eventPlayer.healthBoostPercent - 100) / HEALTH_UPGRADE_AMOUNT * UPGRADE_PRICE
-    eventPlayer.money += (eventPlayer.healingBoostPercent - 100) / HEALING_UPGRADE_AMOUNT * UPGRADE_PRICE
+    # eventPlayer.money += (eventPlayer.damageBoostPercent - 100) / DAMAGE_UPGRADE_AMOUNT * UPGRADE_PRICE
+    # eventPlayer.money += (eventPlayer.healthBoostPercent - 100) / HEALTH_UPGRADE_AMOUNT * UPGRADE_PRICE
+    # eventPlayer.money += (eventPlayer.healingBoostPercent - 100) / HEALING_UPGRADE_AMOUNT * UPGRADE_PRICE
 
     if (eventPlayer.boostStats[PV_ARMOR_FOR_TEAM]):
-      eventPlayer.money += eventPlayer.boostStats[PV_ARMOR_FOR_TEAM] / TEAM_ARMOR_UPGRADE_AMOUNT * TEAM_UPGRADE_PRICE
+      # eventPlayer.money += eventPlayer.boostStats[PV_ARMOR_FOR_TEAM] / TEAM_ARMOR_UPGRADE_AMOUNT * TEAM_UPGRADE_PRICE
       teamArmor -= eventPlayer.boostStats[PV_ARMOR_FOR_TEAM]
 
     eventPlayer.damageBoostPercent = 100
     eventPlayer.healthBoostPercent = 100
     eventPlayer.healingBoostPercent = 100
     eventPlayer.boostStats[PV_ARMOR_FOR_TEAM] = 0
-
     eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
     eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
     eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
 
-    if eventPlayer.money < (wSettingsStartMoney + (2500 * roundNumber)):
-      eventPlayer.money = wSettingsStartMoney + (2500 * roundNumber)
-    
-  # Switch 3P Camera (INTERACT + CROUCH)
-  elif eventPlayer.isHoldingButton(Button.CROUCH):
-    waitUntil(
-      (
-        not (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT)) or 
-        eventPlayer.isHoldingButton(Button.MELEE)
-      ),
-      HERO_INFO_HOLD_DURATION
-    )
+    if eventPlayer.moneyTotal < (wSettingsStartMoney + (2500 * roundNumber)):
+      eventPlayer.moneyTotal = wSettingsStartMoney + (2500 * roundNumber)
 
-    # The player has called up the hero information window, the camera does not need to be changed
-    if (eventPlayer.isHoldingButton(Button.CROUCH) and eventPlayer.isHoldingButton(Button.INTERACT) or eventPlayer.isHoldingButton(Button.MELEE)): 
-      return
-
-    if eventPlayer.cameraState == 0:
-      eventPlayer.cameraState = 3
-      smallMessage(eventPlayer, "3P Camera [ON]")
-    elif eventPlayer.cameraState == 3:
-      eventPlayer.cameraState = 4
-      smallMessage(eventPlayer, "3P Camera Higher Angle [ON]")
-    else:
-      eventPlayer.cameraState = 0
-      smallMessage(eventPlayer, "3P Camera [OFF]")
-    playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
+    eventPlayer.money = eventPlayer.moneyTotal

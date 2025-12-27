@@ -1,5 +1,11 @@
 #!mainFile "../main.opy"
 
+macro Player.getDistanceToZombieTarget(self):
+  self.zomDistancesToPlayersArr[self.targetPlayer0.getSlot()]
+
+macro Player.isInLoSZombieTarget(self):
+  self.zomIsInLoSPlayersArr[self.targetPlayer0.getSlot()]
+
 rule "Bots use ultimate at 100%":
   @Event eachPlayer
   @Team 2
@@ -15,34 +21,6 @@ rule "Bots use ultimate at 100%":
   loop()
 
 
-# rule "Warning icon for zombies ":
-#   @Event eachPlayer
-#   @Team 2
-
-#   # bot target warning icon (flashing)
-#   createIcon(
-#     [player for player in getPlayers(Team.1) if eventPlayer.isAlive() and distance(eventPlayer, player) < 10 and not player.isInViewAngle(eventPlayer.getPosition(), 55)],
-#     eventPlayer,
-#     Icon.WARNING,
-#     IconReeval.VISIBILITY_POSITION_AND_COLOR,
-#     Color.RED if (((ceil(getTotalTimeElapsed() * (4 if distance(eventPlayer.getPosition(), localPlayer.getPosition()) > 10 else 8))) % 2) == 0) else Color.YELLOW
-#   )
-
-
-rule "[Team2 Roadhog][Team2 Mauga] Bot zombie melee":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isAlive()
-  @Condition eventPlayer.getHero() == Hero.ROADHOG or eventPlayer.getHero() == Hero.MAUGA
-  @Condition eventPlayer.targetPlayer0
-  @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.targetPlayer0.getSlot()] < 3
-
-  eventPlayer.forceButtonPress(Button.MELEE)
-
-  wait(1)
-  if ruleCondition:
-    loop()
-
 rule "Zombies loS teleport warning":
   @Event eachPlayer
   @Team 2
@@ -51,33 +29,23 @@ rule "Zombies loS teleport warning":
     getPlayers(Team.1) if eventPlayer.zombiesfly else null,
     eventPlayer,
     Icon.EYE,
-    IconReeval.VISIBILITY_POSITION_AND_COLOR,
+    IconReeval.VISIBILITY_AND_POSITION,
     Color.RED
   )
-
-rule "Bots face target players and move":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isDummy()
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
-  
-  # Bots move toward players
-  eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
 rule "Bots attack near player":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.isDummy()
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   @Condition not eventPlayer.zombiesfly
-  @Condition eventPlayer.getHero() == Hero.TORBJORN
   @Condition eventPlayer.list1
-  # @Condition eventPlayer.targetPlayer0
-  # @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.targetPlayer0.getSlot()] < 4
-  # eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
-  # eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
 
-  eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
+  if eventPlayer.getHero() == Hero.TORBJORN:
+    eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
+  else: 
+    eventPlayer.forceButtonPress(Button.MELEE)
   wait(0.3)
 
   # [Vendetta] pushes and damages enemies in front of her if an attack was blocked by her guard
@@ -104,13 +72,9 @@ rule "Bots moves":
   @Condition eventPlayer.isDummy()
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
 
-  # if not RULE_CONDITION:
-  #   eventPlayer.money = 0
-  #   return
-
   # cache players and distances to players
-  eventPlayer.list0 = []
-  eventPlayer.list1 = []
+  eventPlayer.list0 = [] # avaliable targets
+  eventPlayer.list1 = [] # current melee attack targets
   for eventPlayer.I in range(MAX_PLAYERS):
     eventPlayer.temp0 = getPlayersInSlot(eventPlayer.I, Team.1)
 
@@ -138,7 +102,7 @@ rule "Bots moves":
       ) + (
         100 if i.isInvisible > getTotalTimeElapsed() and (eventPlayer.zomDistancesToPlayersArr[i.getSlot()] > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
       ) - (
-        3 if eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] and i.isTank and not (i.getCurrentHero() == Hero.DVA and i.isInAlternateForm()) else 0 # High priority for tank targets (except Baby D.Va)
+        3 if eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] and i.heroType == HeroType.TANK and not (i.getCurrentHero() == Hero.DVA and i.isInAlternateForm()) else 0 # High priority for tank targets (except Baby D.Va)
       )
     )
   )[0]
@@ -207,8 +171,8 @@ rule "Zombies loS teleport (zombiesfly)":
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.isDummy()
   @Condition not eventPlayer.zombiesfly
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER
   @Condition eventPlayer.targetPlayer0
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
   @Condition not eventPlayer.zomIsInLoSPlayersArr[eventPlayer.targetPlayer0.getSlot()]
   @Condition not eventPlayer.hasStatus(Status.HACKED)
   @Condition not eventPlayer.hasStatus(Status.ROOTED)
@@ -254,8 +218,7 @@ rule "Zombies loS teleport (zombiesfly)":
 rule "zombies fly faster":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.zombiesfly == true
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
+  @Condition eventPlayer.zombiesfly
   @Condition eventPlayer.targetPlayer0
   @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.targetPlayer0.getSlot()] > 35
   
@@ -266,27 +229,3 @@ rule "zombies fly faster":
   if RULE_CONDITION:
     goto RULE_START
 
-
-# rule "Bot has bad status":
-#   @Event eachPlayer
-#   @Team 2
-#   @Condition eventPlayer.hasSpawned()
-#   @Condition eventPlayer.isAlive()
-#   @Condition eventPlayer.hasBadStatus == false
-#   @Condition (
-#     eventPlayer.hasStatus(Status.HACKED) or
-#     eventPlayer.hasStatus(Status.FROZEN) or
-#     eventPlayer.hasStatus(Status.KNOCKED_DOWN) or
-#     eventPlayer.hasStatus(Status.ASLEEP) or
-#     eventPlayer.hasStatus(Status.STUNNED)
-#   ) == true
-  
-#   eventPlayer.hasBadStatus = true
-#   waitUntil(
-#     not eventPlayer.hasStatus(Status.KNOCKED_DOWN) and
-#     not eventPlayer.hasStatus(Status.ASLEEP) and
-#     not eventPlayer.hasStatus(Status.FROZEN) and
-#     not eventPlayer.hasStatus(Status.STUNNED),
-#     INFINITY
-#   )
-#   eventPlayer.hasBadStatus = false

@@ -1,6 +1,6 @@
 #!mainFile "../main.opy"
 
-globalvar debugMode = 0
+
 globalvar debugPos1 = vect(-23.86, 8.08, -89.854)
 globalvar debugPos2
 globalvar debugPos3
@@ -10,7 +10,7 @@ rule "[debug] init positions measuring effects":
   # positions and distance info for hostplayer and debug vects
 
   hudSubheader(
-    localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
+    localPlayer if localPlayer.developer else null,
     "debug mode: {}".format("Place measure tools" if debugMode == 0 else "Move measurement sphere"),
     HudPosition.RIGHT,
     -11,
@@ -20,7 +20,7 @@ rule "[debug] init positions measuring effects":
 
 
   hudSubheader(
-    localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
+    localPlayer if localPlayer.developer else null,
     "pos: {}\neye pos: {}\nfacing dir: {}".format(localPlayer.getPosition(), localPlayer.getEyePosition(), localPlayer.getFacingDirection()),
     HudPosition.RIGHT,
     -10,
@@ -29,7 +29,7 @@ rule "[debug] init positions measuring effects":
   )
 
   hudSubheader(
-    localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
+    localPlayer if localPlayer.developer else null,
     "distance between points: {}\nhorizontal distance: {}\nvertical distance: {}\nmidpoint: {}".format(
       distance(debugPos1, debugPos2), magnitude(vect(1, 0, 1) * (debugPos1 - debugPos2)), abs(debugPos1.y - debugPos2.y), (debugPos1 + debugPos2) / 2
     ),
@@ -39,23 +39,23 @@ rule "[debug] init positions measuring effects":
     HudReeval.VISIBILITY_AND_STRING
   )
 
-  createInWorldText(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, "1: {}, size: {}".format(debugPos1, debugSize), debugPos1, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
-  createEffect(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, Effect.SPHERE, Color.SKY_BLUE, debugPos1, 0.05, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, "2: {}".format(debugPos2), debugPos2, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
-  createEffect(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, Effect.SPHERE, Color.ROSE, debugPos2, 0.05, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createBeam(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos2, debugPos1, Color.WHITE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, Effect.SPHERE, Color.LIME_GREEN, debugPos1, debugSize, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createInWorldText(localPlayer if localPlayer.developer else null, "1: {}, size: {}".format(debugPos1, debugSize), debugPos1, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+  createEffect(localPlayer if localPlayer.developer else null, Effect.SPHERE, Color.SKY_BLUE, debugPos1, 0.05, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createInWorldText(localPlayer if localPlayer.developer else null, "2: {}".format(debugPos2), debugPos2, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+  createEffect(localPlayer if localPlayer.developer else null, Effect.SPHERE, Color.ROSE, debugPos2, 0.05, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createBeam(localPlayer if localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos2, debugPos1, Color.WHITE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(localPlayer if localPlayer.developer else null, Effect.SPHERE, Color.LIME_GREEN, debugPos1, debugSize, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
 
-  createBeam(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos1 + Vector.BACKWARD * 50, debugPos1 + Vector.FORWARD * 50, Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createBeam(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos1 + Vector.RIGHT * 50, debugPos1 + Vector.LEFT * 50, Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createBeam(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos1 + Vector.DOWN * 50, debugPos1 + Vector.UP * 50, Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createInWorldText(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, "+z", debugPos1 + Vector.FORWARD * 2, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION)
-  createInWorldText(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, "+x", debugPos1 + Vector.LEFT * 2, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION)
-  createInWorldText(localPlayer if localPlayer == hostPlayer or localPlayer.developer else null, "+y", debugPos1 + Vector.UP * 2, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION)
+  createBeam(localPlayer if localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos1 + Vector.BACKWARD * 50, debugPos1 + Vector.FORWARD * 50, Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createBeam(localPlayer if localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos1 + Vector.RIGHT * 50, debugPos1 + Vector.LEFT * 50, Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createBeam(localPlayer if localPlayer.developer else null, Beam.TORBJORN_TURRET_SIGHT, debugPos1 + Vector.DOWN * 50, debugPos1 + Vector.UP * 50, Color.TEAM_1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createInWorldText(localPlayer if localPlayer.developer else null, "+z", debugPos1 + Vector.FORWARD * 2, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION)
+  createInWorldText(localPlayer if localPlayer.developer else null, "+x", debugPos1 + Vector.LEFT * 2, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION)
+  createInWorldText(localPlayer if localPlayer.developer else null, "+y", debugPos1 + Vector.UP * 2, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION)
 
 rule "[debug] Interact":
   @Event eachPlayer
-  @Condition eventPlayer == hostPlayer
+  @Condition eventPlayer.developer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT) and (
     eventPlayer.isHoldingButton(Button.PRIMARY_FIRE) 
     or eventPlayer.isHoldingButton(Button.SECONDARY_FIRE) 

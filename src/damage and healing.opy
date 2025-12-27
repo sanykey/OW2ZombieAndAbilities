@@ -1,5 +1,107 @@
 #!mainFile "main.opy"
 
+enum SI:
+  START_AUTO_HEAL_TIME
+  IS_INVISIBLE
+  CHANGED_SPEED_TIME
+  CHANGED_SPEED_AMOUNT
+  CHANGED_SPEED_AMOUNT_PREV
+  LOW_GRAVITY_AMOUNT
+  LOW_GRAVITY_AMOUNT_PREV
+  LOW_GRAVITY_TIME
+
+macro horDirectionTowards(a, b):
+  normalize(vect(b.x, 0, b.z) - vect(a.x, 0, a.z))
+
+rule "Chase abilityCD":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.abilityCD
+  @SuppressWarnings w_ow2_rule_condition_chase
+  
+  chaseAtRate(eventPlayer.abilityCD, 0, 1)
+  waitUntil(not eventPlayer.abilityCD, INFINITY)
+  eventPlayer.abilityCD = false
+  stopChasingVariable(eventPlayer.abilityCD)
+  wait()
+  if ruleCondition:
+    loop()
+
+
+macro Player.pushInFacingDirectionAndUp(self, attacker0, speed):
+  self.applyImpulse(
+    vect(attacker0.getFacingDirection().x, 0.2679 if attacker0.getFacingDirection().y < 0.2679 else attacker0.getFacingDirection().y, attacker0.getFacingDirection().z),
+    speed,
+    Relativity.TO_WORLD
+  )
+
+macro Player.setRevealed(self, duration=REVEAL_DURATION):
+  self.revealed = duration + getTotalTimeElapsed()
+
+rule "Revealed zombies":
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.revealed >= getTotalTimeElapsed()
+  
+  if not eventPlayer.effectsIds[REVEALED_ICON]:
+    createInWorldText(
+      getAllPlayers(),
+      "+",
+      eventPlayer.getEyePosition() + (eventPlayer.getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
+      0.6,
+      Clip.NONE,
+      WorldTextReeval.VISIBILITY_POSITION_AND_STRING,
+      Color.TEAM_2
+    )
+    eventPlayer.effectsIds[REVEALED_ICON] = getLastCreatedText()
+
+  waitUntil(eventPlayer.revealed < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
+  eventPlayer.revealed = false
+  destroyInWorldText(eventPlayer.effectsIds[REVEALED_ICON])
+
+
+# def setSpeedStateSR():
+#   @Name "setSpeedStateSR"
+#   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_TIME]
+#   eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
+#   waitUntil(eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
+#   eventPlayer.setMoveSpeed(100)
+#   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
+#   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = false
+
+macro Player.setSpeedState(self, speed = 30, duration = 5):
+  self.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + duration
+  self.state[SI.CHANGED_SPEED_AMOUNT] = speed
+
+rule "Changed player speed state":
+  @Event eachPlayer
+  @Condition eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] != eventPlayer.state[SI.CHANGED_SPEED_AMOUNT]
+
+  eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
+  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_AMOUNT]
+  waitUntil(ruleCondition or eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
+  eventPlayer.setMoveSpeed(100)
+  eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
+  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = false
+  eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = false
+
+macro Player.setGravityState(self, gravity = 30, duration = 5):
+  self.state[SI.LOW_GRAVITY_AMOUNT_PREV] = self.state[SI.LOW_GRAVITY_AMOUNT]
+  self.state[SI.LOW_GRAVITY_AMOUNT] = gravity
+  self.state[SI.LOW_GRAVITY_TIME] = getTotalTimeElapsed() + duration
+
+rule "Changed player gravitation":
+  @Event eachPlayer
+  @Condition eventPlayer.state[SI.LOW_GRAVITY_AMOUNT] != eventPlayer.state[SI.LOW_GRAVITY_AMOUNT_PREV]
+
+  eventPlayer.setGravity(eventPlayer.state[SI.LOW_GRAVITY_AMOUNT])
+  eventPlayer.state[SI.LOW_GRAVITY_AMOUNT_PREV] = eventPlayer.state[SI.LOW_GRAVITY_AMOUNT]
+  waitUntil(ruleCondition or eventPlayer.state[SI.LOW_GRAVITY_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
+  eventPlayer.setGravity(100)
+  eventPlayer.state[SI.LOW_GRAVITY_TIME] = false
+  eventPlayer.state[SI.LOW_GRAVITY_AMOUNT] = false
+  eventPlayer.state[SI.LOW_GRAVITY_AMOUNT_PREV] = false
+
 # save information about bots being pushed to account for damage when falling down
 macro Player.setCrowdControlAttack(self, attacker0, isVanilaKnockback=false, duration=LAST_CC_ATTACK_DURATION):
   self.lastCcAttacker = attacker0
@@ -7,6 +109,11 @@ macro Player.setCrowdControlAttack(self, attacker0, isVanilaKnockback=false, dur
   self.lastCcWasInAir = self.isInAir()
   self.lastCcVanilaKnockback = isVanilaKnockback
   self.money = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
+
+macro Player.resetCrowdControlAttack(self):
+  self.lastCcAttacker = false
+  self.lastCcAttackTime = false
+  self.lastCcWasInAir = false
 
 rule "player Dealt Knockback":
   @Event playerDealtKnockback
@@ -18,7 +125,7 @@ rule "player Dealt Knockback":
 
   victim.setCrowdControlAttack(attacker, true)
   
-  # [Sombra] melee from invisible - steal money and stun:
+  # [Sombra] Melee from invisible - additional damage, steal money and stun:
   if (
     eventPlayer.getHero() == Hero.SOMBRA and
     eventPlayer.isInvisible and
@@ -27,7 +134,7 @@ rule "player Dealt Knockback":
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
     damage(victim, eventPlayer, 40)
     playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
-    eventPlayer.money += 50
+    eventPlayer.earnMoney(50)
 
   # [Reinhardt] Shield bash:
   if eventPlayer.getHero() == Hero.REINHARDT and eventPlayer.isFiringSecondaryFire():
@@ -38,17 +145,15 @@ rule "player Dealt Knockback":
     victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
     getRealPlayersInRadius(victim, 2, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.STUNNED, 2)
 
-rule "Zombie took damage":
-  @Event playerTookDamage
-  @Team 2
 
-  # [Cassydy] stun effect for flashbang:
-  if (attacker.getHero() == Hero.CASSIDY and eventAbility == Button.ABILITY_2):
-    victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
-  # [Doomfist] Ult Knock Down:
-  elif (attacker.getHero() == Hero.DOOMFIST):
+rule "Player deal damage":
+  @Event playerDealtDamage
+  @Team 1
+
+  # [Doomfist] Ultimate knock down enemies:
+  if (attacker.getHero() == Hero.DOOMFIST):
     if eventAbility == Button.ULTIMATE:
-      victim.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 3)
+      victim.setStatusEffect(attacker, Status.KNOCKED_DOWN, 3)
     elif eventAbility == Button.ABILITY_1:
       victim.setSpeedState(50, 3)
   # [Widowmaker]:
@@ -61,6 +166,7 @@ rule "Zombie took damage":
     # Reveal enemies when scoped hit
     elif eventAbility == Button.PRIMARY_FIRE and eventAbility == Button.SECONDARY_FIRE: 
       victim.setRevealed()
+
 
 rule "Player took damage":
   @Event playerTookDamage
@@ -86,10 +192,7 @@ rule "Player took damage":
   ):
     eventPlayer.setStatusEffect(null, Status.BURNING, 10)
 
-  eventPlayer.state[SI.LAST_DAMAGE_TIME] = getTotalTimeElapsed()
-  wait(15, Wait.RESTART_WHEN_TRUE)
-  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()
-
+  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed() + (HEALER_AUTO_HEAL_DELAY if eventPlayer.heroType == HeroType.SUPPORT else AUTO_HEAL_DELAY)
 # BURNING effect that triggered [Team2 Mauga]
 rule "Player burning":
   @Event eachPlayer
@@ -104,48 +207,39 @@ rule "Player burning":
   wait(0.2, Wait.ABORT_WHEN_FALSE)
   loop()
 
-
-# code from [Hacked Healthpack/Sombra Healing Detector](https://workshop.codes/EF7H3)
 rule "HealthPack with auto heal and speed boost":
   @Event playerReceivedHealing
   @Team 1
-  @Condition eventWasHealthPack == true
+  @Condition eventWasHealthPack
 
   # Clear the BURNING effect that triggered [Team2 Mauga]
   if eventPlayer.hasStatus(Status.BURNING):
     eventPlayer.clearStatusEffect(Status.BURNING)
   wait()
 
-  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed()
-  eventPlayer.setMoveSpeed(150)
-  wait(5, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.setMoveSpeed(100)
-
+  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed() + 0.3
+  eventPlayer.setSpeedState(150, 5)
 
 rule "Start auto healing overеtime":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.state[SI.START_AUTO_HEAL_TIME] + AUTO_HEALING_OVERTIME_DURATION > getTotalTimeElapsed()
+  @Condition eventPlayer.state[SI.START_AUTO_HEAL_TIME] > getTotalTimeElapsed()
+
+  waitUntil(not ruleCondition, INFINITY)
 
   eventPlayer.startHealingOverTime(eventPlayer, AUTO_HEALING_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthBoostPercent / 100) - 20) / 5))
 
-  waitUntil(
-    eventPlayer.state[SI.LAST_DAMAGE_TIME] + 0.1 > getTotalTimeElapsed() or
-    eventPlayer.state[SI.START_AUTO_HEAL_TIME] + AUTO_HEALING_OVERTIME_DURATION < getTotalTimeElapsed(),
-    INFINITY
-  )
-  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = false
+  waitUntil(ruleCondition, AUTO_HEALING_OVERTIME_DURATION)
   eventPlayer.stopAllHealingOverTime()
-
+  if ruleCondition:
+    loop()
 
 rule "Healing money":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.healingTracker >= eventPlayer.healingTrackerThreshold
 
-  eventPlayer.temp0 = eventPlayer.healingTracker * MONEY_FOR_HEALING
-  eventPlayer.money += eventPlayer.temp0
-  # smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
+  eventPlayer.earnMoney(eventPlayer.healingTracker * MONEY_FOR_HEALING)
   eventPlayer.healingTracker = 0
 
 rule "Self Healing money":
@@ -153,9 +247,8 @@ rule "Self Healing money":
   @Team 1
   @Condition eventPlayer.selfHealingTracker >= eventPlayer.healingTrackerThreshold
 
-  eventPlayer.temp0 = eventPlayer.selfHealingTracker * MONEY_FOR_SELF_HEALING
-  eventPlayer.money += eventPlayer.temp0
-  # smallMessage(eventPlayer, "<TX C000000000039DD> +${0}".format(eventPlayer.temp0))
+  if not eventPlayer.isInSecretShop:
+    eventPlayer.earnMoney(eventPlayer.selfHealingTracker * MONEY_FOR_SELF_HEALING)
   eventPlayer.selfHealingTracker = 0
 
 rule "Healing amount tracker":
@@ -169,17 +262,21 @@ rule "Healing amount tracker":
   else:
     eventPlayer.healingTracker += eventHealing
     eventPlayer.healingCurrentStat += eventHealing
+    # Supports trigger auto-heal:
+    # if healee.heroType == HeroType.SUPPORT and eventPlayer.state[SI.START_AUTO_HEAL_TIME] > getTotalTimeElapsed() + 3:
+    #   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = 3
 
 rule "Zombie elimination money and ult charge":
   @Event playerEarnedElimination
   @Team 1
 
-  eventPlayer.temp0 = (
+  eventPlayer.earnMoney(
     MONEY_FOR_ELIMINATIONS +
     (MONEY_FOR_CRITICAL_FINAL_BLOW if eventWasCriticalHit else 0) +
     (MONEY_FOR_MELEE_FINAL_BLOW if eventAbility == Button.MELEE else 0) +
     (MONEY_FOR_HACKED_ELIMS if victim.isHacked else 0)
   )
+
   if victim.isHacked:
     eventPlayer.currentHackedElims += 1
 
@@ -187,16 +284,11 @@ rule "Zombie elimination money and ult charge":
     eventPlayer.currentCriticalFinalBlows += 1
   elif eventAbility == Button.MELEE:
     eventPlayer.currentMeleeFinalBlows += 1
-
-  # smallMessage(eventPlayer, "<TX C00000000021569> +${}".format(eventPlayer.temp0))
-  eventPlayer.money += eventPlayer.temp0
-
   
   if not eventPlayer.isUsingUltimate():
     eventPlayer.setUltCharge(eventPlayer.getUltCharge() + ULT_CHARGE_FOR_KILL)
 
 playervar currentOffensiveAssistsStat
-
 rule "Offensive assists money and ult charge":
   @Event eachPlayer
   @Team 1
@@ -204,16 +296,12 @@ rule "Offensive assists money and ult charge":
 
   eventPlayer.temp0 = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS) - eventPlayer.currentOffensiveAssistsStat
   eventPlayer.currentOffensiveAssistsStat = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
-
-  eventPlayer.temp1 = MONEY_FOR_OFFENSIVE_ASSISTS * eventPlayer.temp0
-  # smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
-  eventPlayer.money += eventPlayer.temp1
+  eventPlayer.earnMoney(MONEY_FOR_OFFENSIVE_ASSISTS * eventPlayer.temp0)
 
   if not eventPlayer.isUsingUltimate():
     eventPlayer.setUltCharge(eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * eventPlayer.temp0))
 
 playervar currentDefensiveAssistsStat
-
 rule "Defensive assists money and ult charge":
   @Event eachPlayer
   @Team 1
@@ -221,10 +309,7 @@ rule "Defensive assists money and ult charge":
 
   eventPlayer.temp0 = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS) - eventPlayer.currentDefensiveAssistsStat
   eventPlayer.currentDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
-
-  eventPlayer.temp1 = MONEY_FOR_DEFENSIVE_ASSISTS * eventPlayer.temp0
-  # smallMessage(eventPlayer, "Assist: +${}".format(eventPlayer.temp1))
-  eventPlayer.money += eventPlayer.temp1
+  eventPlayer.earnMoney(MONEY_FOR_DEFENSIVE_ASSISTS * eventPlayer.temp0)
 
   if not eventPlayer.isUsingUltimate():
     eventPlayer.setUltCharge(eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * eventPlayer.temp0))

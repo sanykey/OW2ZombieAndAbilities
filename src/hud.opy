@@ -167,56 +167,6 @@ rule "Init huds":
     SpecVisibility.ALWAYS
   )
 
-  # common tips
-  createCasedProgressBarIwt(
-    text="\n\n\n\n\n\n\n\n\n\n\n\n
-    - Hold <fgdb9342FF>{} + {}</fg> to view hero info and help.
-
-    - Press <fgdb9342FF>{} + {}</fg> to switch the camera.
-
-    - To buy a hero, stand in the circle near them and press <fgdb9342FF>{}</fg>, if you can afford it.
-
-    - Ultimate charge increases by {}% for participating in kills, defense assists, and offense assists. 
-      It also increases by 1% for every {} seconds of playing emotes.
-
-    - Damage resistance is increased by {}% for each hero you have purchased.
-
-    - Hero prices and locations are randomized each match.
-
-    - Barriers push zombies back but take damage while doing so.
-
-    - Zombies don’t usually die from falling into pits, but if you force them in, they take {} base damage. 
-      Use crowd control and barriers to your advantage.
-
-    - Health packs gradually restore HP (scaling with HP/Healing upgrades) and boost movement speed by
-      50% for 5 seconds.
-
-    - The mod is still in development. Some heroes already have unique abilities:
-      <fg6e89b1FF>Ana</fg> (5), <fg8b625eFF>Brigitte</fg> (5), <fg721fa3FF>Juno</fg> (4), <fgad5a5fFF>Cassidy</fg> (7)
-      <fgdc847dFF>Mauga</fg> (2), <fg6dabebFF>Mei</fg> (2), <fg9d8cd0FF>Rammatra</fg> (1), <fg94a1a5FF>Reinhardt</fg> (2),
-      <fg94a0a5FF>Sigma</fg> (2), <fg6d7995FF>Soldier 76</fg> (1), <fg765dbdFF>Sombra</fg> (4), <fg91bbd1FF>Symmetra</fg> (2), 
-      <fgA686ABFF>Widowmaker</fg> (8), <fga0a9baFF>Winston</fg> (1).
-    ".format(
-      inputBindingString(Button.CROUCH),
-      inputBindingString(Button.INTERACT),
-      inputBindingString(Button.CROUCH),
-      inputBindingString(Button.INTERACT),
-      inputBindingString(Button.INTERACT),
-      ULT_CHARGE_FOR_KILL,
-      EMOTE_ULT_CHARE_PER_SECONDS,
-      DAMAGE_RESISTANCE_BY_OWNED_HERO,
-      ZOMBIE_FALL_DAMAGE
-    ),
-    visibleTo=(localPlayer if localPlayer.isHeroDescriptionOpened == true else null),
-    position=updateEveryFrame(
-      localPlayer.getEyePosition() +
-      localPlayer.getFacingDirection() * 12 +
-      normalize(crossProduct(crossProduct(Vector.UP, localPlayer.getFacingDirection()), localPlayer.getFacingDirection())) * 4 + # vertical
-      normalize(crossProduct(Vector.UP, localPlayer.getFacingDirection())) * -7 # horizontal
-    ),
-    scale=1
-  )
-
   # push down hud texts for abilities
   hudSubtext(
     localPlayer if isGameStarted else null,
@@ -247,13 +197,13 @@ rule "Init huds":
 rule "Open hero talents info hud":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.CROUCH) == true
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
-  @Condition eventPlayer.isHoldingButton(Button.MELEE) == false
-  @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE) == false
-  @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE) == false
-  @Condition eventPlayer.isHoldingButton(Button.RELOAD) == false
-  @Condition eventPlayer.isHoldingButton(Button.JUMP) == false
+  @Condition eventPlayer.isHoldingButton(Button.CROUCH)
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+  @Condition not eventPlayer.isHoldingButton(Button.MELEE)
+  @Condition not eventPlayer.isHoldingButton(Button.PRIMARY_FIRE)
+  @Condition not eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
+  @Condition not eventPlayer.isHoldingButton(Button.RELOAD)
+  @Condition not eventPlayer.isHoldingButton(Button.JUMP)
   
   wait(HERO_INFO_HOLD_DURATION, Wait.ABORT_WHEN_FALSE)
   eventPlayer.disableHeroHud()
@@ -296,7 +246,11 @@ rule "Create players effects":
       eventPlayer.healingBoostPercent,
       eventPlayer.damageResistPercent
     ),
-    "{0}{1}: ${2}".format(eventPlayer, " (dev)" if eventPlayer == eventPlayer.developer else (" (host)" if eventPlayer == hostPlayer else ""), eventPlayer.money),
+    "{0}{1}: {2}".format(
+      eventPlayer,
+      " <fg94a0a544>(host)</fg>" if eventPlayer == hostPlayer else "",
+      "<fg94a0a544>${}(tot)</fg>".format(eventPlayer.moneyTotal) if localPlayer.isHoldingButton(Button.CROUCH) else "${}".format(eventPlayer.money)
+    ),
     HudPosition.ACTUALLY_LEFT,
     1,
     Color.BLUE if eventPlayer.isAlive() else Color.RED, # if eventPlayer.getHealth() >= eventPlayer.getMaxHealth() / 2 else Color.RED,

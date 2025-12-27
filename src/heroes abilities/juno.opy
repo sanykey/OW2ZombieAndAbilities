@@ -157,10 +157,8 @@ rule "[Juno] Ultimate - abduct enemies":
   eventPlayer.list0 = [player for player in getLivingPlayers(Team.2) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
   
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-
-  eventPlayer.list0.state[SI.LOW_GRAVITY] = 0.5 + getTotalTimeElapsed()
-  eventPlayer.list0.state[SI.CHANGED_SPEED_TIME] = 0.5 + getTotalTimeElapsed()
-  eventPlayer.list0.state[SI.CHANGED_SPEED_AMOUNT] = 10
+  eventPlayer.list0.setGravityState(0, 0.5)
+  eventPlayer.list0.setSpeedState(0, 0.5)
   damage(eventPlayer.list0, eventPlayer, 2.5)
 
   for eventPlayer.I in range(len(eventPlayer.list0)):

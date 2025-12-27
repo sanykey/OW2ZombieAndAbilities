@@ -9,8 +9,7 @@
 #!define HEALTH_UPGRADE_AMOUNT 8
 #!define DAMAGE_UPGRADE_AMOUNT 5
 #!define HEALING_UPGRADE_AMOUNT 5
-#!define TEAM_ARMOR_UPGRADE_AMOUNT 25
-#!define TEAM_SHIELDS_UPGRADE_AMOUNT 25
+#!define TEAM_ARMOR_UPGRADE_AMOUNT 10
 #!define BUNCH_BUY_MULTIPLY 20
 
 # Dificultly settings
@@ -18,6 +17,8 @@
 #!define ULT_CHARGE_FOR_KILL 5
 #!define EMOTE_ULT_CHARE_PER_SECONDS  0.3
 #!define DAMAGE_RESISTANCE_BY_OWNED_HERO 0.5
+#!define AUTO_HEAL_DELAY 15
+#!define HEALER_AUTO_HEAL_DELAY 7
 
 # vanilla hero constants
 #!define TORBJORN_HAMMER_BASE_DMG 70
@@ -48,18 +49,6 @@
 
 # Other:
 #!define INFINITY 99999
-#!define ALLY_BOT_PLAYER_SLOT 7
-
-enum SI:
-  HACKED # hacked status to get money from killed hacked zombies
-  LAST_DAMAGE_TIME
-  START_AUTO_HEAL_TIME
-  IS_INVISIBLE
-  CHANGED_SPEED_TIME
-  CHANGED_SPEED_AMOUNT
-  CHANGED_SPEED_AMOUNT_PREV
-  LOW_GRAVITY
-
 
 #####################################################
 ################ Global variables ###################
@@ -85,14 +74,10 @@ globalvar secretShopZoneEffects = []
 
 # zombie bots vars:
 globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
-globalvar createDummyI
 globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
 globalvar botsHealthBoostPercent
 globalvar botsDamageBoostPercent
-
-globalvar zombieRespI
-globalvar zombieRespawnList
 
 globalvar zombiesflyIOnandOff
 globalvar zombieStats
@@ -135,24 +120,28 @@ globalvar wSettingsMaxZombieBots
 globalvar debugVectsArr
 globalvar debugCurrentVectNum
 globalvar debugCurrentVectEffectArr
-globalvar debugIsNoclip
 
+# debug
+globalvar debugMenuIsOpened
+globalvar debugBotsSpawnPoint
 
 ##################################################
 ############## Player variables: #################
 ##################################################
 playervar healingTracker
 playervar selfHealingTracker
-playervar lastCcVanilaKnockback
+
 playervar zomDistancesToPlayersArr
 playervar zomIsInLoSPlayersArr
-playervar isTank
 
+enum HeroType:
+  TANK
+  DAMAGE
+  SUPPORT
+playervar heroType
 playervar zombiesfly
-
 playervar isInSecretShop
 playervar state # use with enum "SI"
-
 playervar developer
 playervar revivers
 playervar reviveTimer
@@ -171,6 +160,7 @@ playervar posBeforeChangeHero
 playervar lastCcAttacker
 playervar lastCcAttackTime
 playervar lastCcWasInAir
+playervar lastCcVanilaKnockback
 
 playervar isDvaUltBought
 playervar purchasedHeroes
@@ -178,9 +168,7 @@ playervar healthBoostPercent
 playervar damageBoostPercent
 playervar healingBoostPercent
 
-##!define PV_SHIELDS_FOR_TEAM 0
 #!define PV_ARMOR_FOR_TEAM 1
-##!define PV_TEAM_SHIELDS_POOL 2
 #!define PV_TEAM_ARMOR_POOL 3
 playervar boostStats # [shieldsForTeam, armorForTeam, teamShieldsPool, teamArmorPool]
 
@@ -208,9 +196,11 @@ playervar heroEffectsIds
 playervar hasBadStatus
 playervar revealed
 playervar money
+playervar moneyTotal
 
 playervar abilTemp1 # temp var use for loops with "wait" per hero
 playervar isInvisible
+playervar isIgnoredByZombie
 playervar isReady
 
 playervar isHeroDescriptionOpened

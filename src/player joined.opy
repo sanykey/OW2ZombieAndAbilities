@@ -3,6 +3,16 @@
 # globalvar vipPlayers = ["snky"] # List of players who received special privileges
 globalvar devPlayers = ["snky"] # List of players who received develop privileges
 
+def setHeroType():
+  @Name "setHeroType"
+  if eventPlayer.getCurrentHero() in getTankHeroes():
+    eventPlayer.heroType = HeroType.TANK
+  elif eventPlayer.getCurrentHero() in getSupportHeroes():
+    eventPlayer.heroType = HeroType.SUPPORT
+  else:
+    eventPlayer.heroType = HeroType.DAMAGE
+
+
 rule "Player joined setup": 
   @Event playerJoined
   @Team 1
@@ -11,7 +21,13 @@ rule "Player joined setup":
   eventPlayer.healthBoostPercent = 100 + (5 * roundNumber)
   eventPlayer.damageBoostPercent = 100 + (3 * roundNumber)
   eventPlayer.healingBoostPercent = 100 + (3 * roundNumber)
-  eventPlayer.money = wSettingsStartMoney + (2500 * roundNumber)
+
+  eventPlayer.earnMoney(
+    wSettingsStartMoney + (2500 * roundNumber)
+    + ((eventPlayer.damageBoostPercent - 100) / DAMAGE_UPGRADE_AMOUNT * UPGRADE_PRICE)
+    + ((eventPlayer.healthBoostPercent - 100) / HEALTH_UPGRADE_AMOUNT * UPGRADE_PRICE)
+    + ((eventPlayer.healingBoostPercent - 100) / HEALING_UPGRADE_AMOUNT * UPGRADE_PRICE)
+  )
   eventPlayer.purchasedHeroes = [Hero.DVA]
   
   # grant develop privileges
@@ -20,15 +36,14 @@ rule "Player joined setup":
     bigMessage(getAllPlayers(), "Mod developer [{}] joined the game".format(eventPlayer))
     # eventPlayer.startScalingSize(0.7, false)
     eventPlayer.startForcingHero(Hero.VENDETTA)
+    eventPlayer.purchasedHeroes.append(Hero.VENDETTA)
   else:
     eventPlayer.startForcingHero(Hero.DVA)
 
   eventPlayer.respawn()
-  eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
+  if not eventPlayer.isDummy():
+    eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
-  # debug:
-  # wait(10)
-  # eventPlayer.moveToTeam(Team.2, -1)
 
 # rule "Player joined zombie team": 
 #   @Event playerJoined
@@ -44,6 +59,8 @@ rule "Player spawned setup":
   eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
   eventPlayer.boostStats[PV_TEAM_ARMOR_POOL] = getLastCreatedHealthPool()
 
+  setHeroType()
+
   if not eventPlayer.isReady:
     wait(1.5)
     eventPlayer.setFacing(vect(0.93, 0.05, -0.35), Relativity.TO_WORLD)
@@ -52,13 +69,9 @@ rule "Show game tips in start":
   @Event eachPlayer
   @Team 1 
   @Condition not eventPlayer.isReady
-  waitUntil(distance(eventPlayer, vect(-27.33, -1.94, -12.68)) < 6)
-
-  eventPlayer.isHeroDescriptionOpened = true
 
   while not eventPlayer.isReady: 
     if distance(eventPlayer, vect(-27.33, -1.94, -12.68)) > 6:
-      eventPlayer.isHeroDescriptionOpened = false
       eventPlayer.isReady = true
     wait(1)
 

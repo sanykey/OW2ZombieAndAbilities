@@ -54,7 +54,7 @@ rule "[Sombre] Stop invisible when hacking":
 rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.hasStatusEffect(Status.HACKED) == true
+  @Condition eventPlayer.hasStatusEffect(Status.HACKED)
   eventPlayer.setDamageReceived(130)
   eventPlayer.isHacked = true # for money
   waitUntil(not eventPlayer.hasStatus(Status.HACKED), INFINITY)

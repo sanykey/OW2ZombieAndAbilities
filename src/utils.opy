@@ -1,12 +1,14 @@
 #!mainFile "main.opy"
 
-
+macro Player.earnMoney(self, amount=0):
+  self.money += amount
+  self.moneyTotal += amount
 
 rule "Version text":
   hudText(
     localPlayer,
     null,
-    "Mod code: 8X63K. Version: {}".format(MODE_VERSION),
+    "8X63K. {}\nHold [{}] to switch camera\nPress [{}] to interact/buy".format(MODE_VERSION, inputBindingString(Button.MELEE), inputBindingString(Button.INTERACT)),
     null,
     HudPosition.RIGHT,
     -10,
@@ -149,3 +151,4 @@ rule "Server anti-crash system":
   
 #   wait(2, Wait.ABORT_WHEN_FALSE)
 #   setSlowMotion(100)
+

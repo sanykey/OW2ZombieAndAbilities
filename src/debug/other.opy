@@ -1,44 +1,18 @@
 #!mainFile "../main.opy"
 
-
-rule "[debug] User starting stats":
-  @Event playerJoined
-  @Team 1
-  # @Slot 0
-
-  waitUntil(eventPlayer.hasSpawned(), INFINITY)
-  wait(2)
-  # eventPlayer.cameraState = 4
-
-  # eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
-
-  eventPlayer.teleport(vect(-20.63, 6.50, -88.95)) # to shop 
-  eventPlayer.money = 500000
-  # eventPlayer.healthBoostPercent = 10000
-  # eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  # eventPlayer.damageBoostPercent = 10000
-  # eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
-  # eventPlayer.healingBoostPercent += 10000
-  # eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
-  # eventPlayer.state[SI.HEALING_TRACKER_THRESHOLD] = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
-  # eventPlayer.startForcingHero(Hero.VENDETTA)
-  wait()
-  heal(eventPlayer, null, INFINITY)
-
-
 # rule "[debug]":
 #   @Event eachPlayer
 #   @Team 1
 #   debug(hostPlayer.getFacingDirection())
 
-rule "[debug] Charge ultimate":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
+# rule "[debug] Charge ultimate":
+#   @Event eachPlayer
+#   @Team 1
+#   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   
-  eventPlayer.setUltCharge(100)
+#   eventPlayer.setUltCharge(100)
 
-  damage([player for player in getPlayers(Team.1) if player.isDummy()], null, INFINITY)
+#   damage([player for player in getPlayers(Team.1) if player.isDummy()], null, INFINITY)
   
 
 # rule "[debug] Create ally dummy":

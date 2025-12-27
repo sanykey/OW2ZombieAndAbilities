@@ -2,6 +2,7 @@
 
 playervar facingBeforeChangeHero
 playervar beforeChangeHero
+#!define CHANGE_HERO_MENU_TIMEOUT 30
 
 def openSwitchHeroHud():
   @Name "Open Switch hero hud"
@@ -13,11 +14,11 @@ def openSwitchHeroHud():
   eventPlayer.beforeChangeHero = eventPlayer.getHero()
   eventPlayer.setRespawnTime(0)
   eventPlayer.stopForcingCurrentHero()
-  eventPlayer.setAllowedHeroes(getAllHeroes().exclude(eventPlayer.getHero()))
+  eventPlayer.setAllowedHeroes(eventPlayer.purchasedHeroes.exclude(eventPlayer.getHero()))
   wait()
   eventPlayer.setAllowedHeroes(eventPlayer.purchasedHeroes)
 
-  waitUntil(eventPlayer.hasSpawned(), 20)
+  waitUntil(eventPlayer.hasSpawned(), CHANGE_HERO_MENU_TIMEOUT)
   if not eventPlayer.hasSpawned():
     eventPlayer.startForcingHero(eventPlayer.beforeChangeHero)
     heal(getPlayers(Team.1), null, INFINITY)
@@ -27,4 +28,4 @@ def openSwitchHeroHud():
   eventPlayer.posBeforeChangeHero = false
   wait(0.1)
   unpause3PCamera()
-  eventPlayer.isTank = any([hero == eventPlayer.getCurrentHero() for hero in getTankHeroes()])
+  setHeroType()

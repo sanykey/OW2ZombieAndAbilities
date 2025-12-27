@@ -121,7 +121,6 @@ rule "[Brigitte] Whip shot - apply impulse forward":
   wait(0.25)
   eventPlayer.setGravity(100)
 
-
 rule "[Brigitte] Use repair packs on yourself":
   @Event eachPlayer
   @Hero brigitte

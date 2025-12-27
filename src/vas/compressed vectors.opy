@@ -50,7 +50,7 @@ globalvar vectList = compressed([
 
   # [Secret shop]
   #!define VL_SECRET_SHOP_OFFSET 37
-  #!define VL_SECRET_SHOP_LEN 13
+  #!define VL_SECRET_SHOP_LEN 12
   vect(113.354, 16.189, -29.761),
   vect(97.513, 16.972, -20.29),
   vect(90.42, 17.169, -17.775),
@@ -60,7 +60,6 @@ globalvar vectList = compressed([
   vect(123.312, 9.176, -27.364),
   vect(-16.309, 8.115, -89.008),
   vect(-8.2, 10.2, -76.2),
-  vect(-20.695, 7.574, -86.552),
   vect(123.312, 10.5, -27.364),
   vect(123.312, 9.176, -27.364),
   vect(-30.87, 12.00, -91.50),
@@ -73,10 +72,9 @@ globalvar vectList = compressed([
   #!define VL_ENTER_SHOP_TELEPORT_FROM VL_SECRET_SHOP_OFFSET + 6
   #!define VL_ENTER_SHOP_TELEPORT_TO VL_SECRET_SHOP_OFFSET + 7
   #!define VL_EXIT_SHOP_TELEPORT_FROM VL_SECRET_SHOP_OFFSET + 8
-  #!define VL_SHOP_HEAL_AREA VL_SECRET_SHOP_OFFSET + 9
-  #!define VL_SHOP_TELEPORTER_TEXT VL_SECRET_SHOP_OFFSET + 10
-  #!define VL_SHOP_TELEPORTER_RING VL_SECRET_SHOP_OFFSET + 11
-  #!define VL_SHOP_TIP VL_SECRET_SHOP_OFFSET + 12
+  #!define VL_SHOP_TELEPORTER_TEXT VL_SECRET_SHOP_OFFSET + 9
+  #!define VL_SHOP_TELEPORTER_RING VL_SECRET_SHOP_OFFSET + 10
+  #!define VL_SHOP_TIP VL_SECRET_SHOP_OFFSET + 11
 
   # Buy hero upgrades
   #!define VL_BUY_UPRADES_OFFSET VL_SECRET_SHOP_OFFSET + VL_SECRET_SHOP_LEN
@@ -235,13 +233,31 @@ globalvar vectList = compressed([
   vect(128.632, 23, -7.378),
   vect(122.998, 16, -66.952),
   vect(142.909, 17, -45),
+  #!define VL_SPAWN_POINTS_LEN VL_SPAWN_POINTS_A_LEN + VL_SPAWN_POINTS_B_LEN + VL_SPAWN_POINTS_D_LEN + VL_SPAWN_POINTS_E_LEN + VL_SPAWN_POINTS_F_LEN + VL_SPAWN_POINTS_G_LEN
 
   # zombie bots home point (the place they teleport to when they die)
-  #!define VL_REFUND 146
+  #!define VL_REFUND 145
   vect(-19.91, 6.50, -93.88),
 
   #!define VL_SHOP_ZONE2 VL_REFUND + 1
+  #!define VL_SHOP_ZONE2_LEN 1
   vect(-11.54, 11.30, -76.66),
+
+  #!define VL_BOT_SNIPER_SPOTS_OFFSET (VL_SHOP_ZONE2 + VL_SHOP_ZONE2_LEN)
+  #!define VL_BOT_SNIPER_SPOTS_LEN 13
+  vect(13.33, 11.61, -42.38),
+  vect(13.86, 12.56, -82.01),
+  vect(22.09, 12.30, -73.98),
+  vect(32.08, 8.79, -48.16),
+  vect(33.31, 14.89, -85.18),
+  vect(56.24, 23.98, -103.35),
+  vect(50.73, 19.47, -78.32),
+  vect(98.86, 19.71, -72.58),
+  vect(89.35, 22.09, -62.54),
+  vect(81.28, 17.02, -38.14),
+  vect(117.72, 20.17, -42.66),
+  vect(125.06, 16.04, -19.54),
+  vect(110.83, 14.02, -47.27)
 ])
 
 #!define LOCKED_AREA_EFFECTS_LEN 12

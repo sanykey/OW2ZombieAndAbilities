@@ -3,16 +3,28 @@
 #!define ROUND_START_DELAY 7
 #!define MAX_REMAINING_ZOMBIES_IN_ROUND 80
 
-rule "Waiting for players ready":
-  @Event eachPlayer
-  @Team 1
-  @Condition isGameStarted == false
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and not eventPlayer.isHoldingButton(Button.CROUCH) 
-
-  wait(0.5, Wait.ABORT_WHEN_FALSE)
+def MatchStartSub():
+  @Name "Sub: match start"
   smallMessage(getAllPlayers(), "Match begins!")
   destroyHudText(delayerStartHudId)
   isGameStarted = true
+
+rule "Waiting for players ready":
+  @Event eachPlayer
+  @Team 1
+  @Condition not isGameStarted
+  @Condition not debugMenuIsOpened
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT) and not eventPlayer.isHoldingButton(Button.CROUCH) 
+
+  wait(0.5, Wait.ABORT_WHEN_FALSE)
+  MatchStartSub()
+
+def reviveAllPlayersSR():
+  @Name "Sub: revive all players"
+  temp2 = [player for player in getPlayers(Team.1) if player.downedStartTime or not player.isAlive()]
+  if temp2:
+    temp2.downedStartTime = false
+    temp2.resurrect()
 
 rule "Match end":
   @Condition not isDebugAutoRespawn
@@ -48,11 +60,7 @@ rule "Round start":
   setObjectiveDescription(localPlayer, "Round {}, Team score: {}".format(roundNumber, teamScore), HudReeval.VISIBILITY_SORT_ORDER_AND_STRING)
   
   # Resurrect and heal all players
-  temp2 = [player for player in getPlayers(Team.1) if player.downedStartTime or not player.isAlive()]
-  if temp2:
-    temp2.teleport(nearestWalkablePosition(random.choice(getLivingPlayers(Team.1)) + vect(random.randint(-5, 5), 0, random.randint(-5, 5))))
-    temp2.downedStartTime = false
-    temp2.resurrect()
+  reviveAllPlayersSR()
 
   botsHealthBoostPercent = (
     ZOMBIE_BASE_HP + 10 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))

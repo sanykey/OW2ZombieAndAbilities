@@ -192,12 +192,12 @@ rule "[Cassydy] lasso hit a player":
 
   eventPlayer.targetPlayer0.setCrowdControlAttack(eventPlayer)
 
-  eventPlayer.targetPlayer0.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 2)
+  eventPlayer.targetPlayer0.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 5)
 
   waitUntil(distance(eventPlayer, eventPlayer.targetPlayer0) <= 8, 2)
   eventPlayer.targetPlayer0.setGravity(100)
   eventPlayer.targetPlayer0.stopAcceleration()
-  eventPlayer.targetPlayer0.clearStatusEffect(Status.STUNNED)
+  # eventPlayer.targetPlayer0.clearStatusEffect(Status.STUNNED)
 
   stopChasingVariable(eventPlayer.abilPos0)
   stopChasingVariable(eventPlayer.abilDir0)
@@ -220,32 +220,36 @@ rule "[Cassydy] Detonates a flashbang while rolling":
   eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos1, 3, Team.2)
 
   damage(eventPlayer.list0, eventPlayer, 15)
-  eventPlayer.list0.setStatusEffect(eventPlayer, Status.STUNNED, 0.5)
+  eventPlayer.list0.setStatusEffect(eventPlayer, Status.STUNNED, 1.5)
 
-rule "[Cassydy] fan the hammer knockback":
+rule "[Cassydy] damage effects":
   @Event playerDealtDamage
   @Hero cassidy
-  @Condition eventAbility == Button.SECONDARY_FIRE
-  
-  if victim.hasStatus(Status.KNOCKED_DOWN):
-    return
 
-  victim.setCrowdControlAttack(eventPlayer)
+  # [Cassydy] Knockback enemies when using alternate fire
+  if eventAbility == Button.SECONDARY_FIRE:
+    if victim.hasStatus(Status.KNOCKED_DOWN):
+      return
 
-  victim.state[SI.LOW_GRAVITY] = 0.15 + getTotalTimeElapsed()
-  if distance(eventPlayer, victim) <= 15:
-    victim.applyImpulse(attacker.getFacingDirection(), 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  else:
-    victim.applyImpulse(attacker.getFacingDirection(), max(5, 30 - distance(eventPlayer, victim)), Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+    victim.setCrowdControlAttack(eventPlayer)
+    victim.setGravityState(0, 0.15)
+    if distance(eventPlayer, victim) <= 15:
+      victim.applyImpulse(attacker.getFacingDirection(), 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+    else:
+      victim.applyImpulse(attacker.getFacingDirection(), max(5, 30 - distance(eventPlayer, victim)), Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+
+  # [Cassydy] stun effect for flashbang:
+  elif eventAbility == Button.ABILITY_2: 
+    victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
 
 rule "[Cassydy] Roll leap":
-    @Event eachPlayer
-    @Hero cassidy
-    @Condition eventPlayer.isUsingAbility1() == true
-    @Condition eventPlayer.isHoldingButton(Button.ABILITY_1) == true
-    
-    wait(0.30, Wait.ABORT_WHEN_FALSE)
-    eventPlayer.applyImpulse(Vector.UP, 13, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  @Event eachPlayer
+  @Hero cassidy
+  @Condition eventPlayer.isUsingAbility1()
+  @Condition eventPlayer.isHoldingButton(Button.ABILITY_1)
+  
+  wait(0.30, Wait.ABORT_WHEN_FALSE)
+  eventPlayer.applyImpulse(Vector.UP, 13, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
 rule "[Cassidy] Smoke Bomb":
   @Event eachPlayer
@@ -289,4 +293,4 @@ rule "[Cassidy] Ultimate root":
   @Condition eventPlayer.isUsingUltimate() == true
   
   wait(0.02)
-  eventPlayer.getPlayersInViewAngle(Team.2, 90).setStatusEffect(null, Status.ROOTED, 2.5)
+  eventPlayer.getPlayersInViewAngle(Team.2, 90).setStatusEffect(null, Status.ROOTED, 4)

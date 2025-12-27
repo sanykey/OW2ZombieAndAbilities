@@ -1,11 +1,19 @@
 #!mainFile "../main.opy"
 
+rule "[Team2 Roadhog] Add Roadhog to Team.2":
+  @Condition roundNumber > 20
+  @Condition roundRemainingBots <= 0
+  @Condition not getPlayersOnHero(Hero.ROADHOG, Team.2)
+
+  GetCandidateForEliteZombieSub() # returns temp1
+  setZombieHero(temp1, Hero.ROADHOG)
+
 rule "Create [Team2 Roadhog] bot":
   @Event eachPlayer
   @Team 2
   @Hero roadhog
-  
-  eventPlayer.startForcingName("Zombie catcher")
+  wait(1)
+  eventPlayer.startForcingName("Zombie catcher {}".format(eventPlayer.getSlot()))
   eventPlayer.startScalingSize(0.7, false)
 
 rule "[Team2 Roadhog] trying to hook":
@@ -13,27 +21,24 @@ rule "[Team2 Roadhog] trying to hook":
   @Team 2
   @Hero roadhog
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.downedStartTime
   @Condition not eventPlayer.zombiesfly
+  @Condition eventPlayer.targetPlayer0
+  @Condition eventPlayer.isInLoSZombieTarget()
+  @Condition eventPlayer.getDistanceToZombieTarget() < 35
+  @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
 
-  if (
-    eventPlayer.targetPlayer0.isInvisible < getTotalTimeElapsed() and
-    isInLoS(eventPlayer, eventPlayer.targetPlayer0, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS) and
-    distance(eventPlayer, eventPlayer.targetPlayer0) < 35
-  ):
-    playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.LIME_GREEN, eventPlayer, 1)
-    eventPlayer.startFacing(
-      directionTowards(
-        eventPlayer.getEyePosition(),
-        eventPlayer.targetPlayer0.getEyePosition()
-      ), 400
-    )
-    wait(0.3)
-    getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(2, false)
-    eventPlayer.forceButtonPress(Button.ABILITY_1)
-    wait(0.25)
-    getPlayersOnHero(Hero.ROADHOG, Team.2).startScalingSize(0.7, false)
-    eventPlayer.stopFacing()
-
-  wait(8, Wait.ABORT_WHEN_FALSE)
-  loop()
+  wait(1, Wait.ABORT_WHEN_FALSE)
+  playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 35)
+  eventPlayer.startFacing(
+    directionTowards(
+      eventPlayer.getEyePosition(),
+      eventPlayer.targetPlayer0.getEyePosition()
+    ), 400
+  )
+  
+  wait(0.7, Wait.ABORT_WHEN_FALSE)
+  eventPlayer.startScalingSize(2, false)
+  eventPlayer.forceButtonPress(Button.ABILITY_1)
+  wait(0.25)
+  eventPlayer.startScalingSize(0.7, false)
+  eventPlayer.stopFacing()

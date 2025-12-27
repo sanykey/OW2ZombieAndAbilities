@@ -1,9 +1,10 @@
 #!mainFile "main.opy"
 
-globalvar playersInShop
 globalvar playerEjectFromShop
 
 rule "[Secret shop] init":
+  @Condition unlockedLocations == 4
+
   shopEffects = []
   enum SHOP_I:
     POWER_ON_EFFECT
@@ -17,7 +18,7 @@ rule "[Secret shop] init":
   # Create shop power on effects
   createEffect(getAllPlayers(), Effect.RING, Color.TURQUOISE, vectList[VL_CONNECT_SHOP], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   shopEffects[SHOP_I.POWER_ON_EFFECT] = getLastCreatedEntity()
-  createInWorldText(getAllPlayers(), "Connect Power", vectList[VL_CONNECT_SHOP], true/*=1*/, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
+  createInWorldText(getAllPlayers(), "Connect Power", vectList[VL_CONNECT_SHOP], true/*=1*/, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
   shopEffects[SHOP_I.POWER_ON_TEXT] = getLastCreatedText()
   createInWorldText(getAllPlayers(), "#{}".format(iconString(Icon.ARROW_LEFT)), vectList[VL_CONNECT_SHOP_ARROW], true/*=1*/, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
   shopEffects[SHOP_I.ARROW_LEFT_TEXT] = getLastCreatedText()
@@ -46,7 +47,7 @@ rule "[Secret shop] Show shop activator":
   wait(1)
   createEffect(getAllPlayers(), Effect.RING, Color.TURQUOISE, vectList[VL_SHOP_ACTIVATOR], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   shopEffects[SHOP_I.ACTIVATOR_RING] = getLastCreatedEntity()
-  createInWorldText(getAllPlayers(), iconString(Icon.SPIRAL), vectList[VL_SHOP_ACTIVATOR], 2.5, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
+  createInWorldText(getAllPlayers(), iconString(Icon.SPIRAL), vectList[VL_SHOP_ACTIVATOR], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.TURQUOISE)
   shopEffects[SHOP_I.ACTIVATOR_ICON] = getLastCreatedText()
 
 rule "[Secret shop] Use shop activator":
@@ -104,17 +105,7 @@ rule "[Secret shop] Exit secret shop":
   wait()
   eventPlayer.setFacing(vect(0.85, false, -0.53), Relativity.TO_WORLD)
 
-rule "[Secret shop] Auto heal secret shop":
-  @Event eachPlayer
-  @Team 1
-  @Condition distance(eventPlayer, vectList[VL_SHOP_HEAL_AREA]) < 12
-
-  wait(true)
-  heal(eventPlayer, null, INFINITY)
-  wait(2)
-
-
-rule "shop players management":
+rule "[Secret shop] shop players management":
   playersInShop = [player for player in getPlayers(Team.1) if player.isInSecretShop]
 
   # Rule only works if the shop is closed or there is more than one player in Team 1
@@ -135,7 +126,7 @@ rule "shop players management":
   loop()
 
 
-rule "Enter/Leave shop zone":
+rule "[Secret shop] Enter/Leave shop zone":
   @Event eachPlayer
   @Team 1
 

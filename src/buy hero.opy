@@ -55,7 +55,7 @@ rule "Buy hero":
         eventPlayer.startForcingHero(heroesShopData[I][0])
         wait(0.1)
 
-        eventPlayer.isTank = any([hero == eventPlayer.getCurrentHero() for hero in getTankHeroes()])
+        setHeroType()
 
         playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
         playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)

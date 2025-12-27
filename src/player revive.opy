@@ -20,7 +20,7 @@ rule "Team 1 (Death)":
     eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT] = getLastCreatedEntity()
 
     createInWorldText(
-      getPlayers(Team.1).exclude(eventPlayer),
+      getPlayers(Team.1),
       "{}{}".format(iconString(Icon.SKULL), eventPlayer),
       vect(eventPlayer.getPosition().x, eventPlayer.getPosition().y + 1.7, eventPlayer.getPosition().z),
       1,
@@ -67,6 +67,6 @@ rule "Team 1: Player gets up":
   wait(2.5, Wait.ABORT_WHEN_FALSE)
   if not ruleCondition:
     return
-  if eventPlayer.getSlot() == ALLY_BOT_PLAYER_SLOT:
+  if eventPlayer.isDummy():
     eventPlayer.communicate(Comms.READY)
 

@@ -41,7 +41,7 @@ rule "Locked area 0":
   eventPlayer.applyImpulse(directionTowards(vectList[4], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Locked area 1":
@@ -54,7 +54,7 @@ rule "Locked area 1":
   eventPlayer.applyImpulse(directionTowards(vectList[8], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Locked area 2":
@@ -230,8 +230,8 @@ rule "Teleport from restricted area 5":
 rule "Unlock next location A":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 0
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money >= 2500
   @Condition distance(vectList[VI.BUY_LOCATION_A], eventPlayer) <= 2
 
@@ -248,14 +248,14 @@ rule "Unlock next location A":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 2500
-  eventPlayer.temp1 = 7
+  eventPlayer.temp1 = 5
   randomStatUpgrade()
 
 rule "Unlock next location B":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 1
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money >= 5000
   @Condition distance(vectList[VI.BUY_LOCATION_B], eventPlayer) <= 2
   
@@ -272,15 +272,15 @@ rule "Unlock next location B":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 5000
-  eventPlayer.temp1 = 14
+  eventPlayer.temp1 = 10
   randomStatUpgrade()
 
 
 rule "Unlock next location C":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 2
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money >= 7500
   @Condition distance(vectList[VI.BUY_LOCATION_C], eventPlayer) <= 2
   
@@ -296,15 +296,15 @@ rule "Unlock next location C":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 7500
-  eventPlayer.temp1 = 21
+  eventPlayer.temp1 = 15
   randomStatUpgrade()
 
 
 rule "Unlock next location D":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
   @Condition unlockedLocations == 3
+  @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money >= 10000
   @Condition distance(vectList[VI.BUY_LOCATION_D], eventPlayer) <= 2
   
@@ -319,7 +319,7 @@ rule "Unlock next location D":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 10000
-  eventPlayer.temp1 = 28
+  eventPlayer.temp1 = 20
   randomStatUpgrade()
 
 rule "Clear locked areas data when everything is open":

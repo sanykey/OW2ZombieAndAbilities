@@ -1,5 +1,9 @@
 #!mainFile "../main.opy"
 
+globalvar commonZombieHero = Hero.TORBJORN
+globalvar commonBotsList
+globalvar commonBotsIndex
+
 rule "Enraged Zombies":
   @Event eachPlayer
   @Team 2
@@ -43,19 +47,58 @@ rule "Zombie Event description":
     bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.FIRE), "The Zombies are furious! (...Is someone playing DPS Moira?) ", iconString(Icon.FIRE)))
 
 
-# rule "test":
-#   @Condition roundRemainingBots <= 0 and roundNumber > 0 and roundNumber < 6
+rule "[Team2 SYMMETRA] wave":
+  @Condition roundRemainingBots <= 0
 
-#   [player for player in getPlayers(Team.2) if player.getCurrentHero() != Hero.SYMMETRA].startForcingHero(Hero.SYMMETRA)
+  if roundNumber >= 30 and roundNumber < 35:
+    commonZombieHero = Hero.SYMMETRA
+  if roundNumber >= 20 and roundNumber < 25:
+    commonZombieHero = Hero.JUNKRAT
 
 
-# rule "test2":
-#   @Condition roundNumber > 0 and roundNumber < 6
+rule "[Team2 SYMMETRA] throw turrents":
+  @Condition commonZombieHero == Hero.SYMMETRA
 
-#   temp1 = [player for player in getPlayers(Team.2) if player.getCurrentHero() == Hero.SYMMETRA]
-#   temp1.forceButtonPress(Button.ABILITY_1)
-#   wait()
-#   temp1.forceButtonPress(Button.PRIMARY_FIRE)
+  commonBotsList = [player for player in getPlayers(Team.2) if player.getCurrentHero() == commonZombieHero]
+  commonBotsList.forceButtonPress(Button.ABILITY_1)
+  wait()
+  commonBotsList.forceButtonPress(Button.PRIMARY_FIRE)
 
-#   wait(5, Wait.ABORT_WHEN_FALSE)
-#   loop()
+  wait(5, Wait.ABORT_WHEN_FALSE)
+  loop()
+
+
+rule "[Team2 JUNKRAT] throw traps":
+  @Condition commonZombieHero == Hero.JUNKRAT
+  commonBotsList = [player for player in getPlayers(Team.2) if player.getCurrentHero() == Hero.JUNKRAT]
+
+  if not commonBotsList:
+    wait(5, Wait.ABORT_WHEN_FALSE)
+    goto RULE_START
+
+  for commonBotsIndex in range(len(commonBotsList)):
+    commonBotsList[commonBotsIndex].setFacing(
+      vect(commonBotsList[commonBotsIndex].getFacingDirection().x, 0.75, commonBotsList[commonBotsIndex].getFacingDirection().z),
+      Relativity.TO_WORLD
+    )
+    wait()
+    commonBotsList[commonBotsIndex].forceButtonPress(Button.ABILITY_2)
+    wait(1, Wait.ABORT_WHEN_FALSE)
+
+  loop()
+
+rule "[Team2 SOMBRA] throw traps":
+  @Event eachPlayer
+  @Team 2
+  @Hero sombra
+  @Condition not eventPlayer.list1
+  @Condition not eventPlayer.isUsingAbility2()
+  @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_2)
+  @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.targetPlayer0.getSlot()] > 4
+
+  eventPlayer.setFacing(
+    vect(eventPlayer.getFacingDirection().x, -1, eventPlayer.getFacingDirection().z),
+    Relativity.TO_WORLD
+  )
+  wait()
+  eventPlayer.forceButtonPress(Button.ABILITY_2)

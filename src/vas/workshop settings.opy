@@ -1,6 +1,6 @@
 #!mainFile "../main.opy"
 
-#!define DEFAULT_STARTING_MONEY 2000
+#!define DEFAULT_STARTING_MONEY 3500
 #!define DEFAULT_MAX_ZOMBIES 14
 
 rule "Workshop settings init":
