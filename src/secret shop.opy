@@ -134,8 +134,10 @@ rule "[Secret shop] Enter/Leave shop zone":
     if not eventPlayer.isInSecretShop:
       eventPlayer.isInSecretShop = getTotalTimeElapsed() + 30
       heal(eventPlayer, null, INFINITY)
-  else:
+      UpdateCombatantsSub()
+  elif eventPlayer.isInSecretShop:
     eventPlayer.isInSecretShop = false
+    UpdateCombatantsSub()
 
   wait(1)
   loop()

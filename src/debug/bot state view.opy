@@ -114,7 +114,8 @@ rule "[debug] init Bot state view mode":
       debugSelectedPlayer.lastCcAttacker,
       debugSelectedPlayer.lastCcAttackTime,
       debugSelectedPlayer.lastCcWasInAir,
-      botWidowmakerAvaliableSpawnSpots
+      1
+      # todo: botWidowmakerAvaliableSpawnSpots
     ),
     HudPosition.ACTUALLY_LEFT,
     5,

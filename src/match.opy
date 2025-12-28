@@ -27,7 +27,6 @@ def reviveAllPlayersSR():
     temp2.resurrect()
 
 rule "Match end":
-  @Condition not isDebugAutoRespawn
   @Condition isGameStarted
   @Condition getNumberOfPlayers() > 1
   @Condition all(

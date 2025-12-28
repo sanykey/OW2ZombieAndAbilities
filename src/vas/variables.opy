@@ -105,7 +105,6 @@ globalvar temp2
 globalvar temp3
 
 globalvar isGameStarted = false
-globalvar isDebugAutoRespawn # auto respawn for debug
 globalvar highloadServerPause
 
 globalvar botSniperPositions
@@ -130,6 +129,8 @@ globalvar debugBotsSpawnPoint
 ##################################################
 playervar healingTracker
 playervar selfHealingTracker
+
+playervar currentRevivesStat = [] # Used in player_round_stats.opy and player_revive.opy
 
 playervar zomDistancesToPlayersArr
 playervar zomIsInLoSPlayersArr

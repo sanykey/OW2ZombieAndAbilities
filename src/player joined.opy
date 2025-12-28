@@ -2,9 +2,14 @@
 
 # globalvar vipPlayers = ["snky"] # List of players who received special privileges
 globalvar devPlayers = ["snky"] # List of players who received develop privileges
+globalvar combatants = []
 
-def setHeroType():
-  @Name "setHeroType"
+def UpdateCombatantsSub():
+  @Name "Sub: Update combatants"
+  combatants = [player for player in getPlayers(Team.1) if player.isAlive() and player.hasSpawned() and not player.isInSecretShop]
+
+def SetHeroTypeSub():
+  @Name "Sub: setHeroType"
   if eventPlayer.getCurrentHero() in getTankHeroes():
     eventPlayer.heroType = HeroType.TANK
   elif eventPlayer.getCurrentHero() in getSupportHeroes():
@@ -44,7 +49,6 @@ rule "Player joined setup":
   if not eventPlayer.isDummy():
     eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
-
 # rule "Player joined zombie team": 
 #   @Event playerJoined
 #   @Team 2
@@ -59,7 +63,8 @@ rule "Player spawned setup":
   eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
   eventPlayer.boostStats[PV_TEAM_ARMOR_POOL] = getLastCreatedHealthPool()
 
-  setHeroType()
+  SetHeroTypeSub()
+  UpdateCombatantsSub()
 
   if not eventPlayer.isReady:
     wait(1.5)
@@ -77,6 +82,7 @@ rule "Show game tips in start":
 
 rule "Player left Match, destroy effects, texts and hud":
   @Event playerLeft
+  UpdateCombatantsSub()
   destroyHudText(eventPlayer.effectsIds[PLAYER_STATUS_HUD])
   destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])
   destroyInWorldText(eventPlayer.effectsIds[REVIVE_TEXT])

@@ -33,37 +33,12 @@ rule "Zombies loS teleport warning":
     Color.RED
   )
 
-rule "Bots attack near player":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isAlive()
-  @Condition eventPlayer.isDummy()
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
-  @Condition not eventPlayer.zombiesfly
-  @Condition eventPlayer.list1
+rule "test":
+  debug(combatants)
 
-  if eventPlayer.getHero() == Hero.TORBJORN:
-    eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
-  else: 
-    eventPlayer.forceButtonPress(Button.MELEE)
-  wait(0.3)
-
-  # [Vendetta] pushes and damages enemies in front of her if an attack was blocked by her guard
-  eventPlayer.temp3 = [
-    player for player in eventPlayer.list1 if Hero.VENDETTA == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
-  ]
-  if eventPlayer.temp3:
-    eventPlayer.temp3.list0 = [
-      player for player in getRealPlayersInRadius(eventPlayer.temp3.getPosition(), 4, Team.2) if eventPlayer.temp3.isInViewAngle(player.getPosition(), 90)
-    ]
-
-    eventPlayer.temp3.abilState0 = 1 + getTotalTimeElapsed()
-    eventPlayer.temp3.list0.pushInFacingDirectionAndUp(eventPlayer.temp3, 12)
-    eventPlayer.temp3.list0.setCrowdControlAttack(eventPlayer.temp3)
-    damage(eventPlayer.temp3.list0, eventPlayer.temp3, 0.1) # Deal a small amount of damage to earn assist money while holding guard
-  
-  wait(0.4, Wait.ABORT_WHEN_FALSE)
-  loop()
+macro Player.calcCombatantDistAndLoSToBots(self, zombieBot):
+  self.zomDistancesToPlayersArr[zombieBot.getSlot()] = distance(self, zombieBot)
+  self.zomIsInLoSPlayersArr[zombieBot.getSlot()] = isInLoS(self, zombieBot)
 
 rule "Bots moves":
   @Event eachPlayer
@@ -73,28 +48,25 @@ rule "Bots moves":
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
 
   # cache players and distances to players
-  eventPlayer.list0 = [] # avaliable targets
   eventPlayer.list1 = [] # current melee attack targets
-  for eventPlayer.I in range(MAX_PLAYERS):
-    eventPlayer.temp0 = getPlayersInSlot(eventPlayer.I, Team.1)
 
-    if (eventPlayer.temp0 and eventPlayer.temp0.hasSpawned() and eventPlayer.temp0.isAlive() and not eventPlayer.temp0.isInSecretShop):
+  if not combatants:
+    goto lbl_0
+
+  for eventPlayer.I in range(len(combatants)):
+    eventPlayer.temp0 = combatants[eventPlayer.I]
+    if (eventPlayer.temp0):
       # collect avaliable targets
-      eventPlayer.zomDistancesToPlayersArr[eventPlayer.I] = distance(eventPlayer, eventPlayer.temp0)
-      eventPlayer.zomIsInLoSPlayersArr[eventPlayer.I] = isInLoS(eventPlayer, eventPlayer.temp0)
-      eventPlayer.list0.append(eventPlayer.temp0)
+      eventPlayer.zomDistancesToPlayersArr[eventPlayer.temp0.getSlot()] = distance(eventPlayer, eventPlayer.temp0)
+      eventPlayer.zomIsInLoSPlayersArr[eventPlayer.temp0.getSlot()] = isInLoS(eventPlayer, eventPlayer.temp0)
 
       # collect current melee attack targets
-      if (eventPlayer.zomDistancesToPlayersArr[eventPlayer.I] < 3 and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.I] and eventPlayer.isInViewAngle(eventPlayer.temp0.getPosition(), 90)):
+      if (eventPlayer.zomDistancesToPlayersArr[eventPlayer.temp0.getSlot()] < 3 and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.temp0.getSlot()] and eventPlayer.isInViewAngle(eventPlayer.temp0.getPosition(), 90)):
         eventPlayer.list1.append(eventPlayer.temp0)
-
-    else:
-      eventPlayer.zomDistancesToPlayersArr[eventPlayer.I] = INFINITY
-      eventPlayer.zomIsInLoSPlayersArr[eventPlayer.I] = false
      
   eventPlayer.targetPlayer0 = (
     sorted(
-      eventPlayer.list0,
+      combatants,
       lambda i: eventPlayer.zomDistancesToPlayersArr[i.getSlot()] + ( 
         10 if not eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] else 0 # Low priority for targets behind walls
       ) + (
@@ -116,14 +88,18 @@ rule "Bots moves":
     Relativity.TO_WORLD
   )
 
-  # Don’t do anything if the bot flies through walls toward the player or jumps over a chasm (antifall)
-  if eventPlayer.zombiesfly or eventPlayer.abilState0:
+  # Don’t do anything if the bot flies through walls
+  if eventPlayer.zombiesfly:
     goto lbl_0
 
-  # bot in restricted area:
-  # if eventPlayer.isInSpawnRoom():
-  #   eventPlayer.teleport(random.choice(spawnPointsList))
-    # goto lbl_0
+  if eventPlayer.list1:
+    eventPlayer.startForcingButton(Button.MELEE)
+  else:
+    eventPlayer.stopForcingButton(Button.MELEE)
+
+  # Don’t do anything if the bot jumps over a chasm (antifall)
+  if eventPlayer.abilState0:
+    goto lbl_0
 
   # Bots under player impulse
   if (
@@ -161,7 +137,22 @@ rule "Bots moves":
     eventPlayer.money = 0
 
   lbl_0:
-  wait(0.3)
+  wait(0.3, Wait.ABORT_WHEN_FALSE)
+  if not eventPlayer.zombiesfly and eventPlayer.list1:
+    # [Vendetta] pushes in front of her if an attack was blocked by her guard
+    eventPlayer.temp3 = [
+      player for player in eventPlayer.list1 if Hero.VENDETTA == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
+    ]
+    if eventPlayer.temp3:
+      eventPlayer.temp3.list0 = [
+        player for player in getRealPlayersInRadius(eventPlayer.temp3.getPosition(), 4, Team.2) if eventPlayer.temp3.isInViewAngle(player.getPosition(), 90)
+      ]
+
+      eventPlayer.temp3.abilState0 = 1 + getTotalTimeElapsed()
+      eventPlayer.temp3.list0.pushInFacingDirectionAndUp(eventPlayer.temp3, 12)
+      eventPlayer.temp3.list0.setCrowdControlAttack(eventPlayer.temp3)
+      damage(eventPlayer.temp3.list0, eventPlayer.temp3, 0.1) # Deal a small amount of damage to earn assist money while holding guard
+
   if ruleCondition:
     loop()
 

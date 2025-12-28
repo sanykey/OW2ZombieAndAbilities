@@ -40,6 +40,7 @@ rule "Setup new bots":
   eventPlayer.setDamageDealt(botsDamageBoostPercent)
   eventPlayer.startModifyingVoicelinePitch(0.3)
   eventPlayer.setRespawnTime(INFINITY)
+  eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
   wait()
   heal(eventPlayer, null, INFINITY)
 

@@ -56,63 +56,6 @@ rule "Init huds":
     Color.WHITE,
     HudReeval.VISIBILITY_AND_STRING
   )
-  
-  # round stats
-  hudText(
-    localPlayer if not localPlayer.isHeroDescriptionOpened and localPlayer.getTeam() == Team.1 else null,
-    null,
-    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\nRound statistics:{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(
-      "\nEliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundEliminations, localPlayer.roundEliminations * MONEY_FOR_ELIMINATIONS
-      ) if localPlayer.roundEliminations else "",
-      "\nDamage dealt: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDamageDealtStat, localPlayer.roundDamageDealtStat * MONEY_FOR_DAMAGE_DEALT
-      ) if localPlayer.roundDamageDealtStat else "",
-      "\nCritical final blows: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundCriticalFinalBlows, localPlayer.roundCriticalFinalBlows * MONEY_FOR_CRITICAL_FINAL_BLOW
-      ) if localPlayer.roundCriticalFinalBlows else "",
-      "\nMelee final blows: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundMeleeFinalBlows, localPlayer.roundMeleeFinalBlows * MONEY_FOR_MELEE_FINAL_BLOW
-      ) if localPlayer.roundMeleeFinalBlows else "",
-      "\nHacked eliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundHackedElims, localPlayer.roundHackedElims * MONEY_FOR_HACKED_ELIMS
-      ) if localPlayer.roundHackedElims else "",
-      "\nOffensive assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundOffensiveAssistsStat, localPlayer.roundOffensiveAssistsStat * MONEY_FOR_OFFENSIVE_ASSISTS
-      ) if localPlayer.roundOffensiveAssistsStat else "",
-      "\nDefensive assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDefensiveAssistsStat, localPlayer.roundDefensiveAssistsStat * MONEY_FOR_DEFENSIVE_ASSISTS
-      ) if localPlayer.roundDefensiveAssistsStat else "",
-      "\nDeaths: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDeathsStat, MONEY_FOR_ZERO_DEATHS if localPlayer.roundDeathsStat == 0 else 0
-      ),
-      "\nRevives: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundRevivesStat, localPlayer.roundRevivesStat * MONEY_FOR_REVIVE
-      ) if localPlayer.roundRevivesStat else "",
-      "\nHealing: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundHealingStat, localPlayer.roundHealingStat * MONEY_FOR_HEALING
-      ) if localPlayer.roundHealingStat else "",
-      "\nSelf healing: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundSelfHealingStat, localPlayer.roundSelfHealingStat * MONEY_FOR_SELF_HEALING
-      ) if localPlayer.roundSelfHealingStat else "",
-      "\nDamage blocked: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDamageBlockedStat, localPlayer.roundDamageBlockedStat * MONEY_FOR_DAMAGE_BLOCKED
-      ) if localPlayer.roundDamageBlockedStat else "",
-      "\nDamage taken: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDamageTakenStat, localPlayer.roundDamageTakenStat * MONEY_FOR_DAMAGE_TAKEN
-      ) if localPlayer.roundDamageTakenStat else "",
-      "\nRound bonus: <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundTeamEliminatedBots * MONEY_FOR_ELIMINATIONS_TEAM
-      )
-    ),
-    null,
-    HudPosition.ACTUALLY_LEFT,
-    10,
-    null,
-    Color.WHITE,
-    null,
-    HudReeval.VISIBILITY_AND_STRING
-  )
 
   # revive hud
   hudSubtext(

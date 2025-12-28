@@ -1,12 +1,10 @@
 #!mainFile "main.opy"
 
-playervar currentRevivesStat
-
 rule "Team 1 (Death)":
   @Event playerDied
   @Team 1
-  @Condition not isDebugAutoRespawn
 
+  UpdateCombatantsSub()
   eventPlayer.isReady = true
   if not eventPlayer.downedStartTime:
     pause3PCamera()
@@ -55,8 +53,9 @@ rule "Revive, check player in radius, unset is downed":
 rule "Team 1: Player gets up":
   @Event eachPlayer
   @Team 1
-  @Condition not eventPlayer.downedStartTime
+  @Condition eventPlayer.isAlive()
   
+  UpdateCombatantsSub()
   destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])
   destroyInWorldText(eventPlayer.effectsIds[REVIVE_TEXT])
 
@@ -64,6 +63,7 @@ rule "Team 1: Player gets up":
   eventPlayer.setHealth(INFINITY)
   eventPlayer.revivers = []
   unpause3PCamera()
+  
   wait(2.5, Wait.ABORT_WHEN_FALSE)
   if not ruleCondition:
     return
