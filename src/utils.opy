@@ -25,8 +25,7 @@ rule "init utils":
   # Show ServerLoad info
   hudSubheader(
     localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
-    "Server load: {} / AVG: {}/ Max: {}
-      Entities: {}, Texts: {}
+    "Server load:  {} / AVG: {}/ Max: {}\nEntities: {}, Texts: {}\u3000\u3000\u3000\u3000\u3000\u3000\u3000.
     ".format(
       getServerLoad(),
       getAverageServerLoad(),

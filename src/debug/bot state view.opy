@@ -49,9 +49,9 @@ rule "[debug] init Bot state view mode":
     pos: <fg84c951FF>{}</fg>
     facing dir: <fg84c951FF>{}</fg>
     money: <fg84c951FF>{}</fg>
-    targetPlayer0: <fg84c951FF>{}</fg>
+    target0: <fg84c951FF>{}</fg>
     abilPos0: <fg84c951FF>{}</fg>
-    temp1: <fg84c951FF>{}</fg>
+    tmp1: <fg84c951FF>{}</fg>
     zomDistancesToPlayersArr: <fg84c951FF>{}</fg>
     zomIsInLoSPlayersArr: <fg84c951FF>{}</fg>
     list1: <fg84c951FF>{}</fg>
@@ -103,9 +103,9 @@ rule "[debug] init Bot state view mode":
       debugSelectedPlayer.getPosition(),
       debugSelectedPlayer.getFacingDirection(),
       debugSelectedPlayer.money,
-      debugSelectedPlayer.targetPlayer0,
+      debugSelectedPlayer.target0,
       debugSelectedPlayer.abilPos0,
-      debugSelectedPlayer.temp1,
+      debugSelectedPlayer.tmp1,
       debugSelectedPlayer.zomDistancesToPlayersArr,
       debugSelectedPlayer.zomIsInLoSPlayersArr,
       debugSelectedPlayer.list1,
@@ -229,13 +229,13 @@ rule "[debug] Activate selected action for Common mode":
 
   elif debugSelectedAction == 8:
     GetCandidateForEliteZombieSub()
-    setZombieHero(temp1, Hero.ROADHOG)
+    setZombieHero(tmp1, Hero.ROADHOG)
   elif debugSelectedAction == 9:
     GetCandidateForEliteZombieSub()
-    setZombieHero(temp1, Hero.MAUGA)
+    setZombieHero(tmp1, Hero.MAUGA)
   elif debugSelectedAction == 10:
     GetCandidateForEliteZombieSub()
-    setZombieHero(temp1, Hero.WIDOWMAKER)
+    setZombieHero(tmp1, Hero.WIDOWMAKER)
     
 # rule "[debug] init bot respawn state":
 #   hudSubheader(

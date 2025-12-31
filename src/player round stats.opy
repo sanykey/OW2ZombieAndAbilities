@@ -1,172 +1,143 @@
 #!mainFile "main.opy"
-
-#6521 emements before refactoring
-
-
-#!define MONEY_FOR_ELIMINATIONS 120
-#!define MONEY_FOR_ELIMINATIONS_TEAM 80
-#!define MONEY_FOR_OFFENSIVE_ASSISTS 120
-#!define MONEY_FOR_DEFENSIVE_ASSISTS 120
-
-#!define MONEY_FOR_HACKED_ELIMS 75
-#!define MONEY_FOR_MELEE_FINAL_BLOW 75
-#!define MONEY_FOR_CRITICAL_FINAL_BLOW 75
-
-#!define MONEY_FOR_REVIVE 500
-
-#!define MONEY_FOR_DAMAGE_DEALT 0.2
-#!define MONEY_FOR_DAMAGE_BLOCKED 0.1
-#!define MONEY_FOR_DAMAGE_TAKEN 0.1
+globalvar roundStatsHudId
 
 #!define MONEY_FOR_ZERO_DEATHS 1500
 #!define SHOW_ROUND_STATS_DURATION 10
-#!define MONEY_FOR_HEALING 0.6
-#!define MONEY_FOR_SELF_HEALING 0.3
+enum RoundStats:
+  # calculating from getStatistic():
+  ELIMINATIONS
+  DAMAGE_DEALT
+  DAMAGE_BLOCKED
+  DAMAGE_TAKEN
+  OFFENSIVE_ASSISTS
+  DEFENSIVE_ASSISTS
+  DEATHS
+  # custom:
+  CRITICAL_FINAL_BLOW
+  MELEE_FINAL_BLOW
+  HACKED_ELIMS
+  HEALING
+  SELF_HEALING
+  REVIVES
+  ELIMINATIONS_TEAM
 
-playervar prevEliminations
-playervar prevDamageDealtStat
-playervar prevDamageBlockedStat
-playervar prevDamageTakenStat
-playervar prevDefensiveAssistsStat
-playervar prevOffensiveAssistsStat
-playervar prevDeathsStat
-
-playervar healingCurrentStat
-playervar selfHealingCurrentStat
-
-playervar currentHackedElims
-playervar currentMeleeFinalBlows
-playervar currentCriticalFinalBlows
-
-playervar roundEliminations
-playervar roundTeamEliminatedBots
-playervar roundHackedElims
-playervar roundMeleeFinalBlows
-playervar roundCriticalFinalBlows
-
-playervar roundDamageDealtStat
-playervar roundDamageBlockedStat
-playervar roundDamageTakenStat
-playervar roundDefensiveAssistsStat
-playervar roundOffensiveAssistsStat
-
-playervar roundRevivesStat
-playervar roundDeathsStat
-playervar roundHealingStat
-playervar roundSelfHealingStat
-
-globalvar showPlayerStatsTime
-
+globalvar rewardsList = compressed([
+  120,  # ELIMINATIONS
+  0.2,  # DAMAGE_DEALT
+  0.1,  # DAMAGE_BLOCKED
+  0.1,  # DAMAGE_TAKEN
+  120,  # OFFENSIVE_ASSISTS
+  120,  # DEFENSIVE_ASSISTS
+  0,    # ZERO DEATHS
+  75,   # CRITICAL_FINAL_BLOW
+  75,   # MELEE_FINAL_BLOW
+  75,   # HACKED_ELIMS
+  0.6,  # HEALING
+  0.3,  # SELF_HEALING
+  500,  # REVIVES
+  80    # ELIMINATIONS_TEAM
+])
 playervar roundStats
 playervar prevRoundStats
+playervar roundStatsText
 
+def CalcRoundStatSub():
+  @Name "Sub: Calc Round Stat"
+  eventPlayer.roundStats[eventPlayer.tmp1] = eventPlayer.tmp2 - eventPlayer.prevRoundStats[eventPlayer.tmp1]
+  eventPlayer.earnMoney(eventPlayer.roundStats[eventPlayer.tmp1] * rewardsList[eventPlayer.tmp1])
+  eventPlayer.prevRoundStats[eventPlayer.tmp1] = eventPlayer.tmp2
+  eventPlayer.tmp1++
 
-rule "calculate player round stats":
+def CalcRoundCustomStatSub():
+  @Name "Sub: Calc Custom Round Stat"
+  eventPlayer.roundStats[eventPlayer.tmp1] = eventPlayer.prevRoundStats[eventPlayer.tmp1]
+  eventPlayer.earnMoney(eventPlayer.roundStats[eventPlayer.tmp1] * eventPlayer.tmp3)
+  eventPlayer.prevRoundStats[eventPlayer.tmp1] = null
+
+  eventPlayer.tmp1++
+
+def IncrementReviveStatSub():
+  eventPlayer.prevRoundStats[RoundStats.REVIVES] += 1
+
+macro Player.addStat(self, type, amount):
+  self.prevRoundStats[type] += amount
+
+rule "Calculate player round stats":
   @Event eachPlayer
   @Team 1
-  @Condition roundRemainingBots < 1 and roundNumber > 1
+  @Condition roundRemainingBots <= 0 and roundNumber > 1
 
-  wait(0.5)
+  eventPlayer.roundStatsText = "\n\nRound statistics:"
 
-  eventPlayer.roundEliminations = eventPlayer.getStatistic(Stat.ELIMINATIONS) - eventPlayer.prevEliminations
-  eventPlayer.prevEliminations = eventPlayer.getStatistic(Stat.ELIMINATIONS)
+  eventPlayer.tmp1 = false # reset the array iteration counter
 
-  eventPlayer.roundDamageDealtStat = eventPlayer.getStatistic(Stat.DAMAGE_DEALT) - eventPlayer.prevDamageDealtStat
-  eventPlayer.prevDamageDealtStat = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
+  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.ELIMINATIONS)
+  CalcRoundStatSub()
 
-  eventPlayer.roundDamageBlockedStat = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED) - eventPlayer.prevDamageBlockedStat
-  eventPlayer.prevDamageBlockedStat = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
+  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
+  CalcRoundStatSub()
 
-  eventPlayer.roundDamageTakenStat = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN) - eventPlayer.prevDamageTakenStat
-  eventPlayer.prevDamageTakenStat = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
+  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
+  CalcRoundStatSub()
 
-  eventPlayer.roundOffensiveAssistsStat = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS) - eventPlayer.prevOffensiveAssistsStat
-  eventPlayer.prevOffensiveAssistsStat = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
+  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
+  CalcRoundStatSub()
 
-  eventPlayer.roundDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS) - eventPlayer.prevDefensiveAssistsStat
-  eventPlayer.prevDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
+  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
+  CalcRoundStatSub()
 
-  eventPlayer.roundDeathsStat = eventPlayer.getStatistic(Stat.DEATHS) - eventPlayer.prevDeathsStat
-  eventPlayer.prevDeathsStat = eventPlayer.getStatistic(Stat.DEATHS)
+  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
+  CalcRoundStatSub()
 
-  eventPlayer.roundTeamEliminatedBots = roundMaxBots
+  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DEATHS)
+  CalcRoundStatSub()
+  eventPlayer.earnMoney(MONEY_FOR_ZERO_DEATHS if not eventPlayer.roundStats[RoundStats.DEATHS] else null)
+  
+  CalcRoundCustomStatSub() # CRITICAL_FINAL_BLOW
+  
+  CalcRoundCustomStatSub() # MELEE_FINAL_BLOW
 
-  eventPlayer.roundHealingStat = eventPlayer.healingCurrentStat
-  eventPlayer.healingCurrentStat = null
-  eventPlayer.roundSelfHealingStat = eventPlayer.selfHealingCurrentStat
-  eventPlayer.selfHealingCurrentStat = null
+  CalcRoundCustomStatSub() # HACKED_ELIMS
 
-  eventPlayer.roundHackedElims = eventPlayer.currentHackedElims
-  eventPlayer.currentHackedElims = null
-  eventPlayer.roundMeleeFinalBlows = eventPlayer.currentMeleeFinalBlows
-  eventPlayer.currentMeleeFinalBlows = null
-  eventPlayer.roundCriticalFinalBlows = eventPlayer.currentCriticalFinalBlows
-  eventPlayer.currentCriticalFinalBlows = null
+  CalcRoundCustomStatSub() # HEALING
 
-  eventPlayer.currentRevivesStat = eventPlayer.currentRevivesStat
-  eventPlayer.currentRevivesStat = null
+  CalcRoundCustomStatSub() # SELF_HEALING
 
-  eventPlayer.earnMoney(
-    eventPlayer.roundTeamEliminatedBots * MONEY_FOR_ELIMINATIONS_TEAM
-    + eventPlayer.roundDamageDealtStat * MONEY_FOR_DAMAGE_DEALT
-    + eventPlayer.roundDamageBlockedStat * MONEY_FOR_DAMAGE_BLOCKED
-    + eventPlayer.roundDamageTakenStat * MONEY_FOR_DAMAGE_TAKEN
-    + eventPlayer.roundOffensiveAssistsStat * MONEY_FOR_OFFENSIVE_ASSISTS
-    + eventPlayer.roundDefensiveAssistsStat * MONEY_FOR_DEFENSIVE_ASSISTS
-    + eventPlayer.roundRevivesStat * MONEY_FOR_REVIVE
-    + (MONEY_FOR_ZERO_DEATHS if eventPlayer.roundDeathsStat == 0 else 0)
-  )
+  CalcRoundCustomStatSub() # REVIVES
 
-  showPlayerStatsTime = getTotalTimeElapsed() + SHOW_ROUND_STATS_DURATION
+  eventPlayer.roundStats[eventPlayer.tmp1] = roundMaxBots # ELIMINATIONS_TEAM
+  eventPlayer.earnMoney(roundMaxBots * rewardsList[eventPlayer.tmp1])
 
+macro getStatText(text, type):
+  "\n{}: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
+    text, localPlayer.roundStats[type], localPlayer.roundStats[type] * rewardsList[type]
+  ) if localPlayer.roundStats[type] else ""
 
 rule "Init player round stats hud":
+  @Condition roundRemainingBots <= 0 and roundNumber > 1
+  destroyHudText(roundStatsHudId)
+  wait(0.5)
   hudText(
     localPlayer if not localPlayer.isHeroDescriptionOpened and localPlayer.getTeam() == Team.1 else null,
     null,
-    "" if showPlayerStatsTime < getTotalTimeElapsed() else "\n\nRound statistics:{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(
-      "\nEliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundEliminations, localPlayer.roundEliminations * MONEY_FOR_ELIMINATIONS
-      ) if localPlayer.roundEliminations else "",
-      "\nDamage dealt: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDamageDealtStat, localPlayer.roundDamageDealtStat * MONEY_FOR_DAMAGE_DEALT
-      ) if localPlayer.roundDamageDealtStat else "",
-      "\nCritical final blows: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundCriticalFinalBlows, localPlayer.roundCriticalFinalBlows * MONEY_FOR_CRITICAL_FINAL_BLOW
-      ) if localPlayer.roundCriticalFinalBlows else "",
-      "\nMelee final blows: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundMeleeFinalBlows, localPlayer.roundMeleeFinalBlows * MONEY_FOR_MELEE_FINAL_BLOW
-      ) if localPlayer.roundMeleeFinalBlows else "",
-      "\nHacked eliminations: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundHackedElims, localPlayer.roundHackedElims * MONEY_FOR_HACKED_ELIMS
-      ) if localPlayer.roundHackedElims else "",
-      "\nOffensive assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundOffensiveAssistsStat, localPlayer.roundOffensiveAssistsStat * MONEY_FOR_OFFENSIVE_ASSISTS
-      ) if localPlayer.roundOffensiveAssistsStat else "",
-      "\nDefensive assists: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDefensiveAssistsStat, localPlayer.roundDefensiveAssistsStat * MONEY_FOR_DEFENSIVE_ASSISTS
-      ) if localPlayer.roundDefensiveAssistsStat else "",
+    "\n\nRound <fgecbe52FF>{}</fg> statistics:{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(
+      roundNumber - 1,
+      getStatText("Eliminations",         RoundStats.ELIMINATIONS),
+      getStatText("Damage dealt",         RoundStats.DAMAGE_DEALT),
+      getStatText("Critical final blows", RoundStats.CRITICAL_FINAL_BLOW),
+      getStatText("Melee final blows",    RoundStats.MELEE_FINAL_BLOW),
+      getStatText("Hacked eliminations",  RoundStats.HACKED_ELIMS),
+      getStatText("Offensive assists",    RoundStats.OFFENSIVE_ASSISTS),
+      getStatText("Defensive assists",    RoundStats.DEFENSIVE_ASSISTS),
       "\nDeaths: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDeathsStat, MONEY_FOR_ZERO_DEATHS if localPlayer.roundDeathsStat == 0 else 0
+        localPlayer.roundStats[RoundStats.DEATHS], MONEY_FOR_ZERO_DEATHS if not localPlayer.roundStats[RoundStats.DEATHS] else 0
       ),
-      "\nRevives: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundRevivesStat, localPlayer.roundRevivesStat * MONEY_FOR_REVIVE
-      ) if localPlayer.roundRevivesStat else "",
-      "\nHealing: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundHealingStat, localPlayer.roundHealingStat * MONEY_FOR_HEALING
-      ) if localPlayer.roundHealingStat else "",
-      "\nSelf healing: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundSelfHealingStat, localPlayer.roundSelfHealingStat * MONEY_FOR_SELF_HEALING
-      ) if localPlayer.roundSelfHealingStat else "",
-      "\nDamage blocked: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDamageBlockedStat, localPlayer.roundDamageBlockedStat * MONEY_FOR_DAMAGE_BLOCKED
-      ) if localPlayer.roundDamageBlockedStat else "",
-      "\nDamage taken: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundDamageTakenStat, localPlayer.roundDamageTakenStat * MONEY_FOR_DAMAGE_TAKEN
-      ) if localPlayer.roundDamageTakenStat else "",
-      "\nRound bonus: <fg84c951FF>+${}</fg>".format(
-        localPlayer.roundTeamEliminatedBots * MONEY_FOR_ELIMINATIONS_TEAM
-      )
+      getStatText("Revives",              RoundStats.REVIVES),
+      getStatText("Healing",              RoundStats.HEALING),
+      getStatText("Self healing",         RoundStats.SELF_HEALING),
+      getStatText("Damage blocked",       RoundStats.DAMAGE_BLOCKED),
+      getStatText("Damage taken",         RoundStats.DAMAGE_TAKEN),
+      "\nRound bonus: <fg84c951FF>+${}</fg>".format(localPlayer.roundStats[RoundStats.ELIMINATIONS_TEAM] * rewardsList[RoundStats.ELIMINATIONS_TEAM])
     ),
     null,
     HudPosition.ACTUALLY_LEFT,
@@ -176,3 +147,7 @@ rule "Init player round stats hud":
     null,
     HudReeval.VISIBILITY_AND_STRING
   )
+  roundStatsHudId = getLastCreatedText()
+
+  wait(SHOW_ROUND_STATS_DURATION)
+  destroyHudText(roundStatsHudId)

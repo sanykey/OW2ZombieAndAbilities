@@ -1,6 +1,7 @@
 #!mainFile "../main.opy"
 
 globalvar commonZombieHero = Hero.TORBJORN
+globalvar commonBotsHeroes = [Hero.TORBJORN, Hero.JUNKRAT, Hero.SYMMETRA]
 globalvar commonBotsList
 globalvar commonBotsIndex
 
@@ -52,9 +53,20 @@ rule "[Team2 SYMMETRA] wave":
 
   if roundNumber >= 30 and roundNumber < 35:
     commonZombieHero = Hero.SYMMETRA
-  if roundNumber >= 20 and roundNumber < 25:
+  elif roundNumber >= 20 and roundNumber < 25:
     commonZombieHero = Hero.JUNKRAT
+  else:
+    commonZombieHero = Hero.TORBJORN
 
+  # if roundNumber in [0,1,4,7,10,13]:
+  #   commonZombieHero = Hero.SYMMETRA
+  # elif roundNumber in [2,5,8,11,14]:
+  #   commonZombieHero = Hero.JUNKRAT
+  # else:
+  #   commonZombieHero = Hero.TORBJORN
+
+  list = [player for player in getPlayers(Team.2) if (player.getCurrentHero() in commonBotsHeroes or player.forceHeroOnRespawn in commonBotsHeroes)]
+  list.forceHeroOnRespawn = commonZombieHero
 
 rule "[Team2 SYMMETRA] throw turrents":
   @Condition commonZombieHero == Hero.SYMMETRA
@@ -86,19 +98,3 @@ rule "[Team2 JUNKRAT] throw traps":
     wait(1, Wait.ABORT_WHEN_FALSE)
 
   loop()
-
-rule "[Team2 SOMBRA] throw traps":
-  @Event eachPlayer
-  @Team 2
-  @Hero sombra
-  @Condition not eventPlayer.list1
-  @Condition not eventPlayer.isUsingAbility2()
-  @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_2)
-  @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.targetPlayer0.getSlot()] > 4
-
-  eventPlayer.setFacing(
-    vect(eventPlayer.getFacingDirection().x, -1, eventPlayer.getFacingDirection().z),
-    Relativity.TO_WORLD
-  )
-  wait()
-  eventPlayer.forceButtonPress(Button.ABILITY_2)

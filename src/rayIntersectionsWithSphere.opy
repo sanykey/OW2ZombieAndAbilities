@@ -60,7 +60,7 @@ def cRayIntersectionsWithSphereSub():
   
   #sqrtNewton:
   eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT] = eventPlayer.rayIntersectsSphere[RI.DISC] / 2
-  for eventPlayer.temp3 in range(5):
+  for eventPlayer.tmp3 in range(5):
     eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT] = (eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT] + (eventPlayer.rayIntersectsSphere[RI.DISC] / eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT])) / 2
 
   eventPlayer.rayIntersectsSphere[RI.T1] = ((eventPlayer.rayIntersectsSphere[RI.B] * -1) - eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT]) / (2 * eventPlayer.rayIntersectsSphere[RI.A])

@@ -117,8 +117,8 @@ rule "[DVA] Slide":
 
   eventPlayer.setGravity(100)
   eventPlayer.setMoveSpeed(100)
-  for eventPlayer.temp0 in range(3):
-    destroyEffect(eventPlayer.heroEffectsIds[eventPlayer.temp0])
+  for eventPlayer.tmp0 in range(3):
+    destroyEffect(eventPlayer.heroEffectsIds[eventPlayer.tmp0])
 
   eventPlayer.abilityCD = 8
   eventPlayer.abilState0 = 0

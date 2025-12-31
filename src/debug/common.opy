@@ -92,8 +92,6 @@ rule "[debug] Activate selected action for Common mode":
       eventPlayer.setUltCharge(0)
       eventPlayer.startForcingHero(debugNoclipPrevHero)
       eventPlayer.setGravity(100)
-      wait()
-      eventPlayer.downedStartTime = false
     else:
       debugNoclipPrevHero = eventPlayer.getHero()
       eventPlayer.startForcingHero(Hero.MERCY)

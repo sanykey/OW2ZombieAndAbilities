@@ -34,9 +34,9 @@ rule "[Symmetra] init":
 # abilPos1: Barrier position without height
 # abilPos2: Barrier checker position A
 # abilPos3: Barrier checker position B
-# temp1: Calc. (Sym position or Barrier position) + height for Barrier checker positions
-# temp2: Player position when ult started
-# temp3: Barrier direction. boolean: false = Sideways, true = Forward
+# tmp1: Calc. (Sym position or Barrier position) + height for Barrier checker positions
+# tmp2: Player position when ult started
+# tmp3: Barrier direction. boolean: false = Sideways, true = Forward
 # abilDir1: Barrier direction perpendicular vector
 # abilTemp1: For the first range check from players to deal damage to them
 rule "[Symmetra] Create barrier (ultimate)":
@@ -46,12 +46,12 @@ rule "[Symmetra] Create barrier (ultimate)":
   @Condition eventPlayer.getUltCharge() == 100
   @Condition eventPlayer.isHoldingButton(Button.ULTIMATE) == true
 
-  eventPlayer.temp3 = true # Barrier direction. boolean: false = Sideways, true = Forward
+  eventPlayer.tmp3 = true # Barrier direction. boolean: false = Sideways, true = Forward
   eventPlayer.abilPos0 = false # Barrier position
 
   while true:
     waitUntil(not eventPlayer.isHoldingButton(Button.ULTIMATE), 99999)
-    eventPlayer.temp3 = not eventPlayer.temp3 # chage barrier direction
+    eventPlayer.tmp3 = not eventPlayer.tmp3 # chage barrier direction
 
     waitUntil(not eventPlayer.isAlive() or any([eventPlayer.isHoldingButton(i) for i in [
       Button.PRIMARY_FIRE, Button.SECONDARY_FIRE, Button.ULTIMATE, Button.ABILITY_1, Button.ABILITY_2
@@ -80,27 +80,27 @@ rule "[Symmetra] Create barrier (ultimate)":
 
   eventPlayer.abilDir1 = normalize(crossProduct( # Barrier direction perpendicular vector
     worldVector( # get barrier direction vector
-      Vector.LEFT if eventPlayer.temp3 == false else Vector.FORWARD, eventPlayer, Transform.ROTATION
+      Vector.LEFT if eventPlayer.tmp3 == false else Vector.FORWARD, eventPlayer, Transform.ROTATION
     ), 
     Vector.UP
   ))
 
-  eventPlayer.temp2 = eventPlayer.getEyePosition()
+  eventPlayer.tmp2 = eventPlayer.getEyePosition()
   wait(0.65) # Waiting for the game to create a barrier
 
   # Create barrier checker and damager positions:
-  eventPlayer.temp1 = ((eventPlayer.temp2 if eventPlayer.temp3 else eventPlayer.abilPos0) + Vector.UP * 45) 
-  eventPlayer.abilPos2 = eventPlayer.temp1 + eventPlayer.abilDir1 * (0.2 if eventPlayer.temp3 else 1.5)
-  eventPlayer.abilPos3 = eventPlayer.temp1 + eventPlayer.abilDir1 * (-0.2 if eventPlayer.temp3 else -1.5)
+  eventPlayer.tmp1 = ((eventPlayer.tmp2 if eventPlayer.tmp3 else eventPlayer.abilPos0) + Vector.UP * 45) 
+  eventPlayer.abilPos2 = eventPlayer.tmp1 + eventPlayer.abilDir1 * (0.2 if eventPlayer.tmp3 else 1.5)
+  eventPlayer.abilPos3 = eventPlayer.tmp1 + eventPlayer.abilDir1 * (-0.2 if eventPlayer.tmp3 else -1.5)
 
   if (
     isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.BLOCKED_BY_ALL_BARRIERS) or
     not isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.PASS_THROUGH_BARRIERS)
   ):
     # Perhaps the roof blocked the view between the barrier check vectors. Try setting the vectors much lower
-    eventPlayer.temp1 = ((eventPlayer.temp2 if eventPlayer.temp3 else eventPlayer.abilPos0) + Vector.UP * 1.5) 
-    eventPlayer.abilPos2 = eventPlayer.temp1 + eventPlayer.abilDir1 * 0.2
-    eventPlayer.abilPos3 = eventPlayer.temp1 + eventPlayer.abilDir1 * -0.2
+    eventPlayer.tmp1 = ((eventPlayer.tmp2 if eventPlayer.tmp3 else eventPlayer.abilPos0) + Vector.UP * 1.5) 
+    eventPlayer.abilPos2 = eventPlayer.tmp1 + eventPlayer.abilDir1 * 0.2
+    eventPlayer.abilPos3 = eventPlayer.tmp1 + eventPlayer.abilDir1 * -0.2
     if (
       isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.BLOCKED_BY_ALL_BARRIERS) or
       not isInLoS(eventPlayer.abilPos2, eventPlayer.abilPos3, BarrierLos.PASS_THROUGH_BARRIERS)
@@ -140,13 +140,13 @@ rule "[Symmetra] Barrier push enemies":
   eventPlayer.list2 = [] # players to push second side
 
   for eventPlayer.I in range(len(eventPlayer.list0)):
-    eventPlayer.temp1 = dotProduct( # distance between player and barrier
+    eventPlayer.tmp1 = dotProduct( # distance between player and barrier
       vect(eventPlayer.list0[eventPlayer.I].getPosition().x, 0, eventPlayer.list0[eventPlayer.I].getPosition().z) - eventPlayer.abilPos1,
       eventPlayer.abilDir1
     )
 
     # get players to push from barrier
-    if abs(eventPlayer.temp1) < 3:
+    if abs(eventPlayer.tmp1) < 3:
       eventPlayer.barrierDamageStack += (
         TORBJORN_HAMMER_BASE_DMG 
         * 3
@@ -154,7 +154,7 @@ rule "[Symmetra] Barrier push enemies":
         * (botsDamageBoostPercent / 100)
       )
 
-      if eventPlayer.temp1 > 0:
+      if eventPlayer.tmp1 > 0:
         eventPlayer.list1.append(eventPlayer.list0[eventPlayer.I])
       else:
         eventPlayer.list2.append(eventPlayer.list0[eventPlayer.I])
@@ -199,7 +199,7 @@ rule "[Symmetra] Barrier push enemies":
 #     eventPlayer,
 #     "DIR: {}, Active: {}, USING ULT: {}
 #     ".format(
-#       eventPlayer.temp3,
+#       eventPlayer.tmp3,
 #       eventPlayer.isActiveBarrier,
 #       eventPlayer.isUsingUltimate()
 #     ),

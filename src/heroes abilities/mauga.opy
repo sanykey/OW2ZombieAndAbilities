@@ -35,7 +35,7 @@ rule "[Mauga] Create barrier (ultimate)":
 
   wait(0.43) # wait animation before barrier placement
 
-  eventPlayer.temp2 = distance(
+  eventPlayer.tmp2 = distance(
     eventPlayer.getEyePosition(), 
     raycast(
       eventPlayer.getEyePosition(),
@@ -47,26 +47,26 @@ rule "[Mauga] Create barrier (ultimate)":
   )
 
   if (
-    eventPlayer.temp2 < 1.85
+    eventPlayer.tmp2 < 1.85
   ):
-    eventPlayer.temp3 = 1.26 - (1.85 - eventPlayer.temp2)
+    eventPlayer.tmp3 = 1.26 - (1.85 - eventPlayer.tmp2)
   else:
-    eventPlayer.temp3 = 1.26
+    eventPlayer.tmp3 = 1.26
 
   eventPlayer.abilPos0 = raycast(
-    eventPlayer.getEyePosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3,
-    eventPlayer.getEyePosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3 + Vector.DOWN * 25,
+    eventPlayer.getEyePosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.tmp3,
+    eventPlayer.getEyePosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.tmp3 + Vector.DOWN * 25,
     null,
     eventPlayer,
     true
   ).getHitPosition()
 
   # smallMessage(eventPlayer, "dist: {}".format(distance(
-  #   eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3
+  #   eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.tmp3
   # )))
 
   if distance(
-    eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.temp3
+    eventPlayer.abilPos0, eventPlayer.getPosition() + worldVector(Vector.FORWARD, eventPlayer, Transform.ROTATION) * eventPlayer.tmp3
   ) > 2.58:
     eventPlayer.abilPos0 = raycast(
       eventPlayer.getEyePosition(),
@@ -77,27 +77,27 @@ rule "[Mauga] Create barrier (ultimate)":
     ).getHitPosition()
   
   wait(0.1)
-  eventPlayer.temp1 = eventPlayer.abilPos0 + Vector.UP * 3
-  eventPlayer.temp2 = false
-  eventPlayer.temp3 = false
+  eventPlayer.tmp1 = eventPlayer.abilPos0 + Vector.UP * 3
+  eventPlayer.tmp2 = false
+  eventPlayer.tmp3 = false
   eventPlayer.list0 = [Vector.LEFT, Vector.RIGHT, Vector.FORWARD, Vector.BACKWARD]
   for eventPlayer.I in range(len(eventPlayer.list0)):
     if (
       not isInLoS(
-        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
-        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
+        eventPlayer.tmp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
+        eventPlayer.tmp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
         BarrierLos.BLOCKED_BY_ALL_BARRIERS
       ) and isInLoS(
-        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
-        eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
+        eventPlayer.tmp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS,
+        eventPlayer.tmp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS,
         BarrierLos.PASS_THROUGH_BARRIERS
       )
     ):
-      eventPlayer.temp2 = eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS
-      eventPlayer.temp3 = eventPlayer.temp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS
+      eventPlayer.tmp2 = eventPlayer.tmp1 + eventPlayer.list0[eventPlayer.I] * MAU_INNER_CHECK_RADIUS
+      eventPlayer.tmp3 = eventPlayer.tmp1 + eventPlayer.list0[eventPlayer.I] * MAU_OUTER_CHECK_RADIUS
       break
 
-  if not eventPlayer.temp2 or not eventPlayer.temp3:
+  if not eventPlayer.tmp2 or not eventPlayer.tmp3:
     smallMessage(eventPlayer, "Barrier deploy failed! Try again")
     wait(0.7)
     eventPlayer.forceButtonPress(Button.ULTIMATE)
@@ -110,8 +110,8 @@ rule "[Mauga] Create barrier (ultimate)":
   # keep the position without height, for more accurate calculations in the cylindrical barrier:
   eventPlayer.abilPos1 = vect(eventPlayer.abilPos0.x, false, eventPlayer.abilPos0.z) 
   eventPlayer.isActiveBarrier = true
-  eventPlayer.barrierDamageFrom = eventPlayer.temp2
-  eventPlayer.barrierDamageDir = normalize(eventPlayer.temp3 - eventPlayer.temp2)
+  eventPlayer.barrierDamageFrom = eventPlayer.tmp2
+  eventPlayer.barrierDamageDir = normalize(eventPlayer.tmp3 - eventPlayer.tmp2)
 
 #!define MAU_BARRIER_PUSH_ENENT_WAIT 0.1
 
@@ -162,7 +162,7 @@ rule "[Mauga] Check is barrier exists":
   @Condition eventPlayer.isActiveBarrier
   
   waitUntil(
-    isInLoS(eventPlayer.temp2, eventPlayer.temp3, BarrierLos.BLOCKED_BY_ALL_BARRIERS), MAU_ULT_DURATION
+    isInLoS(eventPlayer.tmp2, eventPlayer.tmp3, BarrierLos.BLOCKED_BY_ALL_BARRIERS), MAU_ULT_DURATION
   )
   eventPlayer.isActiveBarrier = false
   eventPlayer.barrierDamageStack = false
@@ -205,7 +205,7 @@ rule "[Mauga][debug]":
   #   getPlayersInSlot(0, Team.1),
   #   Effect.SPHERE,
   #   Color.PURPLE,
-  #   eventPlayer.temp1,
+  #   eventPlayer.tmp1,
   #   0.1,
   #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   # )
@@ -214,7 +214,7 @@ rule "[Mauga][debug]":
   #   getPlayersInSlot(0, Team.1),
   #   Effect.SPHERE,
   #   Color.BLUE,
-  #   eventPlayer.temp2,
+  #   eventPlayer.tmp2,
   #   0.1,
   #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   # )
@@ -223,7 +223,7 @@ rule "[Mauga][debug]":
   #   getPlayersInSlot(0, Team.1),
   #   Effect.SPHERE,
   #   Color.GREEN,
-  #   eventPlayer.temp3,
+  #   eventPlayer.tmp3,
   #   0.1,
   #   EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   # )

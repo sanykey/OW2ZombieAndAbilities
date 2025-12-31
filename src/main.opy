@@ -8,40 +8,40 @@
 #!include "utils.opy"
 #!include "3rd person camera.opy"
 #!include "player joined.opy"
-##!include "player revive.opy"
 #!include "player round stats.opy"
+#!include "player revive.opy"
 #!include "match.opy"
-##!include "hud.opy" 
+#!include "hud.opy" 
 #*/
 
 #/*
-##!include "zones.opy"
+#!include "zones.opy"
 #!include "switch hero.opy"
-##!include "buy hero.opy" 
-##!include "interact button.opy" 
-##!include "portal.opy"
-##!include "locked area.opy" 
-##!include "secret shop.opy"
+#!include "buy hero.opy" 
+#!include "interact button.opy" 
+#!include "portal.opy"
+#!include "locked area.opy" 
+#!include "secret shop.opy"
 #*/
 
 #/*
-##!include "rayIntersectionsWithSphere.opy"
+#!include "rayIntersectionsWithSphere.opy"
 #!include "damage and healing.opy"
-##!include "barriers damage.opy"
+#!include "barriers damage.opy"
 #*/
 
 #/*
 #!include "bots/zombie events.opy"
 #!include "bots/respawn.opy"
 #!include "bots/zombie behavior.opy"
-##!include "bots/widowmaker.opy"
-##!include "bots/roadhog.opy"
-##!include "bots/mauga.opy"
+#!include "bots/widowmaker.opy"
+#!include "bots/roadhog.opy"
+#!include "bots/mauga.opy"
 ##!include "bots/echo.opy"
 #!include "bots/antifall and cc attacks.opy"
 #*/
 
-/*
+#/*
 #!include "heroes abilities/dva.opy"
 #!include "heroes abilities/mercy.opy"
 ##!include "heroes abilities/juno.opy"
@@ -68,9 +68,9 @@
 #!include "debug/debug menu.opy"
 #!include "debug/common.opy"
 #!include "debug/bot state view.opy"
-##!include "debug/ally bot.opy"
+#!include "debug/ally bot.opy"
 ##!include "debug/ballistics.opy"
-##!include "debug/vectors lists.opy"
+#!include "debug/vectors lists.opy"
 ##!include "debug/other.opy"
 ##!include "debug/positions measuring.opy"
 ##!include "debug/vector list.opy"

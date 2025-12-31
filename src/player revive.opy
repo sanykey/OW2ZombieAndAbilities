@@ -1,56 +1,81 @@
 #!mainFile "main.opy"
 
-rule "Team 1 (Death)":
+#!define RIVIVE_RADIUS 3
+#!define REVIVE_TIMER_TICK 5
+
+rule "[Revive] Init huds":
+  # revive hud
+  hudSubtext(
+    getDeadPlayers(Team.1),
+    "Wait until your teammates revive you, or 120 seconds pass, or the round ends.",
+    HudPosition.TOP,
+    -70,
+    Color.YELLOW,
+    HudReeval.VISIBILITY_AND_STRING
+  )
+
+  # revive progress bar
+  progressBarHud(
+    localPlayer if (localPlayer.reviveTimer if localPlayer.isDead() else any([localPlayer in player.revivers for player in getPlayers(Team.1)])) else [],
+    localPlayer.reviveTimer if localPlayer.isDead() else ((sorted([player for player in getPlayers(Team.1) if localPlayer in player.revivers], lambda i: i.reviveTimer)).last()).reviveTimer,
+    "You are being revived" if localPlayer.isDead() else "Reviving {0}".format("{0} Teammates".format(len([player for player in getPlayers(Team.1) if localPlayer in player.revivers])) if len([player for player in getPlayers(Team.1) if localPlayer in player.revivers]) > 1 else ([player for player in getPlayers(Team.1) if localPlayer in player.revivers])[0]),
+    HudPosition.TOP,
+    100,
+    Color.SKY_BLUE
+  )
+
+rule "[Revive] player died":
   @Event playerDied
   @Team 1
 
   UpdateCombatantsSub()
   eventPlayer.isReady = true
-  if not eventPlayer.downedStartTime:
-    pause3PCamera()
-    smallMessage(getAllPlayers(), "{0} was downed!".format(eventPlayer))
-    eventPlayer.downedStartTime = getTotalTimeElapsed()
-    eventPlayer.reviveTimer = 0
-    eventPlayer.teleport(nearestWalkablePosition(eventPlayer))
 
-    # revive effects and icon
-    createEffect(getPlayers(Team.1), Effect.RING, Color.YELLOW, eventPlayer, 3, EffectReeval.NONE)
-    eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT] = getLastCreatedEntity()
+  pause3PCamera()
+  smallMessage(getAllPlayers(), "{0} was downed!".format(eventPlayer))
+  eventPlayer.reviveTimer = false
+  eventPlayer.teleport(nearestWalkablePosition(eventPlayer))
 
-    createInWorldText(
-      getPlayers(Team.1),
-      "{}{}".format(iconString(Icon.SKULL), eventPlayer),
-      vect(eventPlayer.getPosition().x, eventPlayer.getPosition().y + 1.7, eventPlayer.getPosition().z),
-      1,
-      Clip.NONE,
-      WorldTextReeval.NONE,
-      Color.YELLOW
-    )
+  # create reviving circle effect
+  createEffect(getPlayers(Team.1), Effect.RING, Color.YELLOW, eventPlayer, RIVIVE_RADIUS, EffectReeval.NONE)
+  eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT] = getLastCreatedEntity()
 
-    eventPlayer.effectsIds[REVIVE_TEXT] = getLastCreatedText()
+  createInWorldText(
+    getPlayers(Team.1),
+    "{} {}".format(heroIcon(eventPlayer.getHero()), eventPlayer),
+    vect(eventPlayer.getPosition().x, eventPlayer.getPosition().y + 1.7, eventPlayer.getPosition().z),
+    1,
+    Clip.NONE,
+    WorldTextReeval.NONE,
+    Color.YELLOW
+  )
+  eventPlayer.effectsIds[REVIVE_TEXT] = getLastCreatedText()
 
-rule "Revive, check player in radius, unset is downed":
+rule "[Revive] Check player in radius, unset is downed":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.downedStartTime
-  @Condition eventPlayer.downedStartTime + 1 < getTotalTimeElapsed()
+  @Condition eventPlayer.isDead()
   
-  eventPlayer.revivers = [player for player in getPlayers(Team.1) if player.isAlive() and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3]
-  if eventPlayer.revivers == []:
-    eventPlayer.reviveTimer = 0
+  eventPlayer.revivers = [
+    player for player in combatants if (
+      player.isAlive() and distance(eventPlayer, player) <= RIVIVE_RADIUS 
+    )
+  ]
+  if not eventPlayer.revivers:
+    eventPlayer.reviveTimer = false
   else:
     eventPlayer.reviveTimer += REVIVE_TIMER_TICK
     if eventPlayer.reviveTimer >= 100:
       smallMessage(getAllPlayers(), "{0} has been revived!".format(eventPlayer))
-      eventPlayer.downedStartTime = 0
-      eventPlayer.revivers.currentRevivesStat += 1
+      IncrementReviveStatSub()
       eventPlayer.resurrect()
-  wait(0.2)
+  
+  wait(0.3, Wait.ABORT_WHEN_FALSE)
   if ruleCondition:
     loop()
 
 
-rule "Team 1: Player gets up":
+rule "[Revive] Player gets up":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.isAlive()
@@ -58,15 +83,8 @@ rule "Team 1: Player gets up":
   UpdateCombatantsSub()
   destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])
   destroyInWorldText(eventPlayer.effectsIds[REVIVE_TEXT])
-
+  eventPlayer.revivers = false
+  eventPlayer.reviveTimer = false
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
   eventPlayer.setHealth(INFINITY)
-  eventPlayer.revivers = []
   unpause3PCamera()
-  
-  wait(2.5, Wait.ABORT_WHEN_FALSE)
-  if not ruleCondition:
-    return
-  if eventPlayer.isDummy():
-    eventPlayer.communicate(Comms.READY)
-

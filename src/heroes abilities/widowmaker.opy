@@ -261,7 +261,7 @@ rule "[Widowmaker] damage through walls":
     return
 
   # determine the target that received direct damage
-  eventPlayer.temp2 = raycast(
+  eventPlayer.tmp2 = raycast(
     eventPlayer.getEyePosition(),
     eventPlayer.getEyePosition() + eventPlayer.abilDir0 * 200,
     getPlayers(Team.2),
@@ -269,57 +269,57 @@ rule "[Widowmaker] damage through walls":
     true
   ).getPlayerHit()
 
-  eventPlayer.temp3 = false
+  eventPlayer.tmp3 = false
   eventPlayer.list0 = [
     player for player in getPlayers(Team.2) if player.isAlive() and eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
   ]
 
-  for eventPlayer.temp1 in range(len(eventPlayer.list0)):
+  for eventPlayer.tmp1 in range(len(eventPlayer.list0)):
     # If true, it means there's already been a hit through a wall or an enemy. Cancel damage to others if no widowmaker's ultimate are present:
-    if not eventPlayer.isUsingUltimate() and eventPlayer.temp3: 
+    if not eventPlayer.isUsingUltimate() and eventPlayer.tmp3: 
       break
 
     # a direct hit prevents wall penetration damage for this target
-    if eventPlayer.temp2 == eventPlayer.list0[eventPlayer.temp1]:
+    if eventPlayer.tmp2 == eventPlayer.list0[eventPlayer.tmp1]:
       # do nothing
     else:
       # Check for headshot through obstacles
       eventPlayer.calcRayIntersectsSphere(
         eventPlayer.abilDir0,
-        eventPlayer.list0[eventPlayer.temp1].getEyePosition() + (eventPlayer.list0[eventPlayer.temp1].getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
+        eventPlayer.list0[eventPlayer.tmp1].getEyePosition() + (eventPlayer.list0[eventPlayer.tmp1].getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
         ZOMBIE_HEAD_HITBOX_RADIUS
       )
 
       if eventPlayer.rayIntersectsSphere[RESULT]:
         damage(
-          eventPlayer.list0[eventPlayer.temp1],
+          eventPlayer.list0[eventPlayer.tmp1],
           eventPlayer,
           300
         )
-        if not eventPlayer.temp3:
+        if not eventPlayer.tmp3:
           # Store hit info to show the effect and prevent redundant penetrations
-          eventPlayer.temp3 = eventPlayer.abilDir0
+          eventPlayer.tmp3 = eventPlayer.abilDir0
         eventPlayer.abilState3 = 0.5 + getTotalTimeElapsed() # for headshot message
       else:
         # Check for bodyshot through obstacles
         eventPlayer.calcRayIntersectsSphere(
           eventPlayer.abilDir0,
-          eventPlayer.list0[eventPlayer.temp1].getPosition() + vect(0, 0.6, 0),
+          eventPlayer.list0[eventPlayer.tmp1].getPosition() + vect(0, 0.6, 0),
           ZOMBIE_BODY_HITBOX_RADIUS
         )
 
         if eventPlayer.rayIntersectsSphere[RESULT]:
           damage(
-            eventPlayer.list0[eventPlayer.temp1],
+            eventPlayer.list0[eventPlayer.tmp1],
             eventPlayer,
             120
           )
-          if not eventPlayer.temp3:
+          if not eventPlayer.tmp3:
             # Store hit info to show the effect and prevent redundant penetrations
-            eventPlayer.temp3 = eventPlayer.abilDir0
+            eventPlayer.tmp3 = eventPlayer.abilDir0
 
   # Create a beam effect if there was a hit through obstacles
-  if eventPlayer.temp3:
+  if eventPlayer.tmp3:
     createBeam(
       getAllPlayers(),
       Beam.BAD,

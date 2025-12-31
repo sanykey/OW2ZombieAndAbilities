@@ -44,23 +44,23 @@ rule "[Ramattra] Barrier up":
   if eventPlayer.isHoldingButton(Button.PRIMARY_FIRE):
     return
 
-  eventPlayer.temp1 = raycast(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0) - vect(0, 3, 0), null, eventPlayer, true).getHitPosition()
+  eventPlayer.tmp1 = raycast(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0) - vect(0, 3, 0), null, eventPlayer, true).getHitPosition()
   
-  # eventPlayer.temp2 = getPlayersInRadius(eventPlayer.temp1, 3.5, Team.2)
+  # eventPlayer.tmp2 = getPlayersInRadius(eventPlayer.tmp1, 3.5, Team.2)
   # #Barrier launches away
-  # eventPlayer.temp2.applyImpulse(vectorTowards(eventPlayer.getPosition(), eventPlayer.temp1) + vect(0, 5, 0), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  # playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.PURPLE, eventPlayer.temp1, 3)
+  # eventPlayer.tmp2.applyImpulse(vectorTowards(eventPlayer.getPosition(), eventPlayer.tmp1) + vect(0, 5, 0), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  # playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.PURPLE, eventPlayer.tmp1, 3)
 
-  eventPlayer.temp2 = eventPlayer.temp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.1 + Vector.UP * 1.5
-  eventPlayer.temp3 = eventPlayer.temp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.8 + Vector.UP * 1.5
+  eventPlayer.tmp2 = eventPlayer.tmp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.1 + Vector.UP * 1.5
+  eventPlayer.tmp3 = eventPlayer.tmp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.8 + Vector.UP * 1.5
 
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CENTER] = eventPlayer.temp2
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] = eventPlayer.temp2
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] = eventPlayer.temp3
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK] = eventPlayer.temp2 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_FORWARD] = eventPlayer.temp3 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK] = eventPlayer.temp2 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_FORWARD] = eventPlayer.temp3 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CENTER] = eventPlayer.tmp2
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] = eventPlayer.tmp2
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] = eventPlayer.tmp3
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK] = eventPlayer.tmp2 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_FORWARD] = eventPlayer.tmp3 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK] = eventPlayer.tmp2 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_FORWARD] = eventPlayer.tmp3 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
   
   eventPlayer.heroEffectsIds[RAM_I.BARRIER_PUSH_DIRECTION] = (
     normalize(

@@ -4,10 +4,10 @@ def botEchoFlyToPlayer():
   @Name "[Team2 Echo] Fly to player"
   
   eventPlayer.startFacing(
-    directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()), 300
+    directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()), 300
   )
   eventPlayer.startThrottleInDirection(
-    directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()), 1, Relativity.TO_WORLD
+    directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()), 1, Relativity.TO_WORLD
   )
   eventPlayer.stopForcingButton(Button.JUMP)
 
@@ -42,7 +42,7 @@ rule "[Team2 Echo] Fly ability":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
   @Condition not eventPlayer.isUsingAbility1()
   
   eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
@@ -55,7 +55,7 @@ rule "[Team2 Echo] Beam ability":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
   @Condition not eventPlayer.isUsingAbility2()
   @Condition eventPlayer.abilState0
   
@@ -67,7 +67,7 @@ rule "[Team2 Echo] respawn":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
 
   eventPlayer.list0 = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
@@ -85,16 +85,16 @@ rule "[Team2 Echo] can see player":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
-  @Condition eventPlayer.targetPlayer0
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
+  @Condition eventPlayer.target0
   @Condition not eventPlayer.abilState0
   @Condition isInLoS(
-    eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()
+    eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()
   )
-  @Condition eventPlayer.abilState1[eventPlayer.targetPlayer0.getSlot()] < getTotalTimeElapsed()
+  @Condition eventPlayer.abilState1[eventPlayer.target0.getSlot()] < getTotalTimeElapsed()
   
-  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()), 300)
-  eventPlayer.startThrottleInDirection(directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()), 1, Relativity.TO_WORLD)
+  eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()), 300)
+  eventPlayer.startThrottleInDirection(directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()), 1, Relativity.TO_WORLD)
   eventPlayer.stopForcingButton(Button.JUMP)
 
 
@@ -102,17 +102,17 @@ rule "[Team2 Echo] Attach player by beam":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
-  @Condition eventPlayer.targetPlayer0
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
+  @Condition eventPlayer.target0
   @Condition not eventPlayer.hasBadStatus
   @Condition not eventPlayer.targetPlayer1
   @Condition not eventPlayer.abilState0
-  @Condition isInLoS(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()) == true
-  @Condition distance(eventPlayer.getPosition(), eventPlayer.targetPlayer0.getPosition()) < 3
-  @Condition eventPlayer.abilState1[eventPlayer.targetPlayer0.getSlot()] < getTotalTimeElapsed()
+  @Condition isInLoS(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()) == true
+  @Condition distance(eventPlayer.getPosition(), eventPlayer.target0.getPosition()) < 3
+  @Condition eventPlayer.abilState1[eventPlayer.target0.getSlot()] < getTotalTimeElapsed()
   
   eventPlayer.abilState0 = true
-  eventPlayer.targetPlayer1 = eventPlayer.targetPlayer0
+  eventPlayer.targetPlayer1 = eventPlayer.target0
   eventPlayer.targetPlayer1.setStatusEffect(eventPlayer, Status.STUNNED, 0.7)
   eventPlayer.targetPlayer1.setStatusEffect(eventPlayer, Status.HACKED, 10)
   eventPlayer.targetPlayer1.attachTo(eventPlayer, vect(0, 0, 1))
@@ -121,7 +121,7 @@ rule "[Team2 Echo] Attach player by beam":
 rule "[Team2 Echo] Bad status - reset beam":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
   @Condition eventPlayer.hasBadStatus
   
   if eventPlayer.abilState0:
@@ -132,7 +132,7 @@ rule "[Team2 Echo] player dead":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
   @Condition eventPlayer.targetPlayer1.isDead() != null
   
   if eventPlayer.abilState0:
@@ -150,7 +150,7 @@ rule "[Team2 Echo] main logic loop":
   @Event eachPlayer
   @Team 2
   @Hero echo
-  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive() and not eventPlayer.downedStartTime
+  @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
 
   if not eventPlayer.targetPlayer1:
     goto lbl_0
@@ -159,7 +159,7 @@ rule "[Team2 Echo] main logic loop":
   if not isInLoS(eventPlayer.getEyePosition(), eventPlayer.targetPlayer1.getEyePosition()):
     botEchoDetachPlayer()
 
-  eventPlayer.temp0 = (
+  eventPlayer.tmp0 = (
     sorted(
       [player for player in getLivingPlayers(Team.2).exclude(eventPlayer) if (
         player.hasSpawned() and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition())
@@ -168,17 +168,17 @@ rule "[Team2 Echo] main logic loop":
     )
   )[0]
 
-  if eventPlayer.temp0:
+  if eventPlayer.tmp0:
     eventPlayer.stopForcingButton(Button.JUMP)
     
-    if distance(eventPlayer, eventPlayer.temp0) < 3:
+    if distance(eventPlayer, eventPlayer.tmp0) < 3:
       eventPlayer.stopThrottleInDirection()
       eventPlayer.stopFacing()
       eventPlayer.setStatusEffect(null, Status.ROOTED, 0.5)
     else:
-      eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.temp0.getEyePosition() + Vector.UP), 100)
+      eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.tmp0.getEyePosition() + Vector.UP), 100)
       eventPlayer.startThrottleInDirection(
-        directionTowards(eventPlayer.getEyePosition(), eventPlayer.temp0.getEyePosition() + Vector.UP * 1), 1, Relativity.TO_WORLD
+        directionTowards(eventPlayer.getEyePosition(), eventPlayer.tmp0.getEyePosition() + Vector.UP * 1), 1, Relativity.TO_WORLD
       )
   else:
     eventPlayer.startForcingButton(Button.JUMP)

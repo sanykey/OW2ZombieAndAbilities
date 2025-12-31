@@ -1,6 +1,5 @@
 #!mainFile "../main.opy"
 
-playervar forceHeroOnRespawn
 #!define LAST_ZOMBIES_ICONS_AMOUNT 5
 # rule "Clear effects for destroed dummy bots":
 #   @Event playerLeft
@@ -21,7 +20,7 @@ macro filterIsNotEliteHeroForZombie(player):
 
 def GetCandidateForEliteZombieSub():
   @Name "SUB: Get Candidate For Elite Zombie"
-  temp1 = random.choice(
+  tmp1 = random.choice(
     [player for player in getPlayers(Team.2) if filterIsNotEliteHeroForZombie(player)]
   )
 
@@ -54,7 +53,7 @@ rule "Zombie died":
   eventPlayer.setUltCharge(0)
   eventPlayer.money = 0
   eventPlayer.resetCrowdControlAttack()
-  eventPlayer.downedStartTime = getTotalTimeElapsed()
+  eventPlayer.zomDownedTime = getTotalTimeElapsed()
   teamScore += 1
 
 globalvar createDummyI
@@ -109,7 +108,7 @@ rule "respawn bots":
   roundRemainingBotsToRespawn = roundRemainingBots - getNumberOfLivingPlayers(Team.2)
 
   if roundRemainingBotsToRespawn > 0:
-    deadTeam2Players = sorted(getDeadPlayers(Team.2), lambda i: i.downedStartTime)
+    deadTeam2Players = sorted(getDeadPlayers(Team.2), lambda i: i.zomDownedTime)
     for respawnBotIndex in range(
       roundRemainingBotsToRespawn if roundRemainingBotsToRespawn < len(deadTeam2Players) else len(deadTeam2Players)
     ):

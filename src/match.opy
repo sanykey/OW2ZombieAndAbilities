@@ -3,6 +3,21 @@
 #!define ROUND_START_DELAY 7
 #!define MAX_REMAINING_ZOMBIES_IN_ROUND 80
 
+rule "Init delayed start header":
+  # delayed start
+  hudHeader(
+    localPlayer if not localPlayer.isHeroDescriptionOpened else null,
+    "\n\u2001{0}\n\n\u2001Hold {1} to Start\u2001\n".format(
+      "Zombie survival", inputBindingString(Button.INTERACT)
+    ), 
+    HudPosition.TOP,
+    1,
+    Color.WHITE,
+    HudReeval.VISIBILITY_AND_STRING
+  )
+  delayerStartHudId = getLastCreatedText()
+
+
 def MatchStartSub():
   @Name "Sub: match start"
   smallMessage(getAllPlayers(), "Match begins!")
@@ -21,10 +36,7 @@ rule "Waiting for players ready":
 
 def reviveAllPlayersSR():
   @Name "Sub: revive all players"
-  temp2 = [player for player in getPlayers(Team.1) if player.downedStartTime or not player.isAlive()]
-  if temp2:
-    temp2.downedStartTime = false
-    temp2.resurrect()
+  [player for player in getPlayers(Team.1) if player.isDead()].resurrect()
 
 rule "Match end":
   @Condition isGameStarted
@@ -60,6 +72,11 @@ rule "Round start":
   
   # Resurrect and heal all players
   reviveAllPlayersSR()
+  UpdateCombatantsSub()
+
+  zomSpeedPct = ZOMBIE_BASE_SPEED + roundNumber * 0.03
+  if zomSpeedPct > ZOMBIE_MAX_SPEED_PCT:
+    zomSpeedPct = ZOMBIE_MAX_SPEED_PCT
 
   botsHealthBoostPercent = (
     ZOMBIE_BASE_HP + 10 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
@@ -67,6 +84,8 @@ rule "Round start":
   botsDamageBoostPercent = (
     ZOMBIE_BASE_DAMAGE + 8 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   )
+
+  getPlayers(Team.2).setMoveSpeed(zomSpeedPct)
   getPlayers(Team.2).setMaxHealth(botsHealthBoostPercent)
   getPlayers(Team.2).setDamageDealt(botsDamageBoostPercent)
 
@@ -74,7 +93,7 @@ rule "Round start":
   heal(getPlayers(Team.1), null, INFINITY)
   wait(ROUND_START_DELAY)
   bigMessage(getPlayers(Team.1), "Starting Round!")
-  # wait() # At the start of the round, bots spawn with incomplete health after the max health buff. This respawn delay is an attempt to fix that
+  # wait() # At the start of the round, bots spawn with incomplete health after the max health buff. This respawn delay is an attmpt to fix that
   # # As soon as the "roundRemainingBots" is greater than 0 they will start respawning again
   roundRemainingBots = (
     wSettingsMaxZombieBots + roundNumber if (wSettingsMaxZombieBots + roundNumber) < MAX_REMAINING_ZOMBIES_IN_ROUND else MAX_REMAINING_ZOMBIES_IN_ROUND

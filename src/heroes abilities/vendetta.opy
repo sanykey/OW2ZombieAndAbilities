@@ -25,8 +25,8 @@ rule "[Vendetta] Swirlwind without dash [Ability_1] + [Crouch]":
   @Condition eventPlayer.isHoldingButton(Button.ABILITY_1) and eventPlayer.getAbilityCooldown(Button.ABILITY_1) == 0
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   
-  for eventPlayer.temp0 in range(8):
-    if (eventPlayer.temp0 == 1 or eventPlayer.temp0 == 5):
+  for eventPlayer.tmp0 in range(8):
+    if (eventPlayer.tmp0 == 1 or eventPlayer.tmp0 == 5):
       eventPlayer.list0 = [
         player for player in getRealPlayersInRadius(eventPlayer.getPosition(), 4, Team.2) if eventPlayer.isInViewAngle(player.getPosition(), 90)
       ]

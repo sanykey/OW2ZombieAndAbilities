@@ -70,7 +70,7 @@ rule "[Secret shop] Show opened shop teleport area":
   shopEffects[SHOP_I.SHOP_RING] = getLastCreatedEntity()
   createInWorldText(getAllPlayers(), "-> [Shop] <-", vectList[VL_SHOP_TELEPORTER_TEXT], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN)
   shopEffects[SHOP_I.SHOP_ICON] = getLastCreatedText()
-  bigMessage(getAllPlayers(), "The secret shop has temporarily opened!")
+  bigMessage(getAllPlayers(), "The secret shop has tmporarily opened!")
   wait(60)
   shopStatus = 3
 

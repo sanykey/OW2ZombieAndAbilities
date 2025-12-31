@@ -59,16 +59,6 @@ rule "Revealed zombies":
   eventPlayer.revealed = false
   destroyInWorldText(eventPlayer.effectsIds[REVEALED_ICON])
 
-
-# def setSpeedStateSR():
-#   @Name "setSpeedStateSR"
-#   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_TIME]
-#   eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
-#   waitUntil(eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
-#   eventPlayer.setMoveSpeed(100)
-#   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
-#   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = false
-
 macro Player.setSpeedState(self, speed = 30, duration = 5):
   self.state[SI.CHANGED_SPEED_TIME] = getTotalTimeElapsed() + duration
   self.state[SI.CHANGED_SPEED_AMOUNT] = speed
@@ -80,7 +70,7 @@ rule "Changed player speed state":
   eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_AMOUNT]
   waitUntil(ruleCondition or eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
-  eventPlayer.setMoveSpeed(100)
+  eventPlayer.setMoveSpeed(zomSpeedPct if eventPlayer.getTeam() == Team.2 else 100)
   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = false
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = false
@@ -234,34 +224,15 @@ rule "Start auto healing overеtime":
   if ruleCondition:
     loop()
 
-rule "Healing money":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.healingTracker >= eventPlayer.healingTrackerThreshold
-
-  eventPlayer.earnMoney(eventPlayer.healingTracker * MONEY_FOR_HEALING)
-  eventPlayer.healingTracker = 0
-
-rule "Self Healing money":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.selfHealingTracker >= eventPlayer.healingTrackerThreshold
-
-  if not eventPlayer.isInSecretShop:
-    eventPlayer.earnMoney(eventPlayer.selfHealingTracker * MONEY_FOR_SELF_HEALING)
-  eventPlayer.selfHealingTracker = 0
-
 rule "Healing amount tracker":
   @Event playerDealtHealing
   @Team 1
   
   # healing yourself gives less points
   if healee == eventPlayer:
-    eventPlayer.selfHealingTracker += eventHealing
-    eventPlayer.selfHealingCurrentStat += eventHealing
+    eventPlayer.addStat(RoundStats.SELF_HEALING, eventHealing)
   else:
-    eventPlayer.healingTracker += eventHealing
-    eventPlayer.healingCurrentStat += eventHealing
+    eventPlayer.addStat(RoundStats.HEALING, eventHealing)
     # Supports trigger auto-heal:
     # if healee.heroType == HeroType.SUPPORT and eventPlayer.state[SI.START_AUTO_HEAL_TIME] > getTotalTimeElapsed() + 3:
     #   eventPlayer.state[SI.START_AUTO_HEAL_TIME] = 3
@@ -269,21 +240,12 @@ rule "Healing amount tracker":
 rule "Zombie elimination money and ult charge":
   @Event playerEarnedElimination
   @Team 1
-
-  eventPlayer.earnMoney(
-    MONEY_FOR_ELIMINATIONS +
-    (MONEY_FOR_CRITICAL_FINAL_BLOW if eventWasCriticalHit else 0) +
-    (MONEY_FOR_MELEE_FINAL_BLOW if eventAbility == Button.MELEE else 0) +
-    (MONEY_FOR_HACKED_ELIMS if victim.isHacked else 0)
-  )
-
   if victim.isHacked:
-    eventPlayer.currentHackedElims += 1
-
+    eventPlayer.addStat(RoundStats.HACKED_ELIMS, true)
   if eventWasCriticalHit:
-    eventPlayer.currentCriticalFinalBlows += 1
+    eventPlayer.addStat(RoundStats.CRITICAL_FINAL_BLOW, true)
   elif eventAbility == Button.MELEE:
-    eventPlayer.currentMeleeFinalBlows += 1
+    eventPlayer.addStat(RoundStats.MELEE_FINAL_BLOW, true)
   
   if not eventPlayer.isUsingUltimate():
     eventPlayer.setUltCharge(eventPlayer.getUltCharge() + ULT_CHARGE_FOR_KILL)
@@ -294,12 +256,12 @@ rule "Offensive assists money and ult charge":
   @Team 1
   @Condition eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS) > eventPlayer.currentOffensiveAssistsStat
 
-  eventPlayer.temp0 = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS) - eventPlayer.currentOffensiveAssistsStat
-  eventPlayer.currentOffensiveAssistsStat = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
-  eventPlayer.earnMoney(MONEY_FOR_OFFENSIVE_ASSISTS * eventPlayer.temp0)
-
   if not eventPlayer.isUsingUltimate():
-    eventPlayer.setUltCharge(eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * eventPlayer.temp0))
+    eventPlayer.setUltCharge(
+      eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * (eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS) - eventPlayer.currentOffensiveAssistsStat))
+    )
+
+  eventPlayer.currentOffensiveAssistsStat = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
 
 playervar currentDefensiveAssistsStat
 rule "Defensive assists money and ult charge":
@@ -307,9 +269,9 @@ rule "Defensive assists money and ult charge":
   @Team 1
   @Condition eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS) > eventPlayer.currentDefensiveAssistsStat
 
-  eventPlayer.temp0 = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS) - eventPlayer.currentDefensiveAssistsStat
-  eventPlayer.currentDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
-  eventPlayer.earnMoney(MONEY_FOR_DEFENSIVE_ASSISTS * eventPlayer.temp0)
-
   if not eventPlayer.isUsingUltimate():
-    eventPlayer.setUltCharge(eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * eventPlayer.temp0))
+    eventPlayer.setUltCharge(
+      eventPlayer.getUltCharge() + (ULT_CHARGE_FOR_KILL * (eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS) - eventPlayer.currentDefensiveAssistsStat))
+    )
+
+  eventPlayer.currentDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)

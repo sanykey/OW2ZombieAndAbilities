@@ -1,10 +1,10 @@
 #!mainFile "../main.opy"
 
 macro Player.getDistanceToZombieTarget(self):
-  self.zomDistancesToPlayersArr[self.targetPlayer0.getSlot()]
+  self.zomDistancesToPlayersArr[self.target0.getSlot()]
 
 macro Player.isInLoSZombieTarget(self):
-  self.zomIsInLoSPlayersArr[self.targetPlayer0.getSlot()]
+  self.zomIsInLoSPlayersArr[self.target0.getSlot()]
 
 rule "Bots use ultimate at 100%":
   @Event eachPlayer
@@ -33,9 +33,6 @@ rule "Zombies loS teleport warning":
     Color.RED
   )
 
-rule "test":
-  debug(combatants)
-
 macro Player.calcCombatantDistAndLoSToBots(self, zombieBot):
   self.zomDistancesToPlayersArr[zombieBot.getSlot()] = distance(self, zombieBot)
   self.zomIsInLoSPlayersArr[zombieBot.getSlot()] = isInLoS(self, zombieBot)
@@ -49,22 +46,24 @@ rule "Bots moves":
 
   # cache players and distances to players
   eventPlayer.list1 = [] # current melee attack targets
+  eventPlayer.zomDistancesToPlayersArr = []
+  eventPlayer.zomIsInLoSPlayersArr = []
 
   if not combatants:
     goto lbl_0
 
   for eventPlayer.I in range(len(combatants)):
-    eventPlayer.temp0 = combatants[eventPlayer.I]
-    if (eventPlayer.temp0):
+    eventPlayer.tmp0 = combatants[eventPlayer.I]
+    if (eventPlayer.tmp0):
       # collect avaliable targets
-      eventPlayer.zomDistancesToPlayersArr[eventPlayer.temp0.getSlot()] = distance(eventPlayer, eventPlayer.temp0)
-      eventPlayer.zomIsInLoSPlayersArr[eventPlayer.temp0.getSlot()] = isInLoS(eventPlayer, eventPlayer.temp0)
+      eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] = distance(eventPlayer, eventPlayer.tmp0)
+      eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] = isInLoS(eventPlayer, eventPlayer.tmp0)
 
       # collect current melee attack targets
-      if (eventPlayer.zomDistancesToPlayersArr[eventPlayer.temp0.getSlot()] < 3 and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.temp0.getSlot()] and eventPlayer.isInViewAngle(eventPlayer.temp0.getPosition(), 90)):
-        eventPlayer.list1.append(eventPlayer.temp0)
+      if (eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < 3 and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] and eventPlayer.isInViewAngle(eventPlayer.tmp0.getPosition(), 90)):
+        eventPlayer.list1.append(eventPlayer.tmp0)
      
-  eventPlayer.targetPlayer0 = (
+  eventPlayer.target0 = (
     sorted(
       combatants,
       lambda i: eventPlayer.zomDistancesToPlayersArr[i.getSlot()] + ( 
@@ -79,12 +78,12 @@ rule "Bots moves":
     )
   )[0]
 
-  if not eventPlayer.targetPlayer0:
+  if not eventPlayer.target0:
     goto lbl_0
 
   # Bots face target players
   eventPlayer.setFacing(
-    directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()),
+    directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()),
     Relativity.TO_WORLD
   )
 
@@ -104,27 +103,27 @@ rule "Bots moves":
   # Bots under player impulse
   if (
     eventPlayer.getVerticalFacingAngle() < -70 and
-    not eventPlayer.targetPlayer0.isUsingUltimate() and 
-    distance(eventPlayer, eventPlayer.targetPlayer0) > 2 # todo: fix inRadius
+    not eventPlayer.target0.isUsingUltimate() and 
+    distance(eventPlayer, eventPlayer.target0) > 2 # todo: fix inRadius
   ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
     eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
     wait(0.2)
     eventPlayer.applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   
 
-  eventPlayer.temp1 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
+  eventPlayer.tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
   # bot unstuck
   if (
     eventPlayer.abilPos0 and
-    distance(eventPlayer.abilPos0, eventPlayer.temp1) < 3 and
-    not eventPlayer.hasBadStatus
+    distance(eventPlayer.abilPos0, eventPlayer.tmp0) < 3
+    # not eventPlayer.hasBadStatus
   ):
     eventPlayer.money += 1
     # try to jump if the movement has slowed down
 
     if eventPlayer.money > 30:
       eventPlayer.teleport(random.choice(spawnPointsList))
-      eventPlayer.abilPos0 = eventPlayer.temp1
+      eventPlayer.abilPos0 = eventPlayer.tmp0
       eventPlayer.money = 0
     elif eventPlayer.money > 10:
       eventPlayer.forceButtonPress(Button.JUMP)
@@ -133,25 +132,25 @@ rule "Bots moves":
     elif eventPlayer.money > 5:
       eventPlayer.forceButtonPress(Button.JUMP)
   else:
-    eventPlayer.abilPos0 = eventPlayer.temp1
+    eventPlayer.abilPos0 = eventPlayer.tmp0
     eventPlayer.money = 0
 
   lbl_0:
   wait(0.3, Wait.ABORT_WHEN_FALSE)
   if not eventPlayer.zombiesfly and eventPlayer.list1:
     # [Vendetta] pushes in front of her if an attack was blocked by her guard
-    eventPlayer.temp3 = [
+    eventPlayer.tmp3 = [
       player for player in eventPlayer.list1 if Hero.VENDETTA == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
     ]
-    if eventPlayer.temp3:
-      eventPlayer.temp3.list0 = [
-        player for player in getRealPlayersInRadius(eventPlayer.temp3.getPosition(), 4, Team.2) if eventPlayer.temp3.isInViewAngle(player.getPosition(), 90)
+    if eventPlayer.tmp3:
+      eventPlayer.tmp3.list0 = [
+        player for player in getRealPlayersInRadius(eventPlayer.tmp3.getPosition(), 4, Team.2) if eventPlayer.tmp3.isInViewAngle(player.getPosition(), 90)
       ]
 
-      eventPlayer.temp3.abilState0 = 1 + getTotalTimeElapsed()
-      eventPlayer.temp3.list0.pushInFacingDirectionAndUp(eventPlayer.temp3, 12)
-      eventPlayer.temp3.list0.setCrowdControlAttack(eventPlayer.temp3)
-      damage(eventPlayer.temp3.list0, eventPlayer.temp3, 0.1) # Deal a small amount of damage to earn assist money while holding guard
+      eventPlayer.tmp3.abilState0 = 1 + getTotalTimeElapsed()
+      eventPlayer.tmp3.list0.pushInFacingDirectionAndUp(eventPlayer.tmp3, 12)
+      eventPlayer.tmp3.list0.setCrowdControlAttack(eventPlayer.tmp3)
+      damage(eventPlayer.tmp3.list0, eventPlayer.tmp3, 0.1) # Deal a small amount of damage to earn assist money while holding guard
 
   if ruleCondition:
     loop()
@@ -162,9 +161,9 @@ rule "Zombies loS teleport (zombiesfly)":
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.isDummy()
   @Condition not eventPlayer.zombiesfly
-  @Condition eventPlayer.targetPlayer0
+  @Condition eventPlayer.target0
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
-  @Condition not eventPlayer.zomIsInLoSPlayersArr[eventPlayer.targetPlayer0.getSlot()]
+  @Condition not eventPlayer.zomIsInLoSPlayersArr[eventPlayer.target0.getSlot()]
   @Condition not eventPlayer.hasStatus(Status.HACKED)
   @Condition not eventPlayer.hasStatus(Status.ROOTED)
   @Condition not eventPlayer.hasStatus(Status.STUNNED)
@@ -177,7 +176,7 @@ rule "Zombies loS teleport (zombiesfly)":
   eventPlayer.setGravity(0)
   eventPlayer.disableEnvironmentCollision(false)
   eventPlayer.disablePlayerCollision()
-  eventPlayer.startAcceleration(directionTowards(eventPlayer.getEyePosition(), eventPlayer.targetPlayer0.getEyePosition()), 25, 20, Relativity.TO_WORLD)
+  eventPlayer.startAcceleration(directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()), 25, 20, Relativity.TO_WORLD)
   wait(0.2)
 
   eventPlayer.applyImpulse(Vector.FORWARD, 5, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
@@ -210,8 +209,8 @@ rule "zombies fly faster":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.zombiesfly
-  @Condition eventPlayer.targetPlayer0
-  @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.targetPlayer0.getSlot()] > 35
+  @Condition eventPlayer.target0
+  @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.target0.getSlot()] > 35
   
   wait(0.2, Wait.ABORT_WHEN_FALSE)
   eventPlayer.applyImpulse(Vector.FORWARD, 40, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)

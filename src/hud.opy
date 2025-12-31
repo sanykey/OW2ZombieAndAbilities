@@ -57,26 +57,6 @@ rule "Init huds":
     HudReeval.VISIBILITY_AND_STRING
   )
 
-  # revive hud
-  hudSubtext(
-    [player for player in getPlayers(Team.1) if player.downedStartTime],
-    "Waiting for revival",
-    HudPosition.TOP,
-    -70,
-    Color.YELLOW,
-    HudReeval.VISIBILITY_AND_STRING
-  )
-
-  # revive progress bar
-  progressBarHud(
-    localPlayer if (localPlayer.reviveTimer if localPlayer.downedStartTime else any([localPlayer in player.revivers for player in getPlayers(Team.1)])) else [],
-    localPlayer.reviveTimer if localPlayer.downedStartTime else ((sorted([player for player in getPlayers(Team.1) if localPlayer in player.revivers], lambda i: i.reviveTimer)).last()).reviveTimer,
-    "You are being revived" if localPlayer.downedStartTime else "Reviving {0}".format("{0} Teammates".format(len([player for player in getPlayers(Team.1) if localPlayer in player.revivers])) if len([player for player in getPlayers(Team.1) if localPlayer in player.revivers]) > 1 else ([player for player in getPlayers(Team.1) if localPlayer in player.revivers])[0]),
-    HudPosition.TOP,
-    100,
-    Color.SKY_BLUE
-  )
-
   # Hero info
   createInWorldText(
     localPlayer if localPlayer.isHeroDescriptionOpened == true and localPlayer.heroInfoText0 else null,
@@ -122,20 +102,6 @@ rule "Init huds":
     Color.WHITE,
     HudReeval.VISIBILITY
   )
-
-  # delayed start
-  hudHeader(
-    localPlayer if not localPlayer.isHeroDescriptionOpened else null,
-    "\n\u2001{0}\n\n\u2001Hold {1} to Start\u2001\n".format(
-      "Zombie survival", inputBindingString(Button.INTERACT)
-    ), 
-    HudPosition.TOP,
-    1,
-    Color.WHITE,
-    HudReeval.VISIBILITY_AND_STRING
-  )
-  delayerStartHudId = getLastCreatedText()
-
 
 rule "Open hero talents info hud":
   @Event eachPlayer

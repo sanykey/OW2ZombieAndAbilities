@@ -54,9 +54,6 @@ rule "Interact button":
     else:
       return
 
-    eventPlayer.healingTracker = 0
-    eventPlayer.selfHealingTracker = 0
-    eventPlayer.healingTrackerThreshold = HEAL_AMOUNT_FOR_MONEY + 0 if eventPlayer.healingBoostPercent < 100 else ceil(HEAL_AMOUNT_FOR_MONEY * (eventPlayer.healingBoostPercent / 500))
     eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.ORANGE, eventPlayer, 1)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.ORANGE, eventPlayer, 100)

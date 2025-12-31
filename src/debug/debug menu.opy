@@ -126,7 +126,6 @@ rule "[debug] fast ressurect":
   @Condition not eventPlayer.isAlive()
   @Condition eventPlayer.isHoldingButton(Button.RELOAD)
   eventPlayer.resurrect()
-  eventPlayer.downedStartTime = false
 
 macro debugMenuTitle(name):
   "Debug menu:

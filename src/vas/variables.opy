@@ -27,7 +27,8 @@
 #!define ZOMBIE_FALL_DAMAGE 250
 #!define ZOMBIE_BASE_DAMAGE 20
 #!define ZOMBIE_BASE_HP 50
-#!define ZOMBIE_BASE_MOVE_SPEED 70
+#!define ZOMBIE_BASE_SPEED 80
+#!define ZOMBIE_MAX_SPEED_PCT 100
 #!define BOT_MAX_INACTIVITY_DURATION 60
 #!define LAST_CC_ATTACK_DURATION 5
 
@@ -35,8 +36,7 @@
 #!define BOT_FAKE_DIE_HP_THRESHOLD 10
 
 # Player settings
-#!define MAX_PLAYERS 5
-#!define REVIVE_TIMER_TICK 5
+#!define MAX_PLAYERS 6
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
 
@@ -76,8 +76,10 @@ globalvar secretShopZoneEffects = []
 globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
 globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
+
 globalvar botsHealthBoostPercent
 globalvar botsDamageBoostPercent
+globalvar zomSpeedPct
 
 globalvar zombiesflyIOnandOff
 globalvar zombieStats
@@ -87,7 +89,7 @@ enum ZI:
   ZOMBIE_RESPAWN_I
 
 ## Loop vars for creating last zombies icons:
-globalvar lastZombiesList
+globalvar lastZombiesList 
 globalvar lastZombiesI
 
 globalvar teamArmor
@@ -100,9 +102,11 @@ globalvar isBotsDisabled
 globalvar lockedAreaEffectsArr
 
 globalvar teamScore
-globalvar temp1
-globalvar temp2
-globalvar temp3
+globalvar tmp0
+globalvar tmp1
+globalvar tmp2
+globalvar tmp3
+globalvar list
 
 globalvar isGameStarted = false
 globalvar highloadServerPause
@@ -127,28 +131,24 @@ globalvar debugBotsSpawnPoint
 ##################################################
 ############## Player variables: #################
 ##################################################
-playervar healingTracker
-playervar selfHealingTracker
-
-playervar currentRevivesStat = [] # Used in player_round_stats.opy and player_revive.opy
-
-playervar zomDistancesToPlayersArr
-playervar zomIsInLoSPlayersArr
+playervar zomDistancesToPlayersArr  # distances to players for current zombie (Cache)
+playervar zomIsInLoSPlayersArr      # players visibility for current zombie (Cache)
+playervar zomDownedTime             # zombie death timestamp (to preserve respawn order)
 
 enum HeroType:
   TANK
   DAMAGE
   SUPPORT
-playervar heroType
+playervar heroType                  # player’s selected hero type - used for target prioritization by zombie bots
 playervar zombiesfly
 playervar isInSecretShop
 playervar state # use with enum "SI"
 playervar developer
 playervar revivers
 playervar reviveTimer
-playervar downedStartTime # die state for players and zombie bots
-playervar isZombieReadyToRespawn
+
 playervar isHacked
+playervar forceHeroOnRespawn
 
 playervar recentStackedHealingDealtToSlot
 playervar recentHealingDealtToSlot
@@ -175,9 +175,6 @@ playervar boostStats # [shieldsForTeam, armorForTeam, teamShieldsPool, teamArmor
 
 playervar damageResistPercent
 
-#!define HEAL_AMOUNT_FOR_MONEY 200
-playervar healingTrackerThreshold = HEAL_AMOUNT_FOR_MONEY
-
 # effects ids
 playervar effectsIds
 #!define PLAYER_STATUS_HUD 0
@@ -185,23 +182,14 @@ playervar effectsIds
 #!define REVIVE_TEXT 2
 #!define REVEALED_ICON 3
 
-enum HI:
-  DEBUG
-  DEBUG2
-  DEBUG3
-  DEBUG4
-  DEBUG5
-
 playervar heroEffectsIds
 
-playervar hasBadStatus
 playervar revealed
 playervar money
 playervar moneyTotal
 
-playervar abilTemp1 # temp var use for loops with "wait" per hero
+playervar abilTemp1 # tmp var use for loops with "wait" per hero
 playervar isInvisible
-playervar isIgnoredByZombie
 playervar isReady
 
 playervar isHeroDescriptionOpened
@@ -214,12 +202,14 @@ playervar barrierDamageStack
 playervar isActiveBarrier
 
 ## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
-playervar temp0
-playervar temp1
-playervar temp2
-playervar temp3
-playervar temp4
-playervar temp5
+playervar i
+
+playervar tmp0
+playervar tmp1
+playervar tmp2
+playervar tmp3
+playervar tmp4
+playervar tmp5
 playervar list0
 playervar list1
 playervar list2
@@ -238,6 +228,6 @@ playervar abilDir0
 playervar abilDir1
 playervar abilDir2
 playervar abilDir3
-playervar targetPlayer0
+playervar target0
 playervar targetPlayer1
 playervar abilityCD

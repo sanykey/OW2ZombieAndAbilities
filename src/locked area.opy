@@ -3,11 +3,11 @@
 def randomStatUpgrade():
   @Name "Subroutine: Random stat upgrade"
 
-  eventPlayer.damageBoostPercent += eventPlayer.temp1
+  eventPlayer.damageBoostPercent += eventPlayer.tmp1
   eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
-  eventPlayer.healthBoostPercent += eventPlayer.temp1
+  eventPlayer.healthBoostPercent += eventPlayer.tmp1
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  smallMessage(eventPlayer, "+{}% damage dealt and hp".format(eventPlayer.temp1))
+  smallMessage(eventPlayer, "+{}% damage dealt and hp".format(eventPlayer.tmp1))
 
 rule "Create location buy positions":
   # Create buy location positions and effects. lockedAreaEffectsArr [0-7] indexes
@@ -248,7 +248,7 @@ rule "Unlock next location A":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 2500
-  eventPlayer.temp1 = 5
+  eventPlayer.tmp1 = 5
   randomStatUpgrade()
 
 rule "Unlock next location B":
@@ -272,7 +272,7 @@ rule "Unlock next location B":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 5000
-  eventPlayer.temp1 = 10
+  eventPlayer.tmp1 = 10
   randomStatUpgrade()
 
 
@@ -296,7 +296,7 @@ rule "Unlock next location C":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 7500
-  eventPlayer.temp1 = 15
+  eventPlayer.tmp1 = 15
   randomStatUpgrade()
 
 
@@ -319,7 +319,7 @@ rule "Unlock next location D":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money -= 10000
-  eventPlayer.temp1 = 20
+  eventPlayer.tmp1 = 20
   randomStatUpgrade()
 
 rule "Clear locked areas data when everything is open":

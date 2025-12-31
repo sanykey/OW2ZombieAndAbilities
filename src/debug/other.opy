@@ -31,8 +31,8 @@
 #   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
 #   @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE) == true
   
-#   eventPlayer.temp1 = random.choice([player for player in getLivingPlayers(Team.1) if player.isDummy()])
-#   destroyDummy(Team.1, eventPlayer.temp1.getSlot())
+#   eventPlayer.tmp1 = random.choice([player for player in getLivingPlayers(Team.1) if player.isDummy()])
+#   destroyDummy(Team.1, eventPlayer.tmp1.getSlot())
 
 
 # rule "[debug] debug objects":
@@ -43,7 +43,7 @@
 #   debug(getPlayersInSlot(0, Team.2).abilTemp1)
 #   debug(getTotalTimeElapsed())
 #   debug(getPlayersInSlot(0, Team.2).abilPos0)
-#   debug(isInLoS(getPlayersInSlot(0, Team.2), getPlayersInSlot(0, Team.2).targetPlayer0))
+#   debug(isInLoS(getPlayersInSlot(0, Team.2), getPlayersInSlot(0, Team.2).target0))
 
   # debug(secretShopZoneEffects)
   # debug(zonesHeroBuyLen)
@@ -56,8 +56,8 @@
 #   @Condition eventPlayer == hostPlayer
 #   @Condition eventPlayer.isHoldingButton(Button.RELOAD) == true
   
-#   eventPlayer.temp1 = random.choice(getLivingPlayers(Team.2))
-#   damage(eventPlayer.temp1, eventPlayer, 99999)
+#   eventPlayer.tmp1 = random.choice(getLivingPlayers(Team.2))
+#   damage(eventPlayer.tmp1, eventPlayer, 99999)
 
 # rule "[debug] show current position":
   # hudSubtext(
@@ -165,15 +165,15 @@
 #   eventPlayer.effectsIds[HI.DEBUG2] = getLastCreatedEntity()
   
 
-  # temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
+  # tmp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
 
 #   createBeam(
 #     getAllPlayers(),
 #     Beam.BAD,
 #     eventPlayer.getEyePosition(),
 #     raycast(
-#       temp1,
-#       temp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
+#       tmp1,
+#       tmp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
 # ,
 #       getAllPlayers(),
 #       eventPlayer,
@@ -205,8 +205,8 @@
 #     Effect.SPHERE,
 #     Color.GREEN,
 #     raycast(
-#       temp1,
-#       temp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
+#       tmp1,
+#       tmp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
 # ,
 #       getAllPlayers(),
 #       eventPlayer,
@@ -224,15 +224,15 @@
 #   @Team 1
 
 #   destroyEffect(eventPlayer.effectsIds[HI.DEBUG4])
-#   temp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
+#   tmp1 = eventPlayer.getEyePosition() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_EYE_POSITION_Y], 0)
 
 #   createEffect(
 #     getAllPlayers(),
 #     Effect.SPHERE,
 #     Color.BLUE,
 #     raycast(
-#       temp1,
-#       temp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
+#       tmp1,
+#       tmp1 + ((eventPlayer.getFacingDirection() + vect(0, eventPlayer.state[SI.RAYCAST_CALIBRATION_FACING_DIRECTION_Y], 0)) * 200)
 # ,
 #       getAllPlayers(),
 #       eventPlayer,

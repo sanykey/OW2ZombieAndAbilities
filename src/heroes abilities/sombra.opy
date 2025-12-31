@@ -21,7 +21,7 @@ rule "[Sombra] Init":
     heroIcon(Hero.SOMBRA),
     SOMBRA_STEAL_MONEY,
     abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE),
-    MONEY_FOR_HACKED_ELIMS
+    70 # todo
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)
@@ -32,7 +32,7 @@ rule "[Sombra] Invisible detect":
   @Event eachPlayer
   @Team 1
   @Hero sombra
-  @Condition eventPlayer.isUsingAbility2() == true
+  @Condition eventPlayer.isUsingAbility2()
   
   wait(0.8, Wait.ABORT_WHEN_FALSE)
   eventPlayer.isInvisible = getTotalTimeElapsed() + 5
@@ -54,10 +54,11 @@ rule "[Sombre] Stop invisible when hacking":
 rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
   @Event eachPlayer
   @Team 2
-  @Condition eventPlayer.hasStatusEffect(Status.HACKED)
+  @Condition eventPlayer.hasStatus(Status.HACKED)
+
   eventPlayer.setDamageReceived(130)
-  eventPlayer.isHacked = true # for money
-  waitUntil(not eventPlayer.hasStatus(Status.HACKED), INFINITY)
+  eventPlayer.isHacked = true # Needed so that on the playerEarnedElimination event, you can check whether the killed zombie was hacked before the kill.
+  waitUntil(not eventPlayer.hasStatus(Status.HACKED) or eventPlayer.isDead(), INFINITY)
   eventPlayer.setDamageReceived(100)
   wait(0.1, Wait.RESTART_WHEN_TRUE)
   eventPlayer.isHacked = false

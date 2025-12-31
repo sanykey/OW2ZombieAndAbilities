@@ -45,21 +45,20 @@ rule "[Mercy] revive":
   @Hero mercy
   @Condition eventPlayer.isUsingAbility2()
   
-  eventPlayer.targetPlayer0 = (
+  eventPlayer.target0 = (
     sorted([
       player for player in getPlayersInRadius(eventPlayer, 8, Team.1) if player.isDead() and eventPlayer.isInViewAngle(player, 45)
     ], 
     lambda i: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i)))
   ).last()
 
-  if not eventPlayer.targetPlayer0:
+  if not eventPlayer.target0:
     return
 
   waitUntil(not eventPlayer.isUsingAbility2(), 2)
 
-  if eventPlayer.targetPlayer0.isAlive():
-    eventPlayer.targetPlayer0.downedStartTime = 0
-    eventPlayer.currentRevivesStat += 1
+  if eventPlayer.target0.isAlive():
+    IncrementReviveStatSub()
 
 
 # rule "[Mercy]: start pocketing":
