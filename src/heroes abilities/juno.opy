@@ -88,8 +88,6 @@ rule "[Juno] init":
   eventPlayer.heroInfoHorFix1 = 11
   eventPlayer.heroInfoText1 = "" 
 
-  # 00000004AA3F  eventPlayer.abilState0
-
   hudText(
     eventPlayer if not eventPlayer.isHeroDescriptionOpened else null,
     null,

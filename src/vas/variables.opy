@@ -27,7 +27,7 @@
 #!define ZOMBIE_FALL_DAMAGE 250
 #!define ZOMBIE_BASE_DAMAGE 20
 #!define ZOMBIE_BASE_HP 50
-#!define ZOMBIE_BASE_SPEED 80
+#!define ZOMBIE_BASE_SPEED 75
 #!define ZOMBIE_MAX_SPEED_PCT 100
 #!define BOT_MAX_INACTIVITY_DURATION 60
 #!define LAST_CC_ATTACK_DURATION 5
@@ -77,8 +77,8 @@ globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can
 globalvar botWidowmakerRespawnTime
 globalvar botEchoRespawnTime
 
-globalvar botsHealthBoostPercent
-globalvar botsDamageBoostPercent
+globalvar zomMaxHealthPct
+globalvar zomDamagePct
 globalvar zomSpeedPct
 
 globalvar zombiesflyIOnandOff
@@ -147,13 +147,9 @@ playervar developer
 playervar revivers
 playervar reviveTimer
 
-playervar isHacked
-playervar forceHeroOnRespawn
-
-playervar recentStackedHealingDealtToSlot
-playervar recentHealingDealtToSlot
-playervar recentDamageDealtToSlot
-playervar recentStackedDamageDealtToSlot
+playervar zomIsHacked
+playervar zomForceHeroOnRespawn
+playervar zomMeleeAttackTargets
 
 playervar posBeforeChangeHero
 
@@ -185,8 +181,8 @@ playervar effectsIds
 playervar heroEffectsIds
 
 playervar revealed
-playervar money
-playervar moneyTotal
+playervar money__zomStuckPoints
+playervar moneyTotal__zomStuckPrevPosition
 
 playervar abilTemp1 # tmp var use for loops with "wait" per hero
 playervar isInvisible

@@ -151,7 +151,7 @@ rule "[Symmetra] Barrier push enemies":
         TORBJORN_HAMMER_BASE_DMG 
         * 3
         * SYM_BARRIER_PUSH_ENENT_WAIT
-        * (botsDamageBoostPercent / 100)
+        * (zomDamagePct / 100)
       )
 
       if eventPlayer.tmp1 > 0:

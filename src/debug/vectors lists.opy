@@ -22,15 +22,16 @@ rule "[debug] init VectorsLists debug mode":
   wait(0.1)
 
   debugSelectedAction = 0
-  debugMaxAction = 5
-
-
+  debugMaxAction = 8
 
   hudSubheader(
     localPlayerVisibilityForDevelopers(),
     "{}
     {}List type: {} <fg84c951FF>{}</fg> {}</fg>
     {}Vector (teleport): {} <fg84c951FF>{}: {}</fg> {}</fg>
+    {}Move X: {} <fg84c951FF>{}</fg> {}</fg>
+    {}Move Z: {} <fg84c951FF>{}</fg> {}</fg>
+    {}Move Y: {} <fg84c951FF>{}</fg> {}</fg>
     {}Show vectors: <fg84c951FF>{}</fg></fg>
     {}Show zones</fg>
     {}Save current pos to log</fg>
@@ -48,15 +49,35 @@ rule "[debug] init VectorsLists debug mode":
       "←" if debugSelectedAction == 1 else "",
       debugVectorsLists[debugVectorsListIndex][false],
       "→" if debugSelectedAction == 1 else "",
+
       debugSelectedActionText(2),
       "←" if debugSelectedAction == 2 else "",
       debugVectorsIndex,
       vectList[debugVectorsIndex],
       "→" if debugSelectedAction == 2 else "",
+
+      # Move X
       debugSelectedActionText(3),
-      debugShowVectors,
+      "←" if debugSelectedAction == 3 else "",
+      vectList[debugVectorsIndex].x,
+      "→" if debugSelectedAction == 3 else "",
+
+      # Move Z
       debugSelectedActionText(4),
+      "←" if debugSelectedAction == 4 else "",
+      vectList[debugVectorsIndex].z,
+      "→" if debugSelectedAction == 4 else "",
+
+      # Move Y
       debugSelectedActionText(5),
+      "←" if debugSelectedAction == 5 else "",
+      vectList[debugVectorsIndex].y,
+      "→" if debugSelectedAction == 5 else "",
+
+      debugSelectedActionText(6),
+      debugShowVectors,
+      debugSelectedActionText(7),
+      debugSelectedActionText(8),
       debugVectorsLists[debugVectorsListIndex][true],
       debugVectorsLists[debugVectorsListIndex][true] + debugVectorsLists[debugVectorsListIndex][2] - 1,
       debugVectorsLists[debugVectorsListIndex][2],
@@ -109,16 +130,16 @@ rule "[debug] Activate selected action for VectorsLists mode":
 
   if debugSelectedAction == 2: # [debug] teleport to selected vector
     eventPlayer.teleport(vectList[debugVectorsIndex])
-  elif debugSelectedAction == 3: # [debug] disable/enable vectors
+  elif debugSelectedAction == 6: # [debug] disable/enable vectors
     if not debugShowVectors:
       debugShowVectors = true
       DebugCreateVectorsTextsSub()
     else:
       debugShowVectors = false
       DebugDeleteVectorsTextsSub()
-  elif debugSelectedAction == 4: # [debug] disable/enable zones
+  elif debugSelectedAction == 7: # [debug] disable/enable zones
     debugShowZones = not debugShowZones
-  elif debugSelectedAction == 5: # [debug] Save current pos to log
+  elif debugSelectedAction == 8: # [debug] Save current pos to log
     logToInspector(
       "pos: {}\neye pos: {}\nfacing dir: {}".format(
         eventPlayer.getPosition(),

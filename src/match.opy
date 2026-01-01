@@ -74,20 +74,20 @@ rule "Round start":
   reviveAllPlayersSR()
   UpdateCombatantsSub()
 
-  zomSpeedPct = ZOMBIE_BASE_SPEED + roundNumber * 0.03
+  zomSpeedPct = ZOMBIE_BASE_SPEED + roundNumber * 0.02
   if zomSpeedPct > ZOMBIE_MAX_SPEED_PCT:
     zomSpeedPct = ZOMBIE_MAX_SPEED_PCT
 
-  botsHealthBoostPercent = (
+  zomMaxHealthPct = (
     ZOMBIE_BASE_HP + 10 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   )
-  botsDamageBoostPercent = (
+  zomDamagePct = (
     ZOMBIE_BASE_DAMAGE + 8 * getNumberOfPlayers(Team.1) + ((roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)) * (roundNumber / (3.3 - getNumberOfPlayers(Team.1) / 8)))
   )
 
   getPlayers(Team.2).setMoveSpeed(zomSpeedPct)
-  getPlayers(Team.2).setMaxHealth(botsHealthBoostPercent)
-  getPlayers(Team.2).setDamageDealt(botsDamageBoostPercent)
+  getPlayers(Team.2).setMaxHealth(zomMaxHealthPct)
+  getPlayers(Team.2).setDamageDealt(zomDamagePct)
 
   wait()
   heal(getPlayers(Team.1), null, INFINITY)

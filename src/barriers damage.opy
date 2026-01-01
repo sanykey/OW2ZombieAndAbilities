@@ -74,7 +74,7 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
     len(eventPlayer.list0) *
     (TORBJORN_HAMMER_BASE_DMG * REI_BARRIER_PUSH_ENENT_WAIT) *
     (3 if eventPlayer.getHero() == Hero.BRIGITTE else 3.65) *
-    (botsDamageBoostPercent / 100)
+    (zomDamagePct / 100)
   )
 
   eventPlayer.barrierDamageFrom = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2

@@ -57,11 +57,11 @@ rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
   @Condition eventPlayer.hasStatus(Status.HACKED)
 
   eventPlayer.setDamageReceived(130)
-  eventPlayer.isHacked = true # Needed so that on the playerEarnedElimination event, you can check whether the killed zombie was hacked before the kill.
+  eventPlayer.zomIsHacked = true # Needed so that on the playerEarnedElimination event, you can check whether the killed zombie was hacked before the kill.
   waitUntil(not eventPlayer.hasStatus(Status.HACKED) or eventPlayer.isDead(), INFINITY)
   eventPlayer.setDamageReceived(100)
   wait(0.1, Wait.RESTART_WHEN_TRUE)
-  eventPlayer.isHacked = false
+  eventPlayer.zomIsHacked = false
 
 # From "Heat Street PvE Talents" (KFVAY)
 # rule "[Sombra] Stack Overflow":

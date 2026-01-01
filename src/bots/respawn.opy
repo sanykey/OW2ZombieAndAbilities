@@ -11,11 +11,11 @@
 macro filterIsNotEliteHeroForZombie(player):
   (
     player.getHero() != Hero.ROADHOG
-    and player.forceHeroOnRespawn != Hero.ROADHOG
+    and player.zomForceHeroOnRespawn != Hero.ROADHOG
     and player.getHero() != Hero.MAUGA
-    and player.forceHeroOnRespawn != Hero.MAUGA
+    and player.zomForceHeroOnRespawn != Hero.MAUGA
     and player.getHero() != Hero.WIDOWMAKER
-    and player.forceHeroOnRespawn != Hero.WIDOWMAKER
+    and player.zomForceHeroOnRespawn != Hero.WIDOWMAKER
   )
 
 def GetCandidateForEliteZombieSub():
@@ -28,15 +28,16 @@ macro setZombieHero(zomPlayer, zomHero):
   if zomPlayer.isAlive():
     zomPlayer.startForcingHero(zomHero)
   else:
-    zomPlayer.forceHeroOnRespawn = zomHero
+    zomPlayer.zomForceHeroOnRespawn = zomHero
 
 rule "Setup new bots": 
   @Event playerJoined
   @Team 2
 
   eventPlayer.startForcingName("Zombie {}".format(eventPlayer.getSlot()))
-  eventPlayer.setMaxHealth(botsHealthBoostPercent)
-  eventPlayer.setDamageDealt(botsDamageBoostPercent)
+  eventPlayer.setMoveSpeed(zomSpeedPct)
+  eventPlayer.setMaxHealth(zomMaxHealthPct)
+  eventPlayer.setDamageDealt(zomDamagePct)
   eventPlayer.startModifyingVoicelinePitch(0.3)
   eventPlayer.setRespawnTime(INFINITY)
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
@@ -51,7 +52,7 @@ rule "Zombie died":
   eventPlayer.stopForcingThrottle()
   roundRemainingBots -= 1
   eventPlayer.setUltCharge(0)
-  eventPlayer.money = 0
+  eventPlayer.money__zomStuckPoints = 0
   eventPlayer.resetCrowdControlAttack()
   eventPlayer.zomDownedTime = getTotalTimeElapsed()
   teamScore += 1
@@ -84,15 +85,16 @@ globalvar deadTeam2Players
 globalvar roundRemainingBotsToRespawn
 globalvar respawnBotIndex
 
-macro Player.respawnBot(self, timeout = 0.02):
+macro Player.respawnBot(self):
   if debugBotsSpawnPoint:
     self.teleport(debugBotsSpawnPoint)
   else:
     self.teleport(random.choice(spawnPointsList))
-  wait(timeout)
-  if self.forceHeroOnRespawn:
-    self.startForcingHero(self.forceHeroOnRespawn)
-    self.forceHeroOnRespawn = false
+  wait()
+  if self.zomForceHeroOnRespawn:
+    self.startForcingHero(self.zomForceHeroOnRespawn)
+    self.zomForceHeroOnRespawn = false
+    self.resurrect()
   else:
     self.resurrect()
   

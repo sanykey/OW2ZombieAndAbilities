@@ -37,48 +37,116 @@ macro Player.calcCombatantDistAndLoSToBots(self, zombieBot):
   self.zomDistancesToPlayersArr[zombieBot.getSlot()] = distance(self, zombieBot)
   self.zomIsInLoSPlayersArr[zombieBot.getSlot()] = isInLoS(self, zombieBot)
 
-rule "Bots moves":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.isAlive()
-  @Condition eventPlayer.isDummy()
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
 
+macro searchTargets():
   # cache players and distances to players
-  eventPlayer.list1 = [] # current melee attack targets
-  eventPlayer.zomDistancesToPlayersArr = []
-  eventPlayer.zomIsInLoSPlayersArr = []
+  eventPlayer.zomMeleeAttackTargets = [] # current melee attack targets
+  eventPlayer.zomDistancesToPlayersArr = [] # cached distances from bot to players
+  eventPlayer.zomIsInLoSPlayersArr = [] # cached IsInLineOfSight from bot to players
 
-  if not combatants:
-    goto lbl_0
+  eventPlayer.tmp1 = false    # current target weight
+  eventPlayer.tmp2 = false    # weight of best canditate to target
+  eventPlayer.target0 = false # target being pursued by the zombie
 
   for eventPlayer.I in range(len(combatants)):
     eventPlayer.tmp0 = combatants[eventPlayer.I]
     if (eventPlayer.tmp0):
       # collect avaliable targets
       eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] = distance(eventPlayer, eventPlayer.tmp0)
-      eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] = isInLoS(eventPlayer, eventPlayer.tmp0)
+
+      if eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < 30: # For optimization, check IsInLineOfSight only at short distances.
+        eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] = isInLoS(eventPlayer, eventPlayer.tmp0) 
 
       # collect current melee attack targets
       if (eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < 3 and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] and eventPlayer.isInViewAngle(eventPlayer.tmp0.getPosition(), 90)):
-        eventPlayer.list1.append(eventPlayer.tmp0)
-     
-  eventPlayer.target0 = (
-    sorted(
-      combatants,
-      lambda i: eventPlayer.zomDistancesToPlayersArr[i.getSlot()] + ( 
-        10 if not eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] else 0 # Low priority for targets behind walls
-      ) + (
-        200 if not i.isReady else 0
-      ) + (
-        100 if i.isInvisible > getTotalTimeElapsed() and (eventPlayer.zomDistancesToPlayersArr[i.getSlot()] > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
-      ) - (
-        3 if eventPlayer.zomIsInLoSPlayersArr[i.getSlot()] and i.heroType == HeroType.TANK and not (i.getCurrentHero() == Hero.DVA and i.isInAlternateForm()) else 0 # High priority for tank targets (except Baby D.Va)
-      )
-    )
-  )[0]
+        eventPlayer.zomMeleeAttackTargets.append(eventPlayer.tmp0)
 
-  if not eventPlayer.target0:
+      eventPlayer.tmp1 = (
+        eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()]
+        + (10 if not eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] else 0) # Low priority for targets behind walls
+        + ( # for sombra invisible:
+          100 if eventPlayer.tmp0.isInvisible > getTotalTimeElapsed() and (eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] > 4 or not eventPlayer.isInViewAngle(eventPlayer.tmp0.getPosition(), 90)) else 0
+        ) - ( # High priority for tank targets (except Baby D.Va):
+          3 if (
+              eventPlayer.tmp0.heroType == HeroType.TANK
+              and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] 
+              and not (eventPlayer.tmp0.getCurrentHero() == Hero.DVA and eventPlayer.tmp0.isInAlternateForm())
+            ) else 0 
+        )
+      )
+
+      if not eventPlayer.tmp2 or eventPlayer.tmp2 > eventPlayer.tmp1:
+        eventPlayer.tmp2 = eventPlayer.tmp1
+        eventPlayer.target0 = eventPlayer.tmp0
+
+
+macro botUnstuck():
+  if eventPlayer.isOnGround():
+    eventPlayer.tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
+    if (
+      eventPlayer.moneyTotal__zomStuckPrevPosition and
+      distance(eventPlayer.moneyTotal__zomStuckPrevPosition, eventPlayer.tmp0) < 1
+    ):
+      eventPlayer.money__zomStuckPoints += 1
+      # try to jump if the movement has slowed down
+
+      if eventPlayer.money__zomStuckPoints > 15:
+        eventPlayer.teleport(random.choice(spawnPointsList))
+        eventPlayer.moneyTotal__zomStuckPrevPosition = eventPlayer.tmp0
+        eventPlayer.money__zomStuckPoints = 0
+      elif eventPlayer.money__zomStuckPoints > 5:
+        eventPlayer.forceButtonPress(Button.JUMP)
+        wait()
+        eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
+      elif eventPlayer.money__zomStuckPoints > 3:
+        eventPlayer.forceButtonPress(Button.JUMP)
+    else:
+      eventPlayer.moneyTotal__zomStuckPrevPosition = eventPlayer.tmp0
+      eventPlayer.money__zomStuckPoints = 0
+
+macro botUnderPlayerImpulse():
+  if (
+    eventPlayer.getVerticalFacingAngle() < -70 and
+    not eventPlayer.target0.isUsingUltimate() and 
+    distance(eventPlayer, eventPlayer.target0) > 2 # todo: fix inRadius
+  ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
+    eventPlayer.applyImpulse(
+      worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION),
+      20,
+      Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION
+    )
+    wait(0.2)
+    eventPlayer.applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+
+macro checkVendettaCounterAttack():
+  # [Vendetta] pushes in front of her if an attack was blocked by her guard
+  eventPlayer.tmp0 = [ # find Vendetta player with block stance
+    player for player in eventPlayer.zomMeleeAttackTargets if Hero.VENDETTA == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
+  ][0]
+  if eventPlayer.tmp0:
+    eventPlayer.tmp0.list0 = [
+      player for player in getRealPlayersInRadius(eventPlayer.tmp0.getPosition(), 4, Team.2) if eventPlayer.tmp0.isInViewAngle(player.getPosition(), 90)
+    ]
+
+    eventPlayer.tmp0.abilState0 = 1 + getTotalTimeElapsed() # set talent cooldown
+    eventPlayer.tmp0.list0.pushInFacingDirectionAndUp(eventPlayer.tmp0, 12)
+    eventPlayer.tmp0.list0.setCrowdControlAttack(eventPlayer.tmp0)
+    damage(eventPlayer.tmp0.list0, eventPlayer.tmp0, 0.1) # Deal a small amount of damage to earn assist money while holding guard
+
+
+rule "Zombie bots main behavior":
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.isDummy()
+  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
+
+  if not combatants: # When no suitable targets are available, freeze all logic
+    goto lbl_0
+
+  searchTargets()
+
+  if not eventPlayer.target0: # No target found — take no action
     goto lbl_0
 
   # Bots face target players
@@ -91,8 +159,9 @@ rule "Bots moves":
   if eventPlayer.zombiesfly:
     goto lbl_0
 
-  if eventPlayer.list1:
+  if eventPlayer.zomMeleeAttackTargets:
     eventPlayer.startForcingButton(Button.MELEE)
+    eventPlayer.money__zomStuckPoints = false # Reset zomStuckPoints because the bot slowed down due to entering melee combat.
   else:
     eventPlayer.stopForcingButton(Button.MELEE)
 
@@ -100,57 +169,14 @@ rule "Bots moves":
   if eventPlayer.abilState0:
     goto lbl_0
 
-  # Bots under player impulse
-  if (
-    eventPlayer.getVerticalFacingAngle() < -70 and
-    not eventPlayer.target0.isUsingUltimate() and 
-    distance(eventPlayer, eventPlayer.target0) > 2 # todo: fix inRadius
-  ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
-    eventPlayer.applyImpulse(worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    wait(0.2)
-    eventPlayer.applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  
-
-  eventPlayer.tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
-  # bot unstuck
-  if (
-    eventPlayer.abilPos0 and
-    distance(eventPlayer.abilPos0, eventPlayer.tmp0) < 3
-    # not eventPlayer.hasBadStatus
-  ):
-    eventPlayer.money += 1
-    # try to jump if the movement has slowed down
-
-    if eventPlayer.money > 30:
-      eventPlayer.teleport(random.choice(spawnPointsList))
-      eventPlayer.abilPos0 = eventPlayer.tmp0
-      eventPlayer.money = 0
-    elif eventPlayer.money > 10:
-      eventPlayer.forceButtonPress(Button.JUMP)
-      wait()
-      eventPlayer.applyImpulse(Vector.UP, 3, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
-    elif eventPlayer.money > 5:
-      eventPlayer.forceButtonPress(Button.JUMP)
-  else:
-    eventPlayer.abilPos0 = eventPlayer.tmp0
-    eventPlayer.money = 0
+  botUnderPlayerImpulse()
+  botUnstuck()
 
   lbl_0:
   wait(0.3, Wait.ABORT_WHEN_FALSE)
-  if not eventPlayer.zombiesfly and eventPlayer.list1:
-    # [Vendetta] pushes in front of her if an attack was blocked by her guard
-    eventPlayer.tmp3 = [
-      player for player in eventPlayer.list1 if Hero.VENDETTA == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
-    ]
-    if eventPlayer.tmp3:
-      eventPlayer.tmp3.list0 = [
-        player for player in getRealPlayersInRadius(eventPlayer.tmp3.getPosition(), 4, Team.2) if eventPlayer.tmp3.isInViewAngle(player.getPosition(), 90)
-      ]
 
-      eventPlayer.tmp3.abilState0 = 1 + getTotalTimeElapsed()
-      eventPlayer.tmp3.list0.pushInFacingDirectionAndUp(eventPlayer.tmp3, 12)
-      eventPlayer.tmp3.list0.setCrowdControlAttack(eventPlayer.tmp3)
-      damage(eventPlayer.tmp3.list0, eventPlayer.tmp3, 0.1) # Deal a small amount of damage to earn assist money while holding guard
+  if not eventPlayer.zombiesfly and eventPlayer.zomMeleeAttackTargets:
+    checkVendettaCounterAttack()
 
   if ruleCondition:
     loop()

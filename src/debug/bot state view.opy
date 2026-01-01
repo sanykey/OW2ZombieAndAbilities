@@ -42,13 +42,13 @@ rule "[debug] init Bot state view mode":
     {}Add Mauga
     {}Add Widowmaker
     --------------------
-    getTotalTimeElapsed: <fg84c951FF>{}</fg>
     health: <fg84c951FF>{}</fg>
     max health: <fg84c951FF>{}</fg>
     ult charge: <fg84c951FF>{}</fg>
     pos: <fg84c951FF>{}</fg>
     facing dir: <fg84c951FF>{}</fg>
-    money: <fg84c951FF>{}</fg>
+    Total Time Elapsed: <fg84c951FF>{}</fg>
+    Stuck Points: <fg84c951FF>{}</fg>
     target0: <fg84c951FF>{}</fg>
     abilPos0: <fg84c951FF>{}</fg>
     tmp1: <fg84c951FF>{}</fg>
@@ -102,7 +102,7 @@ rule "[debug] init Bot state view mode":
       debugSelectedPlayer.getUltCharge(),
       debugSelectedPlayer.getPosition(),
       debugSelectedPlayer.getFacingDirection(),
-      debugSelectedPlayer.money,
+      debugSelectedPlayer.money__zomStuckPoints,
       debugSelectedPlayer.target0,
       debugSelectedPlayer.abilPos0,
       debugSelectedPlayer.tmp1,

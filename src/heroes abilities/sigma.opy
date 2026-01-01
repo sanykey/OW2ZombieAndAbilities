@@ -82,7 +82,7 @@ rule "[Sigma] Barrier Effect":
   eventPlayer.barrierDamageStack += (
     len(eventPlayer.list0) *
     (TORBJORN_HAMMER_BASE_DMG * SIG_BARRIER_PUSH_ENENT_WAIT * 1.5)
-    * (botsDamageBoostPercent / 100)
+    * (zomDamagePct / 100)
     * (100 / eventPlayer.healthBoostPercent)
   )
 

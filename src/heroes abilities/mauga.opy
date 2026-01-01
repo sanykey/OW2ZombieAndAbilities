@@ -141,7 +141,7 @@ rule "[Mauga] Barrier push enemies":
         TORBJORN_HAMMER_BASE_DMG 
         * 2.2
         * MAU_BARRIER_PUSH_ENENT_WAIT 
-        * (botsDamageBoostPercent / 100)
+        * (zomDamagePct / 100)
       )
 
       eventPlayer.list0[eventPlayer.I].setCrowdControlAttack(eventPlayer)

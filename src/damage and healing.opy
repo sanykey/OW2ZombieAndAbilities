@@ -98,7 +98,7 @@ macro Player.setCrowdControlAttack(self, attacker0, isVanilaKnockback=false, dur
   self.lastCcAttackTime = duration + getTotalTimeElapsed()
   self.lastCcWasInAir = self.isInAir()
   self.lastCcVanilaKnockback = isVanilaKnockback
-  self.money = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
+  self.money__zomStuckPoints = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
 
 macro Player.resetCrowdControlAttack(self):
   self.lastCcAttacker = false
@@ -240,7 +240,7 @@ rule "Healing amount tracker":
 rule "Zombie elimination money and ult charge":
   @Event playerEarnedElimination
   @Team 1
-  if victim.isHacked:
+  if victim.zomIsHacked:
     eventPlayer.addStat(RoundStats.HACKED_ELIMS, true)
   if eventWasCriticalHit:
     eventPlayer.addStat(RoundStats.CRITICAL_FINAL_BLOW, true)

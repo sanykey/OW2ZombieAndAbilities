@@ -42,11 +42,10 @@ rule "Init huds":
   hudText(
     localPlayer if not localPlayer.isHeroDescriptionOpened else null,
     heroIcon(Hero.TORBJORN),
-    "<fgC80013FF>{0}{1}%</fg>, <fgA0E81BFF>{2}{3}%</fg>".format(
-      iconString(Icon.FIRE),
-      botsDamageBoostPercent,
-      iconString(Icon.HEART),
-      botsHealthBoostPercent
+    "<fgC80013FF><TX C0000000001F92F>{}%</fg>, <fgA0E81BFF><TX C0000000003A2C8>{}%</fg>, <fg6dabebFF><TX C0000000002A9FA>{}%</fg>".format(
+      zomDamagePct,
+      zomMaxHealthPct,
+      zomSpeedPct
     ),
     "{}/{} Enemies".format(roundRemainingBots, roundMaxBots),
     HudPosition.RIGHT,
@@ -146,19 +145,16 @@ rule "Create players effects":
   hudText(
     [player for player in getPlayers(Team.1) if player != eventPlayer or not eventPlayer.isHeroDescriptionOpened],
     heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
-    "<fgC80013FF>{}{}%</fg>, <fgA0E81BFF>{}{}%</fg>, <fgece580FF>{}{}%</fg>, <fgEC9900FF><TX C00000000004120>{}%</fg>".format(
-      iconString(Icon.FIRE),
+    "<fgC80013FF><TX C0000000001F92F>{}%</fg>, <fgA0E81BFF><TX C0000000003A2C8>{}%</fg>, <fgece580FF><TX C000000000039DD>{}%</fg>, <fgEC9900FF><TX C00000000004120>{}%</fg>".format(
       eventPlayer.damageBoostPercent,
-      iconString(Icon.HEART),
       eventPlayer.healthBoostPercent,
-      iconString(Icon.PLUS),
       eventPlayer.healingBoostPercent,
       eventPlayer.damageResistPercent
     ),
     "{0}{1}: {2}".format(
       eventPlayer,
       " <fg94a0a544>(host)</fg>" if eventPlayer == hostPlayer else "",
-      "<fg94a0a544>${}(tot)</fg>".format(eventPlayer.moneyTotal) if localPlayer.isHoldingButton(Button.CROUCH) else "${}".format(eventPlayer.money)
+      "<fg94a0a544>${}(tot)</fg>".format(eventPlayer.moneyTotal__zomStuckPrevPosition) if localPlayer.isHoldingButton(Button.CROUCH) else "${}".format(eventPlayer.money__zomStuckPoints)
     ),
     HudPosition.ACTUALLY_LEFT,
     1,

@@ -244,7 +244,9 @@ globalvar vectList = compressed([
   vect(-11.54, 11.30, -76.66),
 
   #!define VL_BOT_SNIPER_SPOTS_OFFSET (VL_SHOP_ZONE2 + VL_SHOP_ZONE2_LEN)
-  #!define VL_BOT_SNIPER_SPOTS_LEN 13
+  #!define VL_BOT_SNIPER_SPOTS_LEN 15
+  vect(-2.91, 5.20, -13.38),
+  vect(15.42, 6.25, -30.04),
   vect(13.33, 11.61, -42.38),
   vect(13.86, 12.56, -82.01),
   vect(22.09, 12.30, -73.98),

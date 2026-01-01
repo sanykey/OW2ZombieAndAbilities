@@ -65,8 +65,8 @@ rule "[Team2 SYMMETRA] wave":
   # else:
   #   commonZombieHero = Hero.TORBJORN
 
-  list = [player for player in getPlayers(Team.2) if (player.getCurrentHero() in commonBotsHeroes or player.forceHeroOnRespawn in commonBotsHeroes)]
-  list.forceHeroOnRespawn = commonZombieHero
+  list = [player for player in getPlayers(Team.2) if (player.getCurrentHero() in commonBotsHeroes or player.zomForceHeroOnRespawn in commonBotsHeroes)]
+  list.zomForceHeroOnRespawn = commonZombieHero
 
 rule "[Team2 SYMMETRA] throw turrents":
   @Condition commonZombieHero == Hero.SYMMETRA

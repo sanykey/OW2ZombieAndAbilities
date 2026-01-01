@@ -1,8 +1,8 @@
 #!mainFile "main.opy"
 
 macro Player.earnMoney(self, amount=0):
-  self.money += amount
-  self.moneyTotal += amount
+  self.money__zomStuckPoints += amount
+  self.moneyTotal__zomStuckPrevPosition += amount
 
 rule "Version text":
   hudText(

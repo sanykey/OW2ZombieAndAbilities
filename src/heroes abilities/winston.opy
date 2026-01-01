@@ -111,7 +111,7 @@ rule "[Winston] Barrier push enemies":
   eventPlayer.barrierDamageStack += (
     len(eventPlayer.list0) *
     (TORBJORN_HAMMER_BASE_DMG * WIN_BARRIER_PUSH_ENENT_WAIT * 2.3) * 
-    (botsDamageBoostPercent / 100)
+    (zomDamagePct / 100)
   )
 
   wait(WIN_BARRIER_PUSH_ENENT_WAIT)
