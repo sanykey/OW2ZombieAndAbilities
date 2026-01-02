@@ -73,24 +73,14 @@ globalvar buyHeroUpgradesData
 globalvar secretShopZoneEffects = []
 
 # zombie bots vars:
-globalvar lastZombiesIcons # Save here the IDs of created icons, so that you can delete icons in case Dummy bots will be deleted.
-globalvar botWidowmakerRespawnTime
-globalvar botEchoRespawnTime
-
 globalvar zomMaxHealthPct
 globalvar zomDamagePct
 globalvar zomSpeedPct
-
-globalvar zombiesflyIOnandOff
 globalvar zombieStats
 enum ZI:
   DAMAGE_STAT
   HP_STAT
   ZOMBIE_RESPAWN_I
-
-## Loop vars for creating last zombies icons:
-globalvar lastZombiesList 
-globalvar lastZombiesI
 
 globalvar teamArmor
 globalvar matchIsOver = false
@@ -134,31 +124,26 @@ globalvar debugBotsSpawnPoint
 playervar zomDistancesToPlayersArr  # distances to players for current zombie (Cache)
 playervar zomIsInLoSPlayersArr      # players visibility for current zombie (Cache)
 playervar zomDownedTime             # zombie death timestamp (to preserve respawn order)
-
-enum HeroType:
-  TANK
-  DAMAGE
-  SUPPORT
-playervar heroType                  # player’s selected hero type - used for target prioritization by zombie bots
-playervar zombiesfly
-playervar isInSecretShop
-playervar state # use with enum "SI"
-playervar developer
-playervar revivers
-playervar reviveTimer
-
 playervar zomIsHacked
 playervar zomForceHeroOnRespawn
 playervar zomMeleeAttackTargets
-
-playervar posBeforeChangeHero
-
 # detecting crowd control abilities for bots fall damage
 playervar lastCcAttacker
 playervar lastCcAttackTime
 playervar lastCcWasInAir
 playervar lastCcVanilaKnockback
 
+enum HeroType:
+  TANK
+  DAMAGE
+  SUPPORT
+playervar heroType                  # player’s selected hero type - used for target prioritization by zombie bots
+playervar isInSecretShop
+playervar state # use with enum "SI"
+playervar developer
+playervar revivers
+playervar reviveTimer
+playervar posBeforeChangeHero
 playervar isDvaUltBought
 playervar purchasedHeroes
 playervar healthBoostPercent
@@ -196,9 +181,6 @@ playervar barrierDamageFrom
 playervar barrierDamageDir
 playervar barrierDamageStack
 playervar isActiveBarrier
-
-## Temporal variables used for calculations. Should be used briefly, without Wait and other asynchronous code
-playervar i
 
 playervar tmp0
 playervar tmp1

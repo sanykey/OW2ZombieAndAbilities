@@ -38,7 +38,6 @@
 # rule "[debug] debug objects":
 #   debug(hostPlayer.isCommunicatingEmote())
 #   debug(hostPlayer.isCommunicatingVoiceline())
-#   debug(getPlayersInSlot(0, Team.2).zombiesfly)
 #   debug(getPlayersInSlot(0, Team.2).money__zomStuckPoints)
 #   debug(getPlayersInSlot(0, Team.2).abilTemp1)
 #   debug(getTotalTimeElapsed())

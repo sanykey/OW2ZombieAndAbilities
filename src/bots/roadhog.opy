@@ -21,7 +21,7 @@ rule "[Team2 Roadhog] trying to hook":
   @Team 2
   @Hero roadhog
   @Condition eventPlayer.isAlive()
-  @Condition not eventPlayer.zombiesfly
+  @Condition not eventPlayer.zomFlyThroughWalls
   @Condition eventPlayer.target0
   @Condition eventPlayer.isInLoSZombieTarget()
   @Condition eventPlayer.getDistanceToZombieTarget() < 35

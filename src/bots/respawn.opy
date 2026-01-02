@@ -1,13 +1,5 @@
 #!mainFile "../main.opy"
 
-#!define LAST_ZOMBIES_ICONS_AMOUNT 5
-# rule "Clear effects for destroed dummy bots":
-#   @Event playerLeft
-#   @Condition getNumberOfPlayers(Team.2) < wSettingsMaxZombieBots
-  
-#   for lastZombiesI in range(LAST_ZOMBIES_ICONS_AMOUNT):
-#     destroyIcon(lastZombiesIcons[lastZombiesI])
-
 macro filterIsNotEliteHeroForZombie(player):
   (
     player.getHero() != Hero.ROADHOG

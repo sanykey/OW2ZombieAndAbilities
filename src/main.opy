@@ -38,7 +38,6 @@
 ##!include "bots/roadhog.opy"
 ##!include "bots/mauga.opy"
 ##!include "bots/echo.opy"
-#!include "bots/antifall and cc attacks.opy"
 #*/
 
 #/*

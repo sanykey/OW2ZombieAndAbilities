@@ -1,5 +1,11 @@
 #!mainFile "../main.opy"
 
+playervar zomAIstep
+playervar zomFlyThroughWallsPoints
+playervar zomFlyThroughWalls
+
+#!define ZOM_FLY_POINTS 6
+
 macro Player.getDistanceToZombieTarget(self):
   self.zomDistancesToPlayersArr[self.target0.getSlot()]
 
@@ -21,22 +27,17 @@ rule "Bots use ultimate at 100%":
   loop()
 
 
-rule "Zombies loS teleport warning":
+rule "Creaste zombies loS warning icons":
   @Event eachPlayer
   @Team 2
 
   createIcon(
-    getPlayers(Team.1) if eventPlayer.zombiesfly else null,
+    getPlayers(Team.1) if eventPlayer.zomFlyThroughWalls else null,
     eventPlayer,
     Icon.EYE,
     IconReeval.VISIBILITY_AND_POSITION,
     Color.RED
   )
-
-macro Player.calcCombatantDistAndLoSToBots(self, zombieBot):
-  self.zomDistancesToPlayersArr[zombieBot.getSlot()] = distance(self, zombieBot)
-  self.zomIsInLoSPlayersArr[zombieBot.getSlot()] = isInLoS(self, zombieBot)
-
 
 macro searchTargets():
   # cache players and distances to players
@@ -54,7 +55,7 @@ macro searchTargets():
       # collect avaliable targets
       eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] = distance(eventPlayer, eventPlayer.tmp0)
 
-      if eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < 30: # For optimization, check IsInLineOfSight only at short distances.
+      if eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < 40: # For optimization, check IsInLineOfSight only at short distances.
         eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] = isInLoS(eventPlayer, eventPlayer.tmp0) 
 
       # collect current melee attack targets
@@ -80,16 +81,52 @@ macro searchTargets():
         eventPlayer.target0 = eventPlayer.tmp0
 
 
+macro botAntifall():
+  eventPlayer.tmp0 = false
+  # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
+  if eventPlayer.getPosition().x < 0 and eventPlayer.getPosition().z > -35: 
+    if eventPlayer.getPosition().y < -6:
+      eventPlayer.tmp0 = true
+  elif eventPlayer.getPosition().x > 43: # ZONE B
+    if eventPlayer.getPosition().y < 4.7:
+      eventPlayer.tmp0 = true
+  else:
+    if eventPlayer.getPosition().y < 0: # Other
+      eventPlayer.tmp0 = true
+
+  if not eventPlayer.tmp0:
+    goto lbl_1
+
+  # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
+  if eventPlayer.lastCcAttackTime >= getTotalTimeElapsed():
+
+    # Allow the bot to fall if expected fall damage is greater than its current health
+    if eventPlayer.getHealth() < ZOMBIE_FALL_DAMAGE * eventPlayer.lastCcAttacker.damageBoostPercent / 100:
+
+      # If no vanilla knockback would grant the kill, assign it using setEnvironmentalKillCreditor
+      if not eventPlayer.lastCcVanilaKnockback:
+        eventPlayer.setEnvironmentalKillCreditor(eventPlayer.lastCcAttacker)
+      goto lbl_1
+
+    else:
+      damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
+      eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+      eventPlayer.lastCcAttackTime = false
+  else:
+    eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+
+  lbl_1:
+
 macro botUnstuck():
   if eventPlayer.isOnGround():
     eventPlayer.tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
     if (
       eventPlayer.moneyTotal__zomStuckPrevPosition and
-      distance(eventPlayer.moneyTotal__zomStuckPrevPosition, eventPlayer.tmp0) < 1
+      distance(eventPlayer.moneyTotal__zomStuckPrevPosition, eventPlayer.tmp0) < 0.7
     ):
       eventPlayer.money__zomStuckPoints += 1
-      # try to jump if the movement has slowed down
 
+      # try to jump if the movement has slowed down:
       if eventPlayer.money__zomStuckPoints > 15:
         eventPlayer.teleport(random.choice(spawnPointsList))
         eventPlayer.moneyTotal__zomStuckPrevPosition = eventPlayer.tmp0
@@ -100,15 +137,16 @@ macro botUnstuck():
         eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
       elif eventPlayer.money__zomStuckPoints > 3:
         eventPlayer.forceButtonPress(Button.JUMP)
+
     else:
       eventPlayer.moneyTotal__zomStuckPrevPosition = eventPlayer.tmp0
       eventPlayer.money__zomStuckPoints = 0
 
 macro botUnderPlayerImpulse():
   if (
-    eventPlayer.getVerticalFacingAngle() < -70 and
-    not eventPlayer.target0.isUsingUltimate() and 
-    distance(eventPlayer, eventPlayer.target0) > 2 # todo: fix inRadius
+    eventPlayer.zomDistancesToPlayersArr[eventPlayer.target0.getSlot()] > 2
+    and not eventPlayer.target0.isUsingUltimate()
+    and eventPlayer.getVerticalFacingAngle() < -70
   ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
     eventPlayer.applyImpulse(
       worldVector(vect(random.randint(-10, 10), 0, random.randint(-10, 10)), eventPlayer, Transform.ROTATION),
@@ -129,10 +167,21 @@ macro checkVendettaCounterAttack():
     ]
 
     eventPlayer.tmp0.abilState0 = 1 + getTotalTimeElapsed() # set talent cooldown
-    eventPlayer.tmp0.list0.pushInFacingDirectionAndUp(eventPlayer.tmp0, 12)
+    eventPlayer.tmp0.list0.pushInFacingDirectionAndUp(eventPlayer.tmp0, 10)
     eventPlayer.tmp0.list0.setCrowdControlAttack(eventPlayer.tmp0)
     damage(eventPlayer.tmp0.list0, eventPlayer.tmp0, 0.1) # Deal a small amount of damage to earn assist money while holding guard
 
+macro flyThroughWallsPoints():
+  if eventPlayer.zomIsInLoSPlayersArr[eventPlayer.target0.getSlot()] or eventPlayer.hasStatus(Status.HACKED):
+    eventPlayer.zomFlyThroughWallsPoints = false
+  else:
+    eventPlayer.zomFlyThroughWallsPoints++
+    if ( # If the target is far away, teleport to the nearest available spawn point:
+      eventPlayer.zomFlyThroughWallsPoints == (ZOM_FLY_POINTS - 1)
+      and spawnPointsList
+      and eventPlayer.zomDistancesToPlayersArr[eventPlayer.target0.getSlot()] > 40
+    ):
+      eventPlayer.teleport(random.choice(spawnPointsList))
 
 rule "Zombie bots main behavior":
   @Event eachPlayer
@@ -141,10 +190,23 @@ rule "Zombie bots main behavior":
   @Condition eventPlayer.isDummy()
   @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
 
-  if not combatants: # When no suitable targets are available, freeze all logic
+  if (
+    not combatants # When no suitable targets are available, freeze all logic
+    or eventPlayer.hasStatus(Status.ROOTED)
+    or eventPlayer.hasStatus(Status.STUNNED)
+    or eventPlayer.hasStatus(Status.ASLEEP)
+    or eventPlayer.hasStatus(Status.KNOCKED_DOWN)
+  ):
+    eventPlayer.zomFlyThroughWallsPoints = false 
+    eventPlayer.money__zomStuckPoints = false
     goto lbl_0
 
-  searchTargets()
+  
+  if eventPlayer.zomAIstep == 0: # Execute once every 4 steps for optimization
+    searchTargets()
+    flyThroughWallsPoints()
+
+  botAntifall()
 
   if not eventPlayer.target0: # No target found — take no action
     goto lbl_0
@@ -155,29 +217,29 @@ rule "Zombie bots main behavior":
     Relativity.TO_WORLD
   )
 
-  # Don’t do anything if the bot flies through walls
-  if eventPlayer.zombiesfly:
-    goto lbl_0
-
-  if eventPlayer.zomMeleeAttackTargets:
+  if eventPlayer.zomMeleeAttackTargets and not eventPlayer.zomFlyThroughWalls:
     eventPlayer.startForcingButton(Button.MELEE)
     eventPlayer.money__zomStuckPoints = false # Reset zomStuckPoints because the bot slowed down due to entering melee combat.
   else:
     eventPlayer.stopForcingButton(Button.MELEE)
 
-  # Don’t do anything if the bot jumps over a chasm (antifall)
-  if eventPlayer.abilState0:
+  if not eventPlayer.zomFlyThroughWalls and eventPlayer.zomMeleeAttackTargets and eventPlayer.zomAIstep == 2:
+    checkVendettaCounterAttack()
+  
+  # Don’t do anything if the bot flies through walls and if the bot jumps over a chasm (antifall)
+  if eventPlayer.zomFlyThroughWalls or eventPlayer.tmp0:
     goto lbl_0
 
-  botUnderPlayerImpulse()
-  botUnstuck()
+  if eventPlayer.zomAIstep == 1 or eventPlayer.zomAIstep == 3: # Execute once every 2 steps for optimization
+    botUnderPlayerImpulse()
+    botUnstuck()
 
   lbl_0:
-  wait(0.3, Wait.ABORT_WHEN_FALSE)
+  # Step counter — used to run certain actions only periodically for optimization.
+  # For example: Antifall: every 0.2 seconds; Target search: every 0.8 seconds or less frequently::
+  eventPlayer.zomAIstep = 0 if eventPlayer.zomAIstep >= 3 else eventPlayer.zomAIstep + 1
 
-  if not eventPlayer.zombiesfly and eventPlayer.zomMeleeAttackTargets:
-    checkVendettaCounterAttack()
-
+  wait(0.2, Wait.ABORT_WHEN_FALSE)
   if ruleCondition:
     loop()
 
@@ -186,19 +248,10 @@ rule "Zombies loS teleport (zombiesfly)":
   @Team 2
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.isDummy()
-  @Condition not eventPlayer.zombiesfly
-  @Condition eventPlayer.target0
-  @Condition eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO
-  @Condition not eventPlayer.zomIsInLoSPlayersArr[eventPlayer.target0.getSlot()]
-  @Condition not eventPlayer.hasStatus(Status.HACKED)
-  @Condition not eventPlayer.hasStatus(Status.ROOTED)
-  @Condition not eventPlayer.hasStatus(Status.STUNNED)
-  @Condition not eventPlayer.hasStatus(Status.ASLEEP)
-  @Condition not eventPlayer.hasStatus(Status.KNOCKED_DOWN)
+  @Condition eventPlayer.zomFlyThroughWallsPoints >= ZOM_FLY_POINTS
   
-  wait(5, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.zombiesfly = true
-  eventPlayer.disallowButton(Button.PRIMARY_FIRE)
+  eventPlayer.zomFlyThroughWallsPoints = false
+  eventPlayer.zomFlyThroughWalls = true
   eventPlayer.setGravity(0)
   eventPlayer.disableEnvironmentCollision(false)
   eventPlayer.disablePlayerCollision()
@@ -223,25 +276,8 @@ rule "Zombies loS teleport (zombiesfly)":
     wait(1.2)
   else:
     eventPlayer.setStatusEffect(null, Status.ROOTED, 0.5)
-  eventPlayer.allowButton(Button.PRIMARY_FIRE)
   eventPlayer.enablePlayerCollision()
-  eventPlayer.zombiesfly = false
+  eventPlayer.zomFlyThroughWalls = false
 
   if ruleCondition:
     loop()
-
-
-rule "zombies fly faster":
-  @Event eachPlayer
-  @Team 2
-  @Condition eventPlayer.zombiesfly
-  @Condition eventPlayer.target0
-  @Condition eventPlayer.zomDistancesToPlayersArr[eventPlayer.target0.getSlot()] > 35
-  
-  wait(0.2, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.applyImpulse(Vector.FORWARD, 40, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
-  eventPlayer.applyImpulse(Vector.UP, 3, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
-  wait(1, Wait.ABORT_WHEN_FALSE)
-  if RULE_CONDITION:
-    goto RULE_START
-
