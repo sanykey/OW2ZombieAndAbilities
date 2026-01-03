@@ -82,6 +82,7 @@ rule "Show game tips in start":
 
 rule "Player left Match, destroy effects, texts and hud":
   @Event playerLeft
+  @Team 1
   UpdateCombatantsSub()
   destroyHudText(eventPlayer.effectsIds[PLAYER_STATUS_HUD])
   destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])

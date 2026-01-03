@@ -29,6 +29,7 @@ rule "[debug] init Common debug mode":
     {}Kill me</fg>
     {}Inspector: <fg84c951FF>{}</fg></fg>
     ----------
+    Entities: {}, Texts: {}
     <fg94a0a544>Open/Close: [INTERACT] + [ABILITY_1] + [ABILITY_2]
     Navigate: [INTERACT] + [↑/↓/←/→]
     Interact with menu item: [INTERACT] + [MELEE]
@@ -52,7 +53,9 @@ rule "[debug] init Common debug mode":
       debugNoCD,
       debugSelectedActionText(11),
       debugSelectedActionText(12),
-      enabledInspector
+      enabledInspector,
+      getNumberOfEntityIds(),
+      getNumberOfTextIds()
     ),
     HudPosition.ACTUALLY_LEFT,
     5,

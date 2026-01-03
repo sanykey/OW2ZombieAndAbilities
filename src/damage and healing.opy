@@ -158,6 +158,33 @@ rule "Player deal damage":
       victim.setRevealed()
 
 
+macro Player.setDelayedHealingOverTime(self, time):
+  self.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed() + time
+
+rule "Start auto healing overеtime":
+  @Event eachPlayer
+  @Team 1
+  @Condition eventPlayer.state[SI.START_AUTO_HEAL_TIME] > getTotalTimeElapsed()
+
+  eventPlayer.stopAllHealingOverTime()
+  waitUntil(not ruleCondition, INFINITY)
+
+  eventPlayer.startHealingOverTime(eventPlayer, AUTO_HEALING_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthBoostPercent / 100) - 20) / 5))
+
+rule "HealthPack with auto heal and speed boost":
+  @Event playerReceivedHealing
+  @Team 1
+  @Condition eventWasHealthPack
+
+  # Clear the BURNING effect that triggered [Team2 Mauga]
+  if eventPlayer.hasStatus(Status.BURNING):
+    eventPlayer.clearStatusEffect(Status.BURNING)
+  wait()
+
+  eventPlayer.setDelayedHealingOverTime(0.3)
+  eventPlayer.setSpeedState(150, 5)
+
+
 rule "Player took damage":
   @Event playerTookDamage
   @Team 1
@@ -182,7 +209,8 @@ rule "Player took damage":
   ):
     eventPlayer.setStatusEffect(null, Status.BURNING, 10)
 
-  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed() + (HEALER_AUTO_HEAL_DELAY if eventPlayer.heroType == HeroType.SUPPORT else AUTO_HEAL_DELAY)
+  eventPlayer.setDelayedHealingOverTime(HEALER_AUTO_HEAL_DELAY if eventPlayer.heroType == HeroType.SUPPORT else AUTO_HEAL_DELAY)
+
 # BURNING effect that triggered [Team2 Mauga]
 rule "Player burning":
   @Event eachPlayer
@@ -197,32 +225,6 @@ rule "Player burning":
   wait(0.2, Wait.ABORT_WHEN_FALSE)
   loop()
 
-rule "HealthPack with auto heal and speed boost":
-  @Event playerReceivedHealing
-  @Team 1
-  @Condition eventWasHealthPack
-
-  # Clear the BURNING effect that triggered [Team2 Mauga]
-  if eventPlayer.hasStatus(Status.BURNING):
-    eventPlayer.clearStatusEffect(Status.BURNING)
-  wait()
-
-  eventPlayer.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed() + 0.3
-  eventPlayer.setSpeedState(150, 5)
-
-rule "Start auto healing overеtime":
-  @Event eachPlayer
-  @Team 1
-  @Condition eventPlayer.state[SI.START_AUTO_HEAL_TIME] > getTotalTimeElapsed()
-
-  waitUntil(not ruleCondition, INFINITY)
-
-  eventPlayer.startHealingOverTime(eventPlayer, AUTO_HEALING_OVERTIME_DURATION, 20 + (((20 * eventPlayer.healthBoostPercent / 100) - 20) / 5))
-
-  waitUntil(ruleCondition, AUTO_HEALING_OVERTIME_DURATION)
-  eventPlayer.stopAllHealingOverTime()
-  if ruleCondition:
-    loop()
 
 rule "Healing amount tracker":
   @Event playerDealtHealing

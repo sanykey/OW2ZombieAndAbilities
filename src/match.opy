@@ -74,7 +74,7 @@ rule "Round start":
   reviveAllPlayersSR()
   UpdateCombatantsSub()
 
-  zomSpeedPct = ZOMBIE_BASE_SPEED + roundNumber * 0.02
+  zomSpeedPct = ZOMBIE_BASE_SPEED + roundNumber * 0.25
   if zomSpeedPct > ZOMBIE_MAX_SPEED_PCT:
     zomSpeedPct = ZOMBIE_MAX_SPEED_PCT
 
@@ -88,10 +88,10 @@ rule "Round start":
   getPlayers(Team.2).setMoveSpeed(zomSpeedPct)
   getPlayers(Team.2).setMaxHealth(zomMaxHealthPct)
   getPlayers(Team.2).setDamageDealt(zomDamagePct)
-
-  wait()
-  heal(getPlayers(Team.1), null, INFINITY)
-  wait(ROUND_START_DELAY)
+ 
+  if roundNumber > 1: # No delay needed before the first round
+    wait(ROUND_START_DELAY)
+  
   bigMessage(getPlayers(Team.1), "Starting Round!")
   # wait() # At the start of the round, bots spawn with incomplete health after the max health buff. This respawn delay is an attmpt to fix that
   # # As soon as the "roundRemainingBots" is greater than 0 they will start respawning again

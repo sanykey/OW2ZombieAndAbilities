@@ -1,24 +1,31 @@
 #!mainFile "../main.opy"
 
-macro filterIsNotEliteHeroForZombie(player):
+
+#!define START_BOTS_AMOUNT 6
+#!define START_BOTS_ROUNDS 5
+globalvar deadTeam2Players
+globalvar roundRemainingBotsToRespawn
+globalvar respawnBotIndex
+globalvar lastBots
+globalvar createDummyI
+
+macro filterIsCommonBot(player):
   (
-    player.getHero() != Hero.ROADHOG
-    and player.zomForceHeroOnRespawn != Hero.ROADHOG
-    and player.getHero() != Hero.MAUGA
-    and player.zomForceHeroOnRespawn != Hero.MAUGA
-    and player.getHero() != Hero.WIDOWMAKER
-    and player.zomForceHeroOnRespawn != Hero.WIDOWMAKER
+    player.getHero() in commonBotsHeroes
+    and (not player.zomForceHeroOnRespawn or player.zomForceHeroOnRespawn in commonBotsHeroes)
   )
 
 def GetCandidateForEliteZombieSub():
   @Name "SUB: Get Candidate For Elite Zombie"
   tmp1 = random.choice(
-    [player for player in getPlayers(Team.2) if filterIsNotEliteHeroForZombie(player)]
+    [player for player in getPlayers(Team.2) if filterIsCommonBot(player)]
   )
 
 macro setZombieHero(zomPlayer, zomHero):
   if zomPlayer.isAlive():
     zomPlayer.startForcingHero(zomHero)
+    if zomHero == commonZombieHero:
+      zomPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
   else:
     zomPlayer.zomForceHeroOnRespawn = zomHero
 
@@ -33,9 +40,21 @@ rule "Setup new bots":
   eventPlayer.startModifyingVoicelinePitch(0.3)
   eventPlayer.setRespawnTime(INFINITY)
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
-  wait()
-  heal(eventPlayer, null, INFINITY)
 
+  createIcon(
+    combatants if eventPlayer.zomFlyThroughWalls else null,
+    eventPlayer,
+    Icon.EYE,
+    IconReeval.VISIBILITY_AND_POSITION,
+    Color.RED
+  )
+  eventPlayer.effectsIds[ZOMBIE_FLY_ICON] = getLastCreatedEntity()
+
+rule "Zombie bot left":
+  @Event playerLeft
+  @Team 2
+  destroyIcon(eventPlayer.effectsIds[ZOMBIE_FLY_ICON])
+  destroyIcon(eventPlayer.effectsIds[ZOMBIE_LAST_ICON])
 
 rule "Zombie died":
   @Event playerDied
@@ -48,14 +67,23 @@ rule "Zombie died":
   eventPlayer.resetCrowdControlAttack()
   eventPlayer.zomDownedTime = getTotalTimeElapsed()
   teamScore += 1
+  if eventPlayer.effectsIds[ZOMBIE_LAST_ICON]:
+    destroyIcon(eventPlayer.effectsIds[ZOMBIE_LAST_ICON])
+    eventPlayer.effectsIds[ZOMBIE_LAST_ICON] = false
 
-globalvar createDummyI
+
 rule "Create bots":
-  if not isGameStarted or isBotsDisabled or getNumberOfPlayers(Team.2) >= wSettingsMaxZombieBots:
+  if (
+    not isGameStarted
+    or isBotsDisabled
+    or getNumberOfPlayers(Team.2) >= wSettingsMaxZombieBots
+    or (getNumberOfPlayers(Team.2) >= START_BOTS_AMOUNT and roundNumber <= START_BOTS_ROUNDS) # Spawn fewer bots in the first few rounds to make it easier for players to start
+    or roundRemainingBots < 1
+  ):
     goto lbl_0
 
   smallMessage(hostPlayer, "[Server]: Create zombie bots")
-  for createDummyI in range(wSettingsMaxZombieBots):
+  for createDummyI in range(START_BOTS_AMOUNT if roundNumber <= START_BOTS_ROUNDS else wSettingsMaxZombieBots):
     if isBotsDisabled:
       goto lbl_0
 
@@ -73,9 +101,6 @@ rule "Create bots":
   wait(1.5)
   loop()
 
-globalvar deadTeam2Players
-globalvar roundRemainingBotsToRespawn
-globalvar respawnBotIndex
 
 macro Player.respawnBot(self):
   if debugBotsSpawnPoint:
@@ -92,6 +117,10 @@ macro Player.respawnBot(self):
   
   if self.getHero() != Hero.WIDOWMAKER and self.getHero() != Hero.ECHO:
     self.startForcingThrottle(1, 1, 0, 1, 0, 1)
+
+  if zomInstantUltimates and self.getHero() == Hero.TORBJORN:
+    self.setUltCharge(100)
+
   wait()
   heal(self, null, INFINITY)
 
@@ -107,7 +136,22 @@ rule "respawn bots":
       roundRemainingBotsToRespawn if roundRemainingBotsToRespawn < len(deadTeam2Players) else len(deadTeam2Players)
     ):
       deadTeam2Players[respawnBotIndex].respawnBot()
-      wait(0.1 if getAverageServerLoad() < 200 else 0.5, Wait.ABORT_WHEN_FALSE)
+      wait(0.2 if getAverageServerLoad() < 200 else 0.8, Wait.ABORT_WHEN_FALSE)
+  elif roundNumber > 1 and roundRemainingBots < 4: # Add icons to the last zombie bots so players can find them quickly
+    logToInspector("Create icons?")
+    lastBots = [player for player in getPlayers(Team.2) if player.isAlive() and not player.effectsIds[ZOMBIE_LAST_ICON]]
+    logToInspector("lastBots {}, {}, {}".format(lastBots[0], lastBots[1], lastBots[2]))
 
-  wait(0.3, Wait.ABORT_WHEN_FALSE)
+    for respawnBotIndex in range(len(lastBots)):
+      createIcon(
+        getPlayers(Team.1),
+        evalOnce(lastBots[respawnBotIndex]),
+        Icon.SKULL,
+        IconReeval.POSITION,
+        Color.RED
+      )
+      lastBots[respawnBotIndex].effectsIds[ZOMBIE_LAST_ICON] = getLastCreatedEntity()
+      wait()
+
+  wait(0.5, Wait.ABORT_WHEN_FALSE)
   loop()

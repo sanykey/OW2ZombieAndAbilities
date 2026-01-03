@@ -38,25 +38,20 @@ rule "[debug] init Bot state view mode":
     {}Round number (start): {} <fg84c951FF>{}</fg> {}</fg>
     {}Kill all bots</fg>
     {}Common bots (replace): {} <fg84c951FF>{}</fg> {}</fg>
-    {}Add Roadhog
-    {}Add Mauga
-    {}Add Widowmaker
+    {}Add Roadhog</fg>
+    {}Add Mauga</fg>
+    {}Add Widowmaker</fg>
     --------------------
+    Total Time Elapsed: <fg84c951FF>{}</fg>
     health: <fg84c951FF>{}</fg>
     max health: <fg84c951FF>{}</fg>
     ult charge: <fg84c951FF>{}</fg>
     pos: <fg84c951FF>{}</fg>
     facing dir: <fg84c951FF>{}</fg>
-    Total Time Elapsed: <fg84c951FF>{}</fg>
     Stuck Points: <fg84c951FF>{}</fg>
-    target0: <fg84c951FF>{}</fg>
-    abilPos0: <fg84c951FF>{}</fg>
-    tmp1: <fg84c951FF>{}</fg>
+    Target: <fg84c951FF>{}</fg>
     zomDistancesToPlayersArr: <fg84c951FF>{}</fg>
     zomIsInLoSPlayersArr: <fg84c951FF>{}</fg>
-    list1: <fg84c951FF>{}</fg>
-    abilState0: <fg84c951FF>{}</fg>
-    abilState1: <fg84c951FF>{}</fg>
     lastCcAttacker: <fg84c951FF>{}</fg>
     lastCcAttackTime: <fg84c951FF>{}</fg>
     lastCcWasInAir: <fg84c951FF>{}</fg>
@@ -103,19 +98,13 @@ rule "[debug] init Bot state view mode":
       debugSelectedPlayer.getPosition(),
       debugSelectedPlayer.getFacingDirection(),
       debugSelectedPlayer.money__zomStuckPoints,
-      debugSelectedPlayer.target0,
-      debugSelectedPlayer.abilPos0,
-      debugSelectedPlayer.tmp1,
+      debugSelectedPlayer.zomTarget,
       debugSelectedPlayer.zomDistancesToPlayersArr,
       debugSelectedPlayer.zomIsInLoSPlayersArr,
-      debugSelectedPlayer.list1,
-      debugSelectedPlayer.abilState0,
-      debugSelectedPlayer.abilState1,
       debugSelectedPlayer.lastCcAttacker,
       debugSelectedPlayer.lastCcAttackTime,
       debugSelectedPlayer.lastCcWasInAir,
-      1
-      # todo: botWidowmakerAvaliableSpawnSpots
+      botWidowmakerAvaliableSpawnSpots
     ),
     HudPosition.ACTUALLY_LEFT,
     5,
@@ -224,7 +213,7 @@ rule "[debug] Activate selected action for Common mode":
     roundRemainingBots = 0
     kill(getLivingPlayers(Team.2))
   elif debugSelectedAction == 7: # Common bots replace
-    [player for player in getLivingPlayers(Team.2) if filterIsNotEliteHeroForZombie(player)].startForcingHero(debugCommonBotsList[debugCommonBotIndex])
+    [player for player in getLivingPlayers(Team.2) if filterIsCommonBot(player)].startForcingHero(debugCommonBotsList[debugCommonBotIndex])
     commonZombieHero = debugCommonBotsList[debugCommonBotIndex]
 
   elif debugSelectedAction == 8:

@@ -40,7 +40,7 @@ rule "[Ana] Nano'd target gains speed boost":
 rule "[Ana] Nano damage for detect":
   @Event eachPlayer
   @Hero ana
-  @Condition eventPlayer.isUsingUltimate() == true
+  @Condition eventPlayer.isUsingUltimate()
   
   damage(getPlayers(eventPlayer.getTeam()).exclude(eventPlayer), null, 0.01)
   wait(0.2)

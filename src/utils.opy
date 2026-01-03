@@ -8,7 +8,7 @@ rule "Version text":
   hudText(
     localPlayer,
     null,
-    "8X63K. {}\nHold [{}] to switch camera\nPress [{}] to interact/buy".format(MODE_VERSION, inputBindingString(Button.MELEE), inputBindingString(Button.INTERACT)),
+    "<fgecbe52FF>8X63K</fg>. {}\nHold [{}] to switch camera\nPress [{}] to interact/buy".format(MODE_VERSION, inputBindingString(Button.MELEE), inputBindingString(Button.INTERACT)),
     null,
     HudPosition.RIGHT,
     -10,
@@ -25,13 +25,11 @@ rule "init utils":
   # Show ServerLoad info
   hudSubheader(
     localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
-    "Server load:  {} / AVG: {}/ Max: {}\nEntities: {}, Texts: {}\u3000\u3000\u3000\u3000\u3000\u3000\u3000.
+    "Server load: {} | Max: {} | Cur: {}
     ".format(
-      getServerLoad(),
       getAverageServerLoad(),
       getPeakServerLoad(),
-      getNumberOfEntityIds(),
-      getNumberOfTextIds()
+      getServerLoad()
     ),
     HudPosition.RIGHT,
     -5,

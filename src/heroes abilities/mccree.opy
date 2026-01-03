@@ -117,12 +117,6 @@ rule "[Cassydy] Init":
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_HUD] = getLastCreatedText()
 
-  # debug(eventPlayer.target0)
-  # debug(eventPlayer.abilPos0)
-  # debug(eventPlayer.abilDir0)
-  # debug(eventPlayer.abilState0)
-  # debug(eventPlayer.listisInvisible)
-
   waitUntil(eventPlayer.getHero() != Hero.CASSIDY, INFINITY)
   clearHeroInfo()
   destroyHudText(eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_HUD])

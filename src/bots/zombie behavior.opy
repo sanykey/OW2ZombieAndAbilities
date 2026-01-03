@@ -2,52 +2,27 @@
 
 playervar zomAIstep
 playervar zomFlyThroughWallsPoints
-playervar zomFlyThroughWalls
+
+playervar zomTarget
 
 #!define ZOM_FLY_POINTS 6
 
 macro Player.getDistanceToZombieTarget(self):
-  self.zomDistancesToPlayersArr[self.target0.getSlot()]
+  self.zomDistancesToPlayersArr[self.zomTarget.getSlot()]
 
 macro Player.isInLoSZombieTarget(self):
-  self.zomIsInLoSPlayersArr[self.target0.getSlot()]
+  self.zomIsInLoSPlayersArr[self.zomTarget.getSlot()]
 
-rule "Bots use ultimate at 100%":
-  @Event eachPlayer
-  @Team 2
-  @Hero torbjorn
-  @Condition eventPlayer.isAlive()
-  @Condition eventPlayer.isDummy()
-  @Condition eventPlayer.getUltCharge() == 100
-
-  eventPlayer.forceButtonPress(Button.ULTIMATE)
-  wait(0.5)
-  eventPlayer.stopForcingButton(Button.ULTIMATE)
-  wait(1, Wait.ABORT_WHEN_FALSE)
-  loop()
-
-
-rule "Creaste zombies loS warning icons":
-  @Event eachPlayer
-  @Team 2
-
-  createIcon(
-    getPlayers(Team.1) if eventPlayer.zomFlyThroughWalls else null,
-    eventPlayer,
-    Icon.EYE,
-    IconReeval.VISIBILITY_AND_POSITION,
-    Color.RED
-  )
-
-macro searchTargets():
+def SearchTargetsSub():
+  @Name "Sub: search Targets"
   # cache players and distances to players
   eventPlayer.zomMeleeAttackTargets = [] # current melee attack targets
   eventPlayer.zomDistancesToPlayersArr = [] # cached distances from bot to players
   eventPlayer.zomIsInLoSPlayersArr = [] # cached IsInLineOfSight from bot to players
 
-  eventPlayer.tmp1 = false    # current target weight
-  eventPlayer.tmp2 = false    # weight of best canditate to target
-  eventPlayer.target0 = false # target being pursued by the zombie
+  eventPlayer.tmp1 = false      # current target weight
+  eventPlayer.tmp2 = false      # weight of best canditate to target
+  eventPlayer.zomTarget = false # target being pursued by the zombie
 
   for eventPlayer.I in range(len(combatants)):
     eventPlayer.tmp0 = combatants[eventPlayer.I]
@@ -78,7 +53,7 @@ macro searchTargets():
 
       if not eventPlayer.tmp2 or eventPlayer.tmp2 > eventPlayer.tmp1:
         eventPlayer.tmp2 = eventPlayer.tmp1
-        eventPlayer.target0 = eventPlayer.tmp0
+        eventPlayer.zomTarget = eventPlayer.tmp0
 
 
 macro botAntifall():
@@ -144,8 +119,8 @@ macro botUnstuck():
 
 macro botUnderPlayerImpulse():
   if (
-    eventPlayer.zomDistancesToPlayersArr[eventPlayer.target0.getSlot()] > 2
-    and not eventPlayer.target0.isUsingUltimate()
+    eventPlayer.zomDistancesToPlayersArr[eventPlayer.zomTarget.getSlot()] > 2
+    and not eventPlayer.zomTarget.isUsingUltimate()
     and eventPlayer.getVerticalFacingAngle() < -70
   ): # no need to jump after players who use ultimates (doomfist, mercy and etc)
     eventPlayer.applyImpulse(
@@ -159,11 +134,20 @@ macro botUnderPlayerImpulse():
 macro checkVendettaCounterAttack():
   # [Vendetta] pushes in front of her if an attack was blocked by her guard
   eventPlayer.tmp0 = [ # find Vendetta player with block stance
-    player for player in eventPlayer.zomMeleeAttackTargets if Hero.VENDETTA == player.getCurrentHero() and player.isFiringSecondaryFire() and player.abilState0 < getTotalTimeElapsed() and player.isInViewAngle(eventPlayer.getPosition(), 90)
+    player for player in eventPlayer.zomMeleeAttackTargets if (
+      Hero.VENDETTA == player.getCurrentHero()
+      and player.isFiringSecondaryFire()
+      and player.abilState0 < getTotalTimeElapsed()
+      and player.isInViewAngle(eventPlayer.getPosition(), 90)
+    )
   ][0]
+
   if eventPlayer.tmp0:
     eventPlayer.tmp0.list0 = [
-      player for player in getRealPlayersInRadius(eventPlayer.tmp0.getPosition(), 4, Team.2) if eventPlayer.tmp0.isInViewAngle(player.getPosition(), 90)
+      player for player in getPlayers(Team.2) if (
+        player.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] <= 4
+        and eventPlayer.tmp0.isInViewAngle(player.getPosition(), 90)
+      )
     ]
 
     eventPlayer.tmp0.abilState0 = 1 + getTotalTimeElapsed() # set talent cooldown
@@ -172,16 +156,43 @@ macro checkVendettaCounterAttack():
     damage(eventPlayer.tmp0.list0, eventPlayer.tmp0, 0.1) # Deal a small amount of damage to earn assist money while holding guard
 
 macro flyThroughWallsPoints():
-  if eventPlayer.zomIsInLoSPlayersArr[eventPlayer.target0.getSlot()] or eventPlayer.hasStatus(Status.HACKED):
+  if eventPlayer.zomIsInLoSPlayersArr[eventPlayer.zomTarget.getSlot()] or eventPlayer.hasStatus(Status.HACKED):
     eventPlayer.zomFlyThroughWallsPoints = false
   else:
     eventPlayer.zomFlyThroughWallsPoints++
     if ( # If the target is far away, teleport to the nearest available spawn point:
       eventPlayer.zomFlyThroughWallsPoints == (ZOM_FLY_POINTS - 1)
       and spawnPointsList
-      and eventPlayer.zomDistancesToPlayersArr[eventPlayer.target0.getSlot()] > 40
+      and eventPlayer.zomDistancesToPlayersArr[eventPlayer.zomTarget.getSlot()] > 40
     ):
       eventPlayer.teleport(random.choice(spawnPointsList))
+
+macro botAttack():
+  if (
+    eventPlayer.getHero() == Hero.TORBJORN 
+    and eventPlayer.getUltCharge() == 100 
+    and not eventPlayer.isUsingUltimate() 
+    and eventPlayer.zomDistancesToPlayersArr[eventPlayer.zomTarget.getSlot()] < 12
+  ):
+    eventPlayer.forceButtonPress(Button.ULTIMATE)
+
+  if eventPlayer.isUsingUltimate() and eventPlayer.zomDistancesToPlayersArr[eventPlayer.zomTarget.getSlot()] < 5:
+    eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
+  else:
+    eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
+
+  if eventPlayer.zomMeleeAttackTargets and not eventPlayer.zomFlyThroughWalls:
+    eventPlayer.startForcingButton(Button.MELEE)
+    eventPlayer.money__zomStuckPoints = false # Reset zomStuckPoints because the bot slowed down due to entering melee combat.
+
+    # Zombie bot gains ultimate charge from number of hits dealt:
+    if eventPlayer.zomAIstep == 0:
+      eventPlayer.setUltCharge(eventPlayer.getUltCharge() + 3)
+
+  else:
+    eventPlayer.stopForcingButton(Button.MELEE)
+    # eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
+
 
 rule "Zombie bots main behavior":
   @Event eachPlayer
@@ -203,25 +214,21 @@ rule "Zombie bots main behavior":
 
   
   if eventPlayer.zomAIstep == 0: # Execute once every 4 steps for optimization
-    searchTargets()
+    SearchTargetsSub()
     flyThroughWallsPoints()
 
   botAntifall()
 
-  if not eventPlayer.target0: # No target found — take no action
+  if not eventPlayer.zomTarget: # No target found — take no action
     goto lbl_0
 
   # Bots face target players
   eventPlayer.setFacing(
-    directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()),
+    directionTowards(eventPlayer.getEyePosition(), eventPlayer.zomTarget.getEyePosition()),
     Relativity.TO_WORLD
   )
 
-  if eventPlayer.zomMeleeAttackTargets and not eventPlayer.zomFlyThroughWalls:
-    eventPlayer.startForcingButton(Button.MELEE)
-    eventPlayer.money__zomStuckPoints = false # Reset zomStuckPoints because the bot slowed down due to entering melee combat.
-  else:
-    eventPlayer.stopForcingButton(Button.MELEE)
+  botAttack()
 
   if not eventPlayer.zomFlyThroughWalls and eventPlayer.zomMeleeAttackTargets and eventPlayer.zomAIstep == 2:
     checkVendettaCounterAttack()
@@ -255,7 +262,7 @@ rule "Zombies loS teleport (zombiesfly)":
   eventPlayer.setGravity(0)
   eventPlayer.disableEnvironmentCollision(false)
   eventPlayer.disablePlayerCollision()
-  eventPlayer.startAcceleration(directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()), 25, 20, Relativity.TO_WORLD)
+  eventPlayer.startAcceleration(directionTowards(eventPlayer.getEyePosition(), eventPlayer.zomTarget.getEyePosition()), 25, 20, Relativity.TO_WORLD)
   wait(0.2)
 
   eventPlayer.applyImpulse(Vector.FORWARD, 5, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)

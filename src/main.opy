@@ -34,9 +34,9 @@
 #!include "bots/zombie events.opy"
 #!include "bots/respawn.opy"
 #!include "bots/zombie behavior.opy"
-##!include "bots/widowmaker.opy"
-##!include "bots/roadhog.opy"
-##!include "bots/mauga.opy"
+#!include "bots/widowmaker.opy"
+#!include "bots/roadhog.opy"
+#!include "bots/mauga.opy"
 ##!include "bots/echo.opy"
 #*/
 

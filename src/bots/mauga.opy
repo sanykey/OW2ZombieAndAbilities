@@ -1,7 +1,7 @@
 #!mainFile "../main.opy"
 
 rule "[Team2 Mauga] Add Mauga to Team.2":
-  @Condition roundNumber > 20
+  @Condition roundNumber >= ADD_MAUGA_ROUND
   @Condition roundRemainingBots <= 0
   @Condition not getPlayersOnHero(Hero.MAUGA, Team.2)
 
@@ -12,7 +12,7 @@ rule "[Team2 Mauga] Charge":
   @Event eachPlayer
   @Team 2
   @Hero mauga
-  @Condition eventPlayer.target0
+  @Condition eventPlayer.zomTarget
   @Condition eventPlayer.isInLoSZombieTarget()
   @Condition eventPlayer.isOnGround()
   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
@@ -20,25 +20,25 @@ rule "[Team2 Mauga] Charge":
   @Condition abs(
     angleBetweenVectors(
       eventPlayer.getFacingDirection(),
-      directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition())
+      directionTowards(eventPlayer.getEyePosition(), eventPlayer.zomTarget.getEyePosition())
     )
   ) < 35
   @Condition (
     eventPlayer.getDistanceToZombieTarget() < 5 or
-    verticalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.target0)) > -35
+    verticalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.zomTarget)) > -35
   )
   
   wait(1, Wait.ABORT_WHEN_FALSE)
   eventPlayer.startFacing(
     directionTowards(
       eventPlayer.getEyePosition(), 
-      eventPlayer.target0.getEyePosition()
+      eventPlayer.zomTarget.getEyePosition()
     ), 
     1500
   )
   wait(0.1)
   eventPlayer.startThrottleInDirection(
-    directionTowards(eventPlayer.getPosition(), eventPlayer.target0.getPosition()),
+    directionTowards(eventPlayer.getPosition(), eventPlayer.zomTarget.getPosition()),
     0.65,
     Relativity.TO_WORLD,
     Throttle.REPLACE_EXISTING,
@@ -56,7 +56,7 @@ rule "[Team2 Mauga] Charge":
   eventPlayer.forceButtonPress(Button.ABILITY_1)
 
 
-rule "[Team2 Mauga] Charge knockback":
+rule "[Team2 Mauga] Charge knockback when damage dealt":
   @Event playerDealtDamage
   @Team 2
   @Hero mauga

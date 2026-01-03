@@ -3,19 +3,10 @@
 globalvar botWidowmakerSpawnCD
 globalvar botWidowmakerAvaliableSpawnSpots
 
-# some code from [Defend Castle - PvE](https://workshop.codes/BQEGS)
-
-# rule "[Team2 Widowmaker] died":
-#   @Event playerDied
-#   @Team 2
-#   @Hero widowmaker
-
-#   destroyEffect(eventPlayer.heroEffectsIds)
-#   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
-#   setZombieHero(eventPlayer, commonZombieHero)
-#   botWidowmakerSpawnCD = getTotalTimeElapsed() + 30
+#!define ZOM_WINDOW_RESPAWN_CD 40
 
 rule "[Team2 Widowmaker] search actual sniper spots":
+  @Condition roundNumber >= ADD_WIDOWMAKER_ROUND
   @Condition botWidowmakerSpawnCD < getTotalTimeElapsed()
 
   botWidowmakerAvaliableSpawnSpots = []
@@ -35,7 +26,7 @@ def BotWidowmakerChangePositon():
 
 
 rule "[Team2 Widowmaker] Add WIDOWMAKER to Team.2":
-  @Condition roundNumber > 0
+  @Condition roundNumber >= ADD_WIDOWMAKER_ROUND
   @Condition botWidowmakerSpawnCD < getTotalTimeElapsed()
   @Condition botWidowmakerAvaliableSpawnSpots
   @Condition roundRemainingBots > getNumberOfLivingPlayers(Team.2)
@@ -70,7 +61,8 @@ rule "[Team2 Widowmaker] init":
   destroyEffect(eventPlayer.heroEffectsIds)
   eventPlayer.stopForcingButton(Button.SECONDARY_FIRE)
   setZombieHero(eventPlayer, commonZombieHero)
-  botWidowmakerSpawnCD = getTotalTimeElapsed() + 30
+  if eventPlayer.isDead():
+    botWidowmakerSpawnCD = getTotalTimeElapsed() + ZOM_WINDOW_RESPAWN_CD
 
 rule "[Team2 Widowmaker] trigger change position":
   @Event eachPlayer
@@ -79,7 +71,7 @@ rule "[Team2 Widowmaker] trigger change position":
   @Condition botWidowmakerSpawnCD < getTotalTimeElapsed()
   
   wait(5, Wait.ABORT_WHEN_FALSE)
-  if not eventPlayer.target0 and botWidowmakerAvaliableSpawnSpots:
+  if not eventPlayer.zomTarget and botWidowmakerAvaliableSpawnSpots:
     BotWidowmakerChangePositon()
   loop()
 
@@ -89,28 +81,23 @@ rule "[Team2 Widowmaker] - see player":
   @Hero widowmaker
   @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
 
-  eventPlayer.list0 = [] # avaliable targets
-  for eventPlayer.I in range(len(combatants)):
-    eventPlayer.tmp0 = combatants[eventPlayer.I] 
-    if (eventPlayer.tmp0 and eventPlayer.tmp0.hasSpawned() and eventPlayer.tmp0.isAlive() and isInLoS(eventPlayer, eventPlayer.tmp0)):
-      eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] = distance(eventPlayer, eventPlayer.tmp0)
-      eventPlayer.list0.append(eventPlayer.tmp0)
-     
-  eventPlayer.target0 = (
-    sorted(
-      eventPlayer.list0,
-      lambda i: eventPlayer.zomDistancesToPlayersArr[i.getSlot()] + (
-        100 if i.isInvisible > getTotalTimeElapsed() and (eventPlayer.zomDistancesToPlayersArr[i.getSlot()] > 4 or not eventPlayer.isInViewAngle(i.getPosition(), 90)) else 0
-      )
-    )
-  )[0]
+  if eventPlayer.zomAIstep == 0: # Execute once every 5 steps for optimization
+    SearchTargetsSub()
 
-  if eventPlayer.target0:
+  if eventPlayer.zomTarget:
     eventPlayer.setFacing(
-      directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()),
+      directionTowards(eventPlayer.getEyePosition(), eventPlayer.zomTarget.getEyePosition()),
       Relativity.TO_WORLD
     )
-  wait(0.1)
+
+  # If Widowmaker is the only one remaining this round, replace her with a standard bot (no cooldown)
+  #   that automatically moves toward players to end the round faster.
+  if roundRemainingBots == 1: 
+    setZombieHero(eventPlayer, commonZombieHero)
+
+  # Step counter — used to run certain actions only periodically for optimization:
+  eventPlayer.zomAIstep = 0 if eventPlayer.zomAIstep >= 4 else eventPlayer.zomAIstep + 1
+  wait(0.2)
   if ruleCondition:
     loop()
     
@@ -120,7 +107,7 @@ rule "[Team2 Widowmaker] shoot":
   @Hero widowmaker
   @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
   @Condition not eventPlayer.isReloading()
-  @Condition eventPlayer.target0
+  @Condition eventPlayer.zomTarget
   
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.LIME_GREEN, eventPlayer, 1) # We're warning the players that the widowmaker is about to take a shot
   wait(1)

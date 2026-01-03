@@ -132,6 +132,7 @@ rule "[Secret shop] Enter/Leave shop zone":
 
   if eventPlayer.posBeforeChangeHero or (eventPlayer.isAlive() and (distance(eventPlayer, vectList[VL_ACTIVATE_ZONE_DETECTOR_C]) < ZONE_C_SIZE or distance(eventPlayer, vectList[VL_SHOP_ZONE2]) < 5)):
     if not eventPlayer.isInSecretShop:
+      eventPlayer.clearStatusEffect(Status.BURNING)
       eventPlayer.isInSecretShop = getTotalTimeElapsed() + 30
       heal(eventPlayer, null, INFINITY)
       UpdateCombatantsSub()

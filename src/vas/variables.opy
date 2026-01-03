@@ -36,7 +36,7 @@
 #!define BOT_FAKE_DIE_HP_THRESHOLD 10
 
 # Player settings
-#!define MAX_PLAYERS 6
+#!define MAX_PLAYERS 5
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
 
@@ -127,6 +127,7 @@ playervar zomDownedTime             # zombie death timestamp (to preserve respaw
 playervar zomIsHacked
 playervar zomForceHeroOnRespawn
 playervar zomMeleeAttackTargets
+playervar zomFlyThroughWalls
 # detecting crowd control abilities for bots fall damage
 playervar lastCcAttacker
 playervar lastCcAttackTime
@@ -162,6 +163,8 @@ playervar effectsIds
 #!define REVIVE_CIRCLE_EFFECT 1
 #!define REVIVE_TEXT 2
 #!define REVEALED_ICON 3
+#!define ZOMBIE_FLY_ICON 4
+#!define ZOMBIE_LAST_ICON 5
 
 playervar heroEffectsIds
 

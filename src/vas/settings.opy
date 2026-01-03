@@ -1,7 +1,7 @@
 #!mainFile "../main.opy"
 
 # settings.heroes.allTeams.general.passiveHealthRegen false is not working. You must manually enter this parameter = "Disabled"
-#!define MODE_VERSION "v0.9.0 beta (25.12.2025)"
+#!define MODE_VERSION "v0.10.2 beta (03.01.2026)"
 
 
 settings {
@@ -61,7 +61,6 @@ settings {
                 "jumpVerticalSpeed%": 150,
                 "movementGravity%": 70,
                 "enableAbility2": false,
-                "projectileSpeed%": 0,
                 "combatUltGen%": 50,
                 "passiveUltGen%": 10,
                 "ultGen%": 50,

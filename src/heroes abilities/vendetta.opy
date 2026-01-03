@@ -21,8 +21,8 @@ rule "[Vendetta] init":
 rule "[Vendetta] Swirlwind without dash [Ability_1] + [Crouch]":
   @Event eachPlayer
   @Team 1
-  @Condition eventPlayer.getHero() == Hero.VENDETTA
-  @Condition eventPlayer.isHoldingButton(Button.ABILITY_1) and eventPlayer.getAbilityCooldown(Button.ABILITY_1) == 0
+  @Hero vendetta
+  @Condition eventPlayer.isHoldingButton(Button.ABILITY_1) and not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
   @Condition eventPlayer.isHoldingButton(Button.CROUCH)
   
   for eventPlayer.tmp0 in range(8):
@@ -32,7 +32,7 @@ rule "[Vendetta] Swirlwind without dash [Ability_1] + [Crouch]":
       ]
       eventPlayer.list0.pushInFacingDirectionAndUp(eventPlayer, 12)
       eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-      damage(eventPlayer.list0, eventPlayer, 0.1) # Deal a small amount of damage to earn assist money while holding guard
+      damage(eventPlayer.list0, eventPlayer, 0.1) # Deal a small amount of damage to earn assist money
 
     eventPlayer.applyImpulse(
       vect(eventPlayer.getFacingDirection().x, 0.2679, eventPlayer.getFacingDirection().z) * -1,
