@@ -7,7 +7,7 @@ globalvar deadTeam2Players
 globalvar roundRemainingBotsToRespawn
 globalvar respawnBotIndex
 globalvar lastBots
-globalvar createDummyI
+globalvar createDummyI = INFINITY
 
 macro filterIsCommonBot(player):
   (
@@ -79,12 +79,14 @@ rule "Create bots":
     or getNumberOfPlayers(Team.2) >= wSettingsMaxZombieBots
     or (getNumberOfPlayers(Team.2) >= START_BOTS_AMOUNT and roundNumber <= START_BOTS_ROUNDS) # Spawn fewer bots in the first few rounds to make it easier for players to start
     or roundRemainingBots < 1
+    or createDummyI != INFINITY # Prevent rule activation while the bot-spawning loop is already running
   ):
     goto lbl_0
 
   smallMessage(hostPlayer, "[Server]: Create zombie bots")
-  for createDummyI in range(START_BOTS_AMOUNT if roundNumber <= START_BOTS_ROUNDS else wSettingsMaxZombieBots):
+  for createDummyI in range(START_BOTS_AMOUNT if (roundNumber <= START_BOTS_ROUNDS and wSettingsMaxZombieBots > START_BOTS_ROUNDS) else wSettingsMaxZombieBots):
     if isBotsDisabled:
+      createDummyI = INFINITY
       goto lbl_0
 
     if not getPlayersInSlot(createDummyI, Team.2):
@@ -97,6 +99,7 @@ rule "Create bots":
       )
       wait(0.1 if getAverageServerLoad() < 200 else 0.5)
 
+  createDummyI = INFINITY
   lbl_0:
   wait(1.5)
   loop()
@@ -137,14 +140,12 @@ rule "respawn bots":
     ):
       deadTeam2Players[respawnBotIndex].respawnBot()
       wait(0.2 if getAverageServerLoad() < 200 else 0.8, Wait.ABORT_WHEN_FALSE)
-  elif roundNumber > 1 and roundRemainingBots < 4: # Add icons to the last zombie bots so players can find them quickly
-    logToInspector("Create icons?")
-    lastBots = [player for player in getPlayers(Team.2) if player.isAlive() and not player.effectsIds[ZOMBIE_LAST_ICON]]
-    logToInspector("lastBots {}, {}, {}".format(lastBots[0], lastBots[1], lastBots[2]))
 
+  elif roundNumber > 1 and roundRemainingBots < 4: # Add icons to the last zombie bots so players can find them quickly
+    lastBots = [player for player in getPlayers(Team.2) if player.isAlive() and not player.effectsIds[ZOMBIE_LAST_ICON]]
     for respawnBotIndex in range(len(lastBots)):
       createIcon(
-        getPlayers(Team.1),
+        combatants,
         evalOnce(lastBots[respawnBotIndex]),
         Icon.SKULL,
         IconReeval.POSITION,

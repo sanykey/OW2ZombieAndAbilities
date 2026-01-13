@@ -164,3 +164,23 @@ rule "Create players effects":
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
   eventPlayer.effectsIds[PLAYER_STATUS_HUD] = getLastCreatedText()
+
+
+rule "init utils":
+  # Disable inspector recording
+  disableInspector()
+
+  # Show ServerLoad info
+  hudSubheader(
+    localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
+    "Server load: {} | Max: {} | Cur: {}
+    ".format(
+      getAverageServerLoad(),
+      getPeakServerLoad(),
+      getServerLoad()
+    ),
+    HudPosition.RIGHT,
+    -5,
+    rgb(255, 280 - getAverageServerLoad(), 0),
+    HudReeval.VISIBILITY_STRING_AND_COLOR
+  )

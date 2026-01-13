@@ -1,5 +1,9 @@
 #!mainFile "main.opy"
 
+#!define BURNING_DURATION_FROM_ZOM_MAUGA 15
+#!define HEALTH_PACKS_SPEED_BOOST_TIME 6
+playervar burningEffectFrom
+
 enum SI:
   START_AUTO_HEAL_TIME
   IS_INVISIBLE
@@ -9,6 +13,10 @@ enum SI:
   LOW_GRAVITY_AMOUNT
   LOW_GRAVITY_AMOUNT_PREV
   LOW_GRAVITY_TIME
+
+
+macro Player.isCrowdControlled(self):
+  (self.hasStatus(Status.FROZEN) or self.hasStatus(Status.ASLEEP) or self.hasStatus(Status.STUNNED) or self.hasStatus(Status.KNOCKED_DOWN))
 
 macro horDirectionTowards(a, b):
   normalize(vect(b.x, 0, b.z) - vect(a.x, 0, a.z))
@@ -109,54 +117,68 @@ rule "player Dealt Knockback":
   @Event playerDealtKnockback
   @Team 1
 
-  # Some attacks can hurt the attackers themselves, such as Sigma's accretion attacks
+  # Some attacks can hurt the attackers themselves, such as Sigma's accretion attacks:
   if victim.getTeam() == Team.1:
     return
 
   victim.setCrowdControlAttack(attacker, true)
   
-  # [Sombra] Melee from invisible - additional damage, steal money and stun:
-  if (
-    eventPlayer.getHero() == Hero.SOMBRA and
-    eventPlayer.isInvisible and
-    eventAbility == Button.MELEE
-  ):
-    victim.setStatusEffect(eventPlayer, Status.STUNNED, 1)
-    damage(victim, eventPlayer, 40)
-    playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
-    eventPlayer.earnMoney(50)
+  switch eventPlayer.getHero():
+    case Hero.REINHARDT: # [Reinhardt] Shield bash
+      if eventPlayer.isFiringSecondaryFire():
+        victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
+      break
 
-  # [Reinhardt] Shield bash:
-  if eventPlayer.getHero() == Hero.REINHARDT and eventPlayer.isFiringSecondaryFire():
-    victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
-
-  # [Brigitte] Shield bash:
-  if eventPlayer.getHero() == Hero.BRIGITTE and eventPlayer.isFiringSecondaryFire():
-    victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
-    getRealPlayersInRadius(victim, 2, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.STUNNED, 2)
+    case Hero.BRIGITTE: # [Brigitte] Shield bash
+      if eventPlayer.isFiringSecondaryFire():
+        victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
+        getRealPlayersInRadius(victim, 2, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.STUNNED, 2)
+      break
 
 
 rule "Player deal damage":
   @Event playerDealtDamage
   @Team 1
 
-  # [Doomfist] Ultimate knock down enemies:
-  if (attacker.getHero() == Hero.DOOMFIST):
-    if eventAbility == Button.ULTIMATE:
-      victim.setStatusEffect(attacker, Status.KNOCKED_DOWN, 3)
-    elif eventAbility == Button.ABILITY_1:
-      victim.setSpeedState(50, 3)
-  # [Widowmaker]:
-  elif attacker.getHero() == Hero.WIDOWMAKER: 
-    # widow mines slow and reveal enemy
-    if eventAbility == Button.ABILITY_2: 
-      victim.setRevealed()
-      victim.setSpeedState(30, 1)
-    # todo: fix:
-    # Reveal enemies when scoped hit
-    elif eventAbility == Button.PRIMARY_FIRE and eventAbility == Button.SECONDARY_FIRE: 
-      victim.setRevealed()
+  switch attacker.getHero():
+    case Hero.WIDOWMAKER:
+      # [Widowmaker] mines slow and reveal enemy
+      if eventAbility == Button.ABILITY_2: 
+        victim.setRevealed()
+        victim.setSpeedState(30, 1)
+      # [Widowmaker] reveal enemies when scoped hit
+      elif eventAbility == Button.PRIMARY_FIRE and eventAbility == Button.SECONDARY_FIRE:  # todo fix
+        victim.setRevealed()
+      break
 
+    case Hero.ANA:
+      if eventAbility == Button.PRIMARY_FIRE: # [Ana] Slow enemy on direct hit with primary weapon
+        victim.setSpeedState(ANA_DIRECT_HIT_SLOWDOWN, true)
+      elif eventAbility == Button.ABILITY_1:
+        playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.BLACK, victim, 3)
+        playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.BLACK, victim, 6)
+        getPlayersInRadius(victim.getEyePosition(), ANA_AOE_SLEEP_RADIUS, Team.2, LosCheck.SURFACES).setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
+      elif eventAbility == Button.ABILITY_2: # slowdown nade
+        victim.setSpeedState(ANA_NADE_SLOWDOWN, ANA_NADE_SLOWDOWN_TIME)
+      elif eventAbility == Button.MELEE and (not eventPlayer.abilityCD or eventPlayer.abilityCD == ANA_PARALYZING_STRIKE_CD):
+        victim.setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
+        eventPlayer.abilityCD = ANA_PARALYZING_STRIKE_CD
+      break
+
+    case Hero.DOOMFIST:
+      if eventAbility == Button.ULTIMATE: # [Doomfist] Ultimate knock down enemies
+        victim.setStatusEffect(attacker, Status.KNOCKED_DOWN, 3)
+      elif eventAbility == Button.ABILITY_1:
+        victim.setSpeedState(50, 3)
+      break 
+
+    case Hero.SOMBRA: # [Sombra] Melee from invisible - additional damage, steal money and stun
+      if eventAbility == Button.MELEE and attacker.isInvisible:
+        victim.setStatusEffect(attacker, Status.STUNNED, 1)
+        damage(victim, attacker, 40)
+        playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, victim, 0.25)
+        attacker.earnMoney(50)
+      break
 
 macro Player.setDelayedHealingOverTime(self, time):
   self.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed() + time
@@ -181,33 +203,38 @@ rule "HealthPack with auto heal and speed boost":
     eventPlayer.clearStatusEffect(Status.BURNING)
   wait()
 
+  # In addition to healing, health packs trigger automatic health regeneration. 
+  #   This compensates for the issue where standard health pack healing is insufficient for players with significantly increased max health:
   eventPlayer.setDelayedHealingOverTime(0.3)
-  eventPlayer.setSpeedState(150, 5)
+
+  eventPlayer.setSpeedState(150, HEALTH_PACKS_SPEED_BOOST_TIME) # Healing from health packs temporarily grants a small speed boost
 
 
 rule "Player took damage":
   @Event playerTookDamage
   @Team 1
 
-  # [Sombra] invisible off
-  if eventPlayer.isInvisible == true:
+  if eventPlayer.isInvisible: # [Sombra] invisible off
     eventPlayer.setStatusEffect(null, Status.HACKED, 0.05)
     eventPlayer.isInvisible = false 
 
-  # [Team2 Roadhog] chance to hack player when melee
-  if (
-    attacker.getHero() == Hero.ROADHOG and
-    eventAbility == Button.MELEE and 
-    random.randint(1, 100) <= 40
-  ):
-    eventPlayer.setStatusEffect(null, Status.HACKED, 1.5)
+  if eventAbility == Button.MELEE:
+    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed()
+    # [Team2 Roadhog] chance to hack player when melee:
+    if attacker.getHero() == Hero.ROADHOG and random.randint(1, 100) <= 40:
+      eventPlayer.setStatusEffect(null, Status.HACKED, 1.5)
+  elif eventAbility == Button.PRIMARY_FIRE:
+    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed()
 
   # [Team2 Mauga] Burning players
   if (
     attacker.getHero() == Hero.MAUGA and
     eventAbility == Button.ABILITY_1
   ):
-    eventPlayer.setStatusEffect(null, Status.BURNING, 10)
+    eventPlayer.setStatusEffect(attacker, Status.BURNING, BURNING_DURATION_FROM_ZOM_MAUGA)
+    eventPlayer.burningEffectFrom = attacker
+    if attacker.isUsingAbility1(): # Charge knockback when damage dealt
+      attacker.forceButtonPress(Button.PRIMARY_FIRE)
 
   eventPlayer.setDelayedHealingOverTime(HEALER_AUTO_HEAL_DELAY if eventPlayer.heroType == HeroType.SUPPORT else AUTO_HEAL_DELAY)
 
@@ -217,7 +244,7 @@ rule "Player burning":
   @Team 1
   @Condition eventPlayer.hasStatus(Status.BURNING)
 
-  damage(eventPlayer, getPlayersOnHero(Hero.MAUGA, Team.2), 4)
+  damage(eventPlayer, eventPlayer.burningEffectFrom, 4)
 
   if eventPlayer.hasStatus(Status.INVINCIBLE) or eventPlayer.hasStatus(Status.PHASED_OUT):
     eventPlayer.clearStatusEffect(Status.BURNING)
@@ -230,6 +257,12 @@ rule "Healing amount tracker":
   @Event playerDealtHealing
   @Team 1
   
+  # [Ana] Nano'd target gains speed boost
+  logToInspector("heal from {}".format(healer))
+  if eventAbility == Button.ULTIMATE and healer.getHero() == Hero.ANA:
+    logToInspector("speedboost for {}".format(healee))
+    healee.setSpeedState(ANA_NANO_SPEEDBOOST, ANA_NANO_SPEEDBOOST_TIME)
+
   # healing yourself gives less points
   if healee == eventPlayer:
     eventPlayer.addStat(RoundStats.SELF_HEALING, eventHealing)
@@ -277,3 +310,4 @@ rule "Defensive assists money and ult charge":
     )
 
   eventPlayer.currentDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
+

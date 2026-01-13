@@ -2,7 +2,7 @@
 
 # globalvar vipPlayers = ["snky"] # List of players who received special privileges
 globalvar devPlayers = ["snky"] # List of players who received develop privileges
-globalvar combatants = []
+
 
 def UpdateCombatantsSub():
   @Name "Sub: Update combatants"
@@ -21,11 +21,16 @@ def SetHeroTypeSub():
 rule "Player joined setup": 
   @Event playerJoined
   @Team 1
+  @Condition not eventPlayer.isDummy()
 
   eventPlayer.setRespawnTime(PLAYER_RESPAWN_TIME)
   eventPlayer.healthBoostPercent = 100 + (5 * roundNumber)
   eventPlayer.damageBoostPercent = 100 + (3 * roundNumber)
   eventPlayer.healingBoostPercent = 100 + (3 * roundNumber)
+
+  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
+  eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
+  eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
 
   eventPlayer.earnMoney(
     wSettingsStartMoney + (2500 * roundNumber)
@@ -40,11 +45,8 @@ rule "Player joined setup":
     eventPlayer.developer = true
     bigMessage(getAllPlayers(), "Mod developer [{}] joined the game".format(eventPlayer))
     # eventPlayer.startScalingSize(0.7, false)
-    eventPlayer.startForcingHero(Hero.VENDETTA)
-    eventPlayer.purchasedHeroes.append(Hero.VENDETTA)
-  else:
-    eventPlayer.startForcingHero(Hero.DVA)
 
+  eventPlayer.startForcingHero(Hero.DVA)
   eventPlayer.respawn()
   if not eventPlayer.isDummy():
     eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
@@ -59,6 +61,7 @@ rule "Player spawned setup":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.hasSpawned()
+  @Condition not eventPlayer.isDummy() or (eventPlayer.isDummy() and eventPlayer.getHero() == Hero.ORISA)
 
   eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
   eventPlayer.boostStats[PV_TEAM_ARMOR_POOL] = getLastCreatedHealthPool()
@@ -83,7 +86,9 @@ rule "Show game tips in start":
 rule "Player left Match, destroy effects, texts and hud":
   @Event playerLeft
   @Team 1
+  @Condition not eventPlayer.isDummy() or (eventPlayer.isDummy() and eventPlayer.getHero() == Hero.ORISA)
   UpdateCombatantsSub()
+  DetachP2PSub()
   destroyHudText(eventPlayer.effectsIds[PLAYER_STATUS_HUD])
   destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])
   destroyInWorldText(eventPlayer.effectsIds[REVIVE_TEXT])

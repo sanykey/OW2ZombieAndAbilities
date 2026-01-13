@@ -14,9 +14,6 @@ globalvar defaultVector = vect(0, 0, 0)
 playervar inputThrottle
 globalvar debugAllowInput
 
-# rule "Hey":
-#   logToInspector("hey hey hey!")
-
 macro localPlayerVisibilityForDevelopers():
   localPlayer if localPlayer.developer or localPlayer == hostPlayer else null
 
@@ -93,12 +90,12 @@ macro ConditionForDebugMenuInteract():
   @Condition eventPlayer == hostPlayer or eventPlayer.developer
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
 
-macro ConditionForDebugPageInteract(name):
+macro RuleHeaderDebugPageInteractCondition(name):
   ConditionForDebugMenuInteract()
   @Condition debugModesArr[debugMode] == name
 
 macro ConditionForActivateSelectedAction(name):
-  ConditionForDebugPageInteract(name)
+  RuleHeaderDebugPageInteractCondition(name)
   @Condition eventPlayer.isHoldingButton(Button.MELEE)
 
 macro RuleHeaderForDebugMenuInputThrottle(type):
@@ -108,6 +105,19 @@ macro RuleHeaderForDebugMenuInputThrottle(type):
 
 macro ConditionForInitMode(name):
   @Condition debugMenuIsOpened and debugModesArr[debugMode] == name
+
+macro incWithModificators(value):
+  (
+    (10 * value) if eventPlayer.isHoldingButton(Button.CROUCH)
+    else (100 * value) if eventPlayer.isHoldingButton(Button.JUMP)
+    else value
+  )
+
+macro leftArrowForMenuItem(actionNum):
+  "←" if debugSelectedAction == actionNum else ""
+
+macro rightArrowForMenuItem(actionNum):
+  "→" if debugSelectedAction == actionNum else ""
 
 rule "[debug] open/close debug menu":
   @Event eachPlayer

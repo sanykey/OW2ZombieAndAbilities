@@ -1,8 +1,6 @@
 #!mainFile "../main.opy"
 
 globalvar botWidowmakerSpawnCD
-globalvar botWidowmakerAvaliableSpawnSpots
-
 #!define ZOM_WINDOW_RESPAWN_CD 40
 
 rule "[Team2 Widowmaker] search actual sniper spots":
@@ -48,9 +46,10 @@ rule "[Team2 Widowmaker] init":
     getPlayers(Team.1),
     Beam.TORBJORN_TURRET_SIGHT,
     eventPlayer.getEyePosition(),
-    updateEveryFrame(
-      raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 999, null, eventPlayer, false).getHitPosition()
-    ),
+    eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * eventPlayer.zomDistancesToPlayersArr[eventPlayer.zomTarget.getSlot()]
+    # updateEveryFrame(
+    #   raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 999, null, eventPlayer, false).getHitPosition()
+    # ),
     Color.RED,
     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )

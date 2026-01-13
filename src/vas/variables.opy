@@ -50,10 +50,30 @@
 # Other:
 #!define INFINITY 99999
 
+# Heroest talents
+#!define ANA_NANO_SPEEDBOOST 135
+#!define ANA_NANO_SPEEDBOOST_TIME 8
+#!define ANA_AOE_SLEEP_RADIUS 4
+#!define ANA_AOE_SLEEP_TIME 5
+#!define ANA_NADE_SLOWDOWN 30
+#!define ANA_NADE_SLOWDOWN_TIME 5
+#!define ANA_DIRECT_HIT_SLOWDOWN 50
+#!define ANA_PARALYZING_STRIKE_CD 12
+
+#!define CASSIDY_LASSO_CD 12
+
+#####################################################
+################ Global constants ###################
+#####################################################
+# When checking isInLoS(), use a position slightly above the distant target to avoid false positives through the floor:
+globalvar LosHeightCheckVectConst = vect(false, 1.2, false)
+
+
 #####################################################
 ################ Global variables ###################
 #####################################################
-
+globalvar playersInShop
+globalvar combatants = []
 globalvar roundNumber = 0
 
 globalvar spawnPointsList = []
@@ -128,6 +148,11 @@ playervar zomIsHacked
 playervar zomForceHeroOnRespawn
 playervar zomMeleeAttackTargets
 playervar zomFlyThroughWalls
+playervar zomLastMeleeAttackTimeArr
+playervar zomFlyThroughWallsPoints
+playervar zomTarget
+playervar zomAIstep
+globalvar botWidowmakerAvaliableSpawnSpots
 # detecting crowd control abilities for bots fall damage
 playervar lastCcAttacker
 playervar lastCcAttackTime
@@ -205,6 +230,7 @@ playervar abilState0 # also zombie bots antifall state
 playervar abilState1
 playervar abilState2
 playervar abilState3
+playervar abilState4
 playervar abilDir0
 playervar abilDir1
 playervar abilDir2

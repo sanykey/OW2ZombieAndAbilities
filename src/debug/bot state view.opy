@@ -49,7 +49,11 @@ rule "[debug] init Bot state view mode":
     pos: <fg84c951FF>{}</fg>
     facing dir: <fg84c951FF>{}</fg>
     Stuck Points: <fg84c951FF>{}</fg>
+    Fly Through Walls Points: <fg84c951FF>{}</fg>
     Target: <fg84c951FF>{}</fg>
+    Distance to target: <fg84c951FF>{}</fg>
+    Horizontal speed: <fg84c951FF>{}</fg>
+    Default speed: <fg84c951FF>{}</fg>
     zomDistancesToPlayersArr: <fg84c951FF>{}</fg>
     zomIsInLoSPlayersArr: <fg84c951FF>{}</fg>
     lastCcAttacker: <fg84c951FF>{}</fg>
@@ -98,7 +102,11 @@ rule "[debug] init Bot state view mode":
       debugSelectedPlayer.getPosition(),
       debugSelectedPlayer.getFacingDirection(),
       debugSelectedPlayer.money__zomStuckPoints,
+      debugSelectedPlayer.zomFlyThroughWallsPoints,
       debugSelectedPlayer.zomTarget,
+      distance(debugSelectedPlayer, debugSelectedPlayer.zomTarget),
+      debugSelectedPlayer.getHorizontalSpeed(),
+      5.5 / 100 * zomSpeedPct,
       debugSelectedPlayer.zomDistancesToPlayersArr,
       debugSelectedPlayer.zomIsInLoSPlayersArr,
       debugSelectedPlayer.lastCcAttacker,
@@ -118,7 +126,7 @@ rule "[debug] init Bot state view mode":
 
 
 rule "[debug] Select bot closest to reticle":
-  ConditionForDebugPageInteract("BotStateView")
+  RuleHeaderDebugPageInteractCondition("BotStateView")
   @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE) or debugSelectedAction == 1 and eventPlayer.isHoldingButton(Button.MELEE)
 
   debugSelectedPlayer = eventPlayer.getRealPlayerClosestToReticle(Team.2)
@@ -136,7 +144,7 @@ rule "[debug] (Right) BotStateView":
   elif debugSelectedAction == 4:
     if not isGameStarted and not isBotsDisabled:
       RemoveBotsSub()
-    if wSettingsMaxZombieBots >= 15:
+    if wSettingsMaxZombieBots >= 30:
       wSettingsMaxZombieBots = 1
     else:
       wSettingsMaxZombieBots++
@@ -169,7 +177,7 @@ rule "[debug] (Left) BotStateView":
     if not isGameStarted and not isBotsDisabled:
       RemoveBotsSub()
     if wSettingsMaxZombieBots <= 0:
-      wSettingsMaxZombieBots = 15
+      wSettingsMaxZombieBots = 30
     else:
       wSettingsMaxZombieBots--
 

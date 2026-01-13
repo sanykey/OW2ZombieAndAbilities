@@ -18,7 +18,7 @@ rule "[debug] init Common debug mode":
     "{}
     {}Disable bots:</fg> <fg84c951FF>{}</fg>
     {}Ressurect all</fg>
-    {}Open switch hero hud</fg> 
+    {}Open switch hero menu</fg> 
     {}Invincible</fg> <fg84c951FF>{}</fg>
     {}Teleport to shop</fg> 
     {}Noclip:</fg> <fg84c951FF>{}</fg>

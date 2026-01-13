@@ -4,6 +4,20 @@ macro Player.earnMoney(self, amount=0):
   self.money__zomStuckPoints += amount
   self.moneyTotal__zomStuckPrevPosition += amount
 
+macro Player.abilityCDHud(self, text, effectVar):
+  hudText(
+    self if not self.isHeroDescriptionOpened else null,
+    null,
+    text,
+    null,
+    HudPosition.TOP,
+    2.5,
+    null,
+    Color.WHITE,
+    null
+  )
+  effectVar = getLastCreatedText()
+
 rule "Version text":
   hudText(
     localPlayer,
@@ -15,25 +29,6 @@ rule "Version text":
     null,
     Color.WHITE,
     null,
-    HudReeval.VISIBILITY_STRING_AND_COLOR
-  )
-
-rule "init utils":
-  # Disable inspector recording
-  disableInspector()
-
-  # Show ServerLoad info
-  hudSubheader(
-    localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
-    "Server load: {} | Max: {} | Cur: {}
-    ".format(
-      getAverageServerLoad(),
-      getPeakServerLoad(),
-      getServerLoad()
-    ),
-    HudPosition.RIGHT,
-    -5,
-    rgb(255, 280 - getAverageServerLoad(), 0),
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
 
@@ -97,55 +92,3 @@ rule "Server anti-crash system":
 #     Hero.ZARYA,
 #     Hero.ZENYATTA
 #   ])[0]
-
-# rule "Crash Protection [ON]":
-#   @Condition getServerLoad() > 250
-#   @Condition highloadServerPause < getTotalTimeElapsed()
-  
-#   wait(2, Wait.ABORT_WHEN_FALSE)
-#   highloadServerPause = 10 + getTotalTimeElapsed()
-#   setSlowMotion(83)
-#   bigMessage(getPlayers(Team.1), "Too high load on the server. Short break!\n\n (Cur:{} / AVG: {}/ Max: {})".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()))
-#   isBotsDisabled = true
-#   for I in range(wSettingsMaxZombieBots):
-#     destroyDummy(Team.2, I)
-
-#   smallMessage(getPlayers(Team.1), "[debug] bot spawn poins len: {}".format(len(spawnPointsList)))
-
-#   wait(5, Wait.ABORT_WHEN_FALSE)
-#   setSlowMotion(100)
-#   isBotsDisabled = false
-
-# rule "Crash Protection [ON]":
-#   @Condition getServerLoad() > 250
-#   @Condition roundNumber < 40
-  
-#   wait(2, Wait.ABORT_WHEN_FALSE)
-#   setSlowMotion(83)
-
-
-# rule "Crash Protection [OFF]":
-#   @Condition getAverageServerLoad() < 249
-#   @Condition roundNumber < 40
-  
-#   wait(2, Wait.ABORT_WHEN_FALSE)
-#   setSlowMotion(100)
-
-
-# rule "Crash Protection 40+ [ON]":
-#   @Condition getServerLoad() > 250
-#   @Condition getPlayers(Team.1).G[6] == false
-#   @Condition roundNumber > 39
-  
-#   wait(2, Wait.ABORT_WHEN_FALSE)
-#   setSlowMotion(83)
-
-
-# rule "Crash Protection 40+ [OFF]":
-#   @Condition getAverageServerLoad() < 249
-#   @Condition getPlayers(Team.1).G[6] == false
-#   @Condition roundNumber > 39
-  
-#   wait(2, Wait.ABORT_WHEN_FALSE)
-#   setSlowMotion(100)
-

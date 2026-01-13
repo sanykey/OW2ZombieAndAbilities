@@ -100,22 +100,15 @@ rule "[Cassydy] Init":
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_8] = getLastCreatedEntity()
 
-  hudText(
-    eventPlayer if not eventPlayer.isHeroDescriptionOpened else null,
-    null,
+  # Lasson ability CD info:
+  eventPlayer.abilityCDHud(
     "{}{} Lasso: {}".format(
       ABILITI_TEXT_INTEND,
       abilityIconString(Hero.ROADHOG, Button.ABILITY_1),
-      ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>✓</fg> <fg94a0a544>(hold {})</fg>".format(inputBindingString(Button.MELEE))
+      ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>✓</fg> <fg94a0a544>(double [{}])</fg>".format(inputBindingString(Button.MELEE))
     ),
-    null,
-    HudPosition.TOP,
-    2.5,
-    null,
-    Color.WHITE,
-    null
+    eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_HUD]
   )
-  eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_HUD] = getLastCreatedText()
 
   waitUntil(eventPlayer.getHero() != Hero.CASSIDY, INFINITY)
   clearHeroInfo()
@@ -126,16 +119,23 @@ rule "[Cassydy] Init":
 rule "[Cassydy] throw the lasso":
   @Event eachPlayer
   @Hero cassidy
-  @Condition eventPlayer.isHoldingButton(Button.MELEE) == true
+  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.isHoldingButton(Button.MELEE)
   @Condition not eventPlayer.abilPos0
   @Condition not eventPlayer.target0
   @Condition not eventPlayer.abilDir0
-  @Condition eventPlayer.isAlive() == true
 
   if eventPlayer.abilityCD:
     return
 
-  wait(0.2, Wait.ABORT_WHEN_FALSE)
+  # detect double press melee button:
+  waitUntil(not eventPlayer.isHoldingButton(Button.MELEE), 0.3)
+  if eventPlayer.isHoldingButton(Button.MELEE):
+    return
+  waitUntil(eventPlayer.isHoldingButton(Button.MELEE), 0.3)
+  if not eventPlayer.isHoldingButton(Button.MELEE):
+    return
+
   eventPlayer.abilPos0 = raycast(eventPlayer, eventPlayer + vect(0, 5, 0), null, eventPlayer, true).getHitPosition() + vect(0, -1, 0)
   stopChasingVariable(eventPlayer.abilPos0)
   stopChasingVariable(eventPlayer.abilDir0)
@@ -157,7 +157,7 @@ rule "[Cassydy] throw the lasso":
   stopChasingVariable(eventPlayer.abilPos0)
   stopChasingVariable(eventPlayer.abilDir0)
   eventPlayer.abilState0 = false
-  eventPlayer.abilityCD = 12
+  eventPlayer.abilityCD = CASSIDY_LASSO_CD
   wait(0.5)
   eventPlayer.abilPos0 = false
   eventPlayer.abilDir0 = false
@@ -199,7 +199,7 @@ rule "[Cassydy] lasso hit a player":
   eventPlayer.abilPos0 = false
   eventPlayer.abilState0 = false
   eventPlayer.abilDir0 = false
-  eventPlayer.abilityCD = 12
+  eventPlayer.abilityCD = CASSIDY_LASSO_CD
 
 
 rule "[Cassydy] Detonates a flashbang while rolling":

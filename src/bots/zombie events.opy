@@ -55,14 +55,15 @@ globalvar zomInstantUltimates
 rule "[Team2] special waves":
   @Condition roundRemainingBots <= 0
 
-  if roundNumber >= 15 and roundNumber < 20:
-    zomInstantUltimates = true
-  elif roundNumber >= 25 and roundNumber < 30:
+  if roundNumber >= 25 and roundNumber < 30:
     commonZombieHero = Hero.JUNKRAT
   elif roundNumber >= 35 and roundNumber < 40:
     commonZombieHero = Hero.SYMMETRA
+  elif roundNumber >= 45 and roundNumber < 50:
+    zomInstantUltimates = true
   elif roundNumber >= 55 and roundNumber % 10 >= 5:
-    commonZombieHero = random.choice(commonBotsHeroes)
+    if roundNumber % 10 == 5:
+      commonZombieHero = random.choice(commonBotsHeroes)
     if commonZombieHero == Hero.TORBJORN:
       zomInstantUltimates = true
   else:

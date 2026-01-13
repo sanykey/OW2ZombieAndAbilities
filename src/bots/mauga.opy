@@ -54,13 +54,3 @@ rule "[Team2 Mauga] Charge":
   eventPlayer.forceButtonPress(Button.ABILITY_1)
   wait(0.1)
   eventPlayer.forceButtonPress(Button.ABILITY_1)
-
-
-rule "[Team2 Mauga] Charge knockback when damage dealt":
-  @Event playerDealtDamage
-  @Team 2
-  @Hero mauga
-  @Condition eventAbility == Button.ABILITY_1
-  
-  if eventPlayer.isUsingAbility1():
-    eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)

@@ -1,17 +1,18 @@
 #!mainFile "../main.opy"
 
-playervar zomAIstep
-playervar zomFlyThroughWallsPoints
-
-playervar zomTarget
-
 #!define ZOM_FLY_POINTS 6
+#!define ZOM_MAX_TARGET_DISTANCE 50
+#!define ZOM_MELEE_ATTACK_DISTANCE 3
+#!define ZOM_MELEE_ATTACK_CACHE_TIME 1.5
 
 macro Player.getDistanceToZombieTarget(self):
   self.zomDistancesToPlayersArr[self.zomTarget.getSlot()]
 
 macro Player.isInLoSZombieTarget(self):
   self.zomIsInLoSPlayersArr[self.zomTarget.getSlot()]
+
+macro Player.isRecentlyDealMeleeDemage(self):
+  eventPlayer.zomLastMeleeAttackTimeArr[eventPlayer.tmp0.getSlot()] > getTotalTimeElapsed() - ZOM_MELEE_ATTACK_CACHE_TIME
 
 def SearchTargetsSub():
   @Name "Sub: search Targets"
@@ -27,14 +28,29 @@ def SearchTargetsSub():
   for eventPlayer.I in range(len(combatants)):
     eventPlayer.tmp0 = combatants[eventPlayer.I]
     if (eventPlayer.tmp0):
-      # collect avaliable targets
-      eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] = distance(eventPlayer, eventPlayer.tmp0)
+      # distance to current player:
+      eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] = (
+        # Treat distance as minimal if the bot recently dealt melee damage :
+        2 if eventPlayer.isRecentlyDealMeleeDemage() else
 
-      if eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < 40: # For optimization, check IsInLineOfSight only at short distances.
-        eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] = isInLoS(eventPlayer, eventPlayer.tmp0) 
+        # Optimization: First, try to estimate distance using cheaper methods:
+        9999 if (
+          abs(eventPlayer.getPosition().x - eventPlayer.tmp0.getPosition().x) > ZOM_MAX_TARGET_DISTANCE 
+          or abs(eventPlayer.getPosition().z - eventPlayer.tmp0.getPosition().z) > ZOM_MAX_TARGET_DISTANCE 
+        ) else
+
+        distance(eventPlayer, eventPlayer.tmp0)
+      )
+
+      if eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < ZOM_MAX_TARGET_DISTANCE: # For optimization, check IsInLineOfSight only at short distances.
+        # Treat LoS = true if the bot recently dealt melee damage:
+        eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] = (
+          eventPlayer.isRecentlyDealMeleeDemage()
+          or isInLoS(eventPlayer.getEyePosition(), eventPlayer.tmp0.getPosition() + LosHeightCheckVectConst) 
+        )
 
       # collect current melee attack targets
-      if (eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < 3 and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] and eventPlayer.isInViewAngle(eventPlayer.tmp0.getPosition(), 90)):
+      if (eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] < ZOM_MELEE_ATTACK_DISTANCE and eventPlayer.zomIsInLoSPlayersArr[eventPlayer.tmp0.getSlot()] and eventPlayer.isInViewAngle(eventPlayer.tmp0.getPosition(), 90)):
         eventPlayer.zomMeleeAttackTargets.append(eventPlayer.tmp0)
 
       eventPlayer.tmp1 = (
@@ -191,8 +207,11 @@ macro botAttack():
 
   else:
     eventPlayer.stopForcingButton(Button.MELEE)
-    # eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
 
+macro botTeleportIfTooFar():
+  # If a zombie bot is too far from its target, teleport it to a random available spawn point:
+  if eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] > ZOM_MAX_TARGET_DISTANCE and spawnPointsList:
+    eventPlayer.teleport(random.choice(spawnPointsList))
 
 rule "Zombie bots main behavior":
   @Event eachPlayer
@@ -203,10 +222,7 @@ rule "Zombie bots main behavior":
 
   if (
     not combatants # When no suitable targets are available, freeze all logic
-    or eventPlayer.hasStatus(Status.ROOTED)
-    or eventPlayer.hasStatus(Status.STUNNED)
-    or eventPlayer.hasStatus(Status.ASLEEP)
-    or eventPlayer.hasStatus(Status.KNOCKED_DOWN)
+    or eventPlayer.isCrowdControlled()
   ):
     eventPlayer.zomFlyThroughWallsPoints = false 
     eventPlayer.money__zomStuckPoints = false
@@ -215,6 +231,7 @@ rule "Zombie bots main behavior":
   
   if eventPlayer.zomAIstep == 0: # Execute once every 4 steps for optimization
     SearchTargetsSub()
+    botTeleportIfTooFar()
     flyThroughWallsPoints()
 
   botAntifall()
@@ -267,7 +284,7 @@ rule "Zombies loS teleport (zombiesfly)":
 
   eventPlayer.applyImpulse(Vector.FORWARD, 5, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
   eventPlayer.setInvisibility(Invis.ALL)
-  waitUntil(isInLoS(getRealClosestPlayer(eventPlayer, Team.1), eventPlayer), 30)
+  waitUntil(any([eventPlayer.zomIsInLoSPlayersArr[player.getSlot()] for player in combatants]), 30)
   wait(0.4)
   eventPlayer.setGravity(100)
   eventPlayer.enableEnvironmentCollision()
@@ -278,7 +295,8 @@ rule "Zombies loS teleport (zombiesfly)":
   playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
   playEffect(getPlayersInRadius(eventPlayer, 10, Team.1), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 80)
 
-  if getRealPlayersInRadius(eventPlayer, 5, Team.1): # If a zombie bot came out of the wall very close to the player, give the player time to react
+  # If the zombie bot came out of the wall very close to a player, give a player time to react
+  if any([eventPlayer.zomDistancesToPlayersArr[player.getSlot()] <= 5 for player in combatants]): 
     eventPlayer.setStatusEffect(null, Status.STUNNED, 1.5)
     wait(1.2)
   else:
@@ -288,3 +306,32 @@ rule "Zombies loS teleport (zombiesfly)":
 
   if ruleCondition:
     loop()
+
+# rule "BOT WANDERS":
+#   @Event eachPlayer
+#   @Team 2
+#   @Condition eventPlayer.zomTarget
+#   #Allows if bot bumps into something
+#   @Condition eventPlayer.getHorizontalSpeed() < (5.5 / 100 * zomSpeedPct - 0.3)
+  
+#   logToInspector("too slow: {} < {}".format(eventPlayer.getHorizontalSpeed(), 5.5 / 100 * zomSpeedPct - 0.3))
+#   wait(0.25, Wait.ABORT_WHEN_FALSE)
+#   eventPlayer.stopForcingThrottle()
+#   eventPlayer.startThrottleInDirection(
+#     directionFromAngles(
+#       horizontalAngleOfDirection(worldVector(eventPlayer.getThrottle(), eventPlayer, Transform.ROTATION)) + random.uniform(90, 270), 0
+#     ),
+#     5.5 / 100 * zomSpeedPct,
+#     Relativity.TO_WORLD,
+#     Throttle.REPLACE_EXISTING,
+#     ThrottleReeval.NONE
+#   )
+#   wait(1)
+#   if not ruleCondition:
+#     logToInspector("Ok!: {} < {}".format(eventPlayer.getHorizontalSpeed(), 5.5 / 100 * zomSpeedPct - 0.3))
+#     eventPlayer.stopThrottleInDirection()
+#     eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
+
+#   if ruleCondition:
+#     loop()
+    

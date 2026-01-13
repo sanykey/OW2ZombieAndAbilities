@@ -209,10 +209,7 @@ rule "[Widowmaker] When grappling hook ends, latch onto any nearby wall":
   waitUntil( # todo: hasBadStatus?
     eventPlayer.isHoldingButton(Button.JUMP) or true in [
       eventPlayer.hasStatus(Status.HACKED),
-      eventPlayer.hasStatus(Status.KNOCKED_DOWN),
-      eventPlayer.hasStatus(Status.ASLEEP),
-      eventPlayer.hasStatus(Status.FROZEN),
-      eventPlayer.hasStatus(Status.STUNNED)
+      eventPlayer.isCrowdControlled()
     ],
     10
   )

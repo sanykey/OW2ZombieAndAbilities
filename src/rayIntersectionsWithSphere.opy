@@ -21,7 +21,7 @@ enum RI:
   RADIUS
   SPHERE_POS
   FACING_DIRECTION
-  SQRT_RESULT
+  # SQRT_RESULT
   T1
   T2
 
@@ -58,15 +58,10 @@ def cRayIntersectionsWithSphereSub():
   if eventPlayer.rayIntersectsSphere[RI.DISC] < 0:
     return
   
-  #sqrtNewton:
-  eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT] = eventPlayer.rayIntersectsSphere[RI.DISC] / 2
-  for eventPlayer.tmp3 in range(5):
-    eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT] = (eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT] + (eventPlayer.rayIntersectsSphere[RI.DISC] / eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT])) / 2
+  eventPlayer.rayIntersectsSphere[RI.T1] = ((eventPlayer.rayIntersectsSphere[RI.B] * -1) - sqrt(eventPlayer.rayIntersectsSphere[RI.DISC])) / (2 * eventPlayer.rayIntersectsSphere[RI.A])
+  eventPlayer.rayIntersectsSphere[RI.T2] = ((eventPlayer.rayIntersectsSphere[RI.B] * -1) + sqrt(eventPlayer.rayIntersectsSphere[RI.DISC])) / (2 * eventPlayer.rayIntersectsSphere[RI.A])
 
-  eventPlayer.rayIntersectsSphere[RI.T1] = ((eventPlayer.rayIntersectsSphere[RI.B] * -1) - eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT]) / (2 * eventPlayer.rayIntersectsSphere[RI.A])
-  eventPlayer.rayIntersectsSphere[RI.T2] = ((eventPlayer.rayIntersectsSphere[RI.B] * -1) + eventPlayer.rayIntersectsSphere[RI.SQRT_RESULT]) / (2 * eventPlayer.rayIntersectsSphere[RI.A])
-
-  eventPlayer.rayIntersectsSphere[RI.C] = 0
+  # eventPlayer.rayIntersectsSphere[RI.C] = 0
 
   if (eventPlayer.rayIntersectsSphere[RI.T1] >= 0 and eventPlayer.rayIntersectsSphere[RI.T2] >= 0):
     eventPlayer.rayIntersectsSphere[RI.C] = eventPlayer.rayIntersectsSphere[RI.T1] if eventPlayer.rayIntersectsSphere[RI.T1] < eventPlayer.rayIntersectsSphere[RI.T2] else eventPlayer.rayIntersectsSphere[RI.T2]

@@ -1,14 +1,18 @@
 #!mainFile "main.opy"
 
-globalvar playersInShop
-
 rule "Interact button":
   @Event eachPlayer
   @Condition not eventPlayer.isDummy()
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
 
+  # [Ana][Orisa][attach p2p]
+  if eventPlayer.attach2p[Attach2P.IS_ATTACHED]:
+    waitUntil(not eventPlayer.isHoldingButton(Button.INTERACT), INFINITY) # Prevent re-attach immediately after detach
+    logToInspector("interact button?")
+    DetachP2PSub()
+
   # [shop] switch hero:
-  if secretShopZoneEffects and distance(eventPlayer, vectList[VL_CHANGE_HERO]) < 1.8:
+  elif secretShopZoneEffects and distance(eventPlayer, vectList[VL_CHANGE_HERO]) < 1.8:
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 1)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
     openSwitchHeroHud()
@@ -104,3 +108,7 @@ rule "Interact button":
       eventPlayer.moneyTotal__zomStuckPrevPosition = wSettingsStartMoney + (2500 * roundNumber)
 
     eventPlayer.money__zomStuckPoints = eventPlayer.moneyTotal__zomStuckPrevPosition
+
+  # [Ana][Orisa][attach p2p]
+  elif not eventPlayer.attach2p[Attach2P.IS_ATTACHED]: 
+    AttachP2PSub()

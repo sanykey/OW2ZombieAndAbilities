@@ -136,6 +136,7 @@ rule "[Secret shop] Enter/Leave shop zone":
       eventPlayer.isInSecretShop = getTotalTimeElapsed() + 30
       heal(eventPlayer, null, INFINITY)
       UpdateCombatantsSub()
+      DetachP2PSub()
   elif eventPlayer.isInSecretShop:
     eventPlayer.isInSecretShop = false
     UpdateCombatantsSub()

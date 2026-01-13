@@ -29,6 +29,7 @@ rule "[Revive] player died":
   @Team 1
 
   UpdateCombatantsSub()
+  DetachP2PSub()
   eventPlayer.isReady = true
 
   pause3PCamera()
@@ -69,6 +70,7 @@ rule "[Revive] Check player in radius, unset is downed":
       smallMessage(getAllPlayers(), "{0} has been revived!".format(eventPlayer))
       IncrementReviveStatSub()
       eventPlayer.resurrect()
+      eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 1.5)
   
   wait(0.3, Wait.ABORT_WHEN_FALSE)
   if ruleCondition:

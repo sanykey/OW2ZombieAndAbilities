@@ -7,26 +7,28 @@
 #/*
 #!include "utils.opy"
 #!include "3rd person camera.opy"
-#!include "player joined.opy"
 #!include "player round stats.opy"
-#!include "player revive.opy"
-#!include "match.opy"
 #!include "hud.opy" 
 #*/
 
 #/*
 #!include "zones.opy"
-#!include "switch hero.opy"
-#!include "buy hero.opy" 
-#!include "interact button.opy" 
+
+#!include "damage and healing.opy"
+#!include "attach p2p.opy"
+#!include "player joined.opy"
+#!include "player revive.opy"
 #!include "portal.opy"
 #!include "locked area.opy" 
 #!include "secret shop.opy"
+#!include "switch hero.opy"
+#!include "interact button.opy" 
+#!include "match.opy"
+#!include "buy hero.opy" 
 #*/
 
 #/*
 #!include "rayIntersectionsWithSphere.opy"
-#!include "damage and healing.opy"
 #!include "barriers damage.opy"
 #*/
 
@@ -34,9 +36,9 @@
 #!include "bots/zombie events.opy"
 #!include "bots/respawn.opy"
 #!include "bots/zombie behavior.opy"
-#!include "bots/widowmaker.opy"
-#!include "bots/roadhog.opy"
-#!include "bots/mauga.opy"
+##!include "bots/widowmaker.opy"
+##!include "bots/roadhog.opy"
+##!include "bots/mauga.opy"
 ##!include "bots/echo.opy"
 #*/
 
@@ -56,6 +58,7 @@
 #!include "heroes abilities/soldier.opy"
 #!include "heroes abilities/mei.opy"
 #!include "heroes abilities/doomfist.opy"
+#!include "heroes abilities/orisa.opy"
 #!include "heroes abilities/symmetra.opy"
 #!include "heroes abilities/vendetta.opy"
 #!include "heroes abilities/widowmaker.opy"
