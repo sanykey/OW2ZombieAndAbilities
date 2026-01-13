@@ -17,7 +17,6 @@ rule "[debug] init Common debug mode":
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
     "{}
     {}Disable bots:</fg> <fg84c951FF>{}</fg>
-    {}Ressurect all</fg>
     {}Open switch hero menu</fg> 
     {}Invincible</fg> <fg84c951FF>{}</fg>
     {}Teleport to shop</fg> 
@@ -28,6 +27,7 @@ rule "[debug] init Common debug mode":
     {}No CD:</fg> <fg84c951FF>{}</fg>
     {}Kill me</fg>
     {}Inspector: <fg84c951FF>{}</fg></fg>
+    {}Ressurect all</fg>
     ----------
     Entities: {}, Texts: {}
     <fg94a0a544>Open/Close: [INTERACT] + [ABILITY_1] + [ABILITY_2]
@@ -36,24 +36,35 @@ rule "[debug] init Common debug mode":
     Ressurect me: [INTERACT] + [RELOAD]</fg>
     ".format(
       debugMenuTitle("Common"),
+
       debugSelectedActionText(1),
       isBotsDisabled,
+
       debugSelectedActionText(2),
+
       debugSelectedActionText(3),
-      debugSelectedActionText(4),
       localPlayer.hasStatus(Status.INVINCIBLE),
+
+      debugSelectedActionText(4),
+
       debugSelectedActionText(5),
-      debugSelectedActionText(6),
       debugIsNoclip,
+
+      debugSelectedActionText(6),
       debugSelectedActionText(7),
+
       debugSelectedActionText(8),
-      debugSelectedActionText(9),
       debugUnlimitUltimates,
-      debugSelectedActionText(10),
+
+      debugSelectedActionText(9),
       debugNoCD,
+
+      debugSelectedActionText(10),
       debugSelectedActionText(11),
-      debugSelectedActionText(12),
       enabledInspector,
+      
+      debugSelectedActionText(12),
+      # ----------
       getNumberOfEntityIds(),
       getNumberOfTextIds()
     ),
@@ -75,19 +86,21 @@ rule "[debug] Activate selected action for Common mode":
       RemoveBotsSub()
     else:
       AddBotsSub()
-  elif debugSelectedAction == 2: # resurrect all
-    reviveAllPlayersSR()
-  elif debugSelectedAction == 3: # Open switch hero hud
+
+  elif debugSelectedAction == 2: # Open switch hero hud
     eventPlayer.purchasedHeroes = getAllHeroes()
     openSwitchHeroHud()
-  elif debugSelectedAction == 4: # Invincible
+
+  elif debugSelectedAction == 3: # Invincible
     if eventPlayer.hasStatus(Status.INVINCIBLE):
       eventPlayer.clearStatusEffect(Status.INVINCIBLE)
     else:
       eventPlayer.setStatusEffect(eventPlayer, Status.INVINCIBLE, INFINITY)
-  elif debugSelectedAction == 5: # Teleport to shop
+
+  elif debugSelectedAction == 4: # Teleport to shop
     eventPlayer.teleport(vect(-20.63, 6.50, -88.95))
-  elif debugSelectedAction == 6: # Noclip
+
+  elif debugSelectedAction == 5: # Noclip
     debugIsNoclip = not debugIsNoclip
     if not debugIsNoclip:
       eventPlayer.clearStatusEffect(Status.INVINCIBLE)
@@ -104,9 +117,11 @@ rule "[debug] Activate selected action for Common mode":
       eventPlayer.forceButtonPress(Button.ULTIMATE)
       eventPlayer.disableEnvironmentCollision(true)
       eventPlayer.setGravity(0)
-  elif debugSelectedAction == 7: # Add money
+
+  elif debugSelectedAction == 6: # Add money
     eventPlayer.earnMoney(100000)
-  elif debugSelectedAction == 8: # Add upgrades
+
+  elif debugSelectedAction == 7: # Add upgrades
     eventPlayer.healthBoostPercent = 100000
     eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
     eventPlayer.damageBoostPercent = 100000
@@ -115,19 +130,26 @@ rule "[debug] Activate selected action for Common mode":
     eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
     wait()
     heal(eventPlayer, null, INFINITY)
-  elif debugSelectedAction == 9: # Switch unlimit ultimates
+
+  elif debugSelectedAction == 8: # Switch unlimit ultimates
     debugUnlimitUltimates = not debugUnlimitUltimates
-  elif debugSelectedAction == 10:
+
+  elif debugSelectedAction == 9:
     debugNoCD = not debugNoCD
-  elif debugSelectedAction == 11: # Kill me
+
+  elif debugSelectedAction == 10: # Kill me
     damage(eventPlayer, null, INFINITY)
-  elif debugSelectedAction == 12: # Enable/Disable Inspector
+
+  elif debugSelectedAction == 11: # Enable/Disable Inspector
     if enabledInspector:
       enabledInspector = false
       disableInspector()
     else:
       enabledInspector = true
       enableInspector()
+
+  elif debugSelectedAction == 12: # resurrect all
+    reviveAllPlayersSR()
   
 rule "[debug] Unlimit ultimates":
   @Event eachPlayer
