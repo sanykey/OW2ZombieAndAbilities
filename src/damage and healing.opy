@@ -151,6 +151,21 @@ rule "Player deal damage":
         victim.setRevealed()
       break
 
+    case Hero.CASSIDY:
+      if eventAbility == Button.SECONDARY_FIRE: # [Cassydy] Knockback enemies when using alternate fire
+        if victim.hasStatus(Status.KNOCKED_DOWN):
+          return
+
+        victim.setCrowdControlAttack(attacker)
+        victim.setGravityState(0, 0.15)
+        if distance(attacker, victim) <= 15:
+          victim.applyImpulse(attacker.getFacingDirection(), 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+        else:
+          victim.applyImpulse(attacker.getFacingDirection(), max(5, 30 - distance(attacker, victim)), Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+      elif eventAbility == Button.ABILITY_2: # [Cassydy] stun effect for flashbang
+        victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
+      break
+
     case Hero.ANA:
       if eventAbility == Button.PRIMARY_FIRE: # [Ana] Slow enemy on direct hit with primary weapon
         victim.setSpeedState(ANA_DIRECT_HIT_SLOWDOWN, true)

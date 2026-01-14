@@ -216,26 +216,6 @@ rule "[Cassydy] Detonates a flashbang while rolling":
   damage(eventPlayer.list0, eventPlayer, 15)
   eventPlayer.list0.setStatusEffect(eventPlayer, Status.STUNNED, 1.5)
 
-rule "[Cassydy] damage effects":
-  @Event playerDealtDamage
-  @Hero cassidy
-
-  # [Cassydy] Knockback enemies when using alternate fire
-  if eventAbility == Button.SECONDARY_FIRE:
-    if victim.hasStatus(Status.KNOCKED_DOWN):
-      return
-
-    victim.setCrowdControlAttack(eventPlayer)
-    victim.setGravityState(0, 0.15)
-    if distance(eventPlayer, victim) <= 15:
-      victim.applyImpulse(attacker.getFacingDirection(), 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    else:
-      victim.applyImpulse(attacker.getFacingDirection(), max(5, 30 - distance(eventPlayer, victim)), Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-
-  # [Cassydy] stun effect for flashbang:
-  elif eventAbility == Button.ABILITY_2: 
-    victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
-
 rule "[Cassydy] Roll leap":
   @Event eachPlayer
   @Hero cassidy

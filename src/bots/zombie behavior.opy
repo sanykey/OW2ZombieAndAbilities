@@ -32,13 +32,6 @@ def SearchTargetsSub():
       eventPlayer.zomDistancesToPlayersArr[eventPlayer.tmp0.getSlot()] = (
         # Treat distance as minimal if the bot recently dealt melee damage :
         2 if eventPlayer.isRecentlyDealMeleeDemage() else
-
-        # Optimization: First, try to estimate distance using cheaper methods:
-        9999 if (
-          abs(eventPlayer.getPosition().x - eventPlayer.tmp0.getPosition().x) > ZOM_MAX_TARGET_DISTANCE 
-          or abs(eventPlayer.getPosition().z - eventPlayer.tmp0.getPosition().z) > ZOM_MAX_TARGET_DISTANCE 
-        ) else
-
         distance(eventPlayer, eventPlayer.tmp0)
       )
 
