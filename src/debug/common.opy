@@ -32,6 +32,7 @@ rule "[debug] init Common debug mode":
     Entities: {}, Texts: {}
     <fg94a0a544>Open/Close: [INTERACT] + [ABILITY_1] + [ABILITY_2]
     Navigate: [INTERACT] + [↑/↓/←/→]
+    Change x10/x100: [←/→] + [Crouch/Space]
     Interact with menu item: [INTERACT] + [MELEE]
     Ressurect me: [INTERACT] + [RELOAD]</fg>
     ".format(

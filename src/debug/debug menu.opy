@@ -119,6 +119,14 @@ macro leftArrowForMenuItem(actionNum):
 macro rightArrowForMenuItem(actionNum):
   "→" if debugSelectedAction == actionNum else ""
 
+macro autoSwitch(sub):
+  sub
+
+  wait(0.3, Wait.ABORT_WHEN_FALSE)
+  while ruleCondition:
+    sub
+    wait(0.07)
+
 rule "[debug] open/close debug menu":
   @Event eachPlayer
   @Condition eventPlayer.developer or eventPlayer == hostPlayer
@@ -161,6 +169,20 @@ def PrevDebugMenuPageSub():
   else:
     debugMode--
 
+def NextSelectedActionSub():
+  @Name "SUB: [debug] Next Selected Action"
+  if debugSelectedAction >= debugMaxAction:
+    debugSelectedAction = 0
+  else:
+    debugSelectedAction++
+
+def PrevSelectedActionSub():
+  @Name "SUB: [debug] Prev Selected Action"
+  if debugSelectedAction <= 0:
+    debugSelectedAction = debugMaxAction
+  else:
+    debugSelectedAction--
+
 rule "[debug] (Throttle Right) next page menu":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
   @Condition not debugSelectedAction
@@ -185,17 +207,13 @@ rule "[debug] (ULTIMATE) prev page menu":
 
 rule "[debug] (Down) select debug menu action":
   RuleHeaderForDebugMenuInputThrottle(Vector.BACKWARD)
-  if debugSelectedAction >= debugMaxAction:
-    debugSelectedAction = 0
-  else:
-    debugSelectedAction++
+
+  autoSwitch(NextSelectedActionSub())
 
 rule "[debug] (UP) select debug menu action":
   RuleHeaderForDebugMenuInputThrottle(Vector.FORWARD)
-  if debugSelectedAction <= 0:
-    debugSelectedAction = debugMaxAction
-  else:
-    debugSelectedAction--
+
+  autoSwitch(PrevSelectedActionSub())
 
 def RemoveBotsSub():
   @Name "SUB: [debug] remove bots"

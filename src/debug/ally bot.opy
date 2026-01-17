@@ -141,10 +141,8 @@ rule "[debug] Activate selected action for AllyBots mode":
     debugSelectedAllyBot.isReady = not debugSelectedAllyBot.isReady
 
 
-rule "[debug] (Right) BotStateView":
-  RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
-  @Condition debugModesArr[debugMode] == "AllyBots"
-
+def RightBotStateViewSub():
+  @Name "Sub: Right Bot State View"
   if debugSelectedAction == 2: # next bot
     NextAllyBotSub()
   elif debugSelectedAction == 5:
@@ -157,13 +155,17 @@ rule "[debug] (Right) BotStateView":
     debugSelectedAllyBot.healingBoostPercent += incWithModificators(10)
     debugSelectedAllyBot.setHealingDealt(debugSelectedAllyBot.healingBoostPercent)
 
-rule "[debug] (Left) BotStateView":
-  RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
+rule "[debug] (Right) BotStateView":
+  RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
   @Condition debugModesArr[debugMode] == "AllyBots"
 
+  autoSwitch(RightBotStateViewSub())
+
+
+def LeftBotStateViewSub():
+  @Name "Sub: Left Bot State View"
   if debugSelectedAction == 2: # previous bot
     PrevAllyBotSub()
-  
   elif debugSelectedAction == 5:
     debugSelectedAllyBot.damageBoostPercent -= incWithModificators(10)
     debugSelectedAllyBot.setDamageDealt(debugSelectedAllyBot.damageBoostPercent)
@@ -173,6 +175,12 @@ rule "[debug] (Left) BotStateView":
   elif debugSelectedAction == 7:
     debugSelectedAllyBot.healingBoostPercent -= incWithModificators(10)
     debugSelectedAllyBot.setHealingDealt(debugSelectedAllyBot.healingBoostPercent)
+
+rule "[debug] (Left) BotStateView":
+  RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
+  @Condition debugModesArr[debugMode] == "AllyBots"
+
+  autoSwitch(LeftBotStateViewSub())
 
 rule "[debug] Fast next ally bot":
   RuleHeaderDebugPageInteractCondition("AllyBots")
