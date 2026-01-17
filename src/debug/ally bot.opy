@@ -14,25 +14,26 @@ rule "[debug] init Bot state view mode":
 
   wait(0.1)
   debugSelectedAction = 0
-  debugMaxAction = 8
+  debugMaxAction = 9
 
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
     "{}
     {}Add ally bot in my position (max: {})</fg>
-    {}Current bot: {} <fg84c951FF>{} {}</fg> {}</fg> <fg94a0a544>[S_FIRE/P_FIRE]</fg>
+    {}Current bot: {} <fg84c951FF>{} {} ({})</fg> {}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
     {}Kill bot</fg>
-    {}Remove all ally bots</fg>
+    {}Remove ally bot</fg> <fg94a0a544>[+Crouch] = all</fg>
     {}Damage upgrade: {} <fg84c951FF>{}</fg> {}</fg>
     {}Health upgrade (heal): {} <fg84c951FF>{}</fg> {}</fg>
     {}Healing upgrade (ressurect): {} <fg84c951FF>{}</fg> {}</fg>
-    {}Set invincible</fg> <fg84c951FF>{}</fg>
+    {}Set invincible:</fg> <fg84c951FF>{}</fg>
+    {}Enable AI:</fg> <fg84c951FF>{}</fg>
     ----------
     health: <fg84c951FF>{}</fg>
     max health: <fg84c951FF>{}</fg>
-    revivers: {}
-    reviveTimer: {}
-    zomTarget: {}
+    revivers: <fg84c951FF>{}</fg>
+    reviveTimer: <fg84c951FF>{}</fg>
+    botTarget: <fg84c951FF>{}</fg>
     <fg94a0a544>If you die, say `Thanks` and the bot will 
     move to your position to revive you.</fg>
     ".format(
@@ -44,6 +45,7 @@ rule "[debug] init Bot state view mode":
       leftArrowForMenuItem(2),
       heroIcon(debugSelectedAllyBot.getHero()),
       debugSelectedAllyBot,
+      debugSelectedAllyBot.getSlot(),
       rightArrowForMenuItem(2),
 
       debugSelectedActionText(3),
@@ -67,12 +69,15 @@ rule "[debug] init Bot state view mode":
       debugSelectedActionText(8),
       debugSelectedAllyBot.hasStatus(Status.INVINCIBLE),
 
+      debugSelectedActionText(9),
+      debugSelectedAllyBot.isReady,
+
       # ----------
       debugSelectedAllyBot.getHealth(),
       debugSelectedAllyBot.getMaxHealth(),
       debugSelectedAllyBot.revivers,
       debugSelectedAllyBot.reviveTimer,
-      debugSelectedAllyBot.zomTarget
+      debugSelectedAllyBot.botTarget
     ),
     HudPosition.ACTUALLY_LEFT,
     5,
@@ -82,36 +87,6 @@ rule "[debug] init Bot state view mode":
   debugModeHud = getLastCreatedText()
   waitUntil(not ruleCondition, INFINITY)
   destroyHudText(debugModeHud)
-
-
-rule "[debug] Activate selected action for AllyBots mode":
-  ConditionForActivateSelectedAction("AllyBots")
-
-  if debugSelectedAction == 1: # Add bot
-    for I in range(MIN_ALLY_BOT_SLOT, MIN_ALLY_BOT_SLOT + MAX_ALLY_BOTS):
-      if not getPlayersInSlot(I, Team.1):
-        createDummy(Hero.ORISA, Team.1, I, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
-        debugAllyBotCreated = true
-        if not debugSelectedAllyBot:
-          wait(0.1)
-          debugSelectedAllyBot = [player for player in getPlayers(Team.1) if player.isDummy()][0]
-        return
-  elif debugSelectedAction == 3: # Kill bot
-    kill(debugSelectedAllyBot)
-  elif debugSelectedAction == 4: # Remove all ally bots
-    for I in range(MIN_ALLY_BOT_SLOT, MIN_ALLY_BOT_SLOT + MAX_ALLY_BOTS):
-      destroyDummy(Team.1, I)
-    debugAllyBotCreated = false
-  elif debugSelectedAction == 6: # Heal
-    heal(debugSelectedAllyBot, null, INFINITY)
-  elif debugSelectedAction == 7: # Ressurect
-    debugSelectedAllyBot.resurrect()
-  elif debugSelectedAction == 8: # set INVINCIBLE
-    if debugSelectedAllyBot.hasStatus(Status.INVINCIBLE):
-      debugSelectedAllyBot.clearStatusEffect(Status.INVINCIBLE)
-    else:
-      debugSelectedAllyBot.setStatusEffect(debugSelectedAllyBot, Status.INVINCIBLE, INFINITY)
-
 
 def NextAllyBotSub():
   @Name "Sub: next ally bot"
@@ -130,6 +105,41 @@ def PrevAllyBotSub():
   )
   eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedAllyBot or player.getSlot() < debugSelectedAllyBot.getSlot()].last()
   debugSelectedAllyBot = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0.last()
+
+rule "[debug] Activate selected action for AllyBots mode":
+  ConditionForActivateSelectedAction("AllyBots")
+
+  if debugSelectedAction == 1: # Add bot
+    for I in range(MIN_ALLY_BOT_SLOT, MIN_ALLY_BOT_SLOT + MAX_ALLY_BOTS):
+      if not getPlayersInSlot(I, Team.1):
+        createDummy(Hero.ORISA, Team.1, I, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
+        debugAllyBotCreated = true
+        if not debugSelectedAllyBot:
+          wait(0.1)
+          debugSelectedAllyBot = [player for player in getPlayers(Team.1) if player.isDummy()][0]
+        return
+  elif debugSelectedAction == 3: # Kill bot
+    kill(debugSelectedAllyBot)
+  elif debugSelectedAction == 4: # Remove all ally bots
+    if eventPlayer.isHoldingButton(Button.CROUCH):
+      for I in range(MIN_ALLY_BOT_SLOT, MIN_ALLY_BOT_SLOT + MAX_ALLY_BOTS):
+        destroyDummy(Team.1, I)
+    else:
+      destroyDummy(Team.1, debugSelectedAllyBot.getSlot())
+      NextAllyBotSub()
+    debugAllyBotCreated = any([player for player in getPlayers(Team.1) if player.isDummy()])
+  elif debugSelectedAction == 6: # Heal
+    heal(debugSelectedAllyBot, null, INFINITY)
+  elif debugSelectedAction == 7: # Ressurect
+    debugSelectedAllyBot.resurrect()
+  elif debugSelectedAction == 8: # set INVINCIBLE
+    if debugSelectedAllyBot.hasStatus(Status.INVINCIBLE):
+      debugSelectedAllyBot.clearStatusEffect(Status.INVINCIBLE)
+    else:
+      debugSelectedAllyBot.setStatusEffect(debugSelectedAllyBot, Status.INVINCIBLE, INFINITY)
+  elif debugSelectedAction == 9: # enable AI
+    debugSelectedAllyBot.isReady = not debugSelectedAllyBot.isReady
+
 
 rule "[debug] (Right) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
@@ -182,17 +192,16 @@ rule "[debug] Ally bot: Init":
   @Hero orisa
   @Condition eventPlayer.isDummy()
   
-  eventPlayer.startForcingName("Ally bot {}".format(eventPlayer.getSlot()))
-  eventPlayer.isReady = true
   eventPlayer.healthBoostPercent += 10000
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
   wait()
   heal(eventPlayer, null, INFINITY)
+  eventPlayer.startForcingName("Ally bot {}".format(eventPlayer.getSlot()))
 
 macro getAllyBotTarget():
   eventPlayer.tmp1 = false      # current target distance
   eventPlayer.tmp2 = false      # distance to best canditate to target
-  eventPlayer.zomTarget = false # target being pursued by the zombie
+  eventPlayer.botTarget = false # target being pursued by the zombie
 
   eventPlayer.list0 = getPlayers(Team.2)
   for eventPlayer.I in range(len(eventPlayer.list0)):
@@ -206,23 +215,24 @@ macro getAllyBotTarget():
       continue
 
     if isInLoS(eventPlayer, eventPlayer.tmp0):
-      eventPlayer.zomTarget = eventPlayer.tmp0
+      eventPlayer.botTarget = eventPlayer.tmp0
       eventPlayer.tmp2 = eventPlayer.tmp1
     
 
 rule "[debug] Ally bot: Find Target and attack":
   @Event eachPlayer
-  @Condition debugAllyBotCreated
   @Team 1
   @Hero orisa
+  @Condition debugAllyBotCreated
   @Condition eventPlayer.isDummy()
+  @Condition eventPlayer.isReady
 
   if eventPlayer.zomAIstep == 0:
     getAllyBotTarget()
 
-  if eventPlayer.zomTarget:
+  if eventPlayer.botTarget:
     eventPlayer.setFacing(
-      directionTowards(eventPlayer.getEyePosition(), eventPlayer.zomTarget.getEyePosition()),
+      directionTowards(eventPlayer.getEyePosition(), eventPlayer.botTarget.getEyePosition()),
       Relativity.TO_WORLD
     )
 
@@ -232,22 +242,11 @@ rule "[debug] Ally bot: Find Target and attack":
 
   eventPlayer.zomAIstep = 0 if eventPlayer.zomAIstep >= 4 else eventPlayer.zomAIstep + 1
   wait(0.2)
+  if not eventPlayer.isReady:
+    eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
+
   if ruleCondition:
     loop()
-
-
-# rule "[debug] Ally bot: Start / Stop Shooting":
-#   @Event eachPlayer
-#   @Condition debugAllyBotCreated
-#   @Team 1
-#   @Hero orisa
-#   @Condition eventPlayer.isDummy()
-#   @Condition (eventPlayer.abilState0 and not eventPlayer.isMoving())
-  
-#   eventPlayer.startForcingButton(Button.PRIMARY_FIRE)
-#   waitUntil(not (eventPlayer.abilState0 and not eventPlayer.isMoving()), INFINITY)
-#   eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
-    
 
 rule "[debug] Teleport ally bot to died player":
   @Event eachPlayer

@@ -135,11 +135,12 @@ rule "[debug] fast ressurect":
   ConditionForDebugMenuInteract()
   @Condition not eventPlayer.isAlive()
   @Condition eventPlayer.isHoldingButton(Button.RELOAD)
+  eventPlayer.teleport(nearestWalkablePosition(eventPlayer))
   eventPlayer.resurrect()
 
 macro debugMenuTitle(name):
   "Debug menu:
-  {}Page: {} <fg84c951FF>{}</fg> {} <fg94a0a544>[ULTIMATE/ABILITY_2]</fg>".format(
+  {}Page: {} <fg84c951FF>{}</fg> {} <fg94a0a544>← [ULTIMATE/ABILITY_2] →</fg>".format(
     debugSelectedActionText(0), 
     "←" if not debugSelectedAction else "",
     name,
@@ -199,8 +200,7 @@ rule "[debug] (UP) select debug menu action":
 def RemoveBotsSub():
   @Name "SUB: [debug] remove bots"
   isBotsDisabled = true
-  for I in range(15):
-    destroyDummy(Team.2, I)
+  destroyAllDummies()
 
   if roundNumber > 0:
     roundNumber -= 1
