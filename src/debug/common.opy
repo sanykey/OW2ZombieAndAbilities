@@ -150,7 +150,7 @@ rule "[debug] Activate selected action for Common mode":
       enableInspector()
 
   elif debugSelectedAction == 12: # resurrect all
-    reviveAllPlayersSR()
+    ReviveAllPlayersSub()
   
 rule "[debug] Unlimit ultimates":
   @Event eachPlayer
@@ -186,19 +186,5 @@ rule "[debug] refresh noclip":
   eventPlayer.setStatusEffect(null, Status.HACKED, 0.05)
 
 
-rule "[debug] effect for debugBotsSpawnPoint":
-  @Condition debugBotsSpawnPoint
 
-  createEffect(
-    getAllPlayers(),
-    Effect.SPHERE,
-    Color.GREEN,
-    debugBotsSpawnPoint,
-    1,
-    EffectReeval.POSITION_AND_RADIUS
-  )
-
-  debugBotsSpawnPointEffect = getLastCreatedEntity()
-  waitUntil(not ruleCondition, INFINITY)
-  destroyEffect(debugBotsSpawnPointEffect)
   

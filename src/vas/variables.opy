@@ -3,6 +3,12 @@
 #####################################################
 #################### Defines ########################
 ######################################################
+enum Team:
+  PLAYERS = Team.1
+	ZOMBIES = Team.2
+
+#!define MODE_VERSION "v0.10.2 beta (03.01.2026)"
+
 # [shop]:
 #!define UPGRADE_PRICE 2500
 #!define TEAM_UPGRADE_PRICE 10000
@@ -36,7 +42,7 @@
 #!define BOT_FAKE_DIE_HP_THRESHOLD 10
 
 # Player settings
-#!define MAX_PLAYERS 5
+#!define MAX_PLAYERS 6
 #!define AUTO_HEALING_OVERTIME_DURATION 20
 #!define REVEAL_DURATION 10
 
@@ -61,6 +67,8 @@
 #!define ANA_PARALYZING_STRIKE_CD 12
 
 #!define CASSIDY_LASSO_CD 12
+
+#!define DVA_BOOSTERS_KNOCK_DOWN_TIME 1.5
 
 #####################################################
 ################ Global constants ###################
@@ -106,6 +114,7 @@ globalvar teamArmor
 globalvar matchIsOver = false
 globalvar unlockedLocations = 0
 globalvar roundRemainingBots = 0
+globalvar roundMaxBotsSlots
 
 globalvar isBotsDisabled
 
@@ -141,19 +150,18 @@ globalvar debugBotsSpawnPoint
 ##################################################
 ############## Player variables: #################
 ##################################################
-playervar zomDistancesToPlayersArr  # distances to players for current zombie (Cache)
 playervar zomIsInLoSPlayersArr      # players visibility for current zombie (Cache)
-playervar zomDownedTime             # zombie death timestamp (to preserve respawn order)
 playervar zomIsHacked
 playervar zomForceHeroOnRespawn
-playervar zomMeleeAttackTargets
-playervar zomFlyThroughWalls
+playervar botMeleeAttackTargets
+playervar botWallPhase
 playervar zomLastMeleeAttackTimeArr
-playervar zomFlyThroughWallsPoints
-playervar zomTarget
+playervar botWantsWallPhasePoints
+playervar botTarget
 playervar zomAIstep
 globalvar botWidowmakerAvaliableSpawnSpots
-# detecting crowd control abilities for bots fall damage
+
+# detecting crowd control abilities for bots fall damage and unstuck (or wall phase) mechanics
 playervar lastCcAttacker
 playervar lastCcAttackTime
 playervar lastCcWasInAir
@@ -176,6 +184,14 @@ playervar healthBoostPercent
 playervar damageBoostPercent
 playervar healingBoostPercent
 
+playervar attach2p
+enum Attach2P:
+  IS_ATTACHED
+  PARENT
+  POSITION
+  HEALTH_POOL
+  CHILD
+
 #!define PV_ARMOR_FOR_TEAM 1
 #!define PV_TEAM_ARMOR_POOL 3
 playervar boostStats # [shieldsForTeam, armorForTeam, teamShieldsPool, teamArmorPool]
@@ -188,14 +204,13 @@ playervar effectsIds
 #!define REVIVE_CIRCLE_EFFECT 1
 #!define REVIVE_TEXT 2
 #!define REVEALED_ICON 3
-#!define ZOMBIE_FLY_ICON 4
 #!define ZOMBIE_LAST_ICON 5
 
 playervar heroEffectsIds
 
 playervar revealed
-playervar money__zomStuckPoints
-playervar moneyTotal__zomStuckPrevPosition
+playervar money__botStuckTimes
+playervar moneyTotal__botOldPosition
 
 playervar abilTemp1 # tmp var use for loops with "wait" per hero
 playervar isInvisible

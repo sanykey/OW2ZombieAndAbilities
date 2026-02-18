@@ -1,8 +1,5 @@
 #!mainFile "../main.opy"
 
-#!define MAX_ALLY_BOTS 6
-#!define MIN_ALLY_BOT_SLOT 7
-
 globalvar debugAllyBotCreated
 globalvar debugSelectedAllyBot
 
@@ -19,7 +16,7 @@ rule "[debug] init Bot state view mode":
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
     "{}
-    {}Add ally bot in my position (max: {})</fg>
+    {}Add ally bot in my position</fg>
     {}Current bot: {} <fg84c951FF>{} {} ({})</fg> {}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
     {}Kill bot</fg>
     {}Remove ally bot</fg> <fg94a0a544>[+Crouch] = all</fg>
@@ -39,7 +36,6 @@ rule "[debug] init Bot state view mode":
     ".format(
       debugMenuTitle("AllyBots"),
       debugSelectedActionText(1),
-      MAX_ALLY_BOTS,
       debugSelectedActionText(2),
 
       leftArrowForMenuItem(2),
@@ -110,19 +106,25 @@ rule "[debug] Activate selected action for AllyBots mode":
   ConditionForActivateSelectedAction("AllyBots")
 
   if debugSelectedAction == 1: # Add bot
-    for I in range(MIN_ALLY_BOT_SLOT, MIN_ALLY_BOT_SLOT + MAX_ALLY_BOTS):
-      if not getPlayersInSlot(I, Team.1):
-        createDummy(Hero.ORISA, Team.1, I, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
-        debugAllyBotCreated = true
-        if not debugSelectedAllyBot:
-          wait(0.1)
-          debugSelectedAllyBot = [player for player in getPlayers(Team.1) if player.isDummy()][0]
-        return
+    createDummy(Hero.ORISA, Team.1, -1, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
+    eventPlayer.tmp0 = getLastCreatedEntity()
+    eventPlayer.tmp0 = eventPlayer.tmp0[0]
+    eventPlayer.tmp0.startForcingName("Ally bot {}".format(I))
+    eventPlayer.tmp0.healthBoostPercent += 10000
+    eventPlayer.tmp0.setMaxHealth(eventPlayer.tmp0.healthBoostPercent)
+    wait()
+    heal(eventPlayer.tmp0, null, INFINITY)
+
+    debugAllyBotCreated = true
+    if not debugSelectedAllyBot:
+      wait(0.1)
+      NextAllyBotSub()
   elif debugSelectedAction == 3: # Kill bot
     kill(debugSelectedAllyBot)
   elif debugSelectedAction == 4: # Remove all ally bots
     if eventPlayer.isHoldingButton(Button.CROUCH):
-      for I in range(MIN_ALLY_BOT_SLOT, MIN_ALLY_BOT_SLOT + MAX_ALLY_BOTS):
+      eventPlayer.tmp0 = getNumberOfPlayers(Team.PLAYERS)
+      for I in range(eventPlayer.tmp0):
         destroyDummy(Team.1, I)
     else:
       destroyDummy(Team.1, debugSelectedAllyBot.getSlot())
@@ -193,25 +195,25 @@ rule "[debug] Fast prev ally bot":
   PrevAllyBotSub()
 
 
-rule "[debug] Ally bot: Init":
-  @Event eachPlayer
-  @Condition debugAllyBotCreated
-  @Team 1
-  @Hero orisa
-  @Condition eventPlayer.isDummy()
+# rule "[debug] Ally bot: Init":
+#   @Event eachPlayer
+#   @Condition debugAllyBotCreated
+#   @Team 1
+#   @Hero orisa
+#   @Condition eventPlayer.isDummy()
   
-  eventPlayer.healthBoostPercent += 10000
-  eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  wait()
-  heal(eventPlayer, null, INFINITY)
-  eventPlayer.startForcingName("Ally bot {}".format(eventPlayer.getSlot()))
+#   eventPlayer.healthBoostPercent += 10000
+#   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
+#   wait()
+#   heal(eventPlayer, null, INFINITY)
+#   eventPlayer.startForcingName("Ally bot {}".format(eventPlayer.getSlot()))
 
 macro getAllyBotTarget():
   eventPlayer.tmp1 = false      # current target distance
   eventPlayer.tmp2 = false      # distance to best canditate to target
   eventPlayer.botTarget = false # target being pursued by the zombie
 
-  eventPlayer.list0 = getPlayers(Team.2)
+  eventPlayer.list0 = getPlayers(Team.ZOMBIES)
   for eventPlayer.I in range(len(eventPlayer.list0)):
     eventPlayer.tmp0 = eventPlayer.list0[eventPlayer.I]
     if not eventPlayer.tmp0 or eventPlayer.tmp0.isDead():

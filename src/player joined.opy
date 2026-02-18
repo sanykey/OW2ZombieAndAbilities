@@ -4,18 +4,6 @@
 globalvar devPlayers = ["snky"] # List of players who received develop privileges
 
 
-def UpdateCombatantsSub():
-  @Name "Sub: Update combatants"
-  combatants = [player for player in getPlayers(Team.1) if player.isAlive() and player.hasSpawned() and not player.isInSecretShop]
-
-def SetHeroTypeSub():
-  @Name "Sub: setHeroType"
-  if eventPlayer.getCurrentHero() in getTankHeroes():
-    eventPlayer.heroType = HeroType.TANK
-  elif eventPlayer.getCurrentHero() in getSupportHeroes():
-    eventPlayer.heroType = HeroType.SUPPORT
-  else:
-    eventPlayer.heroType = HeroType.DAMAGE
 
 
 rule "Player joined setup": 
@@ -77,6 +65,7 @@ rule "Show game tips in start":
   @Event eachPlayer
   @Team 1 
   @Condition not eventPlayer.isReady
+  @Condition not eventPlayer.isDummy()
 
   while not eventPlayer.isReady: 
     if distance(eventPlayer, vect(-27.33, -1.94, -12.68)) > 6:
@@ -88,7 +77,7 @@ rule "Player left Match, destroy effects, texts and hud":
   @Team 1
   @Condition not eventPlayer.isDummy() or (eventPlayer.isDummy() and eventPlayer.getHero() == Hero.ORISA)
   UpdateCombatantsSub()
-  DetachP2PSub()
+  # DetachP2PSub()
   destroyHudText(eventPlayer.effectsIds[PLAYER_STATUS_HUD])
   destroyEffect(eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT])
   destroyInWorldText(eventPlayer.effectsIds[REVIVE_TEXT])

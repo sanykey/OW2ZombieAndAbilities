@@ -46,7 +46,7 @@ rule "[Ramattra] Barrier up":
 
   eventPlayer.tmp1 = raycast(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0) - vect(0, 3, 0), null, eventPlayer, true).getHitPosition()
   
-  # eventPlayer.tmp2 = getPlayersInRadius(eventPlayer.tmp1, 3.5, Team.2)
+  # eventPlayer.tmp2 = getPlayersInRadius(eventPlayer.tmp1, 3.5, Team.ZOMBIES)
   # #Barrier launches away
   # eventPlayer.tmp2.applyImpulse(vectorTowards(eventPlayer.getPosition(), eventPlayer.tmp1) + vect(0, 5, 0), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   # playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.PURPLE, eventPlayer.tmp1, 3)
@@ -110,8 +110,8 @@ rule "[Ramattra] Barrier push enemies":
   @Hero ramattra
   @Condition eventPlayer.isActiveBarrier
 
-  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK], 3, Team.2)
-  eventPlayer.list0.append([player for player in getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK], 3, Team.2) if player not in eventPlayer.list0])
+  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK], 3, Team.ZOMBIES)
+  eventPlayer.list0.append([player for player in getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK], 3, Team.ZOMBIES) if player not in eventPlayer.list0])
 
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
   damage(eventPlayer.list0, eventPlayer, 0.1)

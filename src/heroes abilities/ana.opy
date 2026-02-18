@@ -197,7 +197,7 @@ rule "[Ana] splash damage and heal from scoped shot":
   eventPlayer.tmp0 = raycast(
     eventPlayer.getEyePosition() + vect(false, -0.1, false),
     eventPlayer.getEyePosition() + vect(false, -0.1, false) + eventPlayer.getFacingDirection() * 100,
-    [player for player in getPlayers() if player.isAlive() and (player.getTeam() == Team.2 or (player.getTeam() == Team.1 and player.getHealth() < player.getMaxHealth()))],
+    [player for player in getPlayers() if player.isAlive() and (player.getTeam() == Team.ZOMBIES or (player.getTeam() == Team.1 and player.getHealth() < player.getMaxHealth()))],
     eventPlayer,
     true
   ).getHitPosition()

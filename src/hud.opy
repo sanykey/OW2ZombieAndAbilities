@@ -22,6 +22,7 @@ macro setHeroInfoText1(text, vert = 3.5, horFix = 9):
   eventPlayer.heroInfoHorFix1 = horFix
   eventPlayer.heroInfoText1 = text
 
+# todo: rename -> ClearHeroInfoSub
 def clearHeroInfo():
   @Name "Subroutine: Clear hero info"
   eventPlayer.heroInfoText0 = null
@@ -154,7 +155,7 @@ rule "Create players effects":
     "{0}{1}: {2}".format(
       eventPlayer,
       " <fg94a0a544>(host)</fg>" if eventPlayer == hostPlayer else "",
-      "<fg94a0a544>${}(tot)</fg>".format(eventPlayer.moneyTotal__zomStuckPrevPosition) if localPlayer.isHoldingButton(Button.CROUCH) else "${}".format(eventPlayer.money__zomStuckPoints)
+      "<fg94a0a544>${}(tot)</fg>".format(eventPlayer.moneyTotal__botOldPosition) if localPlayer.isHoldingButton(Button.CROUCH) else "${}".format(eventPlayer.money__botStuckTimes)
     ),
     HudPosition.ACTUALLY_LEFT,
     1,
@@ -164,23 +165,3 @@ rule "Create players effects":
     HudReeval.VISIBILITY_STRING_AND_COLOR
   )
   eventPlayer.effectsIds[PLAYER_STATUS_HUD] = getLastCreatedText()
-
-
-rule "init utils":
-  # Disable inspector recording
-  disableInspector()
-
-  # Show ServerLoad info
-  hudSubheader(
-    localPlayer if localPlayer == hostPlayer or localPlayer.developer else null,
-    "Server load: {} | Max: {} | Cur: {}
-    ".format(
-      getAverageServerLoad(),
-      getPeakServerLoad(),
-      getServerLoad()
-    ),
-    HudPosition.RIGHT,
-    -5,
-    rgb(255, 280 - getAverageServerLoad(), 0),
-    HudReeval.VISIBILITY_STRING_AND_COLOR
-  )

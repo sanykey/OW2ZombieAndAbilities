@@ -5,7 +5,7 @@ globalvar heroesList = [Hero.DVA]
 rule "Create hero buy positions":
   heroesList.append(random.shuffle(getAllHeroes().exclude(Hero.DVA))) # 43 heroes
 
-  for I in range(len(heroesList)):
+  for I in range(VL_BUY_HERO_SPOTS_LEN):
     heroesShopData[I] = [
       heroesList[I],
       vectList[I + VL_BUY_HERO_SPOTS_OFFSET],
@@ -40,10 +40,10 @@ rule "Buy hero":
       if (
         heroesShopData[I][0] == Hero.DVA and
         not eventPlayer.isDvaUltBought and
-        eventPlayer.money__zomStuckPoints >= heroesShopData[I][2]
+        eventPlayer.money__botStuckTimes >= heroesShopData[I][2]
       ):
         eventPlayer.isDvaUltBought = true
-        eventPlayer.money__zomStuckPoints -= heroesShopData[I][2]
+        eventPlayer.money__botStuckTimes -= heroesShopData[I][2]
         eventPlayer.damageResistPercent += DAMAGE_RESISTANCE_BY_OWNED_HERO
         eventPlayer.setDamageReceived(100 - eventPlayer.damageResistPercent)
         eventPlayer.setUltEnabled(true)
@@ -51,7 +51,7 @@ rule "Buy hero":
         wait()
 
       eventPlayer.tmp0 = heroesShopData[I][0] in eventPlayer.purchasedHeroes
-      if eventPlayer.tmp0 or eventPlayer.money__zomStuckPoints >= heroesShopData[I][2]:
+      if eventPlayer.tmp0 or eventPlayer.money__botStuckTimes >= heroesShopData[I][2]:
         eventPlayer.startForcingHero(heroesShopData[I][0])
         wait(0.1)
 
@@ -61,7 +61,7 @@ rule "Buy hero":
         playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)
         if not eventPlayer.tmp0:
           wait()
-          eventPlayer.money__zomStuckPoints -= heroesShopData[I][2]
+          eventPlayer.money__botStuckTimes -= heroesShopData[I][2]
           eventPlayer.purchasedHeroes.append(heroesShopData[I][0])
           eventPlayer.damageResistPercent += DAMAGE_RESISTANCE_BY_OWNED_HERO
           eventPlayer.setDamageReceived(100 - eventPlayer.damageResistPercent)

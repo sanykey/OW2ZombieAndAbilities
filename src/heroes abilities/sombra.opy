@@ -45,9 +45,9 @@ rule "[Sombre] Stop invisible when hacking":
   @Hero sombra
   @Condition (
     eventPlayer.isFiringSecondaryFire() and
-    eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.2), 8) and
-    isInLoS(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.2)) and
-    distance(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.2)) <= 15 
+    eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES), 8) and
+    isInLoS(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES)) and
+    distance(eventPlayer, eventPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES)) <= 15 
   )
   eventPlayer.isInvisible = false
 
@@ -99,8 +99,8 @@ rule "[Sombra] Extra damage to hacked enemy (for all teammates)":
 #   if eventPlayer.isDead():
 #       return
 #   wait(0.25)
-#   damage(getPlayersInRadius(eventPlayer, 8, Team.2, LosCheck.SURFACES), eventPlayer, 50)
+#   damage(getPlayersInRadius(eventPlayer, 8, Team.ZOMBIES, LosCheck.SURFACES), eventPlayer, 50)
 #   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getEyePosition(), 20000)
 #   playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.PURPLE, eventPlayer.getEyePosition(), 8)
 #   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.VIOLET, eventPlayer.getEyePosition(), 16)
-#   getPlayersInRadius(eventPlayer.getEyePosition(), 8, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.HACKED, 2)
+#   getPlayersInRadius(eventPlayer.getEyePosition(), 8, Team.ZOMBIES, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.HACKED, 2)

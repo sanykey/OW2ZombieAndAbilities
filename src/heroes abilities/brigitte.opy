@@ -136,7 +136,9 @@ rule "[Brigitte] Use repair packs on yourself":
   eventPlayer.startHealingOverTime(eventPlayer, 2, 20)
 
   playEffect(getAllPlayers(), DynamicEffect.BRIGITTE_REPAIR_PACK_ARMOR, Color.TEAM_1, eventPlayer.getPosition(), 100)
-  playEffect(getAllPlayers(), DynamicEffect.BRIGITTE_REPAIR_PACK_ARMOR_SOUND, Color.WHITE, eventPlayer.getPosition(), 100)
+
+  # todo: remove or replace:
+  # playEffect(getAllPlayers(), DynamicEffect.BRIGITTE_REPAIR_PACK_ARMOR_SOUND, Color.WHITE, eventPlayer.getPosition(), 100)
 
 # rule "[Brigitte] debug":
 #   @Event eachPlayer

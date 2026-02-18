@@ -1,7 +1,7 @@
 #!mainFile "../main.opy"
 
 def botEchoFlyToPlayer():
-  @Name "[Team2 Echo] Fly to player"
+  @Name "[ZombieTeam Echo] Fly to player"
   
   eventPlayer.startFacing(
     directionTowards(eventPlayer.getEyePosition(), eventPlayer.target0.getEyePosition()), 300
@@ -12,7 +12,7 @@ def botEchoFlyToPlayer():
   eventPlayer.stopForcingButton(Button.JUMP)
 
 def botEchoDetachPlayer():
-  @Name "[Team2 Echo] Detach player"
+  @Name "[ZombieTeam Echo] Detach player"
   
   eventPlayer.targetPlayer1.detach()
   eventPlayer.targetPlayer1.clearStatusEffect(Status.HACKED)
@@ -38,7 +38,7 @@ def botEchoRespawn():
   playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, null, eventPlayer.abilPos0, 100)
 
 
-rule "[Team2 Echo] Fly ability":
+rule "[ZombieTeam Echo] Fly ability":
   @Event eachPlayer
   @Team 2
   @Hero echo
@@ -51,7 +51,7 @@ rule "[Team2 Echo] Fly ability":
   if ruleCondition:
     loop()
 
-rule "[Team2 Echo] Beam ability":
+rule "[ZombieTeam Echo] Beam ability":
   @Event eachPlayer
   @Team 2
   @Hero echo
@@ -63,7 +63,7 @@ rule "[Team2 Echo] Beam ability":
   eventPlayer.forceButtonPress(Button.ABILITY_2)
 
 
-rule "[Team2 Echo] respawn":
+rule "[ZombieTeam Echo] respawn":
   @Event eachPlayer
   @Team 2
   @Hero echo
@@ -81,7 +81,7 @@ rule "[Team2 Echo] respawn":
   loop()
 
 
-rule "[Team2 Echo] can see player":
+rule "[ZombieTeam Echo] can see player":
   @Event eachPlayer
   @Team 2
   @Hero echo
@@ -98,7 +98,7 @@ rule "[Team2 Echo] can see player":
   eventPlayer.stopForcingButton(Button.JUMP)
 
 
-rule "[Team2 Echo] Attach player by beam":
+rule "[ZombieTeam Echo] Attach player by beam":
   @Event eachPlayer
   @Team 2
   @Hero echo
@@ -118,7 +118,7 @@ rule "[Team2 Echo] Attach player by beam":
   eventPlayer.targetPlayer1.attachTo(eventPlayer, vect(0, 0, 1))
   eventPlayer.forceButtonPress(Button.ABILITY_2)
 
-rule "[Team2 Echo] Bad status - reset beam":
+rule "[ZombieTeam Echo] Bad status - reset beam":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
@@ -128,7 +128,7 @@ rule "[Team2 Echo] Bad status - reset beam":
     botEchoDetachPlayer()
 
 
-rule "[Team2 Echo] player dead":
+rule "[ZombieTeam Echo] player dead":
   @Event eachPlayer
   @Team 2
   @Hero echo
@@ -138,7 +138,7 @@ rule "[Team2 Echo] player dead":
   if eventPlayer.abilState0:
     botEchoDetachPlayer()
 
-rule "[Team2 Echo] death":
+rule "[ZombieTeam Echo] death":
   @Event playerDied
   @Team 2
   @Hero echo
@@ -146,7 +146,7 @@ rule "[Team2 Echo] death":
   botEchoDetachPlayer()
   eventPlayer.stopForcingButton(Button.JUMP)
 
-rule "[Team2 Echo] main logic loop":
+rule "[ZombieTeam Echo] main logic loop":
   @Event eachPlayer
   @Team 2
   @Hero echo
@@ -161,7 +161,7 @@ rule "[Team2 Echo] main logic loop":
 
   eventPlayer.tmp0 = (
     sorted(
-      [player for player in getLivingPlayers(Team.2).exclude(eventPlayer) if (
+      [player for player in getLivingPlayers(Team.ZOMBIES).exclude(eventPlayer) if (
         player.hasSpawned() and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition())
       )],
       lambda i: distance(eventPlayer, i)

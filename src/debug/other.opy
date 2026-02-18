@@ -38,11 +38,11 @@
 # rule "[debug] debug objects":
 #   debug(hostPlayer.isCommunicatingEmote())
 #   debug(hostPlayer.isCommunicatingVoiceline())
-#   debug(getPlayersInSlot(0, Team.2).money__botStuckTimes)
-#   debug(getPlayersInSlot(0, Team.2).abilTemp1)
+#   debug(getPlayersInSlot(0, Team.ZOMBIES).money__botStuckTimes)
+#   debug(getPlayersInSlot(0, Team.ZOMBIES).abilTemp1)
 #   debug(getTotalTimeElapsed())
-#   debug(getPlayersInSlot(0, Team.2).abilPos0)
-#   debug(isInLoS(getPlayersInSlot(0, Team.2), getPlayersInSlot(0, Team.2).target0))
+#   debug(getPlayersInSlot(0, Team.ZOMBIES).abilPos0)
+#   debug(isInLoS(getPlayersInSlot(0, Team.ZOMBIES), getPlayersInSlot(0, Team.ZOMBIES).target0))
 
   # debug(secretShopZoneEffects)
   # debug(zonesHeroBuyLen)
@@ -55,7 +55,7 @@
 #   @Condition eventPlayer == hostPlayer
 #   @Condition eventPlayer.isHoldingButton(Button.RELOAD) == true
   
-#   eventPlayer.tmp1 = random.choice(getLivingPlayers(Team.2))
+#   eventPlayer.tmp1 = random.choice(getLivingPlayers(Team.ZOMBIES))
 #   damage(eventPlayer.tmp1, eventPlayer, 99999)
 
 # rule "[debug] show current position":
@@ -148,7 +148,7 @@
 #     Beam.TORBJORN_TURRET_SIGHT,
 #     eventPlayer.getEyePosition() + vect(0, -0.45, 0),
 #     eventPlayer.raycast[RI.FACING_DIRECTION] * 50,
-#     Color.TEAM_2,
+#     Color.Team.ZOMBIES,
 #     EffectReeval.COLOR
 #   )
 #   eventPlayer.effectsIds[HI.DEBUG] = getLastCreatedEntity()

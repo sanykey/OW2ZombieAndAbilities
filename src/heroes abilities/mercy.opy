@@ -37,7 +37,7 @@ rule "[Mercy] Immune during revive":
   wait(1.7)
   if not RULE_CONDITION:
       return
-  getPlayersInRadius(eventPlayer, 5, Team.2).setStatusEffect(null, Status.STUNNED, 2)
+  getPlayersInRadius(eventPlayer, 5, Team.ZOMBIES).setStatusEffect(null, Status.STUNNED, 2)
 
 rule "[Mercy] revive":
   @Event eachPlayer

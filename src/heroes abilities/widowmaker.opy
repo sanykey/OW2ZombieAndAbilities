@@ -153,7 +153,7 @@ rule "[Widowmaker] Falling stars":
       Vector.UP,
       Relativity.TO_WORLD,
       ModifyHealth.DAMAGE,
-      Team.2,
+      Team.ZOMBIES,
       30,
       1,
       4,
@@ -176,7 +176,7 @@ rule "[Widowmaker] Falling stars":
       Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.abilTemp1 * 90, 0)),
       Relativity.TO_WORLD,
       ModifyHealth.DAMAGE,
-      Team.2,
+      Team.ZOMBIES,
       30,
       1,
       3,
@@ -216,7 +216,9 @@ rule "[Widowmaker] When grappling hook ends, latch onto any nearby wall":
   eventPlayer.setGravity(100)
   eventPlayer.stopForcingThrottle()
   eventPlayer.abilState1 = false
-  playEffect(eventPlayer, DynamicEffect.DOOMFIST_RISING_UPPERCUT_IMPACT_SOUND, Color.WHITE, eventPlayer.getPosition(), 75)
+
+  # todo: remove or replace:
+  # playEffect(eventPlayer, DynamicEffect.DOOMFIST_RISING_UPPERCUT_IMPACT_SOUND, Color.WHITE, eventPlayer.getPosition(), 75)
 
 
 # You have to calculate the direction before you shoot. If you do it during the shot, the recoil from the shot can affect the counts
@@ -228,7 +230,7 @@ rule "[Widowmaker] Aiming through walls":
   @Condition not eventPlayer.isFiringPrimaryFire()
   @Condition eventPlayer.abilState2 >= 100
   @Condition any([
-    player for player in getLivingPlayers(Team.2) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
+    player for player in getLivingPlayers(Team.ZOMBIES) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
   ])
   
   eventPlayer.abilDir0 = eventPlayer.getFacingDirection()
@@ -236,7 +238,7 @@ rule "[Widowmaker] Aiming through walls":
   if (
     not eventPlayer.isFiringSecondaryFire() or
     eventPlayer.abilState2 < 100 or
-    not eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.2), WALLHACK_SHOT_IN_VIEW_ANGLE)
+    not eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES), WALLHACK_SHOT_IN_VIEW_ANGLE)
   ):
     eventPlayer.abilDir0 = false
     return
@@ -261,14 +263,14 @@ rule "[Widowmaker] damage through walls":
   eventPlayer.tmp2 = raycast(
     eventPlayer.getEyePosition(),
     eventPlayer.getEyePosition() + eventPlayer.abilDir0 * 200,
-    getPlayers(Team.2),
+    getPlayers(Team.ZOMBIES),
     eventPlayer,
     true
   ).getPlayerHit()
 
   eventPlayer.tmp3 = false
   eventPlayer.list0 = [
-    player for player in getPlayers(Team.2) if player.isAlive() and eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
+    player for player in getPlayers(Team.ZOMBIES) if player.isAlive() and eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
   ]
 
   for eventPlayer.tmp1 in range(len(eventPlayer.list0)):

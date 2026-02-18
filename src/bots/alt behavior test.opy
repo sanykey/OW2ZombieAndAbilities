@@ -251,7 +251,7 @@ rule "BOTS MELEE":
 #         wait(1)
 #         waitUntil(eventPlayer.damageOverTimeDuration <= 0, 10)
 #         updateBotSpawnPoints()
-#         destroyDummy(Team.2, eventPlayer.getSlot())
+#         destroyDummy(Team.ZOMBIES, eventPlayer.getSlot())
 #         return
 #     elif eventWasEnvironment and distance(eventPlayer.getPosition(), vect(eventPlayer.telePos.x, eventPlayer.getPosition().y, eventPlayer.telePos.z)) < 10:
 #         eventPlayer.successfullyTeleported = false
@@ -425,7 +425,7 @@ rule "BOTS MELEE":
 #         wait(0.25)
 #         if eventPlayer.crowdControlled or eventPlayer.hasStatus(Status.HACKED):
 #             return
-#         ([player for player in getPlayersInRadius(eventPlayer, 2, Team.2, LosCheck.SURFACES) if player != eventPlayer]).applyImpulse(Vector.UP, 3, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+#         ([player for player in getPlayersInRadius(eventPlayer, 2, Team.ZOMBIES, LosCheck.SURFACES) if player != eventPlayer]).applyImpulse(Vector.UP, 3, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 #         eventPlayer.applyImpulse(Vector.UP, distance(eventPlayer.botTarget, eventPlayer) * (2 / eventPlayer.size), Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 #         eventPlayer.abilityArray1 += 2
 

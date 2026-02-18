@@ -4,8 +4,8 @@ playervar facingBeforeChangeHero
 playervar beforeChangeHero
 #!define CHANGE_HERO_MENU_TIMEOUT 30
 
-def openSwitchHeroHud():
-  @Name "Open Switch hero hud"
+def OpenSwitchHeroMenuSub():
+  @Name "OpenSwitchHeroMenuSub"
 
   pause3PCamera()
   wait()

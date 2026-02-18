@@ -152,7 +152,7 @@ rule "[Juno] Ultimate - abduct enemies":
   
   wait(0.7, Wait.ABORT_WHEN_FALSE)
 
-  eventPlayer.list0 = [player for player in getLivingPlayers(Team.2) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
+  eventPlayer.list0 = [player for player in getLivingPlayers(Team.ZOMBIES) if distance(player.getPosition() * vect(1, 0, 1), eventPlayer.abilPos0) <= 8]
   
   eventPlayer.list0.setCrowdControlAttack(eventPlayer)
   eventPlayer.list0.setGravityState(0, 0.5)

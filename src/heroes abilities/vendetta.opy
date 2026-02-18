@@ -28,7 +28,7 @@ rule "[Vendetta] Swirlwind without dash [Ability_1] + [Crouch]":
   for eventPlayer.tmp0 in range(8):
     if (eventPlayer.tmp0 == 1 or eventPlayer.tmp0 == 5):
       eventPlayer.list0 = [
-        player for player in getRealPlayersInRadius(eventPlayer.getPosition(), 4, Team.2) if eventPlayer.isInViewAngle(player.getPosition(), 90)
+        player for player in getRealPlayersInRadius(eventPlayer.getPosition(), 4, Team.ZOMBIES) if eventPlayer.isInViewAngle(player.getPosition(), 90)
       ]
       eventPlayer.list0.pushInFacingDirectionAndUp(eventPlayer, 12)
       eventPlayer.list0.setCrowdControlAttack(eventPlayer)

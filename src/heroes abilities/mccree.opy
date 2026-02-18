@@ -210,8 +210,10 @@ rule "[Cassydy] Detonates a flashbang while rolling":
   eventPlayer.abilPos1 = eventPlayer.getPosition()
   wait(0.1)
   playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.abilPos1, 1)
-  playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.WHITE, eventPlayer.abilPos1, 100)
-  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos1, 3, Team.2)
+
+  # todo: remove or replace:
+  # playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.WHITE, eventPlayer.abilPos1, 100)
+  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos1, 3, Team.ZOMBIES)
 
   damage(eventPlayer.list0, eventPlayer, 15)
   eventPlayer.list0.setStatusEffect(eventPlayer, Status.STUNNED, 1.5)
@@ -267,4 +269,4 @@ rule "[Cassidy] Ultimate root":
   @Condition eventPlayer.isUsingUltimate() == true
   
   wait(0.02)
-  eventPlayer.getPlayersInViewAngle(Team.2, 90).setStatusEffect(null, Status.ROOTED, 4)
+  eventPlayer.getPlayersInViewAngle(Team.ZOMBIES, 90).setStatusEffect(null, Status.ROOTED, 4)

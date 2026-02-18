@@ -1,13 +1,5 @@
 #!mainFile "main.opy"
 
-playervar attach2p
-enum Attach2P:
-  IS_ATTACHED
-  PARENT
-  POSITION
-  HEALTH_POOL
-  CHILD
-
 # [Ana][Orisa] Attach Ana to any tank or attach any hero except tanks to Orisa
 def AttachP2PSub():
   @Name "Sub: [Ana][Orisa][attach p2p] Attach P2P"
@@ -54,25 +46,6 @@ def AttachP2PSub():
   waitUntil(not eventPlayer.isHoldingButton(Button.INTERACT), INFINITY) # Prevent detach immediately after attach
   eventPlayer.attach2p[Attach2P.IS_ATTACHED] = true
 
-
-def DetachP2PSub():
-  @Name "Sub: [Ana][Orisa][attach p2p] Detach P2P"
-  if eventPlayer.attach2p[Attach2P.CHILD]:
-    eventPlayer.tmp0 = eventPlayer.attach2p[Attach2P.CHILD]
-    eventPlayer.tmp1 = eventPlayer
-  else:
-    eventPlayer.tmp0 = eventPlayer
-    eventPlayer.tmp1 = eventPlayer.attach2p[Attach2P.PARENT]
-
-  # clear child
-  eventPlayer.tmp0.detach()
-  eventPlayer.tmp0.clearStatusEffect(Status.INVINCIBLE)
-  smallMessage(eventPlayer.tmp0, "You have detached")
-  eventPlayer.tmp0.attach2p = []
-
-  # clear parent
-  eventPlayer.tmp1.attach2p[Attach2P.CHILD] = null
-  
 
 rule "[Ana][Orisa][attach p2p] Detach from player":
   @Event eachPlayer

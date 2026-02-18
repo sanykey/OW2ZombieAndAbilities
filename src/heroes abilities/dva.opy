@@ -68,8 +68,9 @@ rule "[DVA] Slide":
   )
   eventPlayer.heroEffectsIds[DVA_I.SLIDE_EFFECT] = getLastCreatedEntity()
 
-  createEffect(getAllPlayers(), Effect.SIGMA_GRAVITIC_FLUX_TARGET_SOUND, Color.WHITE, eventPlayer, 200, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  eventPlayer.heroEffectsIds[DVA_I.SLIDE_EFFECT2] = getLastCreatedEntity()
+  # todo: remove or replace?
+  # createEffect(getAllPlayers(), Effect.SIGMA_GRAVITIC_FLUX_TARGET_SOUND, Color.WHITE, eventPlayer, 200, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  # eventPlayer.heroEffectsIds[DVA_I.SLIDE_EFFECT2] = getLastCreatedEntity()
 
   createProjectileEffect(
     getAllPlayers(),
@@ -113,7 +114,9 @@ rule "[DVA] Slide":
       Impulse.INCORPORATE_CONTRARY_MOTION
     )
     playEffect(getAllPlayers(), DynamicEffect.DOOMFIST_RISING_UPPERCUT_LEAP, Color.WHITE, eventPlayer.getPosition(), 1)
-    playEffect(getAllPlayers(), DynamicEffect.DOOMFIST_RISING_UPPERCUT_LEAP_SOUND, Color.WHITE, eventPlayer.getPosition(), 100)
+
+    # todo: remove or replace:
+    # playEffect(getAllPlayers(), DynamicEffect.DOOMFIST_RISING_UPPERCUT_LEAP_SOUND, Color.WHITE, eventPlayer.getPosition(), 100)
 
   eventPlayer.setGravity(100)
   eventPlayer.setMoveSpeed(100)

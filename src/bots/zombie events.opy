@@ -1,7 +1,7 @@
 #!mainFile "../main.opy"
-
 globalvar commonZombieHero = Hero.TORBJORN
 globalvar commonBotsHeroes = [Hero.TORBJORN, Hero.JUNKRAT, Hero.SYMMETRA]
+
 globalvar commonBotsList
 globalvar commonBotsIndex
 globalvar zomInstantUltimates
@@ -52,31 +52,37 @@ globalvar zomInstantUltimates
 #     bigMessage(getAllPlayers(), l"{0} {1} {2}".format(iconString(Icon.FIRE), "The Zombies are furious! (...Is someone playing DPS Moira?) ", iconString(Icon.FIRE)))
 
 
-rule "[Team2] special waves":
+rule "[ZombieTeam] special waves":
   @Condition roundRemainingBots <= 0
-
-  if roundNumber >= 25 and roundNumber < 30:
-    commonZombieHero = Hero.JUNKRAT
+  if roundNumber < 10:
+    roundMaxBotsSlots = 6
   elif roundNumber >= 35 and roundNumber < 40:
-    commonZombieHero = Hero.SYMMETRA
+    commonZombieHero = Hero.JUNKRAT
   elif roundNumber >= 45 and roundNumber < 50:
+    roundMaxBotsSlots = 10
+    commonZombieHero = Hero.SYMMETRA
+  elif roundNumber >= 55 and roundNumber < 60:
     zomInstantUltimates = true
-  elif roundNumber >= 55 and roundNumber % 10 >= 5:
+  elif roundNumber >= 65 and roundNumber % 10 >= 5:
     if roundNumber % 10 == 5:
       commonZombieHero = random.choice(commonBotsHeroes)
     if commonZombieHero == Hero.TORBJORN:
       zomInstantUltimates = true
   else:
+    roundMaxBotsSlots = wSettingsMaxZombieBots
     zomInstantUltimates = false
     commonZombieHero = Hero.TORBJORN
 
-  list = [player for player in getPlayers(Team.2) if (player.getCurrentHero() in commonBotsHeroes or player.zomForceHeroOnRespawn in commonBotsHeroes)]
+  if roundMaxBotsSlots > wSettingsMaxZombieBots:
+    roundMaxBotsSlots = wSettingsMaxZombieBots
+
+  list = [player for player in getPlayers(Team.ZOMBIES) if (player.getCurrentHero() in commonBotsHeroes or player.zomForceHeroOnRespawn in commonBotsHeroes)]
   list.zomForceHeroOnRespawn = commonZombieHero
 
-rule "[Team2 SYMMETRA] throw turrents":
+rule "[ZombieTeam SYMMETRA] throw turrents":
   @Condition commonZombieHero == Hero.SYMMETRA
 
-  commonBotsList = [player for player in getPlayers(Team.2) if player.getCurrentHero() == commonZombieHero]
+  commonBotsList = [player for player in getPlayers(Team.ZOMBIES) if player.getCurrentHero() == commonZombieHero]
   commonBotsList.forceButtonPress(Button.ABILITY_1)
   wait()
   commonBotsList.forceButtonPress(Button.PRIMARY_FIRE)
@@ -84,10 +90,9 @@ rule "[Team2 SYMMETRA] throw turrents":
   wait(5, Wait.ABORT_WHEN_FALSE)
   loop()
 
-
-rule "[Team2 JUNKRAT] throw traps":
+rule "[ZombieTeam JUNKRAT] throw traps":
   @Condition commonZombieHero == Hero.JUNKRAT
-  commonBotsList = [player for player in getPlayers(Team.2) if player.getCurrentHero() == Hero.JUNKRAT]
+  commonBotsList = [player for player in getPlayers(Team.ZOMBIES) if player.getCurrentHero() == Hero.JUNKRAT]
 
   if not commonBotsList:
     wait(5, Wait.ABORT_WHEN_FALSE)

@@ -96,7 +96,7 @@ rule "[Winston] Barrier push enemies":
   @Hero winston
   @Condition eventPlayer.isActiveBarrier
 
-  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.abilPos0, 6, Team.2)
+  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.abilPos0, 6, Team.ZOMBIES)
 
   for eventPlayer.I in range(len(eventPlayer.list0)):
     eventPlayer.list0[eventPlayer.I].applyImpulse(

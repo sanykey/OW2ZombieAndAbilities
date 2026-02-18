@@ -28,7 +28,7 @@ rule "[Mei] Freeze nearby opponents after Cryo-freeze":
   pause3PCamera()
   waitUntil(not eventPlayer.isUsingAbility1(), 5)
   unpause3PCamera()
-  getPlayersInRadius(eventPlayer.getEyePosition(), 10, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.FROZEN, 3)
+  getPlayersInRadius(eventPlayer.getEyePosition(), 10, Team.ZOMBIES, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.FROZEN, 3)
 
 rule "[Mei] all team.1 heroes deal double damage to frozen enemies:":
   @Event eachPlayer

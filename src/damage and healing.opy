@@ -78,7 +78,7 @@ rule "Changed player speed state":
   eventPlayer.setMoveSpeed(eventPlayer.state[SI.CHANGED_SPEED_AMOUNT])
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = eventPlayer.state[SI.CHANGED_SPEED_AMOUNT]
   waitUntil(ruleCondition or eventPlayer.state[SI.CHANGED_SPEED_TIME] < getTotalTimeElapsed() or not eventPlayer.isAlive(), INFINITY)
-  eventPlayer.setMoveSpeed(zomSpeedPct if eventPlayer.getTeam() == Team.2 else 100)
+  eventPlayer.setMoveSpeed(zomSpeedPct if eventPlayer.getTeam() == Team.ZOMBIES else 100)
   eventPlayer.state[SI.CHANGED_SPEED_TIME] = false
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT_PREV] = false
   eventPlayer.state[SI.CHANGED_SPEED_AMOUNT] = false
@@ -106,12 +106,15 @@ macro Player.setCrowdControlAttack(self, attacker0, isVanilaKnockback=false, dur
   self.lastCcAttackTime = duration + getTotalTimeElapsed()
   self.lastCcWasInAir = self.isInAir()
   self.lastCcVanilaKnockback = isVanilaKnockback
-  self.money__zomStuckPoints = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
+  # self.money__botStuckTimes = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
 
-macro Player.resetCrowdControlAttack(self):
+macro Player.resetCrowdControlTime(self):
   self.lastCcAttacker = false
   self.lastCcAttackTime = false
   self.lastCcWasInAir = false
+
+macro Player.isCrowdControlTime(self):
+  self.lastCcAttackTime >= getTotalTimeElapsed()
 
 rule "player Dealt Knockback":
   @Event playerDealtKnockback
@@ -132,7 +135,7 @@ rule "player Dealt Knockback":
     case Hero.BRIGITTE: # [Brigitte] Shield bash
       if eventPlayer.isFiringSecondaryFire():
         victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
-        getRealPlayersInRadius(victim, 2, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.STUNNED, 2)
+        getRealPlayersInRadius(victim, 2, Team.ZOMBIES, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.STUNNED, 2)
       break
 
 
@@ -166,13 +169,18 @@ rule "Player deal damage":
         victim.setStatusEffect(eventPlayer, Status.STUNNED, 2)
       break
 
+    case Hero.DVA:
+      if eventAbility == Button.ABILITY_1: # [Dva] Boosters knock down enemies they hit
+        victim.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, DVA_BOOSTERS_KNOCK_DOWN_TIME)
+      break
+
     case Hero.ANA:
       if eventAbility == Button.PRIMARY_FIRE: # [Ana] Slow enemy on direct hit with primary weapon
         victim.setSpeedState(ANA_DIRECT_HIT_SLOWDOWN, true)
       elif eventAbility == Button.ABILITY_1:
         playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.BLACK, victim, 3)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.BLACK, victim, 6)
-        getPlayersInRadius(victim.getEyePosition(), ANA_AOE_SLEEP_RADIUS, Team.2, LosCheck.SURFACES).setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
+        getPlayersInRadius(victim.getEyePosition(), ANA_AOE_SLEEP_RADIUS, Team.ZOMBIES, LosCheck.SURFACES).setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
       elif eventAbility == Button.ABILITY_2: # slowdown nade
         victim.setSpeedState(ANA_NADE_SLOWDOWN, ANA_NADE_SLOWDOWN_TIME)
       elif eventAbility == Button.MELEE and (not eventPlayer.abilityCD or eventPlayer.abilityCD == ANA_PARALYZING_STRIKE_CD):
@@ -213,7 +221,7 @@ rule "HealthPack with auto heal and speed boost":
   @Team 1
   @Condition eventWasHealthPack
 
-  # Clear the BURNING effect that triggered [Team2 Mauga]
+  # Clear the BURNING effect that triggered [ZombieTeam Mauga]
   if eventPlayer.hasStatus(Status.BURNING):
     eventPlayer.clearStatusEffect(Status.BURNING)
   wait()
@@ -234,14 +242,16 @@ rule "Player took damage":
     eventPlayer.isInvisible = false 
 
   if eventAbility == Button.MELEE:
-    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed()
-    # [Team2 Roadhog] chance to hack player when melee:
+    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed() # todo: ???
+    attacker.resetBotStuckTimes()
+    # [ZombieTeam Roadhog] chance to hack player when melee:
     if attacker.getHero() == Hero.ROADHOG and random.randint(1, 100) <= 40:
       eventPlayer.setStatusEffect(null, Status.HACKED, 1.5)
   elif eventAbility == Button.PRIMARY_FIRE:
-    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed()
+    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed() # todo: ???
+    attacker.resetBotStuckTimes()
 
-  # [Team2 Mauga] Burning players
+  # [ZombieTeam Mauga] Burning players
   if (
     attacker.getHero() == Hero.MAUGA and
     eventAbility == Button.ABILITY_1
@@ -253,7 +263,7 @@ rule "Player took damage":
 
   eventPlayer.setDelayedHealingOverTime(HEALER_AUTO_HEAL_DELAY if eventPlayer.heroType == HeroType.SUPPORT else AUTO_HEAL_DELAY)
 
-# BURNING effect that triggered [Team2 Mauga]
+# BURNING effect that triggered [ZombieTeam Mauga]
 rule "Player burning":
   @Event eachPlayer
   @Team 1

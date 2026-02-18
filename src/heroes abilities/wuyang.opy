@@ -33,6 +33,8 @@ rule "[Wuyang] Double jump":
       return
     smallMessage(eventPlayer, "^^^^")
     eventPlayer.applyImpulse(Vector.UP, 11, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    playEffect(eventPlayer, DynamicEffect.TRACER_RECALL_REAPPEAR_SOUND, Color.WHITE, eventPlayer, 200)
+
+    # todo: remove or replace:
+    # playEffect(eventPlayer, DynamicEffect.TRACER_RECALL_REAPPEAR_SOUND, Color.WHITE, eventPlayer, 200)
     wait(0.3)
     waitUntil(eventPlayer.isOnGround(), INFINITY)

@@ -50,7 +50,7 @@ rule "[Doomfist] Uppercut":
   eventPlayer.list0 = getPlayersInRadius(
     worldVector(vect(0, 0, 1), eventPlayer, Transform.ROTATION_AND_TRANSLATION),
     3,
-    Team.2,
+    Team.ZOMBIES,
     LosCheck.SURFACES
   )
   eventPlayer.list0.applyImpulse(Vector.UP, 15, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)

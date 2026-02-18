@@ -232,7 +232,7 @@ rule "Unlock next location A":
   @Team 1
   @Condition unlockedLocations == 0
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
-  @Condition eventPlayer.money__zomStuckPoints >= 2500
+  @Condition eventPlayer.money__botStuckTimes >= 2500
   @Condition distance(vectList[VI.BUY_LOCATION_A], eventPlayer) <= 2
 
   
@@ -247,7 +247,7 @@ rule "Unlock next location A":
   playEffect(getPlayers(Team.1), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
-  eventPlayer.money__zomStuckPoints -= 2500
+  eventPlayer.money__botStuckTimes -= 2500
   eventPlayer.tmp1 = 5
   randomStatUpgrade()
 
@@ -256,7 +256,7 @@ rule "Unlock next location B":
   @Team 1
   @Condition unlockedLocations == 1
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
-  @Condition eventPlayer.money__zomStuckPoints >= 5000
+  @Condition eventPlayer.money__botStuckTimes >= 5000
   @Condition distance(vectList[VI.BUY_LOCATION_B], eventPlayer) <= 2
   
   unlockedLocations = 2
@@ -271,7 +271,7 @@ rule "Unlock next location B":
   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
-  eventPlayer.money__zomStuckPoints -= 5000
+  eventPlayer.money__botStuckTimes -= 5000
   eventPlayer.tmp1 = 10
   randomStatUpgrade()
 
@@ -281,7 +281,7 @@ rule "Unlock next location C":
   @Team 1
   @Condition unlockedLocations == 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
-  @Condition eventPlayer.money__zomStuckPoints >= 7500
+  @Condition eventPlayer.money__botStuckTimes >= 7500
   @Condition distance(vectList[VI.BUY_LOCATION_C], eventPlayer) <= 2
   
   unlockedLocations = 3
@@ -295,7 +295,7 @@ rule "Unlock next location C":
   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
-  eventPlayer.money__zomStuckPoints -= 7500
+  eventPlayer.money__botStuckTimes -= 7500
   eventPlayer.tmp1 = 15
   randomStatUpgrade()
 
@@ -305,7 +305,7 @@ rule "Unlock next location D":
   @Team 1
   @Condition unlockedLocations == 3
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
-  @Condition eventPlayer.money__zomStuckPoints >= 10000
+  @Condition eventPlayer.money__botStuckTimes >= 10000
   @Condition distance(vectList[VI.BUY_LOCATION_D], eventPlayer) <= 2
   
   unlockedLocations = 4
@@ -318,7 +318,7 @@ rule "Unlock next location D":
   playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.WHITE, eventPlayer, 10)
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
-  eventPlayer.money__zomStuckPoints -= 10000
+  eventPlayer.money__botStuckTimes -= 10000
   eventPlayer.tmp1 = 20
   randomStatUpgrade()
 

@@ -1,18 +1,18 @@
 #!mainFile "../main.opy"
 
-rule "[Team2 Mauga] Add Mauga to Team.2":
+rule "[ZombieTeam Mauga] Add Mauga to Team.ZOMBIES":
   @Condition roundNumber >= ADD_MAUGA_ROUND
   @Condition roundRemainingBots <= 0
-  @Condition not getPlayersOnHero(Hero.MAUGA, Team.2)
+  @Condition not getPlayersOnHero(Hero.MAUGA, Team.ZOMBIES)
 
   GetCandidateForEliteZombieSub() # returns tmp1
   setZombieHero(tmp1, Hero.MAUGA)
 
-rule "[Team2 Mauga] Charge":
+rule "[ZombieTeam Mauga] Charge":
   @Event eachPlayer
   @Team 2
   @Hero mauga
-  @Condition eventPlayer.zomTarget
+  @Condition eventPlayer.botTarget
   @Condition eventPlayer.isInLoSZombieTarget()
   @Condition eventPlayer.isOnGround()
   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
@@ -20,25 +20,25 @@ rule "[Team2 Mauga] Charge":
   @Condition abs(
     angleBetweenVectors(
       eventPlayer.getFacingDirection(),
-      directionTowards(eventPlayer.getEyePosition(), eventPlayer.zomTarget.getEyePosition())
+      directionTowards(eventPlayer.getEyePosition(), eventPlayer.botTarget.getEyePosition())
     )
   ) < 35
   @Condition (
     eventPlayer.getDistanceToZombieTarget() < 5 or
-    verticalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.zomTarget)) > -35
+    verticalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.botTarget)) > -35
   )
   
   wait(1, Wait.ABORT_WHEN_FALSE)
   eventPlayer.startFacing(
     directionTowards(
       eventPlayer.getEyePosition(), 
-      eventPlayer.zomTarget.getEyePosition()
+      eventPlayer.botTarget.getEyePosition()
     ), 
     1500
   )
   wait(0.1)
   eventPlayer.startThrottleInDirection(
-    directionTowards(eventPlayer.getPosition(), eventPlayer.zomTarget.getPosition()),
+    directionTowards(eventPlayer.getPosition(), eventPlayer.botTarget.getPosition()),
     0.65,
     Relativity.TO_WORLD,
     Throttle.REPLACE_EXISTING,

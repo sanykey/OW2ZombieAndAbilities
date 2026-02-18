@@ -3,7 +3,7 @@
 globalvar botWidowmakerSpawnCD
 #!define ZOM_WINDOW_RESPAWN_CD 40
 
-rule "[Team2 Widowmaker] search actual sniper spots":
+rule "[ZombieTeam Widowmaker] search actual sniper spots":
   @Condition roundNumber >= ADD_WIDOWMAKER_ROUND
   @Condition botWidowmakerSpawnCD < getTotalTimeElapsed()
 
@@ -16,24 +16,24 @@ rule "[Team2 Widowmaker] search actual sniper spots":
     loop()
 
 def BotWidowmakerChangePositon():
-  @Name "[Team2 Widowmaker] change position"
+  @Name "[ZombieTeam Widowmaker] change position"
 
   eventPlayer.teleport(random.choice(botWidowmakerAvaliableSpawnSpots))
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 2)
   playEffect(getAllPlayers(), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
 
 
-rule "[Team2 Widowmaker] Add WIDOWMAKER to Team.2":
+rule "[ZombieTeam Widowmaker] Add WIDOWMAKER to Team.ZOMBIES":
   @Condition roundNumber >= ADD_WIDOWMAKER_ROUND
   @Condition botWidowmakerSpawnCD < getTotalTimeElapsed()
   @Condition botWidowmakerAvaliableSpawnSpots
-  @Condition roundRemainingBots > getNumberOfLivingPlayers(Team.2)
-  @Condition not getPlayersOnHero(Hero.WIDOWMAKER, Team.2)
+  @Condition roundRemainingBots > getNumberOfLivingPlayers(Team.ZOMBIES)
+  @Condition not getPlayersOnHero(Hero.WIDOWMAKER, Team.ZOMBIES)
 
   GetCandidateForEliteZombieSub() # returns tmp1
   setZombieHero(tmp1, Hero.WIDOWMAKER)
 
-rule "[Team2 Widowmaker] init":
+rule "[ZombieTeam Widowmaker] init":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER and eventPlayer.hasSpawned() and eventPlayer.isAlive()
@@ -46,7 +46,7 @@ rule "[Team2 Widowmaker] init":
     getPlayers(Team.1),
     Beam.TORBJORN_TURRET_SIGHT,
     eventPlayer.getEyePosition(),
-    eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * eventPlayer.zomDistancesToPlayersArr[eventPlayer.zomTarget.getSlot()]
+    eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * distance(eventPlayer, eventPlayer.botTarget)
     # updateEveryFrame(
     #   raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 999, null, eventPlayer, false).getHitPosition()
     # ),
@@ -63,18 +63,18 @@ rule "[Team2 Widowmaker] init":
   if eventPlayer.isDead():
     botWidowmakerSpawnCD = getTotalTimeElapsed() + ZOM_WINDOW_RESPAWN_CD
 
-rule "[Team2 Widowmaker] trigger change position":
+rule "[ZombieTeam Widowmaker] trigger change position":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.getHero() == Hero.WIDOWMAKER
   @Condition botWidowmakerSpawnCD < getTotalTimeElapsed()
   
   wait(5, Wait.ABORT_WHEN_FALSE)
-  if not eventPlayer.zomTarget and botWidowmakerAvaliableSpawnSpots:
+  if not eventPlayer.botTarget and botWidowmakerAvaliableSpawnSpots:
     BotWidowmakerChangePositon()
   loop()
 
-rule "[Team2 Widowmaker] - see player":
+rule "[ZombieTeam Widowmaker] - see player":
   @Event eachPlayer
   @Team 2
   @Hero widowmaker
@@ -83,9 +83,9 @@ rule "[Team2 Widowmaker] - see player":
   if eventPlayer.zomAIstep == 0: # Execute once every 5 steps for optimization
     SearchTargetsSub()
 
-  if eventPlayer.zomTarget:
+  if eventPlayer.botTarget:
     eventPlayer.setFacing(
-      directionTowards(eventPlayer.getEyePosition(), eventPlayer.zomTarget.getEyePosition()),
+      directionTowards(eventPlayer.getEyePosition(), eventPlayer.botTarget.getEyePosition()),
       Relativity.TO_WORLD
     )
 
@@ -100,13 +100,13 @@ rule "[Team2 Widowmaker] - see player":
   if ruleCondition:
     loop()
     
-rule "[Team2 Widowmaker] shoot":
+rule "[ZombieTeam Widowmaker] shoot":
   @Event eachPlayer
   @Team 2
   @Hero widowmaker
   @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
   @Condition not eventPlayer.isReloading()
-  @Condition eventPlayer.zomTarget
+  @Condition eventPlayer.botTarget
   
   playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.LIME_GREEN, eventPlayer, 1) # We're warning the players that the widowmaker is about to take a shot
   wait(1)

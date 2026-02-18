@@ -1,13 +1,42 @@
 #!mainFile "../main.opy"
 
-
-#!define START_BOTS_AMOUNT 6
-#!define START_BOTS_ROUNDS 5
-globalvar deadTeam2Players
+globalvar deadZombieTeamPlayers
 globalvar roundRemainingBotsToRespawn
 globalvar respawnBotIndex
 globalvar lastBots
-globalvar createDummyI = INFINITY
+globalvar createDummyI
+globalvar createDummyQuantity
+
+# #!define MAX_DUMMY_BOTS 18
+# Checks whether any dummy bot needs to be removed from the zombies team in order to create a dummy bot in team1. 
+#   This is necessary due to the limitation on the number of bots in the workshop.
+# def ReleaseZomBotsSlotSub():
+#   @Name "ReleaseZomBotsSlotSub"
+
+#   tmp0 = len([player for player in getNumberOfPlayers(Team.PLAYERS) if player.isDummy()])
+
+#   # If the total number of dummy bots does not exceed the maximum allowed by the workshop, then do nothing:
+#   if ((getNumberOfPlayers(Team.ZOMBIES) + tmp0 + 1) <= MAX_DUMMY_BOTS):
+#     return
+
+#   # First, dead and common dummy bots are removed
+#   tmp1 = sorted(
+#     getPlayers(Team.ZOMBIES),
+#     lambda sortedPlayer: (
+#       (0 if sortedPlayer in commonBotsHeroes else 2)
+#       + (0 if sortedPlayer.isDead() else 1)
+#     )
+#   )
+
+#   for I in range(tmp0 - MAX_DUMMY_BOTS):
+#     destroyDummy(Team.ZOMBIES, tmp1[I].getSlot())
+  
+# def RestoreZomBotsSlotsSub():
+#   @Name "RestoreZomBotsSlotsSub"
+
+#   if getNumberOfPlayers(Team.ZOMBIES) + tmp0 == MAX_DUMMY_BOTS:
+#     return
+
 
 macro filterIsCommonBot(player):
   (
@@ -18,7 +47,7 @@ macro filterIsCommonBot(player):
 def GetCandidateForEliteZombieSub():
   @Name "SUB: Get Candidate For Elite Zombie"
   tmp1 = random.choice(
-    [player for player in getPlayers(Team.2) if filterIsCommonBot(player)]
+    [player for player in getPlayers(Team.ZOMBIES) if filterIsCommonBot(player)]
   )
 
 macro setZombieHero(zomPlayer, zomHero):
@@ -42,19 +71,12 @@ rule "Setup new bots":
   eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
   createIcon(
-    combatants if eventPlayer.zomFlyThroughWalls else null,
+    combatants if eventPlayer.botWallPhase else null,
     eventPlayer,
     Icon.EYE,
     IconReeval.VISIBILITY_AND_POSITION,
     Color.RED
   )
-  eventPlayer.effectsIds[ZOMBIE_FLY_ICON] = getLastCreatedEntity()
-
-rule "Zombie bot left":
-  @Event playerLeft
-  @Team 2
-  destroyIcon(eventPlayer.effectsIds[ZOMBIE_FLY_ICON])
-  destroyIcon(eventPlayer.effectsIds[ZOMBIE_LAST_ICON])
 
 rule "Zombie died":
   @Event playerDied
@@ -63,47 +85,46 @@ rule "Zombie died":
   eventPlayer.stopForcingThrottle()
   roundRemainingBots -= 1
   eventPlayer.setUltCharge(0)
-  eventPlayer.money__zomStuckPoints = 0
-  eventPlayer.resetCrowdControlAttack()
-  eventPlayer.zomDownedTime = getTotalTimeElapsed()
+  eventPlayer.money__botStuckTimes = 0
+  # eventPlayer.resetCrowdControlAttack() # todo: fix?
   teamScore += 1
   if eventPlayer.effectsIds[ZOMBIE_LAST_ICON]:
     destroyIcon(eventPlayer.effectsIds[ZOMBIE_LAST_ICON])
-    eventPlayer.effectsIds[ZOMBIE_LAST_ICON] = false
+    eventPlayer.effectsIds[ZOMBIE_LAST_ICON] = null
 
 
-rule "Create bots":
-  if (
-    not isGameStarted
-    or isBotsDisabled
-    or getNumberOfPlayers(Team.2) >= wSettingsMaxZombieBots
-    or (getNumberOfPlayers(Team.2) >= START_BOTS_AMOUNT and roundNumber <= START_BOTS_ROUNDS) # Spawn fewer bots in the first few rounds to make it easier for players to start
-    or roundRemainingBots < 1
-    or createDummyI != INFINITY # Prevent rule activation while the bot-spawning loop is already running
-  ):
-    goto lbl_0
+rule "Recreate bots":
+  @Condition isGameStarted
+  @Condition not isBotsDisabled
+  @Condition roundRemainingBots
+  @Condition getNumberOfPlayers(Team.ZOMBIES) != roundMaxBotsSlots
 
-  smallMessage(hostPlayer, "[Server]: Create zombie bots")
-  for createDummyI in range(START_BOTS_AMOUNT if (roundNumber <= START_BOTS_ROUNDS and wSettingsMaxZombieBots > START_BOTS_ROUNDS) else wSettingsMaxZombieBots):
-    if isBotsDisabled:
-      createDummyI = INFINITY
-      goto lbl_0
+  # Delete unnecessary bots:
+  if getNumberOfPlayers(Team.ZOMBIES) > roundMaxBotsSlots: 
+    tmp0 = sorted(
+      getPlayers(Team.ZOMBIES),
+      lambda sortedPlayer: (
+        (0 if sortedPlayer in commonBotsHeroes else 2)
+        + (0 if sortedPlayer.isDead() else 1)
+      )
+    )
 
-    if not getPlayersInSlot(createDummyI, Team.2):
+    createDummyQuantity = getNumberOfPlayers(Team.ZOMBIES) - roundMaxBotsSlots
+    for I in range(createDummyQuantity):
+      destroyDummy(Team.ZOMBIES, tmp0[I].getSlot())
+  
+  # Or add missing bots:
+  else:
+    createDummyQuantity = roundMaxBotsSlots - getNumberOfPlayers(Team.ZOMBIES)
+    for createDummyI in range(createDummyQuantity):
       createDummy(
         commonZombieHero,
-        Team.2,
-        createDummyI,
+        Team.ZOMBIES,
+        -1,
         debugBotsSpawnPoint if debugBotsSpawnPoint else random.choice(spawnPointsList),
         random.choice(spawnPointsList)
       )
       wait(0.1 if getAverageServerLoad() < 200 else 0.5)
-
-  createDummyI = INFINITY
-  lbl_0:
-  wait(1.5)
-  loop()
-
 
 macro Player.respawnBot(self):
   if debugBotsSpawnPoint:
@@ -117,7 +138,23 @@ macro Player.respawnBot(self):
     self.resurrect()
   else:
     self.resurrect()
-  
+
+  # self.setStatusEffect(null, Status.KNOCKED_DOWN, 1)
+  # wait(0.2)
+  # self.setGravity(20)
+  # self.disableEnvironmentCollision(true)
+
+  # self.teleport(debugBotsSpawnPoint + vect(0, -1.5, 0))
+  # wait()
+
+  # playEffect(getAllPlayers(), DynamicEffect.SIGMA_ACCRETION_IMPACT, rgb(220, 175, 100), self.getEyePosition(), 3)
+  # playEffect(getAllPlayers(), DynamicEffect.SIGMA_ACCRETION_IMPACT_SOUND, Color.GRAY, self.getEyePosition(), 50)
+  # self.applyImpulse(Vector.UP, 3.5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  # wait(0.4)
+  # self.clearStatusEffect(Status.KNOCKED_DOWN)
+  # self.setGravity(100)
+  # self.enableEnvironmentCollision()
+
   if self.getHero() != Hero.WIDOWMAKER and self.getHero() != Hero.ECHO:
     self.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
@@ -127,32 +164,35 @@ macro Player.respawnBot(self):
   wait()
   heal(self, null, INFINITY)
 
-rule "respawn bots":
-  @Condition roundRemainingBots > 0
+
+rule "Respawn bots":
+  @Condition roundNumber > 0
   @Condition not isBotsDisabled
 
-  roundRemainingBotsToRespawn = roundRemainingBots - getNumberOfLivingPlayers(Team.2)
+  respawnBotIndex = (respawnBotIndex + true) % wSettingsMaxZombieBots
+  tmp0 = getPlayers(Team.ZOMBIES)[respawnBotIndex]
 
-  if roundRemainingBotsToRespawn > 0:
-    deadTeam2Players = sorted(getDeadPlayers(Team.2), lambda i: i.zomDownedTime)
-    for respawnBotIndex in range(
-      roundRemainingBotsToRespawn if roundRemainingBotsToRespawn < len(deadTeam2Players) else len(deadTeam2Players)
-    ):
-      deadTeam2Players[respawnBotIndex].respawnBot()
-      wait(0.2 if getAverageServerLoad() < 200 else 0.8, Wait.ABORT_WHEN_FALSE)
+  if tmp0.isDead() and roundRemainingBots > getNumberOfLivingPlayers(Team.ZOMBIES):
+    tmp0.respawnBot()
+  wait(0.2 if getAverageServerLoad() < 200 else 0.8, Wait.ABORT_WHEN_FALSE)
 
-  elif roundNumber > 1 and roundRemainingBots < 4: # Add icons to the last zombie bots so players can find them quickly
-    lastBots = [player for player in getPlayers(Team.2) if player.isAlive() and not player.effectsIds[ZOMBIE_LAST_ICON]]
-    for respawnBotIndex in range(len(lastBots)):
-      createIcon(
-        combatants,
-        evalOnce(lastBots[respawnBotIndex]),
-        Icon.SKULL,
-        IconReeval.POSITION,
-        Color.RED
-      )
-      lastBots[respawnBotIndex].effectsIds[ZOMBIE_LAST_ICON] = getLastCreatedEntity()
-      wait()
+  if ruleCondition:
+    loop()
 
-  wait(0.5, Wait.ABORT_WHEN_FALSE)
-  loop()
+rule "Last zombie icons":
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.isAlive()
+  @Condition eventPlayer.hasSpawned()
+  @Condition roundRemainingBots < 4 and roundRemainingBots > 0
+  @Condition not eventPlayer.effectsIds[ZOMBIE_LAST_ICON]
+  @Condition getNumberOfLivingPlayers(Team.ZOMBIES) < 4
+
+  createIcon(
+    combatants,
+    eventPlayer,
+    Icon.SKULL,
+    IconReeval.POSITION,
+    Color.RED
+  )
+  eventPlayer.effectsIds[ZOMBIE_LAST_ICON] = getLastCreatedEntity()

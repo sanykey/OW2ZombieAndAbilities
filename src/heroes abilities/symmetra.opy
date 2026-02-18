@@ -135,7 +135,7 @@ rule "[Symmetra] Barrier push enemies":
   @Hero symmetra
   @Condition eventPlayer.isActiveBarrier
 
-  eventPlayer.list0 = [player for player in getPlayers(Team.2) if player.isAlive()]
+  eventPlayer.list0 = [player for player in getPlayers(Team.ZOMBIES) if player.isAlive()]
   eventPlayer.list1 = [] # players to push one side
   eventPlayer.list2 = [] # players to push second side
 

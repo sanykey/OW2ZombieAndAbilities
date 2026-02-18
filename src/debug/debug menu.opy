@@ -8,7 +8,7 @@ globalvar debugSelectedAction
 globalvar debugMaxAction
 globalvar debugIsNoclip
 globalvar debugNoclipPrevHero
-globalvar debugBotsSpawnPointEffect
+
 globalvar debugNoCD
 globalvar defaultVector = vect(0, 0, 0)
 playervar inputThrottle
@@ -17,7 +17,7 @@ globalvar debugAllowInput
 macro localPlayerVisibilityForDevelopers():
   localPlayer if localPlayer.developer or localPlayer == hostPlayer else null
 
-def ConvertThrottleSR():
+def ConvertThrottleSub():
   @Name "SUB: [debug] convert throttle"
   eventPlayer.inputThrottle = eventPlayer.getThrottle()
   eventPlayer.inputThrottle = vect(0 if (eventPlayer.inputThrottle.x >= -0.25 and eventPlayer.inputThrottle.x <= 0.25) == true else 1 if eventPlayer.inputThrottle.x > 0.25 else -1, 0, 0 if (eventPlayer.inputThrottle.z >= -0.25 and eventPlayer.inputThrottle.z <= 0.25) == true else 1 if eventPlayer.inputThrottle.z > 0.25 else -1)
@@ -28,7 +28,7 @@ rule "[debug] Option throttle check":
   @Condition eventPlayer.getThrottle() != defaultVector
   @Condition magnitude(eventPlayer.getThrottle()) >= 0.5
   
-  ConvertThrottleSR()
+  ConvertThrottleSub()
   waitUntil(magnitude(eventPlayer.getThrottle()) < 0.5, 0.25)
   wait()
   if ruleCondition:

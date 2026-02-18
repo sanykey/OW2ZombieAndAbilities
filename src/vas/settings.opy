@@ -1,9 +1,6 @@
 #!mainFile "../main.opy"
 
 # settings.heroes.allTeams.general.passiveHealthRegen false is not working. You must manually enter this parameter = "Disabled"
-#!define MODE_VERSION "v0.10.2 beta (03.01.2026)"
-
-
 settings {
     "main": {
         "description": f"Try to survive more than 100 rounds. {MODE_VERSION}",
@@ -13,6 +10,7 @@ settings {
         "allowPlayersInQueue": true,
         "enableMatchVoiceChat": true,
         "team1Slots": MAX_PLAYERS,
+        "spectatorSlots": 0,
         "team2Slots": 0,
         "returnToLobby": "never",
         "swapTeamsAfterMatch": false,
