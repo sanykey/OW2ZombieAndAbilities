@@ -6,6 +6,7 @@ globalvar respawnBotIndex
 globalvar lastBots
 globalvar createDummyI
 globalvar createDummyQuantity
+playervar teleportPos
 
 # #!define MAX_DUMMY_BOTS 18
 # Checks whether any dummy bot needs to be removed from the zombies team in order to create a dummy bot in team1. 
@@ -126,11 +127,33 @@ rule "Recreate bots":
       )
       wait(0.1 if getAverageServerLoad() < 200 else 0.5)
 
+
+#!define ZOMBIE_RESPAWN_DISTANCE 17
+
 macro Player.respawnBot(self):
   if debugBotsSpawnPoint:
     self.teleport(debugBotsSpawnPoint)
   else:
-    self.teleport(random.choice(spawnPointsList))
+    tmp1 = random.choice(combatants)
+    tmp2 = random.randint(0, 360)
+    self.teleportPos = nearestWalkablePosition(
+        (
+            tmp1 + worldVector(vect(ZOMBIE_RESPAWN_DISTANCE * cos(tmp2), 0, ZOMBIE_RESPAWN_DISTANCE * sin(tmp2)), tmp1, Transform.ROTATION)
+        ).getPosition()
+    )
+    self.teleport(self.teleportPos)
+    
+    # self.setStatusEffect(null, Status.KNOCKED_DOWN, 0.6)
+    # wait(0.2)
+    # self.setGravity(20)
+    # self.disableEnvironmentCollision(true)
+    # self.teleport(tmp3 + vect(0, -1.5, 0))
+    # self.applyImpulse(Vector.UP, 3.5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+    # wait(0.4)
+    # self.setGravity(100)
+    # self.enableEnvironmentCollision()
+
+    # self.teleport(random.choice(spawnPointsList))
   wait()
   if self.zomForceHeroOnRespawn:
     self.startForcingHero(self.zomForceHeroOnRespawn)
@@ -165,7 +188,7 @@ macro Player.respawnBot(self):
   heal(self, null, INFINITY)
 
 
-rule "Respawn bots":
+rule "Respawn bots loop":
   @Condition roundNumber > 0
   @Condition not isBotsDisabled
 
@@ -173,11 +196,57 @@ rule "Respawn bots":
   tmp0 = getPlayers(Team.ZOMBIES)[respawnBotIndex]
 
   if tmp0.isDead() and roundRemainingBots > getNumberOfLivingPlayers(Team.ZOMBIES):
-    tmp0.respawnBot()
+    tmp0.isReady = true
   wait(0.2 if getAverageServerLoad() < 200 else 0.8, Wait.ABORT_WHEN_FALSE)
 
   if ruleCondition:
     loop()
+
+rule "Respawn bot":
+  @Event eachPlayer
+  @Team 2
+  @Condition eventPlayer.isReady
+  
+  if debugBotsSpawnPoint:
+    eventPlayer.teleportPos = debugBotsSpawnPoint
+  else:
+    eventPlayer.tmp1 = random.choice(combatants)
+    eventPlayer.tmp2 = random.randint(0, 359)
+    eventPlayer.teleportPos = nearestWalkablePosition(
+        (
+            eventPlayer.tmp1 + worldVector(vect(ZOMBIE_RESPAWN_DISTANCE * cos(eventPlayer.tmp2), 0, ZOMBIE_RESPAWN_DISTANCE * sin(eventPlayer.tmp2)), eventPlayer.tmp1, Transform.ROTATION)
+        ).getPosition()
+    )
+
+  eventPlayer.setGravity(20)
+  eventPlayer.disableEnvironmentCollision(true)
+  eventPlayer.teleport(eventPlayer.teleportPos + vect(0, -1.5, 0))
+
+  if eventPlayer.zomForceHeroOnRespawn:
+    eventPlayer.startForcingHero(eventPlayer.zomForceHeroOnRespawn)
+    eventPlayer.zomForceHeroOnRespawn = false
+    eventPlayer.resurrect()
+  else:
+    eventPlayer.resurrect()
+
+  eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, 1.5)
+  wait(0.2)
+  playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
+  playEffect(getPlayersInRadius(eventPlayer, 10, Team.1), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 80)
+  eventPlayer.applyImpulse(Vector.UP, 2.5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  wait(0.4)
+  eventPlayer.setGravity(100)
+  eventPlayer.enableEnvironmentCollision()
+
+  if eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO:
+    eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
+
+  if zomInstantUltimates and eventPlayer.getHero() == Hero.TORBJORN:
+    eventPlayer.setUltCharge(100)
+
+  wait()
+  heal(eventPlayer, null, INFINITY)
+  eventPlayer.isReady = false
 
 rule "Last zombie icons":
   @Event eachPlayer

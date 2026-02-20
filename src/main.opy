@@ -42,19 +42,19 @@
 ##!include "bots/echo.opy"
 #*/
 
-#!include "heroes abilities/reinhardt.opy"
-/*
-#!include "heroes abilities/dva.opy"
+
+#/*
+##!include "heroes abilities/dva.opy"
 #!include "heroes abilities/mercy.opy"
 ##!include "heroes abilities/juno.opy"
 #!include "heroes abilities/sombra.opy"
-
+#!include "heroes abilities/reinhardt.opy"
 #!include "heroes abilities/ramattra.opy"
 #!include "heroes abilities/sigma.opy"
 #!include "heroes abilities/mauga.opy"
 #!include "heroes abilities/brigitte.opy"
 #!include "heroes abilities/ana.opy"
-#!include "heroes abilities/mccree.opy"
+##!include "heroes abilities/mccree.opy"
 #!include "heroes abilities/kiriko.opy"
 #!include "heroes abilities/soldier.opy"
 #!include "heroes abilities/mei.opy"
