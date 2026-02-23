@@ -1,7 +1,7 @@
 #!mainFile "../main.opy"
 
 #!define BOT_WALL_PHASE_POINTS 15
-#!define BOT_MAX_TARGET_DISTANCE 40
+
 #!define BOT_MAX_NOT_LOS_TARGET_DISTANCE 25
 #!define BOT_MELEE_ATTACK_DISTANCE 3
 #!define BOT_LOS_TARGET_CACHE_TIME 0.39
@@ -12,7 +12,7 @@
 #!define ZOM_MELEE_ATTACK_CACHE_TIME 1.5
 
 playervar botTargetLos
-playervar botTargetLastPosition
+
 
 macro Player.getDistanceToBotTarget(self):
   distance(self, self.botTarget)
@@ -24,14 +24,12 @@ macro Player.isInLoSBotTarget(self):
 macro Player.isRecentlyDealMeleeDemage(self, target):
   eventPlayer.zomLastMeleeAttackTimeArr[target.getSlot()] > getTotalTimeElapsed() - ZOM_MELEE_ATTACK_CACHE_TIME
 
-def ResetBotStuckTimesSub():
-  @Name "ResetBotStuckTimesSub"
-  eventPlayer.resetBotStuckTimes()
 
 def TeleportToRandomSpawnPointSub():
   @Name "TeleportToRandomSpawnPointSub"
   ResetBotStuckTimesSub()
-  eventPlayer.teleport(random.choice(spawnPointsList))
+  GetRandomTeleportPosSub()
+  TeleportWithAnimationSub()
 
 def SearchTargetsSub():
   @Name "SearchTargetsSub"
@@ -109,14 +107,14 @@ macro botAntifall():
     else:
       damage(eventPlayer, eventPlayer.lastCcAttacker, ZOMBIE_FALL_DAMAGE)
       eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-      eventPlayer.resetCrowdControlTime()
+      ResetCrowdControlTimeSub()
   else:
     eventPlayer.applyImpulse(Vector.UP, 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 
   lbl_1:
 
 macro botUnstuck():
-  if eventPlayer.isCrowdControlTime(): 
+  if eventPlayer.isCrowdControlTime() or eventPlayer.isReady__isBotRespawning: 
     ResetBotStuckTimesSub()
   elif eventPlayer.isOnGround():
     eventPlayer.tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
@@ -183,14 +181,14 @@ macro checkVendettaCounterAttack():
     damage(eventPlayer.tmp0.list0, eventPlayer.tmp0, 0.1) # Deal a small amount of damage to earn assist money while holding guard
 
 macro flyThroughWallsPoints():
-  if eventPlayer.isInLoSBotTarget() or eventPlayer.botWallPhase or eventPlayer.hasStatus(Status.HACKED): # todo: Crowd controlled
+  if eventPlayer.isInLoSBotTarget() or eventPlayer.botWallPhase or eventPlayer.hasStatus(Status.HACKED) or eventPlayer.isCrowdControlTime(): # todo: Crowd controlled
     eventPlayer.botWantsWallPhasePoints = false
   else:
     eventPlayer.botWantsWallPhasePoints++
 
 macro botTeleportIfTooFar():
   # If a zombie bot is too far from its target, teleport it to a random available spawn point:
-  if eventPlayer.getDistanceToBotTarget() > BOT_MAX_TARGET_DISTANCE and spawnPointsList:
+  if eventPlayer.getDistanceToBotTarget() > BOT_MAX_TARGET_DISTANCE:
     TeleportToRandomSpawnPointSub()
 
 macro botTargetLosAndObstacleWaipoint():

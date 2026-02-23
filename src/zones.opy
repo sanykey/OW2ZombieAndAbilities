@@ -78,25 +78,17 @@ rule "Activate or Deactivate zones":
   # Activate zone A:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_A
   if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1):
-    for zonesI in range(VL_SPAWN_POINTS_A_LEN):
-      spawnPointsList.append(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
     createHeroBuySpotsTexts()
   # Deactivate zone A:
   elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_A], ZONE_A_SIZE, Team.1):
-    for zonesI in range(VL_SPAWN_POINTS_A_LEN):
-      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_A_OFFSET + zonesI])
     destroyHeroBuySpotsTexts()
 
   # Activate zone B:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_B
   if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1):
-    for zonesI in range(VL_SPAWN_POINTS_B_LEN):
-      spawnPointsList.append(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
     createHeroBuySpotsTexts()
   # Deactivate zone B:
   elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_B], ZONE_B_SIZE, Team.1):
-    for zonesI in range(VL_SPAWN_POINTS_B_LEN):
-      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_B_OFFSET + zonesI])
     destroyHeroBuySpotsTexts()
 
   # Activate zone C (Shop):
@@ -157,47 +149,31 @@ rule "Activate or Deactivate zones":
   # Activate zone D:
   if not isZoneActiveD and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1):
     isZoneActiveD = true
-    for zonesI in range(VL_SPAWN_POINTS_D_LEN):
-      spawnPointsList.append(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
   # Deactivate zone D:
   elif isZoneActiveD and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_D], ZONE_D_SIZE, Team.1):
     isZoneActiveD = false
-    for zonesI in range(VL_SPAWN_POINTS_D_LEN):
-      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_D_OFFSET + zonesI])
   
   # Activate zone E:
   zonesHeroBuyOffset = BUY_HERO_OFFSET_E
   if not zonesEffectsIds[zonesHeroBuyOffset] and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1):
-    for zonesI in range(VL_SPAWN_POINTS_E_LEN):
-      spawnPointsList.append(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
     createHeroBuySpotsTexts()
   # Deactivate zone E:
   elif zonesEffectsIds[zonesHeroBuyOffset] and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_E], ZONE_E_SIZE, Team.1):
-    for zonesI in range(VL_SPAWN_POINTS_E_LEN):
-      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_E_OFFSET + zonesI])
     destroyHeroBuySpotsTexts()
 
   # Activate zone F:
   if not isZoneActiveF and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1):
     isZoneActiveF = true
-    for zonesI in range(VL_SPAWN_POINTS_F_LEN):
-      spawnPointsList.append(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
   # Deactivate zone F:
   elif isZoneActiveF and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_F], ZONE_F_SIZE, Team.1):
     isZoneActiveF = false
-    for zonesI in range(VL_SPAWN_POINTS_F_LEN):
-      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_F_OFFSET + zonesI])
 
   # Activate zone G:
   if not isZoneActiveG and getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1):
     isZoneActiveG = true
-    for zonesI in range(VL_SPAWN_POINTS_G_LEN):
-      spawnPointsList.append(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
   # Deactivate zone G:
   elif isZoneActiveG and not getPlayersInRadius(vectList[VL_ACTIVATE_ZONE_DETECTOR_G], ZONE_G_SIZE, Team.1):
     isZoneActiveG = false
-    for zonesI in range(VL_SPAWN_POINTS_G_LEN):
-      spawnPointsList.remove(vectList[VL_SPAWN_POINTS_G_OFFSET + zonesI])
 
 
   # Activate zone H:

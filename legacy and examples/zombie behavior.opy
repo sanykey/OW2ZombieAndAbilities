@@ -101,10 +101,7 @@ macro botAntifall():
   lbl_1:
 
 macro botUnstuck():
-  if eventPlayer.isCrowdControlTime():
-    
-
-  if eventPlayer.isOnGround():
+  if not eventPlayer.isCrowdControlTime() and eventPlayer.isOnGround():
     eventPlayer.tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
     if (
       eventPlayer.moneyTotal__botOldPosition and

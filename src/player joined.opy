@@ -57,19 +57,19 @@ rule "Player spawned setup":
   SetHeroTypeSub()
   UpdateCombatantsSub()
 
-  if not eventPlayer.isReady:
+  if not eventPlayer.isReady__isBotRespawning:
     wait(1.5)
     eventPlayer.setFacing(vect(0.93, 0.05, -0.35), Relativity.TO_WORLD)
 
 rule "Show game tips in start":
   @Event eachPlayer
   @Team 1 
-  @Condition not eventPlayer.isReady
+  @Condition not eventPlayer.isReady__isBotRespawning
   @Condition not eventPlayer.isDummy()
 
-  while not eventPlayer.isReady: 
+  while not eventPlayer.isReady__isBotRespawning: 
     if distance(eventPlayer, vect(-27.33, -1.94, -12.68)) > 6:
-      eventPlayer.isReady = true
+      eventPlayer.isReady__isBotRespawning = true
     wait(1)
 
 rule "Player left Match, destroy effects, texts and hud":

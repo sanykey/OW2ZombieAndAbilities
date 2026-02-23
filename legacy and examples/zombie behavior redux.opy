@@ -22,7 +22,7 @@ def botResetOldPos():
 def botRespawn(): # also change round end spawning & spawn queue
     eventPlayer.teleport(SpawnTp)
     eventPlayer.resurrect()
-    eventPlayer.isReady = true
+    eventPlayer.isReady__isBotRespawning = true
     eventPlayer.botWantsWallPhasePoints = true
     # wait(0.016, Wait.RESTART_WHEN_TRUE)
     wait()
@@ -129,8 +129,8 @@ rule "bot targeting & repos polling (offense)":
   @Condition eventPlayer.isAlive()
   @Condition not eventPlayer.hasStatusEffect(Status.STUNNED)
   do:
-      if eventPlayer.isReady:
-          eventPlayer.isReady = false
+      if eventPlayer.isReady__isBotRespawning:
+          eventPlayer.isReady__isBotRespawning = false
           eventPlayer.botWantsWallPhasePoints = true
           eventPlayer.botTarget = random.choice([x for x in getPlayers(Team.1) if not x.isInvisible or x.isDead() or not x.hasSpawned()])
           goto lbl_0

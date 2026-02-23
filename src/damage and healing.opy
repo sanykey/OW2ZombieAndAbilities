@@ -106,12 +106,12 @@ macro Player.setCrowdControlAttack(self, attacker0, isVanilaKnockback=false, dur
   self.lastCcAttackTime = duration + getTotalTimeElapsed()
   self.lastCcWasInAir = self.isInAir()
   self.lastCcVanilaKnockback = isVanilaKnockback
-  # self.money__botStuckTimes = 0 # Zero the parameter that makes the bot jump when it gets stuck in obstacles
 
-macro Player.resetCrowdControlTime(self):
-  self.lastCcAttacker = false
-  self.lastCcAttackTime = false
-  self.lastCcWasInAir = false
+def ResetCrowdControlTimeSub():
+  @Name "ResetCrowdControlTimeSub"
+  eventPlayer.lastCcAttacker = false
+  eventPlayer.lastCcAttackTime = false
+  eventPlayer.lastCcWasInAir = false
 
 macro Player.isCrowdControlTime(self):
   self.lastCcAttackTime >= getTotalTimeElapsed()
@@ -180,11 +180,14 @@ rule "Player deal damage":
       elif eventAbility == Button.ABILITY_1:
         playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.BLACK, victim, 3)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.BLACK, victim, 6)
-        getPlayersInRadius(victim.getEyePosition(), ANA_AOE_SLEEP_RADIUS, Team.ZOMBIES, LosCheck.SURFACES).setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
+        eventPlayer.list0 = getPlayersInRadius(victim.getEyePosition(), ANA_AOE_SLEEP_RADIUS, Team.ZOMBIES, LosCheck.SURFACES)
+        eventPlayer.list0.setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
+        eventPlayer.list0.setCrowdControlAttack(attacker, false, ANA_AOE_SLEEP_TIME)
       elif eventAbility == Button.ABILITY_2: # slowdown nade
         victim.setSpeedState(ANA_NADE_SLOWDOWN, ANA_NADE_SLOWDOWN_TIME)
       elif eventAbility == Button.MELEE and (not eventPlayer.abilityCD or eventPlayer.abilityCD == ANA_PARALYZING_STRIKE_CD):
         victim.setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
+        victim.setCrowdControlAttack(attacker, false, ANA_AOE_SLEEP_TIME)
         eventPlayer.abilityCD = ANA_PARALYZING_STRIKE_CD
       break
 
@@ -283,9 +286,7 @@ rule "Healing amount tracker":
   @Team 1
   
   # [Ana] Nano'd target gains speed boost
-  logToInspector("heal from {}".format(healer))
   if eventAbility == Button.ULTIMATE and healer.getHero() == Hero.ANA:
-    logToInspector("speedboost for {}".format(healee))
     healee.setSpeedState(ANA_NANO_SPEEDBOOST, ANA_NANO_SPEEDBOOST_TIME)
 
   # healing yourself gives less points
@@ -335,4 +336,3 @@ rule "Defensive assists money and ult charge":
     )
 
   eventPlayer.currentDefensiveAssistsStat = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
-

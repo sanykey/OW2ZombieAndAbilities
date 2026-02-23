@@ -66,7 +66,7 @@ rule "[debug] init Bot state view mode":
       debugSelectedAllyBot.hasStatus(Status.INVINCIBLE),
 
       debugSelectedActionText(9),
-      debugSelectedAllyBot.isReady,
+      debugSelectedAllyBot.isReady__isBotRespawning,
 
       # ----------
       debugSelectedAllyBot.getHealth(),
@@ -140,7 +140,7 @@ rule "[debug] Activate selected action for AllyBots mode":
     else:
       debugSelectedAllyBot.setStatusEffect(debugSelectedAllyBot, Status.INVINCIBLE, INFINITY)
   elif debugSelectedAction == 9: # enable AI
-    debugSelectedAllyBot.isReady = not debugSelectedAllyBot.isReady
+    debugSelectedAllyBot.isReady__isBotRespawning = not debugSelectedAllyBot.isReady__isBotRespawning
 
 
 def RightBotStateViewSub():
@@ -235,7 +235,7 @@ rule "[debug] Ally bot: Find Target and attack":
   @Hero orisa
   @Condition debugAllyBotCreated
   @Condition eventPlayer.isDummy()
-  @Condition eventPlayer.isReady
+  @Condition eventPlayer.isReady__isBotRespawning
 
   if eventPlayer.zomAIstep == 0:
     getAllyBotTarget()
@@ -252,7 +252,7 @@ rule "[debug] Ally bot: Find Target and attack":
 
   eventPlayer.zomAIstep = 0 if eventPlayer.zomAIstep >= 4 else eventPlayer.zomAIstep + 1
   wait(0.2)
-  if not eventPlayer.isReady:
+  if not eventPlayer.isReady__isBotRespawning:
     eventPlayer.stopForcingButton(Button.PRIMARY_FIRE)
 
   if ruleCondition:

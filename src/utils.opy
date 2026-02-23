@@ -27,6 +27,10 @@ macro Player.resetBotStuckTimes(self):
   self.money__botStuckTimes = false
   self.botWantsWallPhasePoints = false
 
+def ResetBotStuckTimesSub():
+  @Name "ResetBotStuckTimesSub"
+  eventPlayer.resetBotStuckTimes()
+
 def SetHeroTypeSub():
   @Name "Sub: setHeroType"
   if eventPlayer.getCurrentHero() in getTankHeroes():

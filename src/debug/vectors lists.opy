@@ -2,7 +2,6 @@
 
 globalvar debugVectorsLists = [
   ["Hero buy spots", VL_BUY_HERO_SPOTS_OFFSET, VL_BUY_HERO_SPOTS_LEN],
-  ["Bot spawn points", VL_SPAWN_POINTS_A_OFFSET, VL_SPAWN_POINTS_LEN],
   ["Bot sniper spots", VL_BOT_SNIPER_SPOTS_OFFSET, VL_BOT_SNIPER_SPOTS_LEN],
 ]
 globalvar debugVectorsListsEffects

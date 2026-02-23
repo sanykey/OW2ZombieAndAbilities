@@ -32,7 +32,7 @@
 #*/
 
 #/*
-#!include "bots/match.opy"
+#!include "bots/match flow.opy"
 #!include "bots/zombie events.opy"
 #!include "bots/respawn.opy"
 #!include "bots/main behavior.opy"
@@ -72,8 +72,8 @@
 #!include "debug/common.opy"
 #!include "debug/bot state view.opy"
 #!include "debug/ally bot.opy"
-##!include "debug/ballistics.opy"
 #!include "debug/vectors lists.opy"
+##!include "debug/ballistics.opy"
 ##!include "debug/other.opy"
 ##!include "debug/positions measuring.opy"
 ##!include "debug/vector list.opy"

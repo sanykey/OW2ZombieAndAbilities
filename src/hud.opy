@@ -145,7 +145,7 @@ rule "Create players effects":
   # Players list, upgrades and money
   hudText(
     [player for player in getPlayers(Team.1) if player != eventPlayer or not eventPlayer.isHeroDescriptionOpened],
-    heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() == true else heroIcon(eventPlayer.getHero()),
+    heroIcon(eventPlayer.getHeroOfDuplication()) if eventPlayer.isDuplicatingAHero() else heroIcon(eventPlayer.getHero()),
     "<fgC80013FF><TX C0000000001F92F>{}%</fg>, <fgA0E81BFF><TX C0000000003A2C8>{}%</fg>, <fgece580FF><TX C000000000039DD>{}%</fg>, <fgEC9900FF><TX C00000000004120>{}%</fg>".format(
       eventPlayer.damageBoostPercent,
       eventPlayer.healthBoostPercent,

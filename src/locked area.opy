@@ -26,7 +26,7 @@ rule "Create location buy positions":
     lockedAreaEffectsArr.append(getLastCreatedText())
 
   ## Create closed doorway effects. lockedAreaEffectsArr [8-19] indexes: ##
-  for I in range(VI.LOCKED_AREA_EFFECTS_OFFSET, VI.LOCKED_AREA_EFFECTS_OFFSET + LOCKED_AREA_EFFECTS_LEN):
+  for I in range(VL_LOCKED_AREA_EFFECTS_OFFSET, VL_LOCKED_AREA_EFFECTS_OFFSET + VL_LOCKED_AREA_EFFECTS_LEN):
     createEffect(getPlayers(Team.1), Effect.BAD_AURA, Color.WHITE, evalOnce(vectList[I]), 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     lockedAreaEffectsArr.append(getLastCreatedEntity())
 
@@ -233,7 +233,7 @@ rule "Unlock next location A":
   @Condition unlockedLocations == 0
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money__botStuckTimes >= 2500
-  @Condition distance(vectList[VI.BUY_LOCATION_A], eventPlayer) <= 2
+  @Condition distance(vectList[VL_BUY_LOCATION_A], eventPlayer) <= 2
 
   
   unlockedLocations = 1
@@ -257,7 +257,7 @@ rule "Unlock next location B":
   @Condition unlockedLocations == 1
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money__botStuckTimes >= 5000
-  @Condition distance(vectList[VI.BUY_LOCATION_B], eventPlayer) <= 2
+  @Condition distance(vectList[VL_BUY_LOCATION_B], eventPlayer) <= 2
   
   unlockedLocations = 2
   # Remove closed doorway effects:
@@ -282,7 +282,7 @@ rule "Unlock next location C":
   @Condition unlockedLocations == 2
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money__botStuckTimes >= 7500
-  @Condition distance(vectList[VI.BUY_LOCATION_C], eventPlayer) <= 2
+  @Condition distance(vectList[VL_BUY_LOCATION_C], eventPlayer) <= 2
   
   unlockedLocations = 3
   # Remove closed doorway effects:
@@ -306,7 +306,7 @@ rule "Unlock next location D":
   @Condition unlockedLocations == 3
   @Condition eventPlayer.isHoldingButton(Button.INTERACT)
   @Condition eventPlayer.money__botStuckTimes >= 10000
-  @Condition distance(vectList[VI.BUY_LOCATION_D], eventPlayer) <= 2
+  @Condition distance(vectList[VL_BUY_LOCATION_D], eventPlayer) <= 2
   
   unlockedLocations = 4
   # Remove closed doorway effects:

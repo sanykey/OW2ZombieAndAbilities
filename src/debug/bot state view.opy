@@ -7,7 +7,7 @@ globalvar debugSelectedPlayer
 globalvar debugSelectedPlayerEff
 globalvar debugCommonBotsList = [Hero.TORBJORN, Hero.JUNKRAT, Hero.SYMMETRA]
 globalvar debugCommonBotIndex
-globalvar debugBotsSpawnPointEffect
+globalvar debugZombieBotsSpawnPointEffect
 globalvar debugBotTargetLastPositionEffect
 
 rule "[debug] add BotStateView debug mode":
@@ -55,6 +55,7 @@ rule "[debug] init Bot state view mode":
     ult charge: <fg84c951FF>{}</fg>
     pos: <fg84c951FF>{}</fg>
     facing dir: <fg84c951FF>{}</fg>
+    isBotRespawning: <fg84c951FF>{}</fg>
     Stuck Points: <fg84c951FF>{}</fg>
     Fly Through Walls Points: <fg84c951FF>{}</fg>
     Target: <fg84c951FF>{}</fg>
@@ -72,7 +73,7 @@ rule "[debug] init Bot state view mode":
 
       # Place spawn point
       debugSelectedActionText(1),
-      debugBotsSpawnPoint,
+      debugZombieBotsSpawnPoint,
 
       # Select bot closest to reticle
       debugSelectedActionText(2),
@@ -122,6 +123,7 @@ rule "[debug] init Bot state view mode":
       debugSelectedPlayer.getUltCharge(),
       debugSelectedPlayer.getPosition(),
       debugSelectedPlayer.getFacingDirection(),
+      debugSelectedPlayer.isReady__isBotRespawning,
       debugSelectedPlayer.money__botStuckTimes,
       debugSelectedPlayer.botWantsWallPhasePoints,
       debugSelectedPlayer.botTarget,
@@ -227,10 +229,10 @@ rule "[debug] Activate selected action for Common mode":
   ConditionForActivateSelectedAction("BotStateView")
 
   if debugSelectedAction == 1: # Place/Remove debug spawn point for bots
-    if debugBotsSpawnPoint:
-      debugBotsSpawnPoint = false
+    if debugZombieBotsSpawnPoint:
+      debugZombieBotsSpawnPoint = false
     else:
-      debugBotsSpawnPoint = eventPlayer.getPosition()
+      debugZombieBotsSpawnPoint = eventPlayer.getPosition()
   elif debugSelectedAction == 5: # Remove/add bots
     if isBotsDisabled == false:
       RemoveBotsSub()
@@ -267,21 +269,21 @@ rule "[debug] Activate selected action for Common mode":
     for I in range(len(eventPlayer.list0) - 1):
       eventPlayer.list0[I].startForcingHero(random.choice(getAllHeroes()))
 
-rule "[debug] effect for debugBotsSpawnPoint":
-  @Condition debugBotsSpawnPoint
+rule "[debug] effect for debugZombieBotsSpawnPoint":
+  @Condition debugZombieBotsSpawnPoint
 
   createEffect(
     getAllPlayers(),
     Effect.SPHERE,
     Color.GREEN,
-    debugBotsSpawnPoint,
+    debugZombieBotsSpawnPoint,
     DEBUG_BOTS_SP_EFFECT_RADIUS,
     EffectReeval.POSITION_AND_RADIUS
   )
 
-  debugBotsSpawnPointEffect = getLastCreatedEntity()
+  debugZombieBotsSpawnPointEffect = getLastCreatedEntity()
   waitUntil(not ruleCondition, INFINITY)
-  destroyEffect(debugBotsSpawnPointEffect)
+  destroyEffect(debugZombieBotsSpawnPointEffect)
 
 rule "[debug] effect for botTargetLastPosition":
   @Condition debugModesArr[debugMode] == "BotStateView"

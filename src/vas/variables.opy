@@ -30,6 +30,7 @@ enum Team:
 #!define TORBJORN_HAMMER_BASE_DMG 70
 
 # Zombie settings
+#!define BOT_MAX_TARGET_DISTANCE 40
 #!define ZOMBIE_FALL_DAMAGE 250
 #!define ZOMBIE_BASE_DAMAGE 20
 #!define ZOMBIE_BASE_HP 50
@@ -76,6 +77,7 @@ enum Team:
 # When checking isInLoS(), use a position slightly above the distant target to avoid false positives through the floor:
 globalvar LosHeightCheckVectConst = vect(false, 1.2, false)
 
+globalvar OffmapPositionConst = vect(false, 500, false)
 
 #####################################################
 ################ Global variables ###################
@@ -84,7 +86,6 @@ globalvar playersInShop
 globalvar combatants = []
 globalvar roundNumber = 0
 
-globalvar spawnPointsList = []
 globalvar roundMaxBots
 # Buy hero
 globalvar heroesShopData = [] # [hero, buy_place_vector, price, buy_text_vector]
@@ -145,7 +146,7 @@ globalvar debugCurrentVectEffectArr
 
 # debug
 globalvar debugMenuIsOpened
-globalvar debugBotsSpawnPoint
+globalvar debugZombieBotsSpawnPoint
 
 ##################################################
 ############## Player variables: #################
@@ -160,6 +161,7 @@ playervar botWantsWallPhasePoints
 playervar botTarget
 playervar zomAIstep
 globalvar botWidowmakerAvaliableSpawnSpots
+playervar botTargetLastPosition
 
 # detecting crowd control abilities for bots fall damage and unstuck (or wall phase) mechanics
 playervar lastCcAttacker
@@ -214,7 +216,7 @@ playervar moneyTotal__botOldPosition
 
 playervar abilTemp1 # tmp var use for loops with "wait" per hero
 playervar isInvisible
-playervar isReady
+playervar isReady__isBotRespawning
 
 playervar isHeroDescriptionOpened
 

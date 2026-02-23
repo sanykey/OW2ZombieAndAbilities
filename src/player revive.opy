@@ -30,7 +30,7 @@ rule "[Revive] player died":
 
   UpdateCombatantsSub()
   DetachP2PSub()
-  eventPlayer.isReady = true
+  eventPlayer.isReady__isBotRespawning = true
 
   pause3PCamera()
   smallMessage(getAllPlayers(), "{0} was downed!".format(eventPlayer))
