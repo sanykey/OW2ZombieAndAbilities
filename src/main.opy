@@ -14,9 +14,9 @@
 
 #/*
 #!include "zones.opy"
-##!include "restricted areas.opy"
+#!include "restricted areas.opy"
 #!include "portal.opy"
-##!include "locked area.opy" 
+#!include "locked area.opy" 
 #!include "secret shop.opy"
 #!include "buy hero.opy" 
 #*/
@@ -26,7 +26,7 @@
 #!include "damage and healing.opy"
 ##!include "attach p2p.opy"
 #!include "player joined.opy"
-##!include "player revive.opy"
+#!include "player revive.opy"
 #!include "interact button.opy" 
 ##!include "rayIntersectionsWithSphere.opy"
 #!include "barriers damage.opy"

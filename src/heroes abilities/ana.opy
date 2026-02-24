@@ -34,11 +34,11 @@ rule "[Ana] init":
     "{}{} Paralyzing Strike: {}".format(
       ABILITI_TEXT_INTEND,
       abilityIconString(Hero.ANA, Button.ABILITY_1),
-      ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>✓</fg> <fg94a0a544>(Press {})</fg>".format(inputBindingString(Button.MELEE))
+      ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else f"<fgA0E81BFF>Melee hit</fg>"
     ),
     eventPlayer.heroEffectsIds[false]
   )
-
+  
   # # Paralyzing Strike ability CD info:
   # hudText(
   #   eventPlayer if not eventPlayer.isHeroDescriptionOpened else null,
@@ -46,7 +46,7 @@ rule "[Ana] init":
   #   "{}{} Paralyzing Strike: {}".format(
   #     ABILITI_TEXT_INTEND,
   #     abilityIconString(Hero.ANA, Button.ABILITY_1),
-  #     ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>✓</fg> <fg94a0a544>(Press {})</fg>".format(inputBindingString(Button.MELEE))
+  #     ceil(eventPlayer.abilityCD) if eventPlayer.abilityCD else "<fgA0E81BFF>ready</fg> <fg94a0a544>(Press {})</fg>".format(inputBindingString(Button.MELEE))
   #   ),
   #   null,
   #   HudPosition.TOP,

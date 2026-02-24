@@ -17,12 +17,7 @@ rule "Player joined setup":
   eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
   eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
 
-  eventPlayer.earnMoney(
-    wSettingsStartMoney + (2500 * roundNumber)
-    + ((eventPlayer.damageBoostPercent - 100) / DAMAGE_UPGRADE_AMOUNT * UPGRADE_PRICE)
-    + ((eventPlayer.healthBoostPercent - 100) / HEALTH_UPGRADE_AMOUNT * UPGRADE_PRICE)
-    + ((eventPlayer.healingBoostPercent - 100) / HEALING_UPGRADE_AMOUNT * UPGRADE_PRICE)
-  )
+  eventPlayer.earnMoney(wSettingsStartMoney + (2500 * roundNumber))
   eventPlayer.purchasedHeroes = [Hero.DVA]
   
   # grant develop privileges
@@ -35,12 +30,6 @@ rule "Player joined setup":
   eventPlayer.respawn()
   if not eventPlayer.isDummy():
     eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
-
-# rule "Player joined zombie team": 
-#   @Event playerJoined
-#   @Team 2
-#   eventPlayer.startForcingHero(Hero.TORBJORN)
-#   eventPlayer.isHeroDescriptionOpened = false
 
 rule "Player spawned setup":
   @Event eachPlayer

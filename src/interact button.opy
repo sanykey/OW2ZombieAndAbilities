@@ -87,12 +87,12 @@ rule "Interact button":
     playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, getPlayers(Team.1), 2)
     playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, getPlayers(Team.1), 100)
     
-    # eventPlayer.money__botStuckTimes += (eventPlayer.damageBoostPercent - 100) / DAMAGE_UPGRADE_AMOUNT * UPGRADE_PRICE
-    # eventPlayer.money__botStuckTimes += (eventPlayer.healthBoostPercent - 100) / HEALTH_UPGRADE_AMOUNT * UPGRADE_PRICE
-    # eventPlayer.money__botStuckTimes += (eventPlayer.healingBoostPercent - 100) / HEALING_UPGRADE_AMOUNT * UPGRADE_PRICE
+    eventPlayer.money__botStuckTimes += (eventPlayer.damageBoostPercent - 100) / DAMAGE_UPGRADE_AMOUNT * UPGRADE_PRICE
+    eventPlayer.money__botStuckTimes += (eventPlayer.healthBoostPercent - 100) / HEALTH_UPGRADE_AMOUNT * UPGRADE_PRICE
+    eventPlayer.money__botStuckTimes += (eventPlayer.healingBoostPercent - 100) / HEALING_UPGRADE_AMOUNT * UPGRADE_PRICE
 
     if (eventPlayer.boostStats[PV_ARMOR_FOR_TEAM]):
-      # eventPlayer.money__botStuckTimes += eventPlayer.boostStats[PV_ARMOR_FOR_TEAM] / TEAM_ARMOR_UPGRADE_AMOUNT * TEAM_UPGRADE_PRICE
+      eventPlayer.money__botStuckTimes += eventPlayer.boostStats[PV_ARMOR_FOR_TEAM] / TEAM_ARMOR_UPGRADE_AMOUNT * TEAM_UPGRADE_PRICE
       teamArmor -= eventPlayer.boostStats[PV_ARMOR_FOR_TEAM]
 
     eventPlayer.damageBoostPercent = 100
@@ -103,10 +103,9 @@ rule "Interact button":
     eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
     eventPlayer.setHealingDealt(eventPlayer.healingBoostPercent)
 
-    if eventPlayer.moneyTotal__botOldPosition < (wSettingsStartMoney + (2500 * roundNumber)):
-      eventPlayer.moneyTotal__botOldPosition = wSettingsStartMoney + (2500 * roundNumber)
-
-    eventPlayer.money__botStuckTimes = eventPlayer.moneyTotal__botOldPosition
+    # if eventPlayer.moneyTotal__botOldPosition < (wSettingsStartMoney + (2500 * roundNumber)):
+    #   eventPlayer.moneyTotal__botOldPosition = wSettingsStartMoney + (2500 * roundNumber)
+    #   eventPlayer.money__botStuckTimes = eventPlayer.moneyTotal__botOldPosition
 
   # [Ana][Orisa][attach p2p]
   # elif not eventPlayer.attach2p[Attach2P.IS_ATTACHED]: 

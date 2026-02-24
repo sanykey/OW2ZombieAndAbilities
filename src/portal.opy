@@ -4,8 +4,10 @@ rule "[Portal]":
   @Condition shopStatus
   
   wait(6)
-  createEffect(getAllPlayers(), Effect.BAD_AURA, Color.BLUE, vect(-9.799, 3.5, -27.229), 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-  createEffect(getAllPlayers(), Effect.BAD_AURA, Color.ORANGE, vect(126.434, 16.5, -15.81), 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getAllPlayers(), Effect.GOOD_AURA, Color.WHITE, vect(-9.799, 3.5, -27.229), 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  createEffect(getAllPlayers(), Effect.GOOD_AURA, Color.WHITE, vect(126.434, 16.5, -15.81), 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  # createEffect(getAllPlayers(), Effect.BAD_AURA, Color.BLUE, vect(-9.799, 3.5, -27.229), 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+  # createEffect(getAllPlayers(), Effect.BAD_AURA, Color.ORANGE, vect(126.434, 16.5, -15.81), 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
   bigMessage(getPlayers(Team.1), l"{0} {1} {2}".format(iconString(Icon.SPIRAL), "A portal has appeared nearby...", iconString(Icon.SPIRAL)))
 
 
