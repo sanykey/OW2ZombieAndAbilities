@@ -14,6 +14,7 @@
 
 #/*
 #!include "zones.opy"
+##!include "restricted areas.opy"
 #!include "portal.opy"
 ##!include "locked area.opy" 
 #!include "secret shop.opy"
@@ -71,10 +72,9 @@
 #!include "debug/debug menu.opy"
 #!include "debug/common.opy"
 #!include "debug/bot state view.opy"
-#!include "debug/ally bot.opy"
+#!include "debug/players and ally bots.opy"
 #!include "debug/vectors lists.opy"
 ##!include "debug/ballistics.opy"
 ##!include "debug/other.opy"
 ##!include "debug/positions measuring.opy"
-##!include "debug/vector list.opy"
 #*/

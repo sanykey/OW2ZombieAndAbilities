@@ -1,6 +1,7 @@
 #!mainFile "../main.opy"
 
 globalvar enabledInspector
+globalvar debugTeleportPoint = vect(80.11, 12.68, -98.09)
 
 rule "[debug] add BotStateView debug mode":
   debugModesArr.append("Common")
@@ -11,7 +12,7 @@ rule "[debug] init Common debug mode":
   wait(0.1)
 
   debugSelectedAction = 0
-  debugMaxAction = 12
+  debugMaxAction = 13
 
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
@@ -20,6 +21,7 @@ rule "[debug] init Common debug mode":
     {}Open switch hero menu</fg> 
     {}Invincible</fg> <fg84c951FF>{}</fg>
     {}Teleport to shop</fg> 
+    {}Teleport to debug point</fg> <fg84c951FF>{}</fg>
     {}Noclip:</fg> <fg84c951FF>{}</fg>
     {}Add $100000</fg> 
     {}Add upgrades</fg> 
@@ -49,22 +51,25 @@ rule "[debug] init Common debug mode":
       debugSelectedActionText(4),
 
       debugSelectedActionText(5),
-      debugIsNoclip,
+      debugTeleportPoint,
 
       debugSelectedActionText(6),
-      debugSelectedActionText(7),
+      debugIsNoclip,
 
+      debugSelectedActionText(7),
       debugSelectedActionText(8),
-      debugUnlimitUltimates,
 
       debugSelectedActionText(9),
-      debugNoCD,
+      debugUnlimitUltimates,
 
       debugSelectedActionText(10),
-      debugSelectedActionText(11),
-      enabledInspector,
+      debugNoCD,
       
+      debugSelectedActionText(11),
       debugSelectedActionText(12),
+      enabledInspector,
+
+      debugSelectedActionText(13),
       # ----------
       getNumberOfEntityIds(),
       getNumberOfTextIds()
@@ -101,7 +106,10 @@ rule "[debug] Activate selected action for Common mode":
   elif debugSelectedAction == 4: # Teleport to shop
     eventPlayer.teleport(vect(-20.63, 6.50, -88.95))
 
-  elif debugSelectedAction == 5: # Noclip
+  elif debugSelectedAction == 5: # Teleport to debug point
+    eventPlayer.teleport(debugTeleportPoint)
+
+  elif debugSelectedAction == 6: # Noclip
     debugIsNoclip = not debugIsNoclip
     if not debugIsNoclip:
       eventPlayer.clearStatusEffect(Status.INVINCIBLE)
@@ -119,10 +127,10 @@ rule "[debug] Activate selected action for Common mode":
       eventPlayer.disableEnvironmentCollision(true)
       eventPlayer.setGravity(0)
 
-  elif debugSelectedAction == 6: # Add money
+  elif debugSelectedAction == 7: # Add money
     eventPlayer.earnMoney(100000)
 
-  elif debugSelectedAction == 7: # Add upgrades
+  elif debugSelectedAction == 8: # Add upgrades
     eventPlayer.healthBoostPercent = 100000
     eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
     eventPlayer.damageBoostPercent = 100000
@@ -132,16 +140,16 @@ rule "[debug] Activate selected action for Common mode":
     wait()
     heal(eventPlayer, null, INFINITY)
 
-  elif debugSelectedAction == 8: # Switch unlimit ultimates
+  elif debugSelectedAction == 9: # Switch unlimit ultimates
     debugUnlimitUltimates = not debugUnlimitUltimates
 
-  elif debugSelectedAction == 9:
+  elif debugSelectedAction == 10:
     debugNoCD = not debugNoCD
 
-  elif debugSelectedAction == 10: # Kill me
+  elif debugSelectedAction == 11: # Kill me
     damage(eventPlayer, null, INFINITY)
 
-  elif debugSelectedAction == 11: # Enable/Disable Inspector
+  elif debugSelectedAction == 12: # Enable/Disable Inspector
     if enabledInspector:
       enabledInspector = false
       disableInspector()
@@ -149,7 +157,7 @@ rule "[debug] Activate selected action for Common mode":
       enabledInspector = true
       enableInspector()
 
-  elif debugSelectedAction == 12: # resurrect all
+  elif debugSelectedAction == 13: # resurrect all
     ReviveAllPlayersSub()
   
 rule "[debug] Unlimit ultimates":

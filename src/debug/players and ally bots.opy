@@ -3,11 +3,11 @@
 globalvar debugAllyBotCreated
 globalvar debugSelectedAllyBot
 
-rule "[debug] add AllyBots debug mode":
-  debugModesArr.append("AllyBots")
+rule "[debug] add Players debug mode":
+  debugModesArr.append("Players")
 
 rule "[debug] init Bot state view mode":
-  ConditionForInitMode("AllyBots")
+  ConditionForInitMode("Players")
 
   wait(0.1)
   debugSelectedAction = 0
@@ -17,8 +17,8 @@ rule "[debug] init Bot state view mode":
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
     "{}
     {}Add ally bot in my position</fg>
-    {}Current bot: {} <fg84c951FF>{} {} ({})</fg> {}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
-    {}Kill bot</fg>
+    {}Player: {} <fg84c951FF>{} {} ({})</fg> {}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
+    {}Kill</fg>
     {}Remove ally bot</fg> <fg94a0a544>[+Crouch] = all</fg>
     {}Damage upgrade: {} <fg84c951FF>{}</fg> {}</fg>
     {}Health upgrade (heal): {} <fg84c951FF>{}</fg> {}</fg>
@@ -34,7 +34,7 @@ rule "[debug] init Bot state view mode":
     <fg94a0a544>If you die, say `Thanks` and the bot will 
     move to your position to revive you.</fg>
     ".format(
-      debugMenuTitle("AllyBots"),
+      debugMenuTitle("Players"),
       debugSelectedActionText(1),
       debugSelectedActionText(2),
 
@@ -84,26 +84,26 @@ rule "[debug] init Bot state view mode":
   waitUntil(not ruleCondition, INFINITY)
   destroyHudText(debugModeHud)
 
-def NextAllyBotSub():
+def NextPlayersub():
   @Name "Sub: next ally bot"
   eventPlayer.list0 = sorted(
-    [player for player in getPlayers(Team.1) if player.isDummy()],
+    getPlayers(Team.1),
     lambda i: i.getSlot()
   )
   eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedAllyBot or player.getSlot() > debugSelectedAllyBot.getSlot()][false]
   debugSelectedAllyBot = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0[false]
 
-def PrevAllyBotSub():
+def PrevPlayersub():
   @Name "Sub: prev ally bot"
   eventPlayer.list0 = sorted(
-    [player for player in getPlayers(Team.1) if player.isDummy()],
+    getPlayers(Team.1),
     lambda i: i.getSlot()
   )
   eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedAllyBot or player.getSlot() < debugSelectedAllyBot.getSlot()].last()
   debugSelectedAllyBot = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0.last()
 
-rule "[debug] Activate selected action for AllyBots mode":
-  ConditionForActivateSelectedAction("AllyBots")
+rule "[debug] Activate selected action for Players mode":
+  ConditionForActivateSelectedAction("Players")
 
   if debugSelectedAction == 1: # Add bot
     createDummy(Hero.ORISA, Team.1, -1, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
@@ -118,7 +118,7 @@ rule "[debug] Activate selected action for AllyBots mode":
     debugAllyBotCreated = true
     if not debugSelectedAllyBot:
       wait(0.1)
-      NextAllyBotSub()
+      NextPlayersub()
   elif debugSelectedAction == 3: # Kill bot
     kill(debugSelectedAllyBot)
   elif debugSelectedAction == 4: # Remove all ally bots
@@ -126,9 +126,9 @@ rule "[debug] Activate selected action for AllyBots mode":
       eventPlayer.tmp0 = getNumberOfPlayers(Team.PLAYERS)
       for I in range(eventPlayer.tmp0):
         destroyDummy(Team.1, I)
-    else:
+    elif debugSelectedAllyBot.isDummy():
       destroyDummy(Team.1, debugSelectedAllyBot.getSlot())
-      NextAllyBotSub()
+      NextPlayersub()
     debugAllyBotCreated = any([player for player in getPlayers(Team.1) if player.isDummy()])
   elif debugSelectedAction == 6: # Heal
     heal(debugSelectedAllyBot, null, INFINITY)
@@ -140,13 +140,14 @@ rule "[debug] Activate selected action for AllyBots mode":
     else:
       debugSelectedAllyBot.setStatusEffect(debugSelectedAllyBot, Status.INVINCIBLE, INFINITY)
   elif debugSelectedAction == 9: # enable AI
-    debugSelectedAllyBot.isReady__isBotRespawning = not debugSelectedAllyBot.isReady__isBotRespawning
+    if debugSelectedAllyBot.isDummy():
+      debugSelectedAllyBot.isReady__isBotRespawning = not debugSelectedAllyBot.isReady__isBotRespawning
 
 
 def RightBotStateViewSub():
   @Name "Sub: Right Bot State View"
   if debugSelectedAction == 2: # next bot
-    NextAllyBotSub()
+    NextPlayersub()
   elif debugSelectedAction == 5:
     debugSelectedAllyBot.damageBoostPercent += incWithModificators(10)
     debugSelectedAllyBot.setDamageDealt(debugSelectedAllyBot.damageBoostPercent)
@@ -159,7 +160,7 @@ def RightBotStateViewSub():
 
 rule "[debug] (Right) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
-  @Condition debugModesArr[debugMode] == "AllyBots"
+  @Condition debugModesArr[debugMode] == "Players"
 
   autoSwitch(RightBotStateViewSub())
 
@@ -167,7 +168,7 @@ rule "[debug] (Right) BotStateView":
 def LeftBotStateViewSub():
   @Name "Sub: Left Bot State View"
   if debugSelectedAction == 2: # previous bot
-    PrevAllyBotSub()
+    PrevPlayersub()
   elif debugSelectedAction == 5:
     debugSelectedAllyBot.damageBoostPercent -= incWithModificators(10)
     debugSelectedAllyBot.setDamageDealt(debugSelectedAllyBot.damageBoostPercent)
@@ -180,19 +181,19 @@ def LeftBotStateViewSub():
 
 rule "[debug] (Left) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
-  @Condition debugModesArr[debugMode] == "AllyBots"
+  @Condition debugModesArr[debugMode] == "Players"
 
   autoSwitch(LeftBotStateViewSub())
 
 rule "[debug] Fast next ally bot":
-  RuleHeaderDebugPageInteractCondition("AllyBots")
+  RuleHeaderDebugPageInteractCondition("Players")
   @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE)
-  NextAllyBotSub()
+  NextPlayersub()
 
 rule "[debug] Fast prev ally bot":
-  RuleHeaderDebugPageInteractCondition("AllyBots")
+  RuleHeaderDebugPageInteractCondition("Players")
   @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
-  PrevAllyBotSub()
+  PrevPlayersub()
 
 
 # rule "[debug] Ally bot: Init":

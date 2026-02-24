@@ -3,9 +3,6 @@
 # globalvar vipPlayers = ["snky"] # List of players who received special privileges
 globalvar devPlayers = ["snky"] # List of players who received develop privileges
 
-
-
-
 rule "Player joined setup": 
   @Event playerJoined
   @Team 1

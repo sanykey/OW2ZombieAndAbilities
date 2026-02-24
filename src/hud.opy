@@ -134,11 +134,9 @@ rule "Close hero talents info hud":
 rule "Create players effects":
   @Event eachPlayer
   @Team 1
+  @Condition eventPlayer.isReady__isBotRespawning
 
   setObjectiveDescription(eventPlayer, "Round: {}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
-
-  if eventPlayer.isDummy() or eventPlayer.getSlot() > MAX_PLAYERS - 1:
-    return
 
   clearHeroInfo()
 

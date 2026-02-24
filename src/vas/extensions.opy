@@ -15,3 +15,7 @@
 ##!extension kineticExplosionEffects
 # #!extension explosionSounds
 # #!extension buffAndDebuffSounds
+
+# todo debug:
+#!extension beamEffects
+#!extension explosionSounds

@@ -9,6 +9,9 @@ globalvar lastCreatedDummy
 playervar teleportPos
 playervar respawnNearFallback
 
+#!define PLAYERS_VANILLA_SPAWN_POINT_VECT vect(101.77, 14.62, -113.01)
+#!define PLAYERS_VANILLA_SPAWN_POINT_RADIUS 16.74
+
 # #!define MAX_DUMMY_BOTS 18
 # Checks whether any dummy bot needs to be removed from the zombies team in order to create a dummy bot in team1. 
 #   This is necessary due to the limitation on the number of bots in the workshop.
@@ -71,6 +74,9 @@ def GetRandomTeleportPosSub():
       ).getPosition()
     )
 
+    if distance(eventPlayer.tmp3, PLAYERS_VANILLA_SPAWN_POINT_VECT) < PLAYERS_VANILLA_SPAWN_POINT_RADIUS:
+      continue
+
     if getRealPlayersInRadius(eventPlayer.tmp3, ZOMBIE_RESPAWN_MIN_DISTANCE, Team.PLAYERS, LosCheck.OFF):
       continue
 
@@ -116,14 +122,6 @@ def RessurectZombieBotSub():
 
   wait()
   heal(eventPlayer, null, INFINITY)
-
-rule "teleport from spawn room":
-  @Event playerTookDamage
-  @Team 2
-  @Condition attacker == eventPlayer
-  
-  eventPlayer.teleport(vect(86.37, 12.90, -100.99))
-  eventPlayer.setStatusEffect(null, Status.STUNNED, 7)
 
 def TeleportWithAnimationSub():
   @Name "TeleportWithAnimationSub"
