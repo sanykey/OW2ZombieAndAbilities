@@ -11,7 +11,7 @@ rule "[debug] init Bot state view mode":
 
   wait(0.1)
   debugSelectedAction = 0
-  debugMaxAction = 9
+  debugMaxAction = 10
 
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
@@ -25,6 +25,7 @@ rule "[debug] init Bot state view mode":
     {}Healing upgrade (ressurect): {} <fg84c951FF>{}</fg> {}</fg>
     {}Set invincible:</fg> <fg84c951FF>{}</fg>
     {}Enable AI:</fg> <fg84c951FF>{}</fg>
+    {}Money: {} <fg84c951FF>{}</fg> {}</fg>
     ----------
     health: <fg84c951FF>{}</fg>
     max health: <fg84c951FF>{}</fg>
@@ -67,6 +68,11 @@ rule "[debug] init Bot state view mode":
 
       debugSelectedActionText(9),
       debugSelectedAllyBot.isReady__isBotRespawning,
+
+      debugSelectedActionText(10),
+      leftArrowForMenuItem(10),
+      debugSelectedAllyBot.money__botStuckTimes,
+      rightArrowForMenuItem(10),
 
       # ----------
       debugSelectedAllyBot.getHealth(),
@@ -157,6 +163,9 @@ def RightBotStateViewSub():
   elif debugSelectedAction == 7:
     debugSelectedAllyBot.healingBoostPercent += incWithModificators(10)
     debugSelectedAllyBot.setHealingDealt(debugSelectedAllyBot.healingBoostPercent)
+  elif debugSelectedAction == 10:
+    debugSelectedAllyBot.money__botStuckTimes += incWithModificators(100)
+    debugSelectedAllyBot.moneyTotal__botOldPosition = debugSelectedAllyBot.money__botStuckTimes
 
 rule "[debug] (Right) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
@@ -178,6 +187,9 @@ def LeftBotStateViewSub():
   elif debugSelectedAction == 7:
     debugSelectedAllyBot.healingBoostPercent -= incWithModificators(10)
     debugSelectedAllyBot.setHealingDealt(debugSelectedAllyBot.healingBoostPercent)
+  elif debugSelectedAction == 10:
+    debugSelectedAllyBot.money__botStuckTimes -= incWithModificators(100)
+    debugSelectedAllyBot.moneyTotal__botOldPosition = debugSelectedAllyBot.money__botStuckTimes
 
 rule "[debug] (Left) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
