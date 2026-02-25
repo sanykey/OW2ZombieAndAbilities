@@ -18,7 +18,7 @@ rule "[debug] init Bot state view mode":
 
   wait(0.1)
   debugSelectedAction = 0
-  debugMaxAction = 12
+  debugMaxAction = 9
 
   if not debugSelectedPlayer:
     debugSelectedPlayer = getPlayersInSlot(0, Team.ZOMBIES)
@@ -36,17 +36,14 @@ rule "[debug] init Bot state view mode":
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
     "{}
+    {}Round number (start): {} <fg84c951FF>{}</fg> {}</fg>
     {}Place spawn point:</fg> <fg84c951FF>{}</fg>
-    {}Select bot closest to reticle</fg> <fg84c951FF>{} {}</fg> <fg94a0a544>[PRIMARY_FIRE]</fg>
-    {}Current bot: {} <fg84c951FF>{} {}</fg> {}</fg>
+    {}Select closest to reticle</fg> <fg84c951FF>{} {}</fg> <fg94a0a544>[SHIFT]</fg>
+    {}Current bot: {} <fg84c951FF>{} {}</fg> {}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
     {}Round bots slots: {} <fg84c951FF>{}</fg> {}</fg>
     {}Max zombie bots (add/remove): {} <fg84c951FF>{}</fg> {}</fg>
-    {}Round number (start): {} <fg84c951FF>{}</fg> {}</fg>
     {}Kill all bots</fg>
     {}Common bots (replace): {} <fg84c951FF>{}</fg> {}</fg>
-    {}Add Roadhog</fg>
-    {}Add Mauga</fg>
-    {}Add Widowmaker</fg>
     {}Random heroes</fg>
     --------------------
     Total Time Elapsed: <fg84c951FF>{}</fg>
@@ -71,37 +68,37 @@ rule "[debug] init Bot state view mode":
     ".format(
       debugMenuTitle("BotStateView"),
 
-      # Place spawn point
       debugSelectedActionText(1),
+      "←" if debugSelectedAction == 1 else "",
+      roundNumber,
+      "→" if debugSelectedAction == 1 else "",
+
+      # Place spawn point
+      debugSelectedActionText(2),
       debugZombieBotsSpawnPoint,
 
       # Select bot closest to reticle
-      debugSelectedActionText(2),
+      debugSelectedActionText(3),
       heroIcon(hostPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES).getHero()),
       hostPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES),
 
       # Current bot
-      debugSelectedActionText(3),
-      "←" if debugSelectedAction == 3 else "",
-      heroIcon(debugSelectedPlayer.getHero()),
-      debugSelectedPlayer,
-      "→" if debugSelectedAction == 3 else "",
-
-      # Round bots slots
       debugSelectedActionText(4),
       "←" if debugSelectedAction == 4 else "",
-      roundMaxBotsSlots,
+      heroIcon(debugSelectedPlayer.getHero()),
+      debugSelectedPlayer,
       "→" if debugSelectedAction == 4 else "",
 
-      # Max zombie bots
+      # Round bots slots
       debugSelectedActionText(5),
       "←" if debugSelectedAction == 5 else "",
-      wSettingsMaxZombieBots,
+      roundMaxBotsSlots,
       "→" if debugSelectedAction == 5 else "",
 
+      # Max zombie bots
       debugSelectedActionText(6),
       "←" if debugSelectedAction == 6 else "",
-      roundNumber,
+      wSettingsMaxZombieBots,
       "→" if debugSelectedAction == 6 else "",
 
       debugSelectedActionText(7),
@@ -112,10 +109,6 @@ rule "[debug] init Bot state view mode":
       "→" if debugSelectedAction == 8 else "",
 
       debugSelectedActionText(9),
-      debugSelectedActionText(10),
-      debugSelectedActionText(11),
-
-      debugSelectedActionText(12),
 
       getTotalTimeElapsed(),
       debugSelectedPlayer.getHealth(),
@@ -150,37 +143,57 @@ rule "[debug] init Bot state view mode":
 
 rule "[debug] Select bot closest to reticle":
   RuleHeaderDebugPageInteractCondition("BotStateView")
-  @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE) or debugSelectedAction == 2 and eventPlayer.isHoldingButton(Button.MELEE)
+  @Condition eventPlayer.isHoldingButton(Button.ABILITY_1)
 
   debugSelectedPlayer = eventPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES)
+
+rule "[debug] Fast next zombie bot":
+  RuleHeaderDebugPageInteractCondition("BotStateView")
+  @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE)
+
+  debugSelectedPlayer = getPlayersInSlot(
+    0 if (debugSelectedPlayer.getSlot() >= getNumberOfPlayers(Team.ZOMBIES) - 1) else debugSelectedPlayer.getSlot() + 1,
+    Team.ZOMBIES
+  )
+
+rule "[debug] Fast prev zombie bot":
+  RuleHeaderDebugPageInteractCondition("BotStateView")
+  @Condition eventPlayer.isHoldingButton(Button.PRIMARY_FIRE)
+
+  debugSelectedPlayer.stopForcingOutlineFor(getAllPlayers())
+  debugSelectedPlayer = getPlayersInSlot(
+    (getNumberOfPlayers(Team.ZOMBIES) - 1) if (debugSelectedPlayer.getSlot() == 0) else debugSelectedPlayer.getSlot() - 1,
+    Team.ZOMBIES
+  )
+  debugSelectedPlayer.startForcingOutlineFor(localPlayer if (localPlayer.developer or localPlayer == hostPlayer) else null, false, Color.ORANGE)
 
 rule "[debug] (Right) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
   @Condition debugModesArr[debugMode] == "BotStateView"
   
-  if debugSelectedAction == 3: # next bot
+  if debugSelectedAction == 1:
+    if roundNumber >= 250:
+      roundNumber = 0
+    else:
+      roundNumber++
+
+  elif debugSelectedAction == 4: # next bot
     debugSelectedPlayer = getPlayersInSlot(
       0 if (debugSelectedPlayer.getSlot() >= getNumberOfPlayers(Team.ZOMBIES) - 1) else debugSelectedPlayer.getSlot() + 1, 
       Team.ZOMBIES
     )
 
-  elif debugSelectedAction == 4:
+  elif debugSelectedAction == 5:
     if roundMaxBotsSlots >= 30:
       roundMaxBotsSlots = 1
     else:
       roundMaxBotsSlots++
 
-  elif debugSelectedAction == 5:
+  elif debugSelectedAction == 6:
     if wSettingsMaxZombieBots >= 30:
       wSettingsMaxZombieBots = 1
     else:
       wSettingsMaxZombieBots++
-
-  elif debugSelectedAction == 6:
-    if roundNumber >= 250:
-      roundNumber = 0
-    else:
-      roundNumber++
 
   elif debugSelectedAction == 8:
     if debugCommonBotIndex >= len(debugCommonBotsList) - 1:
@@ -192,7 +205,13 @@ rule "[debug] (Left) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
   @Condition debugModesArr[debugMode] == "BotStateView"
   
-  if debugSelectedAction == 3: # previous bot
+  if debugSelectedAction == 1:
+    if roundNumber <= 0:
+      roundNumber = 250
+    else:
+      roundNumber--
+
+  elif debugSelectedAction == 4: # previous bot
     debugSelectedPlayer.stopForcingOutlineFor(getAllPlayers())
     debugSelectedPlayer = getPlayersInSlot(
       (getNumberOfPlayers(Team.ZOMBIES) - 1) if (debugSelectedPlayer.getSlot() == 0) else debugSelectedPlayer.getSlot() - 1, 
@@ -200,23 +219,17 @@ rule "[debug] (Left) BotStateView":
     )
     debugSelectedPlayer.startForcingOutlineFor(localPlayer if (localPlayer.developer or localPlayer == hostPlayer) else null, false, Color.ORANGE)
 
-  elif debugSelectedAction == 4:
+  elif debugSelectedAction == 5:
     if roundMaxBotsSlots <= 0:
       roundMaxBotsSlots = 30
     else:
       roundMaxBotsSlots--
 
-  elif debugSelectedAction == 5:
+  elif debugSelectedAction == 6:
     if wSettingsMaxZombieBots <= 0:
       wSettingsMaxZombieBots = 30
     else:
       wSettingsMaxZombieBots--
-
-  elif debugSelectedAction == 6:
-    if roundNumber <= 0:
-      roundNumber = 250
-    else:
-      roundNumber--
 
   elif debugSelectedAction == 8:
     if debugCommonBotIndex <= 0:
@@ -228,17 +241,17 @@ rule "[debug] (Left) BotStateView":
 rule "[debug] Activate selected action for Common mode":
   ConditionForActivateSelectedAction("BotStateView")
 
-  if debugSelectedAction == 1: # Place/Remove debug spawn point for bots
+  if debugSelectedAction == 2: # Place/Remove debug spawn point for bots
     if debugZombieBotsSpawnPoint:
       debugZombieBotsSpawnPoint = false
     else:
       debugZombieBotsSpawnPoint = eventPlayer.getPosition()
-  elif debugSelectedAction == 5: # Remove/add bots
+  elif debugSelectedAction == 6: # Remove/add bots
     if isBotsDisabled == false:
       RemoveBotsSub()
     else:
       AddBotsSub()
-  elif debugSelectedAction == 6:
+  elif debugSelectedAction == 1:
     if isBotsDisabled:
       AddBotsSub()
 
@@ -256,15 +269,6 @@ rule "[debug] Activate selected action for Common mode":
     commonZombieHero = debugCommonBotsList[debugCommonBotIndex]
 
   elif debugSelectedAction == 9:
-    GetCandidateForEliteZombieSub()
-    setZombieHero(tmp1, Hero.ROADHOG)
-  elif debugSelectedAction == 10:
-    GetCandidateForEliteZombieSub()
-    setZombieHero(tmp1, Hero.MAUGA)
-  elif debugSelectedAction == 11:
-    GetCandidateForEliteZombieSub()
-    setZombieHero(tmp1, Hero.WIDOWMAKER)
-  elif debugSelectedAction == 12:
     eventPlayer.list0 = getPlayers(Team.ZOMBIES)
     for I in range(len(eventPlayer.list0) - 1):
       eventPlayer.list0[I].startForcingHero(random.choice(getAllHeroes()))
