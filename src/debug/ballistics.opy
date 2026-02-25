@@ -8,20 +8,8 @@ globalvar debugBallisticsPresets = []
 globalvar debugBallisticsPresetIndex = 0
 globalvar debugBallisticsCameraEnabled = false
 globalvar debugBallisticsCameraOffset = vect(0, 5, -5)
-
-playervar ballisticsEyePos
-playervar ballisticsHorizontalDir
-playervar ballisticsLaunchAngle
-playervar ballisticsVx
-playervar ballisticsVy
-playervar ballisticsTime
-playervar ballisticsSegmentStart
-playervar ballisticsSegmentEnd
-playervar ballisticsImpactPos
-playervar ballisticsFlyingT
-playervar ballisticsDrawTrajectory
-playervar ballisticsCameraEnabledLocal
-playervar ballisticsCameraPos
+globalvar debugBallisticsState = []
+globalvar debugBallisticsFlyingT = 0
 
 enum DePE: # DebugProjectileE
   VELOCITY
@@ -74,6 +62,20 @@ enum DeBPrE: # DebugBallisticsPresetE
   START_ANGLE_CORRECTION
   SHOOT_DELAY
 
+enum DeBS: # DebugBallisticsStateE
+  EYE_POS
+  HORIZONTAL_DIR
+  LAUNCH_ANGLE
+  VX
+  VY
+  TIME
+  SEGMENT_START
+  SEGMENT_END
+  IMPACT_POS
+  DRAW_TRAJECTORY
+  CAMERA_ENABLED_LOCAL
+  CAMERA_POS
+
 
 def ClearBallisticsEffectsSub():
   @Name "Sub: Clear Ballistics Effects"
@@ -88,64 +90,64 @@ def ClearBallisticsEffectsSub():
 def PredictBallisticsSub():
   @Name "Sub: Predict Ballistics"
 
-  eventPlayer.ballisticsEyePos = eventPlayer.getEyePosition()
-  eventPlayer.ballisticsHorizontalDir = directionFromAngles(horizontalAngleOfDirection(eventPlayer.getFacingDirection()), 0)
-  eventPlayer.ballisticsLaunchAngle = verticalAngleOfDirection(eventPlayer.getFacingDirection() + vect(0, debugProjectile[DePE.START_ANGLE_CORRECTION], 0)) * -1
+  debugBallisticsState[DeBS.EYE_POS] = eventPlayer.getEyePosition()
+  debugBallisticsState[DeBS.HORIZONTAL_DIR] = directionFromAngles(horizontalAngleOfDirection(eventPlayer.getFacingDirection()), 0)
+  debugBallisticsState[DeBS.LAUNCH_ANGLE] = verticalAngleOfDirection(eventPlayer.getFacingDirection() + vect(0, debugProjectile[DePE.START_ANGLE_CORRECTION], 0)) * -1
 
-  if eventPlayer.ballisticsLaunchAngle < -89:
-    eventPlayer.ballisticsLaunchAngle = -90
-  elif eventPlayer.ballisticsLaunchAngle > 89:
-    eventPlayer.ballisticsLaunchAngle = 90
+  if debugBallisticsState[DeBS.LAUNCH_ANGLE] < -89:
+    debugBallisticsState[DeBS.LAUNCH_ANGLE] = -90
+  elif debugBallisticsState[DeBS.LAUNCH_ANGLE] > 89:
+    debugBallisticsState[DeBS.LAUNCH_ANGLE] = 90
 
-  eventPlayer.ballisticsVx = debugProjectile[DePE.START_SPEED] * cosDeg(eventPlayer.ballisticsLaunchAngle)
-  eventPlayer.ballisticsVy = debugProjectile[DePE.START_SPEED] * sinDeg(eventPlayer.ballisticsLaunchAngle)
+  debugBallisticsState[DeBS.VX] = debugProjectile[DePE.START_SPEED] * cosDeg(debugBallisticsState[DeBS.LAUNCH_ANGLE])
+  debugBallisticsState[DeBS.VY] = debugProjectile[DePE.START_SPEED] * sinDeg(debugBallisticsState[DeBS.LAUNCH_ANGLE])
 
-  eventPlayer.ballisticsTime = 0
+  debugBallisticsState[DeBS.TIME] = 0
   debugProjectile[DePE.COLLISION_TIME] = debugProjectile[DePE.MAX_TIME]
-  debugProjectile[DePE.LANDING_POSITION] = eventPlayer.ballisticsEyePos
+  debugProjectile[DePE.LANDING_POSITION] = debugBallisticsState[DeBS.EYE_POS]
 
-  while eventPlayer.ballisticsTime <= debugProjectile[DePE.MAX_TIME]:
-    eventPlayer.ballisticsSegmentStart = (
-      eventPlayer.ballisticsEyePos
-      + eventPlayer.ballisticsHorizontalDir * eventPlayer.ballisticsVx * eventPlayer.ballisticsTime
-      + Vector.UP * (eventPlayer.ballisticsVy * eventPlayer.ballisticsTime - ((debugProjectile[DePE.GRAVITY] * (eventPlayer.ballisticsTime ** 2)) / 2))
+  while debugBallisticsState[DeBS.TIME] <= debugProjectile[DePE.MAX_TIME]:
+    debugBallisticsState[DeBS.SEGMENT_START] = (
+      debugBallisticsState[DeBS.EYE_POS]
+      + debugBallisticsState[DeBS.HORIZONTAL_DIR] * debugBallisticsState[DeBS.VX] * debugBallisticsState[DeBS.TIME]
+      + Vector.UP * (debugBallisticsState[DeBS.VY] * debugBallisticsState[DeBS.TIME] - ((debugProjectile[DePE.GRAVITY] * (debugBallisticsState[DeBS.TIME] ** 2)) / 2))
     )
 
-    eventPlayer.ballisticsSegmentEnd = (
-      eventPlayer.ballisticsEyePos
-      + eventPlayer.ballisticsHorizontalDir * eventPlayer.ballisticsVx * (eventPlayer.ballisticsTime + debugProjectile[DePE.STEP_TIME])
+    debugBallisticsState[DeBS.SEGMENT_END] = (
+      debugBallisticsState[DeBS.EYE_POS]
+      + debugBallisticsState[DeBS.HORIZONTAL_DIR] * debugBallisticsState[DeBS.VX] * (debugBallisticsState[DeBS.TIME] + debugProjectile[DePE.STEP_TIME])
       + Vector.UP * (
-        eventPlayer.ballisticsVy * (eventPlayer.ballisticsTime + debugProjectile[DePE.STEP_TIME])
-        - ((debugProjectile[DePE.GRAVITY] * ((eventPlayer.ballisticsTime + debugProjectile[DePE.STEP_TIME]) ** 2)) / 2)
+        debugBallisticsState[DeBS.VY] * (debugBallisticsState[DeBS.TIME] + debugProjectile[DePE.STEP_TIME])
+        - ((debugProjectile[DePE.GRAVITY] * ((debugBallisticsState[DeBS.TIME] + debugProjectile[DePE.STEP_TIME]) ** 2)) / 2)
       )
     )
 
-    eventPlayer.ballisticsImpactPos = raycast(
-      eventPlayer.ballisticsSegmentStart,
-      eventPlayer.ballisticsSegmentEnd,
+    debugBallisticsState[DeBS.IMPACT_POS] = raycast(
+      debugBallisticsState[DeBS.SEGMENT_START],
+      debugBallisticsState[DeBS.SEGMENT_END],
       getAllPlayers(),
       eventPlayer,
       true
     ).getHitPosition()
 
-    if eventPlayer.ballisticsDrawTrajectory and debugProjectile[DePE.SHOW_TRAJECTORY] and eventPlayer.ballisticsTime > 0:
+    if debugBallisticsState[DeBS.DRAW_TRAJECTORY] and debugProjectile[DePE.SHOW_TRAJECTORY] and debugBallisticsState[DeBS.TIME] > 0:
       createBeam(
         localPlayerVisibilityForDevelopers(),
         Beam.GRAPPLE,
-        evalOnce(eventPlayer.ballisticsSegmentStart),
-        evalOnce(eventPlayer.ballisticsImpactPos),
+        evalOnce(debugBallisticsState[DeBS.SEGMENT_START]),
+        evalOnce(debugBallisticsState[DeBS.IMPACT_POS]),
         Color.WHITE,
         EffectReeval.VISIBILITY_POSITION_AND_RADIUS
       )
       debugBallisticsTrajectoryEffects[len(debugBallisticsTrajectoryEffects)] = getLastCreatedEntity()
 
-    if eventPlayer.ballisticsImpactPos != eventPlayer.ballisticsSegmentEnd:
-      debugProjectile[DePE.LANDING_POSITION] = eventPlayer.ballisticsImpactPos
-      debugProjectile[DePE.COLLISION_TIME] = eventPlayer.ballisticsTime + debugProjectile[DePE.STEP_TIME]
+    if debugBallisticsState[DeBS.IMPACT_POS] != debugBallisticsState[DeBS.SEGMENT_END]:
+      debugProjectile[DePE.LANDING_POSITION] = debugBallisticsState[DeBS.IMPACT_POS]
+      debugProjectile[DePE.COLLISION_TIME] = debugBallisticsState[DeBS.TIME] + debugProjectile[DePE.STEP_TIME]
       break
 
-    eventPlayer.ballisticsTime += debugProjectile[DePE.STEP_TIME]
-    debugProjectile[DePE.LANDING_POSITION] = eventPlayer.ballisticsSegmentEnd
+    debugBallisticsState[DeBS.TIME] += debugProjectile[DePE.STEP_TIME]
+    debugProjectile[DePE.LANDING_POSITION] = debugBallisticsState[DeBS.SEGMENT_END]
 
 macro triggerNameByIndex(triggerIndex):
   (
@@ -258,9 +260,8 @@ rule "[debug] init Bot state view mode":
     {}Step time</fg> {} <fg84c951FF>{}</fg> {}
     {}Max time</fg> {} <fg84c951FF>{}</fg> {}
     ----------
-    Predicted impact: <fg84c951FF>{}</fg>
-    Last hit: <fg84c951FF>{}</fg>
-    Predicted collision time: <fg84c951FF>{}</fg>
+    Last hit pos: <fg84c951FF>{}</fg>
+    Projective time: <fg84c951FF>{}</fg>
     ".format(
       debugMenuTitle("Ballistics"),
 
@@ -330,7 +331,6 @@ rule "[debug] init Bot state view mode":
       debugProjectile[DePE.MAX_TIME],
       rightArrowForMenuItem(15),
 
-      debugProjectile[DePE.LANDING_POSITION],
       debugProjectile[DePE.LAST_HIT_POSITION],
       debugProjectile[DePE.COLLISION_TIME]
     ),
@@ -400,15 +400,13 @@ rule "[debug] Activate selected action for Ballistics mode":
     debugBallisticsCameraEnabled = not debugBallisticsCameraEnabled
     if not debugBallisticsCameraEnabled:
       eventPlayer.stopCamera()
-      eventPlayer.ballisticsCameraEnabledLocal = false
+      debugBallisticsState[DeBS.CAMERA_ENABLED_LOCAL] = false
 
   elif debugSelectedAction == 12:
     debugProjectile[DePE.SHOW_TRAJECTORY] = not debugProjectile[DePE.SHOW_TRAJECTORY]
 
   elif debugSelectedAction == 13:
     ClearBallisticsEffectsSub()
-
-
 
 def RightBallisticsSub():
   @Name "Sub: Right Ballistics"
@@ -469,8 +467,6 @@ rule "[debug] (Right) Ballistics":
   @Condition debugModesArr[debugMode] == "Ballistics"
 
   autoSwitch(RightBallisticsSub())
-
-
 
 def LeftBallisticsSub():
   @Name "Sub: Left Ballistics"
@@ -539,7 +535,7 @@ rule "[debug] Predict landing before shot":
   @Condition debugBallisticsCameraEnabled
   @Condition eventPlayer == hostPlayer or eventPlayer.developer
 
-  eventPlayer.ballisticsDrawTrajectory = false
+  debugBallisticsState[DeBS.DRAW_TRAJECTORY] = false
   PredictBallisticsSub()
   wait(0.05, Wait.ABORT_WHEN_FALSE)
   loop()
@@ -551,22 +547,22 @@ rule "[debug] Update ballistics camera":
   @Condition debugBallisticsCameraEnabled
   @Condition eventPlayer == hostPlayer or eventPlayer.developer
 
-  eventPlayer.ballisticsCameraPos = raycast(
+  debugBallisticsState[DeBS.CAMERA_POS] = raycast(
     debugProjectile[DePE.LANDING_POSITION],
     debugProjectile[DePE.LANDING_POSITION] + Vector.UP * debugBallisticsCameraOffset.y + directionTowards(debugProjectile[DePE.LANDING_POSITION], eventPlayer) + worldVector(debugBallisticsCameraOffset, eventPlayer, Transform.ROTATION),
     null,
     eventPlayer,
     false
   ).getHitPosition()
-  eventPlayer.startCamera(eventPlayer.ballisticsCameraPos, debugProjectile[DePE.LANDING_POSITION], 90)
-  eventPlayer.ballisticsCameraEnabledLocal = true
+  eventPlayer.startCamera(debugBallisticsState[DeBS.CAMERA_POS], debugProjectile[DePE.LANDING_POSITION], 90)
+  debugBallisticsState[DeBS.CAMERA_ENABLED_LOCAL] = true
   wait(0.05, Wait.ABORT_WHEN_FALSE)
   loop()
 
 
 rule "[debug] Disable ballistics camera":
   @Event eachPlayer
-  @Condition eventPlayer.ballisticsCameraEnabledLocal
+  @Condition debugBallisticsState[DeBS.CAMERA_ENABLED_LOCAL]
   @Condition (
     not debugBallisticsCameraEnabled
     or not debugMenuIsOpened
@@ -575,7 +571,7 @@ rule "[debug] Disable ballistics camera":
   )
 
   eventPlayer.stopCamera()
-  eventPlayer.ballisticsCameraEnabledLocal = false
+  debugBallisticsState[DeBS.CAMERA_ENABLED_LOCAL] = false
 
 rule "[debug] Trigger shot":
   @Event eachPlayer
@@ -595,23 +591,23 @@ rule "[debug] Trigger shot":
     destroyEffect(debugProjectile[DePE.MOVING_EFFECT])
     debugProjectile[DePE.MOVING_EFFECT] = null
 
-  eventPlayer.ballisticsDrawTrajectory = true
+  debugBallisticsState[DeBS.DRAW_TRAJECTORY] = true
   PredictBallisticsSub()
   debugProjectile[DePE.LAST_HIT_POSITION] = debugProjectile[DePE.LANDING_POSITION]
 
-  eventPlayer.ballisticsFlyingT = 0
-  chaseAtRate(eventPlayer.ballisticsFlyingT, 100, 1)
+  debugBallisticsFlyingT = 0
+  chaseAtRate(debugBallisticsFlyingT, 100, 1)
 
   createEffect(
     localPlayerVisibilityForDevelopers(),
     Effect.SPHERE,
     Color.GREEN,
     (
-      eventPlayer.ballisticsEyePos
-      + eventPlayer.ballisticsHorizontalDir * eventPlayer.ballisticsVx * updateEveryFrame(eventPlayer.ballisticsFlyingT)
+      debugBallisticsState[DeBS.EYE_POS]
+      + debugBallisticsState[DeBS.HORIZONTAL_DIR] * debugBallisticsState[DeBS.VX] * updateEveryFrame(debugBallisticsFlyingT)
       + Vector.UP * (
-        eventPlayer.ballisticsVy * updateEveryFrame(eventPlayer.ballisticsFlyingT)
-        - ((debugProjectile[DePE.GRAVITY] * (updateEveryFrame(eventPlayer.ballisticsFlyingT) ** 2)) / 2)
+        debugBallisticsState[DeBS.VY] * updateEveryFrame(debugBallisticsFlyingT)
+        - ((debugProjectile[DePE.GRAVITY] * (updateEveryFrame(debugBallisticsFlyingT) ** 2)) / 2)
       )
     ),
     0.2,
@@ -620,11 +616,11 @@ rule "[debug] Trigger shot":
   debugProjectile[DePE.MOVING_EFFECT] = getLastCreatedEntity()
 
   waitUntil(
-    eventPlayer.ballisticsFlyingT >= debugProjectile[DePE.COLLISION_TIME],
+    debugBallisticsFlyingT >= debugProjectile[DePE.COLLISION_TIME],
     debugProjectile[DePE.MAX_TIME] + 0.5
   )
 
-  stopChasingVariable(eventPlayer.ballisticsFlyingT)
+  stopChasingVariable(debugBallisticsFlyingT)
   if debugProjectile[DePE.MOVING_EFFECT] != null:
     destroyEffect(debugProjectile[DePE.MOVING_EFFECT])
     debugProjectile[DePE.MOVING_EFFECT] = null
