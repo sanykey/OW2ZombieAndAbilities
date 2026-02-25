@@ -74,7 +74,7 @@
 #!include "debug/bot state view.opy"
 #!include "debug/players and ally bots.opy"
 #!include "debug/vectors lists.opy"
-##!include "debug/ballistics.opy"
+#!include "debug/ballistics.opy"
 ##!include "debug/other.opy"
 ##!include "debug/positions measuring.opy"
 #*/
