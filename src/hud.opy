@@ -150,10 +150,11 @@ rule "Create players effects":
       eventPlayer.healingBoostPercent,
       eventPlayer.damageResistPercent
     ),
-    "{0}{1}: {2}".format(
+    "{0}{1}: {2}{3}".format(
       eventPlayer,
       " <fg94a0a544>(host)</fg>" if eventPlayer == hostPlayer else "",
-      "<fg94a0a544>${}(tot)</fg>".format(eventPlayer.moneyTotal__botOldPosition) if localPlayer.isHoldingButton(Button.CROUCH) else "${}".format(eventPlayer.money__botStuckTimes)
+      f"<fg94a0a544>${eventPlayer.moneyTotal__botOldPosition}(tot)</fg>" if localPlayer.isHoldingButton(Button.CROUCH) else f"${eventPlayer.money__botStuckTimes}",
+      f" <fgFFE14AFF>reviving: {eventPlayer.reviveTimer}%</fg>" if eventPlayer.isDead() and eventPlayer.revivers and eventPlayer.reviveTimer else ""
     ),
     HudPosition.ACTUALLY_LEFT,
     1,

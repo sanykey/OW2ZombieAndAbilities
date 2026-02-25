@@ -38,17 +38,27 @@ rule "[Revive] player died":
   eventPlayer.teleport(nearestWalkablePosition(eventPlayer))
 
   # create reviving circle effect
-  createEffect(getPlayers(Team.1), Effect.RING, Color.YELLOW, eventPlayer, RIVIVE_RADIUS, EffectReeval.NONE)
+  createEffect(
+    getPlayers(Team.1),
+    Effect.RING,
+    Color.YELLOW if eventPlayer.revivers and eventPlayer.reviveTimer else Color.RED,
+    eventPlayer,
+    RIVIVE_RADIUS,
+    EffectReeval.COLOR
+  )
   eventPlayer.effectsIds[REVIVE_CIRCLE_EFFECT] = getLastCreatedEntity()
 
   createInWorldText(
     getPlayers(Team.1),
-    "{} {}".format(heroIcon(eventPlayer.getHero()), eventPlayer),
+    "{} {} {}".format(
+      heroIcon(eventPlayer.getHero()), eventPlayer,
+      f"\nreviving: {eventPlayer.reviveTimer}%" if eventPlayer.isDead() and eventPlayer.revivers and eventPlayer.reviveTimer else ""
+    ),
     vect(eventPlayer.getPosition().x, eventPlayer.getPosition().y + 1.7, eventPlayer.getPosition().z),
     1,
     Clip.NONE,
-    WorldTextReeval.NONE,
-    Color.YELLOW
+    WorldTextReeval.STRING_AND_COLOR,
+    Color.YELLOW if eventPlayer.revivers and eventPlayer.reviveTimer else Color.RED
   )
   eventPlayer.effectsIds[REVIVE_TEXT] = getLastCreatedText()
 
