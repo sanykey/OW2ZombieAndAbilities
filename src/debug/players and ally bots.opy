@@ -3,6 +3,7 @@
 globalvar debugAllyBotCreated
 globalvar debugSelectedTeam1Player
 globalvar debugPerkLevelUp
+globalvar debugHeroForBotIndex
 
 rule "[debug] add Players debug mode":
   debugModesArr.append("Players")
@@ -12,7 +13,7 @@ rule "[debug] init Players debug mode":
 
   wait(0.1)
   debugSelectedAction = 0
-  debugMaxAction = 11
+  debugMaxAction = 12
   if not debugSelectedTeam1Player:
     tmp0 = sorted(
       getPlayers(Team.1),
@@ -23,7 +24,7 @@ rule "[debug] init Players debug mode":
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
     f"{debugMenuTitle(\"Players\")}
-    {debugSelectedActionText(1)}Add ally bot in my position</fg>
+    {debugSelectedActionText(1)}Add ally bot: {leftArrowForMenuItem(1)} <fg84c951FF>{heroIcon(getAllHeroes()[debugHeroForBotIndex])}</fg> {rightArrowForMenuItem(1)}</fg>
     {debugSelectedActionText(2)}Player: {leftArrowForMenuItem(2)} <fg84c951FF>{heroIcon(debugSelectedTeam1Player.getHero())} {debugSelectedTeam1Player} ({debugSelectedTeam1Player.getSlot()})</fg> {rightArrowForMenuItem(2)}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
     {debugSelectedActionText(3)}Kill</fg>
     {debugSelectedActionText(4)}Remove ally bot</fg> <fg94a0a544>[+Crouch] = all</fg>
@@ -34,9 +35,11 @@ rule "[debug] init Players debug mode":
     {debugSelectedActionText(9)}Enable AI:</fg> <fg84c951FF>{debugSelectedTeam1Player.isReady__isBotRespawning}</fg>
     {debugSelectedActionText(10)}Money: {leftArrowForMenuItem(10)} <fg84c951FF>{debugSelectedTeam1Player.money__botStuckTimes}</fg> {rightArrowForMenuItem(10)}</fg>
     {debugSelectedActionText(11)}Perk level up</fg>
+    {debugSelectedActionText(12)}Teleport to me </fg> <fg94a0a544>[+Crouch] = to player</fg>
     ----------
     health: <fg84c951FF>{debugSelectedTeam1Player.getHealth()}</fg>
     max health: <fg84c951FF>{debugSelectedTeam1Player.getMaxHealth()}</fg>
+    start autoheal time: <fg84c951FF>{debugSelectedTeam1Player.state[SI.START_AUTO_HEAL_TIME]}</fg>
     revivers: <fg84c951FF>{debugSelectedTeam1Player.revivers}</fg>
     reviveTimer: <fg84c951FF>{debugSelectedTeam1Player.reviveTimer}</fg>
     botTarget: <fg84c951FF>{debugSelectedTeam1Player.botTarget}</fg>
@@ -74,12 +77,10 @@ rule "[debug] Activate selected action for Players mode":
   ConditionForActivateSelectedAction("Players")
 
   if debugSelectedAction == 1: # Add ally bot in my position
-    createDummy(Hero.ORISA, Team.1, -1, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
+    createDummy(getAllHeroes()[debugHeroForBotIndex], Team.1, -1, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
     eventPlayer.tmp0 = getLastCreatedEntity()
     eventPlayer.tmp0 = eventPlayer.tmp0[0]
-    eventPlayer.tmp0.startForcingName("Ally bot {}".format(I))
-    eventPlayer.tmp0.healthBoostPercent += 10000
-    eventPlayer.tmp0.setMaxHealth(eventPlayer.tmp0.healthBoostPercent)
+    eventPlayer.tmp0.startForcingName(f"Ally bot {eventPlayer.tmp0.getSlot()}")
     wait()
     heal(eventPlayer.tmp0, null, INFINITY)
 
@@ -130,10 +131,20 @@ rule "[debug] Activate selected action for Players mode":
     damage(debugPerkLevelUp, debugSelectedTeam1Player, 7000)
     wait()
     destroyDummy(Team.2, debugPerkLevelUp.getSlot())
+  elif debugSelectedAction == 12: # Teleport to me
+    if eventPlayer.isHoldingButton(Button.CROUCH):
+      eventPlayer.teleport(debugSelectedTeam1Player.getPosition())
+    else:
+      debugSelectedTeam1Player.teleport(eventPlayer.getPosition())
 
 def RightBotStateViewSub():
   @Name "Sub: Right Bot State View"
-  if debugSelectedAction == 2: # Player next
+  if debugSelectedAction == 1: # Add ally bot hero next
+    if debugHeroForBotIndex >= len(getAllHeroes()) - 1:
+      debugHeroForBotIndex = 0
+    else:
+      debugHeroForBotIndex++
+  elif debugSelectedAction == 2: # Player next
     NextPlayersub()
   elif debugSelectedAction == 5: # Damage upgrade increase
     debugSelectedTeam1Player.damageBoostPercent += incWithModificators(10)
@@ -157,7 +168,12 @@ rule "[debug] (Right) BotStateView":
 
 def LeftBotStateViewSub():
   @Name "Sub: Left Bot State View"
-  if debugSelectedAction == 2: # Player previous
+  if debugSelectedAction == 1: # Add ally bot hero previous
+    if debugHeroForBotIndex <= 0:
+      debugHeroForBotIndex = len(getAllHeroes()) - 1
+    else:
+      debugHeroForBotIndex--
+  elif debugSelectedAction == 2: # Player previous
     PrevPlayersub()
   elif debugSelectedAction == 5: # Damage upgrade decrease
     debugSelectedTeam1Player.damageBoostPercent -= incWithModificators(10)
