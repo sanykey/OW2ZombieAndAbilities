@@ -128,7 +128,7 @@ globalvar tmp2
 globalvar tmp3
 globalvar list
 
-globalvar isGameStarted = false
+globalvar isGameStarted
 globalvar highloadServerPause
 
 globalvar botSniperPositions

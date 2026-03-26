@@ -1,7 +1,11 @@
-# Repository Notes For Agents
+# Примечания по репозиторию для агентов
 
-- For Overpy arrays, `array.append(otherArray)` may merge elements instead of adding `otherArray` as a nested item.
-- To store one nested spot/settings array as a single element, assign by index:
+- Пиши по-русски
+
+- В массивах Overpy `array.append(otherArray)` может объединять элементы вместо того, чтобы добавить `otherArray` как вложенный элемент.
+- Чтобы сохранить один вложенный массив spot/settings как один элемент, присваивай по индексу:
   `debugBallisticsSpots[len(debugBallisticsSpots)] = eventPlayer.tmp0`
-- Overpy/Workshop compiler may block variable or subroutine names if they contain censored substrings (for example, `...hit...` contains `...shit...`).
-- Avoid such names and use neutral alternatives (for example, `impactPos` instead of `hitPos`).
+- Компилятор Overpy/Workshop может блокировать имена переменных или подпрограмм, если они содержат цензурируемые подстроки, например `...hit...` содержит `...shit...`.
+- Избегай таких имён и используй нейтральные альтернативы, например `impactPos` вместо `hitPos`.
+- Перед любыми изменениями файлов сначала спрашивай разрешение у пользователя. Не редактируй файлы, пока пользователь явно не подтвердил, что правки можно вносить.
+- Когда спрашиваешь разрешение на изменения кода или конфигов, сначала покажи пользователю diff тех правок, которые собираешься внести.

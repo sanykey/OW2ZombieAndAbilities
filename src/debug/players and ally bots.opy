@@ -1,17 +1,18 @@
 #!mainFile "../main.opy"
 
 globalvar debugAllyBotCreated
-globalvar debugSelectedAllyBot
+globalvar debugSelectedTeam1Player
+globalvar debugPerkLevelUp
 
 rule "[debug] add Players debug mode":
   debugModesArr.append("Players")
 
-rule "[debug] init Bot state view mode":
+rule "[debug] init Players debug mode":
   ConditionForInitMode("Players")
 
   wait(0.1)
   debugSelectedAction = 0
-  debugMaxAction = 10
+  debugMaxAction = 11
 
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
@@ -26,6 +27,7 @@ rule "[debug] init Bot state view mode":
     {}Set invincible:</fg> <fg84c951FF>{}</fg>
     {}Enable AI:</fg> <fg84c951FF>{}</fg>
     {}Money: {} <fg84c951FF>{}</fg> {}</fg>
+    {}Perk level up</fg>
     ----------
     health: <fg84c951FF>{}</fg>
     max health: <fg84c951FF>{}</fg>
@@ -40,9 +42,9 @@ rule "[debug] init Bot state view mode":
       debugSelectedActionText(2),
 
       leftArrowForMenuItem(2),
-      heroIcon(debugSelectedAllyBot.getHero()),
-      debugSelectedAllyBot,
-      debugSelectedAllyBot.getSlot(),
+      heroIcon(debugSelectedTeam1Player.getHero()),
+      debugSelectedTeam1Player,
+      debugSelectedTeam1Player.getSlot(),
       rightArrowForMenuItem(2),
 
       debugSelectedActionText(3),
@@ -50,36 +52,37 @@ rule "[debug] init Bot state view mode":
 
       debugSelectedActionText(5),
       leftArrowForMenuItem(5),
-      debugSelectedAllyBot.damageBoostPercent,
+      debugSelectedTeam1Player.damageBoostPercent,
       rightArrowForMenuItem(5),
 
       debugSelectedActionText(6),
       leftArrowForMenuItem(6),
-      debugSelectedAllyBot.healthBoostPercent,
+      debugSelectedTeam1Player.healthBoostPercent,
       rightArrowForMenuItem(6),
 
       debugSelectedActionText(7),
       leftArrowForMenuItem(7),
-      debugSelectedAllyBot.healingBoostPercent,
+      debugSelectedTeam1Player.healingBoostPercent,
       rightArrowForMenuItem(7),
 
       debugSelectedActionText(8),
-      debugSelectedAllyBot.hasStatus(Status.INVINCIBLE),
+      debugSelectedTeam1Player.hasStatus(Status.INVINCIBLE),
 
       debugSelectedActionText(9),
-      debugSelectedAllyBot.isReady__isBotRespawning,
+      debugSelectedTeam1Player.isReady__isBotRespawning,
 
       debugSelectedActionText(10),
       leftArrowForMenuItem(10),
-      debugSelectedAllyBot.money__botStuckTimes,
+      debugSelectedTeam1Player.money__botStuckTimes,
       rightArrowForMenuItem(10),
+      debugSelectedActionText(11),
 
       # ----------
-      debugSelectedAllyBot.getHealth(),
-      debugSelectedAllyBot.getMaxHealth(),
-      debugSelectedAllyBot.revivers,
-      debugSelectedAllyBot.reviveTimer,
-      debugSelectedAllyBot.botTarget
+      debugSelectedTeam1Player.getHealth(),
+      debugSelectedTeam1Player.getMaxHealth(),
+      debugSelectedTeam1Player.revivers,
+      debugSelectedTeam1Player.reviveTimer,
+      debugSelectedTeam1Player.botTarget
     ),
     HudPosition.ACTUALLY_LEFT,
     5,
@@ -91,22 +94,22 @@ rule "[debug] init Bot state view mode":
   destroyHudText(debugModeHud)
 
 def NextPlayersub():
-  @Name "Sub: next ally bot"
+  @Name "Sub: next player"
   eventPlayer.list0 = sorted(
     getPlayers(Team.1),
     lambda i: i.getSlot()
   )
-  eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedAllyBot or player.getSlot() > debugSelectedAllyBot.getSlot()][false]
-  debugSelectedAllyBot = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0[false]
+  eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedTeam1Player or player.getSlot() > debugSelectedTeam1Player.getSlot()][false]
+  debugSelectedTeam1Player = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0[false]
 
 def PrevPlayersub():
-  @Name "Sub: prev ally bot"
+  @Name "Sub: prev player"
   eventPlayer.list0 = sorted(
     getPlayers(Team.1),
     lambda i: i.getSlot()
   )
-  eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedAllyBot or player.getSlot() < debugSelectedAllyBot.getSlot()].last()
-  debugSelectedAllyBot = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0.last()
+  eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedTeam1Player or player.getSlot() < debugSelectedTeam1Player.getSlot()].last()
+  debugSelectedTeam1Player = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0.last()
 
 rule "[debug] Activate selected action for Players mode":
   ConditionForActivateSelectedAction("Players")
@@ -122,50 +125,69 @@ rule "[debug] Activate selected action for Players mode":
     heal(eventPlayer.tmp0, null, INFINITY)
 
     debugAllyBotCreated = true
-    if not debugSelectedAllyBot:
+    if not debugSelectedTeam1Player:
       wait(0.1)
       NextPlayersub()
   elif debugSelectedAction == 3: # Kill bot
-    kill(debugSelectedAllyBot)
+    kill(debugSelectedTeam1Player)
   elif debugSelectedAction == 4: # Remove all ally bots
     if eventPlayer.isHoldingButton(Button.CROUCH):
       eventPlayer.tmp0 = getNumberOfPlayers(Team.PLAYERS)
       for I in range(eventPlayer.tmp0):
         destroyDummy(Team.1, I)
-    elif debugSelectedAllyBot.isDummy():
-      destroyDummy(Team.1, debugSelectedAllyBot.getSlot())
+    elif debugSelectedTeam1Player.isDummy():
+      destroyDummy(Team.1, debugSelectedTeam1Player.getSlot())
       NextPlayersub()
     debugAllyBotCreated = any([player for player in getPlayers(Team.1) if player.isDummy()])
   elif debugSelectedAction == 6: # Heal
-    heal(debugSelectedAllyBot, null, INFINITY)
+    heal(debugSelectedTeam1Player, null, INFINITY)
   elif debugSelectedAction == 7: # Ressurect
-    debugSelectedAllyBot.resurrect()
+    debugSelectedTeam1Player.resurrect()
   elif debugSelectedAction == 8: # set INVINCIBLE
-    if debugSelectedAllyBot.hasStatus(Status.INVINCIBLE):
-      debugSelectedAllyBot.clearStatusEffect(Status.INVINCIBLE)
+    if debugSelectedTeam1Player.hasStatus(Status.INVINCIBLE):
+      debugSelectedTeam1Player.clearStatusEffect(Status.INVINCIBLE)
     else:
-      debugSelectedAllyBot.setStatusEffect(debugSelectedAllyBot, Status.INVINCIBLE, INFINITY)
+      debugSelectedTeam1Player.setStatusEffect(debugSelectedTeam1Player, Status.INVINCIBLE, INFINITY)
   elif debugSelectedAction == 9: # enable AI
-    if debugSelectedAllyBot.isDummy():
-      debugSelectedAllyBot.isReady__isBotRespawning = not debugSelectedAllyBot.isReady__isBotRespawning
-
+    if debugSelectedTeam1Player.isDummy():
+      debugSelectedTeam1Player.isReady__isBotRespawning = not debugSelectedTeam1Player.isReady__isBotRespawning
+  elif debugSelectedAction == 11: # Perk level up
+    createDummy(
+      Hero.WRECKING_BALL,
+      Team.2,
+      -1,
+      eventPlayer.getPosition() + directionFromAngles(horizontalAngleOfDirection(eventPlayer.getFacingDirection()), 0) * 1.2,
+      directionTowards(
+        eventPlayer.getPosition() + directionFromAngles(horizontalAngleOfDirection(eventPlayer.getFacingDirection()), 0) * 1.2,
+        eventPlayer
+      )
+    )
+    debugPerkLevelUp = getLastCreatedEntity()
+    debugPerkLevelUp = debugPerkLevelUp[0]
+    wait()
+    debugPerkLevelUp.setMaxHealth(7000)
+    wait()
+    heal(debugPerkLevelUp, null, 7000)
+    damage(debugPerkLevelUp, eventPlayer, 7000)
+    wait()
+    destroyDummy(Team.2, debugPerkLevelUp.getSlot())
 
 def RightBotStateViewSub():
   @Name "Sub: Right Bot State View"
   if debugSelectedAction == 2: # next bot
     NextPlayersub()
   elif debugSelectedAction == 5:
-    debugSelectedAllyBot.damageBoostPercent += incWithModificators(10)
-    debugSelectedAllyBot.setDamageDealt(debugSelectedAllyBot.damageBoostPercent)
+    debugSelectedTeam1Player.damageBoostPercent += incWithModificators(10)
+    debugSelectedTeam1Player.setDamageDealt(debugSelectedTeam1Player.damageBoostPercent)
   elif debugSelectedAction == 6:
-    debugSelectedAllyBot.healthBoostPercent += incWithModificators(10)
-    debugSelectedAllyBot.setMaxHealth(debugSelectedAllyBot.healthBoostPercent)
+    debugSelectedTeam1Player.healthBoostPercent += incWithModificators(10)
+    debugSelectedTeam1Player.setMaxHealth(debugSelectedTeam1Player.healthBoostPercent)
   elif debugSelectedAction == 7:
-    debugSelectedAllyBot.healingBoostPercent += incWithModificators(10)
-    debugSelectedAllyBot.setHealingDealt(debugSelectedAllyBot.healingBoostPercent)
+    debugSelectedTeam1Player.healingBoostPercent += incWithModificators(10)
+    debugSelectedTeam1Player.setHealingDealt(debugSelectedTeam1Player.healingBoostPercent)
   elif debugSelectedAction == 10:
-    debugSelectedAllyBot.money__botStuckTimes += incWithModificators(100)
-    debugSelectedAllyBot.moneyTotal__botOldPosition = debugSelectedAllyBot.money__botStuckTimes
+    debugSelectedTeam1Player.money__botStuckTimes += incWithModificators(100)
+    debugSelectedTeam1Player.moneyTotal__botOldPosition = debugSelectedTeam1Player.money__botStuckTimes
 
 rule "[debug] (Right) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
@@ -179,17 +201,17 @@ def LeftBotStateViewSub():
   if debugSelectedAction == 2: # previous bot
     PrevPlayersub()
   elif debugSelectedAction == 5:
-    debugSelectedAllyBot.damageBoostPercent -= incWithModificators(10)
-    debugSelectedAllyBot.setDamageDealt(debugSelectedAllyBot.damageBoostPercent)
+    debugSelectedTeam1Player.damageBoostPercent -= incWithModificators(10)
+    debugSelectedTeam1Player.setDamageDealt(debugSelectedTeam1Player.damageBoostPercent)
   elif debugSelectedAction == 6:
-    debugSelectedAllyBot.healthBoostPercent -= incWithModificators(10)
-    debugSelectedAllyBot.setMaxHealth(debugSelectedAllyBot.healthBoostPercent)
+    debugSelectedTeam1Player.healthBoostPercent -= incWithModificators(10)
+    debugSelectedTeam1Player.setMaxHealth(debugSelectedTeam1Player.healthBoostPercent)
   elif debugSelectedAction == 7:
-    debugSelectedAllyBot.healingBoostPercent -= incWithModificators(10)
-    debugSelectedAllyBot.setHealingDealt(debugSelectedAllyBot.healingBoostPercent)
+    debugSelectedTeam1Player.healingBoostPercent -= incWithModificators(10)
+    debugSelectedTeam1Player.setHealingDealt(debugSelectedTeam1Player.healingBoostPercent)
   elif debugSelectedAction == 10:
-    debugSelectedAllyBot.money__botStuckTimes -= incWithModificators(100)
-    debugSelectedAllyBot.moneyTotal__botOldPosition = debugSelectedAllyBot.money__botStuckTimes
+    debugSelectedTeam1Player.money__botStuckTimes -= incWithModificators(100)
+    debugSelectedTeam1Player.moneyTotal__botOldPosition = debugSelectedTeam1Player.money__botStuckTimes
 
 rule "[debug] (Left) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
