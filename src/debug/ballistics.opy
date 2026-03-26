@@ -241,99 +241,28 @@ rule "[debug] init Bot state view mode":
 
   hudSubheader(
     localPlayerVisibilityForDevelopers(),
-    "{}
-    {}Trigger {} <fg84c951FF>{}</fg> {}</fg>
-    {}Preset {} <fg84c951FF>{} {} {}</fg> {}</fg>
-    {}Save spot</fg>
-    {}Load spot {} <fg84c951FF>{} {} {} {}</fg> {}</fg>
-    {}Shoot delay</fg> {} <fg84c951FF>{}</fg> {}
-    {}Starting speed</fg> {} <fg84c951FF>{}</fg> {}
-    {}Starting angle</fg> {} <fg84c951FF>{}</fg> {}
-    {}Gravity</fg> {} <fg84c951FF>{}</fg> {}
+    f"{debugMenuTitle(\"Ballistics\")}
+    {debugSelectedActionText(1)}Trigger {leftArrowForMenuItem(1)} <fg84c951FF>{debugButtons[debugProjectile[DePE.TRIGGER_INDEX]]}</fg> {rightArrowForMenuItem(1)}</fg>
+    {debugSelectedActionText(2)}Preset {leftArrowForMenuItem(2)} <fg84c951FF>{heroIcon(debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.HERO])} {debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.HERO]} {triggerNameByIndex(debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.TRIGGER_INDEX])}</fg> {rightArrowForMenuItem(2)}</fg>
+    {debugSelectedActionText(3)}Save spot</fg>
+    {debugSelectedActionText(4)}Load spot {leftArrowForMenuItem(4)} <fg84c951FF>[{debugBallisticsSpotIndex}] {heroIcon(debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.HERO])} {triggerNameByIndex(debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.TRIGGER_INDEX])} {debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.POSITION]}</fg> {rightArrowForMenuItem(4)}</fg>
+    {debugSelectedActionText(5)}Shoot delay</fg> {leftArrowForMenuItem(5)} <fg84c951FF>{debugProjectile[DePE.SHOOT_DELAY]}</fg> {rightArrowForMenuItem(5)}
+    {debugSelectedActionText(6)}Starting speed</fg> {leftArrowForMenuItem(6)} <fg84c951FF>{debugProjectile[DePE.START_SPEED]}</fg> {rightArrowForMenuItem(6)}
+    {debugSelectedActionText(7)}Starting angle</fg> {leftArrowForMenuItem(7)} <fg84c951FF>{debugProjectile[DePE.START_ANGLE_CORRECTION]}</fg> {rightArrowForMenuItem(7)}
+    {debugSelectedActionText(8)}Gravity</fg> {leftArrowForMenuItem(8)} <fg84c951FF>{debugProjectile[DePE.GRAVITY]}</fg> {rightArrowForMenuItem(8)}
     -- Camera:
-    {}Toggle camera:</fg> <fg84c951FF>{}</fg>
-    {}Offset z</fg> {} <fg84c951FF>{}</fg> {}
-    {}Offset y</fg> {} <fg84c951FF>{}</fg> {}
+    {debugSelectedActionText(9)}Toggle camera:</fg> <fg84c951FF>{debugBallisticsCameraEnabled}</fg>
+    {debugSelectedActionText(10)}Offset z</fg> {leftArrowForMenuItem(10)} <fg84c951FF>{debugBallisticsCameraOffset.z}</fg> {rightArrowForMenuItem(10)}
+    {debugSelectedActionText(11)}Offset y</fg> {leftArrowForMenuItem(11)} <fg84c951FF>{debugBallisticsCameraOffset.y}</fg> {rightArrowForMenuItem(11)}
     -- Draw Trajectory:
-    {}Show trajectory:</fg> <fg84c951FF>{}</fg>
-    {}Clear effects</fg>
-    {}Step time</fg> {} <fg84c951FF>{}</fg> {}
-    {}Max time</fg> {} <fg84c951FF>{}</fg> {}
+    {debugSelectedActionText(12)}Show trajectory:</fg> <fg84c951FF>{debugProjectile[DePE.SHOW_TRAJECTORY]}</fg>
+    {debugSelectedActionText(13)}Clear effects</fg>
+    {debugSelectedActionText(14)}Step time</fg> {leftArrowForMenuItem(14)} <fg84c951FF>{debugProjectile[DePE.STEP_TIME]}</fg> {rightArrowForMenuItem(14)}
+    {debugSelectedActionText(15)}Max time</fg> {leftArrowForMenuItem(15)} <fg84c951FF>{debugProjectile[DePE.MAX_TIME]}</fg> {rightArrowForMenuItem(15)}
     ----------
-    Last hit pos: <fg84c951FF>{}</fg>
-    Projective time: <fg84c951FF>{}</fg>
-    ".format(
-      debugMenuTitle("Ballistics"),
-
-      debugSelectedActionText(1),
-      leftArrowForMenuItem(1),
-      debugButtons[debugProjectile[DePE.TRIGGER_INDEX]],
-      rightArrowForMenuItem(1),
-
-      debugSelectedActionText(2),
-      leftArrowForMenuItem(2),
-      heroIcon(debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.HERO]),
-      debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.HERO],
-      triggerNameByIndex(debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.TRIGGER_INDEX]),
-      rightArrowForMenuItem(2),
-
-      
-      debugSelectedActionText(3),
-      debugSelectedActionText(4),
-      leftArrowForMenuItem(4),
-      "[{}]".format(debugBallisticsSpotIndex) if len(debugBallisticsSpots) > 0 else "[none]",
-      heroIcon(debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.HERO]) if len(debugBallisticsSpots) > 0 else "",
-      triggerNameByIndex(debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.TRIGGER_INDEX]) if len(debugBallisticsSpots) > 0 else "none",
-      debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.POSITION] if len(debugBallisticsSpots) > 0 else "none",
-      rightArrowForMenuItem(4),
-
-      debugSelectedActionText(5),
-      leftArrowForMenuItem(5),
-      debugProjectile[DePE.SHOOT_DELAY],
-      rightArrowForMenuItem(5),
-
-      debugSelectedActionText(6),
-      leftArrowForMenuItem(6),
-      debugProjectile[DePE.START_SPEED],
-      rightArrowForMenuItem(6),
-
-      debugSelectedActionText(7),
-      leftArrowForMenuItem(7),
-      debugProjectile[DePE.START_ANGLE_CORRECTION],
-      rightArrowForMenuItem(7),
-
-      debugSelectedActionText(8),
-      leftArrowForMenuItem(8),
-      debugProjectile[DePE.GRAVITY],
-      rightArrowForMenuItem(8),
-
-      debugSelectedActionText(9),
-      debugBallisticsCameraEnabled,
-      debugSelectedActionText(10),
-      leftArrowForMenuItem(10),
-      debugBallisticsCameraOffset.z,
-      rightArrowForMenuItem(10),
-      debugSelectedActionText(11),
-      leftArrowForMenuItem(11),
-      debugBallisticsCameraOffset.y,
-      rightArrowForMenuItem(11),
-      debugSelectedActionText(12),
-      debugProjectile[DePE.SHOW_TRAJECTORY],
-      debugSelectedActionText(13),
-
-      debugSelectedActionText(14),
-      leftArrowForMenuItem(14),
-      debugProjectile[DePE.STEP_TIME],
-      rightArrowForMenuItem(14),
-
-      debugSelectedActionText(15),
-      leftArrowForMenuItem(15),
-      debugProjectile[DePE.MAX_TIME],
-      rightArrowForMenuItem(15),
-
-      debugProjectile[DePE.LAST_HIT_POSITION],
-      debugProjectile[DePE.COLLISION_TIME]
-    ),
+    Last hit pos: <fg84c951FF>{debugProjectile[DePE.LAST_HIT_POSITION]}</fg>
+    Projective time: <fg84c951FF>{debugProjectile[DePE.COLLISION_TIME]}</fg>
+    ",
     HudPosition.ACTUALLY_LEFT,
     5,
     Color.WHITE,
@@ -352,14 +281,14 @@ rule "[debug] init Bot state view mode":
 rule "[debug] Activate selected action for Ballistics mode":
   ConditionForActivateSelectedAction("Ballistics")
 
-  if debugSelectedAction == 2:
+  if debugSelectedAction == 2: # Preset
     debugProjectile[DePE.TRIGGER_INDEX] = debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.TRIGGER_INDEX]
     debugProjectile[DePE.START_SPEED] = debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.START_SPEED]
     debugProjectile[DePE.GRAVITY] = debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.GRAVITY]
     debugProjectile[DePE.START_ANGLE_CORRECTION] = debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.START_ANGLE_CORRECTION]
     debugProjectile[DePE.SHOOT_DELAY] = debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.SHOOT_DELAY]
 
-  elif debugSelectedAction == 3:
+  elif debugSelectedAction == 3: # Save spot
     eventPlayer.tmp0 = [
       eventPlayer.getHero(),
       eventPlayer.getPosition(),
@@ -376,7 +305,7 @@ rule "[debug] Activate selected action for Ballistics mode":
     debugBallisticsSpots[len(debugBallisticsSpots)] = eventPlayer.tmp0
     debugBallisticsSpotIndex = len(debugBallisticsSpots) - 1
 
-  elif debugSelectedAction == 4:
+  elif debugSelectedAction == 4: # Load spot
     if len(debugBallisticsSpots) > 0:
       if debugBallisticsSpotIndex >= len(debugBallisticsSpots):
         debugBallisticsSpotIndex = len(debugBallisticsSpots) - 1
@@ -396,69 +325,69 @@ rule "[debug] Activate selected action for Ballistics mode":
       debugProjectile[DePE.STEP_TIME] = debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.STEP_TIME]
       debugProjectile[DePE.MAX_TIME] = debugBallisticsSpots[debugBallisticsSpotIndex][DePSD.MAX_TIME]
 
-  elif debugSelectedAction == 9:
+  elif debugSelectedAction == 9: # Toggle camera
     debugBallisticsCameraEnabled = not debugBallisticsCameraEnabled
     if not debugBallisticsCameraEnabled:
       eventPlayer.stopCamera()
       debugBallisticsState[DeBS.CAMERA_ENABLED_LOCAL] = false
 
-  elif debugSelectedAction == 12:
+  elif debugSelectedAction == 12: # Show trajectory
     debugProjectile[DePE.SHOW_TRAJECTORY] = not debugProjectile[DePE.SHOW_TRAJECTORY]
 
-  elif debugSelectedAction == 13:
+  elif debugSelectedAction == 13: # Clear effects
     ClearBallisticsEffectsSub()
 
 def RightBallisticsSub():
   @Name "Sub: Right Ballistics"
 
-  if debugSelectedAction == 1:
+  if debugSelectedAction == 1: # Trigger next
     if debugProjectile[DePE.TRIGGER_INDEX] >= len(debugButtons) - 1:
       debugProjectile[DePE.TRIGGER_INDEX] = 0
     else:
       debugProjectile[DePE.TRIGGER_INDEX]++
 
-  elif debugSelectedAction == 2:
+  elif debugSelectedAction == 2: # Preset next
     if debugBallisticsPresetIndex >= len(debugBallisticsPresets) - 1:
       debugBallisticsPresetIndex = 0
     else:
       debugBallisticsPresetIndex++
 
-  elif debugSelectedAction == 4 and len(debugBallisticsSpots) > 0:
+  elif debugSelectedAction == 4 and len(debugBallisticsSpots) > 0: # Load spot next
     if debugBallisticsSpotIndex >= len(debugBallisticsSpots) - 1:
       debugBallisticsSpotIndex = 0
     else:
       debugBallisticsSpotIndex++
 
-  elif debugSelectedAction == 5:
+  elif debugSelectedAction == 5: # Shoot delay increase
     debugProjectile[DePE.SHOOT_DELAY] += incWithModificators(0.01)
 
-  elif debugSelectedAction == 6:
+  elif debugSelectedAction == 6: # Starting speed increase
     debugProjectile[DePE.START_SPEED] += incWithModificators(0.01)
 
-  elif debugSelectedAction == 7:
+  elif debugSelectedAction == 7: # Starting angle increase
     debugProjectile[DePE.START_ANGLE_CORRECTION] += incWithModificators(0.01)
 
-  elif debugSelectedAction == 8:
+  elif debugSelectedAction == 8: # Gravity increase
     debugProjectile[DePE.GRAVITY] += incWithModificators(0.01)
 
-  elif debugSelectedAction == 10:
+  elif debugSelectedAction == 10: # Offset z increase
     debugBallisticsCameraOffset = vect(
       debugBallisticsCameraOffset.x,
       debugBallisticsCameraOffset.y,
       debugBallisticsCameraOffset.z - incWithModificators(0.1)
     )
 
-  elif debugSelectedAction == 11:
+  elif debugSelectedAction == 11: # Offset y increase
     debugBallisticsCameraOffset = vect(
       debugBallisticsCameraOffset.x,
       debugBallisticsCameraOffset.y + incWithModificators(0.1),
       debugBallisticsCameraOffset.z
     )
 
-  elif debugSelectedAction == 14:
+  elif debugSelectedAction == 14: # Step time increase
     debugProjectile[DePE.STEP_TIME] += incWithModificators(0.01)
 
-  elif debugSelectedAction == 15:
+  elif debugSelectedAction == 15: # Max time increase
     debugProjectile[DePE.MAX_TIME] += incWithModificators(0.1)
 
 
@@ -471,54 +400,54 @@ rule "[debug] (Right) Ballistics":
 def LeftBallisticsSub():
   @Name "Sub: Left Ballistics"
 
-  if debugSelectedAction == 1:
+  if debugSelectedAction == 1: # Trigger previous
     if debugProjectile[DePE.TRIGGER_INDEX] <= 0:
       debugProjectile[DePE.TRIGGER_INDEX] = len(debugButtons) - 1
     else:
       debugProjectile[DePE.TRIGGER_INDEX]--
 
-  elif debugSelectedAction == 2:
+  elif debugSelectedAction == 2: # Preset previous
     if debugBallisticsPresetIndex <= 0:
       debugBallisticsPresetIndex = len(debugBallisticsPresets) - 1
     else:
       debugBallisticsPresetIndex--
 
-  elif debugSelectedAction == 4 and len(debugBallisticsSpots) > 0:
+  elif debugSelectedAction == 4 and len(debugBallisticsSpots) > 0: # Load spot previous
     if debugBallisticsSpotIndex <= 0:
       debugBallisticsSpotIndex = len(debugBallisticsSpots) - 1
     else:
       debugBallisticsSpotIndex--
 
-  elif debugSelectedAction == 5:
+  elif debugSelectedAction == 5: # Shoot delay decrease
     debugProjectile[DePE.SHOOT_DELAY] = max(0, debugProjectile[DePE.SHOOT_DELAY] - incWithModificators(0.01))
 
-  elif debugSelectedAction == 6:
+  elif debugSelectedAction == 6: # Starting speed decrease
     debugProjectile[DePE.START_SPEED] = max(0.01, debugProjectile[DePE.START_SPEED] - incWithModificators(0.01))
 
-  elif debugSelectedAction == 7:
+  elif debugSelectedAction == 7: # Starting angle decrease
     debugProjectile[DePE.START_ANGLE_CORRECTION] -= incWithModificators(0.01)
 
-  elif debugSelectedAction == 8:
+  elif debugSelectedAction == 8: # Gravity decrease
     debugProjectile[DePE.GRAVITY] = max(0, debugProjectile[DePE.GRAVITY] - incWithModificators(0.01))
 
-  elif debugSelectedAction == 10:
+  elif debugSelectedAction == 10: # Offset z decrease
     debugBallisticsCameraOffset = vect(
       debugBallisticsCameraOffset.x,
       debugBallisticsCameraOffset.y,
       debugBallisticsCameraOffset.z + incWithModificators(0.1)
     )
 
-  elif debugSelectedAction == 11:
+  elif debugSelectedAction == 11: # Offset y decrease
     debugBallisticsCameraOffset = vect(
       debugBallisticsCameraOffset.x,
       debugBallisticsCameraOffset.y - incWithModificators(0.1),
       debugBallisticsCameraOffset.z
     )
 
-  elif debugSelectedAction == 14:
+  elif debugSelectedAction == 14: # Step time decrease
     debugProjectile[DePE.STEP_TIME] = max(0.01, debugProjectile[DePE.STEP_TIME] - incWithModificators(0.01))
 
-  elif debugSelectedAction == 15:
+  elif debugSelectedAction == 15: # Max time decrease
     debugProjectile[DePE.MAX_TIME] = max(0.1, debugProjectile[DePE.MAX_TIME] - incWithModificators(0.1))
 
 

@@ -16,64 +16,28 @@ rule "[debug] init Common debug mode":
 
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
-    "{}
-    {}Disable bots:</fg> <fg84c951FF>{}</fg>
-    {}Open switch hero menu</fg> 
-    {}Invincible</fg> <fg84c951FF>{}</fg>
-    {}Teleport to shop</fg> 
-    {}Teleport to debug point</fg> <fg84c951FF>{}</fg>
-    {}Noclip:</fg> <fg84c951FF>{}</fg>
-    {}Add $100000</fg> 
-    {}Add upgrades</fg> 
-    {}Unlimit ultimates:</fg> <fg84c951FF>{}</fg>
-    {}No CD:</fg> <fg84c951FF>{}</fg>
-    {}Kill me</fg>
-    {}Inspector: <fg84c951FF>{}</fg></fg>
-    {}Ressurect all</fg>
+    f"{debugMenuTitle(\"Common\")}
+    {debugSelectedActionText(1)}Disable bots:</fg> <fg84c951FF>{isBotsDisabled}</fg>
+    {debugSelectedActionText(2)}Open switch hero menu</fg> 
+    {debugSelectedActionText(3)}Invincible</fg> <fg84c951FF>{localPlayer.hasStatus(Status.INVINCIBLE)}</fg>
+    {debugSelectedActionText(4)}Teleport to shop</fg> 
+    {debugSelectedActionText(5)}Teleport to debug point</fg> <fg84c951FF>{debugTeleportPoint}</fg>
+    {debugSelectedActionText(6)}Noclip:</fg> <fg84c951FF>{debugIsNoclip}</fg>
+    {debugSelectedActionText(7)}Add $100000</fg> 
+    {debugSelectedActionText(8)}Add upgrades</fg> 
+    {debugSelectedActionText(9)}Unlimit ultimates:</fg> <fg84c951FF>{debugUnlimitUltimates}</fg>
+    {debugSelectedActionText(10)}No CD:</fg> <fg84c951FF>{debugNoCD}</fg>
+    {debugSelectedActionText(11)}Kill me</fg>
+    {debugSelectedActionText(12)}Inspector: <fg84c951FF>{enabledInspector}</fg></fg>
+    {debugSelectedActionText(13)}Ressurect all</fg>
     ----------
-    Entities: {}, Texts: {}
+    Entities: {getNumberOfEntityIds()}, Texts: {getNumberOfTextIds()}
     <fg94a0a544>Open/Close: [INTERACT] + [ABILITY_1] + [ABILITY_2]
     Navigate: [INTERACT] + [↑/↓/←/→]
     Change x10/x100: [←/→] + [Crouch/Space]
     Interact with menu item: [INTERACT] + [MELEE]
     Ressurect me: [INTERACT] + [RELOAD]</fg>
-    ".format(
-      debugMenuTitle("Common"),
-
-      debugSelectedActionText(1),
-      isBotsDisabled,
-
-      debugSelectedActionText(2),
-
-      debugSelectedActionText(3),
-      localPlayer.hasStatus(Status.INVINCIBLE),
-
-      debugSelectedActionText(4),
-
-      debugSelectedActionText(5),
-      debugTeleportPoint,
-
-      debugSelectedActionText(6),
-      debugIsNoclip,
-
-      debugSelectedActionText(7),
-      debugSelectedActionText(8),
-
-      debugSelectedActionText(9),
-      debugUnlimitUltimates,
-
-      debugSelectedActionText(10),
-      debugNoCD,
-      
-      debugSelectedActionText(11),
-      debugSelectedActionText(12),
-      enabledInspector,
-
-      debugSelectedActionText(13),
-      # ----------
-      getNumberOfEntityIds(),
-      getNumberOfTextIds()
-    ),
+    ",
     HudPosition.ACTUALLY_LEFT,
     5,
     Color.WHITE,
@@ -87,13 +51,13 @@ rule "[debug] init Common debug mode":
 rule "[debug] Activate selected action for Common mode":
   ConditionForActivateSelectedAction("Common")
 
-  if debugSelectedAction == 1: # "[debug] disable/enable bots"
+  if debugSelectedAction == 1: # Disable bots
     if isBotsDisabled == false:
       RemoveBotsSub()
     else:
       AddBotsSub()
 
-  elif debugSelectedAction == 2: # Open switch hero hud
+  elif debugSelectedAction == 2: # Open switch hero menu
     eventPlayer.purchasedHeroes = getAllHeroes()
     OpenSwitchHeroMenuSub()
 
@@ -127,7 +91,7 @@ rule "[debug] Activate selected action for Common mode":
       eventPlayer.disableEnvironmentCollision(true)
       eventPlayer.setGravity(0)
 
-  elif debugSelectedAction == 7: # Add money
+  elif debugSelectedAction == 7: # Add $100000
     eventPlayer.earnMoney(100000)
 
   elif debugSelectedAction == 8: # Add upgrades
@@ -140,16 +104,16 @@ rule "[debug] Activate selected action for Common mode":
     wait()
     heal(eventPlayer, null, INFINITY)
 
-  elif debugSelectedAction == 9: # Switch unlimit ultimates
+  elif debugSelectedAction == 9: # Unlimit ultimates
     debugUnlimitUltimates = not debugUnlimitUltimates
 
-  elif debugSelectedAction == 10:
+  elif debugSelectedAction == 10: # No CD
     debugNoCD = not debugNoCD
 
   elif debugSelectedAction == 11: # Kill me
     damage(eventPlayer, null, INFINITY)
 
-  elif debugSelectedAction == 12: # Enable/Disable Inspector
+  elif debugSelectedAction == 12: # Inspector
     if enabledInspector:
       enabledInspector = false
       disableInspector()
@@ -157,7 +121,7 @@ rule "[debug] Activate selected action for Common mode":
       enabledInspector = true
       enableInspector()
 
-  elif debugSelectedAction == 13: # resurrect all
+  elif debugSelectedAction == 13: # Ressurect all
     ReviveAllPlayersSub()
   
 rule "[debug] Unlimit ultimates":

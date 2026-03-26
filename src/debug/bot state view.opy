@@ -35,101 +35,37 @@ rule "[debug] init Bot state view mode":
 
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
-    "{}
-    {}Round number (start): {} <fg84c951FF>{}</fg> {}</fg>
-    {}Place spawn point:</fg> <fg84c951FF>{}</fg>
-    {}Select closest to reticle</fg> <fg84c951FF>{} {}</fg> <fg94a0a544>[SHIFT]</fg>
-    {}Current bot: {} <fg84c951FF>{} {}</fg> {}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
-    {}Round bots slots: {} <fg84c951FF>{}</fg> {}</fg>
-    {}Max zombie bots (add/remove): {} <fg84c951FF>{}</fg> {}</fg>
-    {}Kill all bots</fg>
-    {}Common bots (replace): {} <fg84c951FF>{}</fg> {}</fg>
-    {}Random heroes</fg>
+    f"{debugMenuTitle(\"BotStateView\")}
+    {debugSelectedActionText(1)}Round number (start): {leftArrowForMenuItem(1)} <fg84c951FF>{roundNumber}</fg> {rightArrowForMenuItem(1)}</fg>
+    {debugSelectedActionText(2)}Place spawn point:</fg> <fg84c951FF>{debugZombieBotsSpawnPoint}</fg>
+    {debugSelectedActionText(3)}Select closest to reticle</fg> <fg84c951FF>{heroIcon(hostPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES).getHero())} {hostPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES)}</fg> <fg94a0a544>[SHIFT]</fg>
+    {debugSelectedActionText(4)}Current bot: {leftArrowForMenuItem(4)} <fg84c951FF>{heroIcon(debugSelectedPlayer.getHero())} {debugSelectedPlayer}</fg> {rightArrowForMenuItem(4)}</fg> <fg94a0a544>← [S_FIRE/P_FIRE] →</fg>
+    {debugSelectedActionText(5)}Round bots slots: {leftArrowForMenuItem(5)} <fg84c951FF>{roundMaxBotsSlots}</fg> {rightArrowForMenuItem(5)}</fg>
+    {debugSelectedActionText(6)}Max zombie bots (add/remove): {leftArrowForMenuItem(6)} <fg84c951FF>{wSettingsMaxZombieBots}</fg> {rightArrowForMenuItem(6)}</fg>
+    {debugSelectedActionText(7)}Kill all bots</fg>
+    {debugSelectedActionText(8)}Common bots (replace): {leftArrowForMenuItem(8)} <fg84c951FF>{heroIcon(debugCommonBotsList[debugCommonBotIndex])}</fg> {rightArrowForMenuItem(8)}</fg>
+    {debugSelectedActionText(9)}Random heroes</fg>
     --------------------
-    Total Time Elapsed: <fg84c951FF>{}</fg>
-    health: <fg84c951FF>{}</fg>
-    max health: <fg84c951FF>{}</fg>
-    ult charge: <fg84c951FF>{}</fg>
-    pos: <fg84c951FF>{}</fg>
-    facing dir: <fg84c951FF>{}</fg>
-    isBotRespawning: <fg84c951FF>{}</fg>
-    Stuck Points: <fg84c951FF>{}</fg>
-    Fly Through Walls Points: <fg84c951FF>{}</fg>
-    Target: <fg84c951FF>{}</fg>
-    Distance to target: <fg84c951FF>{}</fg>
-    Horizontal speed: <fg84c951FF>{}</fg>
-    Default speed: <fg84c951FF>{}</fg>
-    lastCcAttacker: <fg84c951FF>{}</fg>
-    lastCcAttackTime: <fg84c951FF>{}</fg>
-    lastCcWasInAir: <fg84c951FF>{}</fg>
-    botWidowmakerAvaliableSpawnSpots: <fg84c951FF>{}</fg>
-    botTargetLos: <fg84c951FF>{}</fg>
-    botTargetLastPosition: <fg84c951FF>{}</fg>
-    ".format(
-      debugMenuTitle("BotStateView"),
-
-      debugSelectedActionText(1),
-      "←" if debugSelectedAction == 1 else "",
-      roundNumber,
-      "→" if debugSelectedAction == 1 else "",
-
-      # Place spawn point
-      debugSelectedActionText(2),
-      debugZombieBotsSpawnPoint,
-
-      # Select bot closest to reticle
-      debugSelectedActionText(3),
-      heroIcon(hostPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES).getHero()),
-      hostPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES),
-
-      # Current bot
-      debugSelectedActionText(4),
-      "←" if debugSelectedAction == 4 else "",
-      heroIcon(debugSelectedPlayer.getHero()),
-      debugSelectedPlayer,
-      "→" if debugSelectedAction == 4 else "",
-
-      # Round bots slots
-      debugSelectedActionText(5),
-      "←" if debugSelectedAction == 5 else "",
-      roundMaxBotsSlots,
-      "→" if debugSelectedAction == 5 else "",
-
-      # Max zombie bots
-      debugSelectedActionText(6),
-      "←" if debugSelectedAction == 6 else "",
-      wSettingsMaxZombieBots,
-      "→" if debugSelectedAction == 6 else "",
-
-      debugSelectedActionText(7),
-
-      debugSelectedActionText(8),
-      "←" if debugSelectedAction == 8 else "",
-      heroIcon(debugCommonBotsList[debugCommonBotIndex]),
-      "→" if debugSelectedAction == 8 else "",
-
-      debugSelectedActionText(9),
-
-      getTotalTimeElapsed(),
-      debugSelectedPlayer.getHealth(),
-      debugSelectedPlayer.getMaxHealth(),
-      debugSelectedPlayer.getUltCharge(),
-      debugSelectedPlayer.getPosition(),
-      debugSelectedPlayer.getFacingDirection(),
-      debugSelectedPlayer.isReady__isBotRespawning,
-      debugSelectedPlayer.money__botStuckTimes,
-      debugSelectedPlayer.botWantsWallPhasePoints,
-      debugSelectedPlayer.botTarget,
-      distance(debugSelectedPlayer, debugSelectedPlayer.botTarget),
-      debugSelectedPlayer.getHorizontalSpeed(),
-      5.5 / 100 * zomSpeedPct,
-      debugSelectedPlayer.lastCcAttacker,
-      debugSelectedPlayer.lastCcAttackTime,
-      debugSelectedPlayer.lastCcWasInAir,
-      botWidowmakerAvaliableSpawnSpots,
-      debugSelectedPlayer.botTargetLos,
-      debugSelectedPlayer.botTargetLastPosition
-    ),
+    Total Time Elapsed: <fg84c951FF>{getTotalTimeElapsed()}</fg>
+    health: <fg84c951FF>{debugSelectedPlayer.getHealth()}</fg>
+    max health: <fg84c951FF>{debugSelectedPlayer.getMaxHealth()}</fg>
+    ult charge: <fg84c951FF>{debugSelectedPlayer.getUltCharge()}</fg>
+    pos: <fg84c951FF>{debugSelectedPlayer.getPosition()}</fg>
+    facing dir: <fg84c951FF>{debugSelectedPlayer.getFacingDirection()}</fg>
+    isBotRespawning: <fg84c951FF>{debugSelectedPlayer.isReady__isBotRespawning}</fg>
+    Stuck Points: <fg84c951FF>{debugSelectedPlayer.money__botStuckTimes}</fg>
+    Fly Through Walls Points: <fg84c951FF>{debugSelectedPlayer.botWantsWallPhasePoints}</fg>
+    Target: <fg84c951FF>{debugSelectedPlayer.botTarget}</fg>
+    Distance to target: <fg84c951FF>{distance(debugSelectedPlayer, debugSelectedPlayer.botTarget)}</fg>
+    Horizontal speed: <fg84c951FF>{debugSelectedPlayer.getHorizontalSpeed()}</fg>
+    Default speed: <fg84c951FF>{5.5 / 100 * zomSpeedPct}</fg>
+    lastCcAttacker: <fg84c951FF>{debugSelectedPlayer.lastCcAttacker}</fg>
+    lastCcAttackTime: <fg84c951FF>{debugSelectedPlayer.lastCcAttackTime}</fg>
+    lastCcWasInAir: <fg84c951FF>{debugSelectedPlayer.lastCcWasInAir}</fg>
+    botWidowmakerAvaliableSpawnSpots: <fg84c951FF>{botWidowmakerAvaliableSpawnSpots}</fg>
+    botTargetLos: <fg84c951FF>{debugSelectedPlayer.botTargetLos}</fg>
+    botTargetLastPosition: <fg84c951FF>{debugSelectedPlayer.botTargetLastPosition}</fg>
+    ",
     HudPosition.ACTUALLY_LEFT,
     5,
     Color.WHITE,
@@ -171,31 +107,31 @@ rule "[debug] (Right) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
   @Condition debugModesArr[debugMode] == "BotStateView"
   
-  if debugSelectedAction == 1:
+  if debugSelectedAction == 1: # Round number (start) increase
     if roundNumber >= 250:
       roundNumber = 0
     else:
       roundNumber++
 
-  elif debugSelectedAction == 4: # next bot
+  elif debugSelectedAction == 4: # Current bot next
     debugSelectedPlayer = getPlayersInSlot(
       0 if (debugSelectedPlayer.getSlot() >= getNumberOfPlayers(Team.ZOMBIES) - 1) else debugSelectedPlayer.getSlot() + 1, 
       Team.ZOMBIES
     )
 
-  elif debugSelectedAction == 5:
+  elif debugSelectedAction == 5: # Round bots slots increase
     if roundMaxBotsSlots >= 30:
       roundMaxBotsSlots = 1
     else:
       roundMaxBotsSlots++
 
-  elif debugSelectedAction == 6:
+  elif debugSelectedAction == 6: # Max zombie bots (add/remove) increase
     if wSettingsMaxZombieBots >= 30:
       wSettingsMaxZombieBots = 1
     else:
       wSettingsMaxZombieBots++
 
-  elif debugSelectedAction == 8:
+  elif debugSelectedAction == 8: # Common bots (replace) next
     if debugCommonBotIndex >= len(debugCommonBotsList) - 1:
       debugCommonBotIndex = 0
     else:
@@ -205,13 +141,13 @@ rule "[debug] (Left) BotStateView":
   RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
   @Condition debugModesArr[debugMode] == "BotStateView"
   
-  if debugSelectedAction == 1:
+  if debugSelectedAction == 1: # Round number (start) decrease
     if roundNumber <= 0:
       roundNumber = 250
     else:
       roundNumber--
 
-  elif debugSelectedAction == 4: # previous bot
+  elif debugSelectedAction == 4: # Current bot previous
     debugSelectedPlayer.stopForcingOutlineFor(getAllPlayers())
     debugSelectedPlayer = getPlayersInSlot(
       (getNumberOfPlayers(Team.ZOMBIES) - 1) if (debugSelectedPlayer.getSlot() == 0) else debugSelectedPlayer.getSlot() - 1, 
@@ -219,19 +155,19 @@ rule "[debug] (Left) BotStateView":
     )
     debugSelectedPlayer.startForcingOutlineFor(localPlayer if (localPlayer.developer or localPlayer == hostPlayer) else null, false, Color.ORANGE)
 
-  elif debugSelectedAction == 5:
+  elif debugSelectedAction == 5: # Round bots slots decrease
     if roundMaxBotsSlots <= 0:
       roundMaxBotsSlots = 30
     else:
       roundMaxBotsSlots--
 
-  elif debugSelectedAction == 6:
+  elif debugSelectedAction == 6: # Max zombie bots (add/remove) decrease
     if wSettingsMaxZombieBots <= 0:
       wSettingsMaxZombieBots = 30
     else:
       wSettingsMaxZombieBots--
 
-  elif debugSelectedAction == 8:
+  elif debugSelectedAction == 8: # Common bots (replace) previous
     if debugCommonBotIndex <= 0:
       debugCommonBotIndex = len(debugCommonBotsList) - 1
     else:
@@ -241,17 +177,17 @@ rule "[debug] (Left) BotStateView":
 rule "[debug] Activate selected action for Common mode":
   ConditionForActivateSelectedAction("BotStateView")
 
-  if debugSelectedAction == 2: # Place/Remove debug spawn point for bots
+  if debugSelectedAction == 2: # Place spawn point
     if debugZombieBotsSpawnPoint:
       debugZombieBotsSpawnPoint = false
     else:
       debugZombieBotsSpawnPoint = eventPlayer.getPosition()
-  elif debugSelectedAction == 6: # Remove/add bots
+  elif debugSelectedAction == 6: # Max zombie bots (add/remove)
     if isBotsDisabled == false:
       RemoveBotsSub()
     else:
       AddBotsSub()
-  elif debugSelectedAction == 1:
+  elif debugSelectedAction == 1: # Round number (start)
     if isBotsDisabled:
       AddBotsSub()
 
@@ -261,14 +197,14 @@ rule "[debug] Activate selected action for Common mode":
       roundNumber--
       kill(getLivingPlayers(Team.ZOMBIES))
       roundRemainingBots = 0
-  elif debugSelectedAction == 7: # Place/Remove debug spawn point for bots
+  elif debugSelectedAction == 7: # Kill all bots
     roundRemainingBots = 0
     kill(getLivingPlayers(Team.ZOMBIES))
-  elif debugSelectedAction == 8: # Common bots replace
+  elif debugSelectedAction == 8: # Common bots (replace)
     [player for player in getLivingPlayers(Team.ZOMBIES) if filterIsCommonBot(player)].startForcingHero(debugCommonBotsList[debugCommonBotIndex])
     commonZombieHero = debugCommonBotsList[debugCommonBotIndex]
 
-  elif debugSelectedAction == 9:
+  elif debugSelectedAction == 9: # Random heroes
     eventPlayer.list0 = getPlayers(Team.ZOMBIES)
     for I in range(len(eventPlayer.list0) - 1):
       eventPlayer.list0[I].startForcingHero(random.choice(getAllHeroes()))

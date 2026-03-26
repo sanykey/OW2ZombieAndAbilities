@@ -31,112 +31,43 @@ rule "[debug] init VectorsLists debug mode":
 
   hudSubheader(
     localPlayerVisibilityForDevelopers(),
-    "{}
-    {}List type: {} <fg84c951FF>{}</fg> {}</fg>
-    {}Changing mode: {} <fg84c951FF>{}</fg> {}</fg>
-    {}Vector (teleport): {} <fg84c951FF>{}: {}</fg> {}</fg>
-    {}Create vector</fg>
-    {}Custom Vector (teleport): {} <fg84c951FF>{}: {}</fg> {}</fg>
-    {}Move X: {} <fg84c951FF>{}</fg> {}</fg>
-    {}Move Z: {} <fg84c951FF>{}</fg> {}</fg>
-    {}Move Y: {} <fg84c951FF>{}</fg> {}</fg>
-    {}Sphere radius: {} <fg84c951FF>{}</fg> {}</fg>
-    {}Show vectors: <fg84c951FF>{}</fg></fg>
-    {}Show zones</fg>
-    {}Save current pos to log</fg>
-    {}Save vector to log</fg>
-    {}Save custom vectors to log</fg>
+    f"{debugMenuTitle(\"VectorsLists\")}
+    {debugSelectedActionText(1)}List type: {leftArrowForMenuItem(1)} <fg84c951FF>{debugVectorsLists[debugVectorsListIndex][false]}</fg> {rightArrowForMenuItem(1)}</fg>
+    {debugSelectedActionText(2)}Changing mode: {leftArrowForMenuItem(2)} <fg84c951FF>{\"Main\" if debugVectorEditMode == 0 else \"Custom\"}</fg> {rightArrowForMenuItem(2)}</fg>
+    {debugSelectedActionText(3)}Vector (teleport): {leftArrowForMenuItem(3)} <fg84c951FF>{debugVectorsIndex}: {vectList[debugVectorsIndex]}</fg> {rightArrowForMenuItem(3)}</fg>
+    {debugSelectedActionText(4)}Create vector</fg>
+    {debugSelectedActionText(5)}Custom Vector (teleport): {leftArrowForMenuItem(5)} <fg84c951FF>{debugCustomVectorIndex}: {debugCustomVectors[debugCustomVectorIndex]}</fg> {rightArrowForMenuItem(5)}</fg>
+    {debugSelectedActionText(6)}Move X: {leftArrowForMenuItem(6)} <fg84c951FF>{(
+      vectList[debugVectorsIndex].x
+      if debugVectorEditMode == 0
+      else debugCustomVectors[debugCustomVectorIndex].x
+    )}</fg> {rightArrowForMenuItem(6)}</fg>
+    {debugSelectedActionText(7)}Move Z: {leftArrowForMenuItem(7)} <fg84c951FF>{(
+      vectList[debugVectorsIndex].z
+      if debugVectorEditMode == 0
+      else debugCustomVectors[debugCustomVectorIndex].z
+    )}</fg> {rightArrowForMenuItem(7)}</fg>
+    {debugSelectedActionText(8)}Move Y: {leftArrowForMenuItem(8)} <fg84c951FF>{(
+      vectList[debugVectorsIndex].y
+      if debugVectorEditMode == 0
+      else debugCustomVectors[debugCustomVectorIndex].y
+    )}</fg> {rightArrowForMenuItem(8)}</fg>
+    {debugSelectedActionText(9)}Sphere radius: {leftArrowForMenuItem(9)} <fg84c951FF>{debugSphereRadius}</fg> {rightArrowForMenuItem(9)}</fg>
+    {debugSelectedActionText(10)}Show vectors: <fg84c951FF>{debugShowVectors}</fg></fg>
+    {debugSelectedActionText(11)}Show zones</fg>
+    {debugSelectedActionText(12)}Save current pos to log</fg>
+    {debugSelectedActionText(13)}Save vector to log</fg>
+    {debugSelectedActionText(14)}Save custom vectors to log</fg>
     --------------------
-    List offset: {}
-    Last vect: {}
-    List len: {}
-    Distance to vect: {}
-    Distance to custom vect: {}
-    Pos: <fg84c951FF>{}</fg>
-    Eye pos: <fg84c951FF>{}</fg>
-    Facing dir: <fg84c951FF>{}</fg>
-    ".format(
-      debugMenuTitle("VectorsLists"),
-      debugSelectedActionText(1),
-      "←" if debugSelectedAction == 1 else "",
-      debugVectorsLists[debugVectorsListIndex][false],
-      "→" if debugSelectedAction == 1 else "",
-
-      debugSelectedActionText(2),
-      "←" if debugSelectedAction == 2 else "",
-      "Main" if debugVectorEditMode == 0 else "Custom",
-      "→" if debugSelectedAction == 2 else "",
-
-      debugSelectedActionText(3),
-      "←" if debugSelectedAction == 3 else "",
-      debugVectorsIndex,
-      vectList[debugVectorsIndex],
-      "→" if debugSelectedAction == 3 else "",
-
-      debugSelectedActionText(4),
-
-      debugSelectedActionText(5),
-      "←" if debugSelectedAction == 5 else "",
-      debugCustomVectorIndex if len(debugCustomVectors) else "none",
-      debugCustomVectors[debugCustomVectorIndex] if len(debugCustomVectors) else "none",
-      "→" if debugSelectedAction == 5 else "",
-
-      # Move X
-      debugSelectedActionText(6),
-      "←" if debugSelectedAction == 6 else "",
-      (
-        vectList[debugVectorsIndex].x
-        if debugVectorEditMode == 0
-        else debugCustomVectors[debugCustomVectorIndex].x
-        if len(debugCustomVectors)
-        else "none"
-      ),
-      "→" if debugSelectedAction == 6 else "",
-
-      # Move Z
-      debugSelectedActionText(7),
-      "←" if debugSelectedAction == 7 else "",
-      (
-        vectList[debugVectorsIndex].z
-        if debugVectorEditMode == 0
-        else debugCustomVectors[debugCustomVectorIndex].z
-        if len(debugCustomVectors)
-        else "none"
-      ),
-      "→" if debugSelectedAction == 7 else "",
-
-      # Move Y
-      debugSelectedActionText(8),
-      "←" if debugSelectedAction == 8 else "",
-      (
-        vectList[debugVectorsIndex].y
-        if debugVectorEditMode == 0
-        else debugCustomVectors[debugCustomVectorIndex].y
-        if len(debugCustomVectors)
-        else "none"
-      ),
-      "→" if debugSelectedAction == 8 else "",
-
-      debugSelectedActionText(9),
-      "←" if debugSelectedAction == 9 else "",
-      debugSphereRadius,
-      "→" if debugSelectedAction == 9 else "",
-
-      debugSelectedActionText(10),
-      debugShowVectors,
-      debugSelectedActionText(11),
-      debugSelectedActionText(12),
-      debugSelectedActionText(13),
-      debugSelectedActionText(14),
-      debugVectorsLists[debugVectorsListIndex][true],
-      debugVectorsLists[debugVectorsListIndex][true] + debugVectorsLists[debugVectorsListIndex][2] - 1,
-      debugVectorsLists[debugVectorsListIndex][2],
-      distance(localPlayer, vectList[debugVectorsIndex]),
-      distance(localPlayer, debugCustomVectors[debugCustomVectorIndex]) if len(debugCustomVectors) else "none",
-      localPlayer.getPosition(),
-      localPlayer.getEyePosition(),
-      localPlayer.getFacingDirection()
-    ),
+    List offset: {debugVectorsLists[debugVectorsListIndex][true]}
+    Last vect: {debugVectorsLists[debugVectorsListIndex][true] + debugVectorsLists[debugVectorsListIndex][2] - 1}
+    List len: {debugVectorsLists[debugVectorsListIndex][2]}
+    Distance to vect: {distance(localPlayer, vectList[debugVectorsIndex])}
+    Distance to custom vect: {distance(localPlayer, debugCustomVectors[debugCustomVectorIndex])}
+    Pos: <fg84c951FF>{localPlayer.getPosition()}</fg>
+    Eye pos: <fg84c951FF>{localPlayer.getEyePosition()}</fg>
+    Facing dir: <fg84c951FF>{localPlayer.getFacingDirection()}</fg>
+    ",
     HudPosition.ACTUALLY_LEFT,
     5,
     Color.WHITE,
@@ -250,9 +181,9 @@ def DebugRefreshCustomVectTextSub():
 rule "[debug] Activate selected action for VectorsLists mode":
   ConditionForActivateSelectedAction("VectorsLists")
 
-  if debugSelectedAction == 3: # [debug] teleport to selected vector
+  if debugSelectedAction == 3: # Vector (teleport)
     eventPlayer.teleport(vectList[debugVectorsIndex])
-  elif debugSelectedAction == 4: # [debug] create custom vector from raycast hit
+  elif debugSelectedAction == 4: # Create vector
     debugCustomVectors.append(
       raycast(
         eventPlayer.getEyePosition(),
@@ -266,19 +197,19 @@ rule "[debug] Activate selected action for VectorsLists mode":
     if debugShowVectors:
       DebugDeleteVectorsTextsSub()
       DebugCreateVectorsTextsSub()
-  elif debugSelectedAction == 5: # [debug] teleport to selected custom vector
+  elif debugSelectedAction == 5: # Custom Vector (teleport)
     if len(debugCustomVectors):
       eventPlayer.teleport(debugCustomVectors[debugCustomVectorIndex])
-  elif debugSelectedAction == 10: # [debug] disable/enable vectors
+  elif debugSelectedAction == 10: # Show vectors
     if not debugShowVectors:
       debugShowVectors = true
       DebugCreateVectorsTextsSub()
     else:
       debugShowVectors = false
       DebugDeleteVectorsTextsSub()
-  elif debugSelectedAction == 11: # [debug] disable/enable zones
+  elif debugSelectedAction == 11: # Show zones
     debugShowZones = not debugShowZones
-  elif debugSelectedAction == 12: # [debug] Save current pos to log
+  elif debugSelectedAction == 12: # Save current pos to log
     logToInspector(
       "pos: {}\neye pos: {}\nfacing dir: {}".format(
         eventPlayer.getPosition(),
@@ -286,14 +217,14 @@ rule "[debug] Activate selected action for VectorsLists mode":
         eventPlayer.getFacingDirection()
       )
     )
-  elif debugSelectedAction == 13: # [debug] Save selected main vector to log
+  elif debugSelectedAction == 13: # Save vector to log
     logToInspector(
       "main vect [{}]: {}".format(
         debugVectorsIndex,
         vectList[debugVectorsIndex]
       )
     )
-  elif debugSelectedAction == 14: # [debug] Save all custom vectors to log
+  elif debugSelectedAction == 14: # Save custom vectors to log
     if not len(debugCustomVectors):
       logToInspector("custom vectors list is empty")
     else:
@@ -306,7 +237,7 @@ rule "[debug] (RIGHT) VectorsLists":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)
   @Condition debugModesArr[debugMode] == "VectorsLists"
   
-  if debugSelectedAction == 1: # next vector list
+  if debugSelectedAction == 1: # List type next
     DebugDeleteVectorsTextsSub()
     if debugVectorsListIndex >= len(debugVectorsLists) - 1:
       debugVectorsListIndex = 0
@@ -316,26 +247,26 @@ rule "[debug] (RIGHT) VectorsLists":
     if debugShowVectors:
       DebugCreateVectorsTextsSub()
 
-  if debugSelectedAction == 2: # next vector edit mode
+  if debugSelectedAction == 2: # Changing mode next
     if debugVectorEditMode >= 1:
       debugVectorEditMode = 0
     else:
       debugVectorEditMode++
 
-  if debugSelectedAction == 3: # next vector
+  if debugSelectedAction == 3: # Vector (teleport) next
     if debugVectorsIndex >= debugVectorsLists[debugVectorsListIndex][true] + debugVectorsLists[debugVectorsListIndex][2] - 1:
       debugVectorsIndex = debugVectorsLists[debugVectorsListIndex][true]
     else:
       debugVectorsIndex++
   
-  if debugSelectedAction == 5: # next custom vector
+  if debugSelectedAction == 5: # Custom Vector (teleport) next
     if len(debugCustomVectors):
       if debugCustomVectorIndex >= len(debugCustomVectors) - 1:
         debugCustomVectorIndex = 0
       else:
         debugCustomVectorIndex++
 
-  if debugSelectedAction == 6: # move X+
+  if debugSelectedAction == 6: # Move X increase
     if debugVectorEditMode == 0:
       vectList[debugVectorsIndex] = vect(
         vectList[debugVectorsIndex].x + incWithModificators(0.01),
@@ -351,7 +282,7 @@ rule "[debug] (RIGHT) VectorsLists":
       )
       DebugRefreshCustomVectTextSub()
 
-  if debugSelectedAction == 7: # move Z+
+  if debugSelectedAction == 7: # Move Z increase
     if debugVectorEditMode == 0:
       vectList[debugVectorsIndex] = vect(
         vectList[debugVectorsIndex].x,
@@ -367,7 +298,7 @@ rule "[debug] (RIGHT) VectorsLists":
       )
       DebugRefreshCustomVectTextSub()
 
-  if debugSelectedAction == 8: # move Y+
+  if debugSelectedAction == 8: # Move Y increase
     if debugVectorEditMode == 0:
       vectList[debugVectorsIndex] = vect(
         vectList[debugVectorsIndex].x,
@@ -383,14 +314,14 @@ rule "[debug] (RIGHT) VectorsLists":
       )
       DebugRefreshCustomVectTextSub()
 
-  if debugSelectedAction == 9: # sphere radius+
+  if debugSelectedAction == 9: # Sphere radius increase
     debugSphereRadius += incWithModificators(0.01)
 
 rule "[debug] (LEFT) VectorsLists":
   RuleHeaderForDebugMenuInputThrottle(Vector.LEFT)
   @Condition debugModesArr[debugMode] == "VectorsLists"
   
-  if debugSelectedAction == 1: # prev vector list
+  if debugSelectedAction == 1: # List type previous
     DebugDeleteVectorsTextsSub()
     if debugVectorsListIndex <= 0:
       debugVectorsListIndex = len(debugVectorsLists) - 1
@@ -400,26 +331,26 @@ rule "[debug] (LEFT) VectorsLists":
     if debugShowVectors:
       DebugCreateVectorsTextsSub()
 
-  if debugSelectedAction == 2: # prev vector edit mode
+  if debugSelectedAction == 2: # Changing mode previous
     if debugVectorEditMode <= 0:
       debugVectorEditMode = 1
     else:
       debugVectorEditMode--
 
-  if debugSelectedAction == 3: # prev vector
+  if debugSelectedAction == 3: # Vector (teleport) previous
     if debugVectorsIndex <= debugVectorsLists[debugVectorsListIndex][true]:
       debugVectorsIndex = debugVectorsLists[debugVectorsListIndex][true] + debugVectorsLists[debugVectorsListIndex][2] - 1
     else:
       debugVectorsIndex--
 
-  if debugSelectedAction == 5: # prev custom vector
+  if debugSelectedAction == 5: # Custom Vector (teleport) previous
     if len(debugCustomVectors):
       if debugCustomVectorIndex <= 0:
         debugCustomVectorIndex = len(debugCustomVectors) - 1
       else:
         debugCustomVectorIndex--
 
-  if debugSelectedAction == 6: # move X-
+  if debugSelectedAction == 6: # Move X decrease
     if debugVectorEditMode == 0:
       vectList[debugVectorsIndex] = vect(
         vectList[debugVectorsIndex].x - incWithModificators(0.01),
@@ -435,7 +366,7 @@ rule "[debug] (LEFT) VectorsLists":
       )
       DebugRefreshCustomVectTextSub()
 
-  if debugSelectedAction == 7: # move Z-
+  if debugSelectedAction == 7: # Move Z decrease
     if debugVectorEditMode == 0:
       vectList[debugVectorsIndex] = vect(
         vectList[debugVectorsIndex].x,
@@ -451,7 +382,7 @@ rule "[debug] (LEFT) VectorsLists":
       )
       DebugRefreshCustomVectTextSub()
 
-  if debugSelectedAction == 8: # move Y-
+  if debugSelectedAction == 8: # Move Y decrease
     if debugVectorEditMode == 0:
       vectList[debugVectorsIndex] = vect(
         vectList[debugVectorsIndex].x,
@@ -467,7 +398,7 @@ rule "[debug] (LEFT) VectorsLists":
       )
       DebugRefreshCustomVectTextSub()
 
-  if debugSelectedAction == 9: # sphere radius-
+  if debugSelectedAction == 9: # Sphere radius decrease
     debugSphereRadius -= incWithModificators(0.01)
     if debugSphereRadius < 0:
       debugSphereRadius = 0
