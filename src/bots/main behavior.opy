@@ -40,9 +40,9 @@ def SearchTargetsSub():
     ],
     lambda sortedPlayer: (
       distance(eventPlayer, sortedPlayer)
-      + (7 if not sortedPlayer in eventPlayer.list0 else 0) # Low priority for targets behind walls
+      + (8 if not sortedPlayer in eventPlayer.list0 else 0) # Low priority for targets behind walls
       + ( # for sombra invisible:
-        100 if sortedPlayer.isInvisible > getTotalTimeElapsed() and distance(eventPlayer, sortedPlayer) > 4 or not eventPlayer.isInViewAngle(sortedPlayer.getPosition(), 90) else 0
+        100 if sortedPlayer.isInvisible > getTotalTimeElapsed() and (distance(eventPlayer, sortedPlayer) > 4 or not eventPlayer.isInViewAngle(sortedPlayer.getPosition(), 90)) else 0
       ) - ( # High priority for tank targets (except Baby D.Va):
         3 if (
             sortedPlayer.heroType == HeroType.TANK
@@ -67,10 +67,6 @@ rule "bot targeting polling ":
   wait(0.7, Wait.ABORT_WHEN_FALSE)
   if ruleCondition:
     loop()
-
-def SetDefaultThrottleSub():
-  @Name "SetDefaultThrottleSub"
-  eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
 macro botAntifall():
   eventPlayer.tmp0 = false
