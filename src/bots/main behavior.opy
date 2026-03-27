@@ -8,10 +8,12 @@
 #!define BOT_OLD_POS_STUCK_DISTANCE 2.5
 #!define BOT_OLD_POS_STUCK_RESET_DISTANCE 5
 #!define BOT_IN_LOS_SEARCH_TARGET_DISTANCE 40
+#!define BOX_FAR_DISTANCE_MAX_POINTS 15 
 
 #!define ZOM_MELEE_ATTACK_CACHE_TIME 1.5
 
 playervar botTargetLos
+playervar borFarDistancePoints
 
 macro Player.getDistanceToBotTarget(self):
   distance(self, self.botTarget)
@@ -187,7 +189,12 @@ macro flyThroughWallsPoints():
 macro botTeleportIfTooFar():
   # If a zombie bot is too far from its target, teleport it to a random available spawn point:
   if eventPlayer.getDistanceToBotTarget() > BOT_MAX_TARGET_DISTANCE:
-    TeleportToRandomSpawnPointSub()
+    if eventPlayer.borFarDistancePoints >= BOX_FAR_DISTANCE_MAX_POINTS:
+      TeleportToRandomSpawnPointSub()
+    else:
+      eventPlayer.borFarDistancePoints += true
+  else:
+    eventPlayer.borFarDistancePoints = false
 
 macro botTargetLosAndObstacleWaipoint():
   eventPlayer.tmp0 = getTotalTimeElapsed() if isInLoS(eventPlayer.botTarget.getEyePosition(), eventPlayer.getEyePosition() + vect(0, LosHeightCheckVectConst, 0)) else null
