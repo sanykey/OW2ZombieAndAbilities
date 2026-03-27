@@ -247,11 +247,16 @@ rule "bot melee attack polling":
   @Condition eventPlayer.isAlive()
   @Condition not eventPlayer.botWallPhase
 
+  if distance(eventPlayer.getEyePosition(), eventPlayer.botTarget) < 7:
+    if eventPlayer.isUsingUltimate():
+      eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
+    if eventPlayer.getUltCharge() == 100:
+      eventPlayer.forceButtonPress(Button.ULTIMATE)
+    
   if distance(eventPlayer.getEyePosition(), eventPlayer.botTarget) < 3:
     eventPlayer.forceButtonPress(Button.MELEE)
     
-    # todo: нужно убедиться, чтол удар действительно наносится:
-    # eventPlayer.setUltCharge(eventPlayer.getUltCharge() + 3)
+    eventPlayer.setUltCharge(eventPlayer.getUltCharge() + 3)
 
     checkVendettaCounterAttack()
 
