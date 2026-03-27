@@ -28,8 +28,7 @@ rule "Player joined setup":
 
   eventPlayer.startForcingHero(Hero.DVA)
   eventPlayer.respawn()
-  if not eventPlayer.isDummy():
-    eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
+  eventPlayer.teleport(vect(-27.412, 8.678, -12.564))
 
 rule "Player spawned setup":
   @Event eachPlayer

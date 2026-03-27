@@ -120,16 +120,20 @@ rule "[debug] (Right) BotStateView":
     )
 
   elif debugSelectedAction == 5: # Round bots slots increase
-    if roundMaxBotsSlots >= 30:
+    if roundMaxBotsSlots >= wSettingsMaxZombieBots:
       roundMaxBotsSlots = 1
     else:
       roundMaxBotsSlots++
 
   elif debugSelectedAction == 6: # Max zombie bots (add/remove) increase
-    if wSettingsMaxZombieBots >= 30:
+    if eventPlayer.isHoldingButton(Button.CROUCH):
+      wSettingsMaxZombieBots = 18
+    elif wSettingsMaxZombieBots >= 18:
       wSettingsMaxZombieBots = 1
     else:
       wSettingsMaxZombieBots++
+    if roundMaxBotsSlots < wSettingsMaxZombieBots:
+      roundMaxBotsSlots = wSettingsMaxZombieBots
 
   elif debugSelectedAction == 8: # Common bots (replace) next
     if debugCommonBotIndex >= len(debugCommonBotsList) - 1:
@@ -156,16 +160,20 @@ rule "[debug] (Left) BotStateView":
     debugSelectedPlayer.startForcingOutlineFor(localPlayer if (localPlayer.developer or localPlayer == hostPlayer) else null, false, Color.ORANGE)
 
   elif debugSelectedAction == 5: # Round bots slots decrease
-    if roundMaxBotsSlots <= 0:
-      roundMaxBotsSlots = 30
+    if roundMaxBotsSlots <= 1:
+      roundMaxBotsSlots = wSettingsMaxZombieBots
     else:
       roundMaxBotsSlots--
 
   elif debugSelectedAction == 6: # Max zombie bots (add/remove) decrease
-    if wSettingsMaxZombieBots <= 0:
-      wSettingsMaxZombieBots = 30
+    if eventPlayer.isHoldingButton(Button.CROUCH):
+      wSettingsMaxZombieBots = 1
+    elif wSettingsMaxZombieBots <= 1:
+      wSettingsMaxZombieBots = 18
     else:
       wSettingsMaxZombieBots--
+    if roundMaxBotsSlots > wSettingsMaxZombieBots:
+      roundMaxBotsSlots = wSettingsMaxZombieBots
 
   elif debugSelectedAction == 8: # Common bots (replace) previous
     if debugCommonBotIndex <= 0:

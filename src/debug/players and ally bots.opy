@@ -81,6 +81,7 @@ rule "[debug] Activate selected action for Players mode":
     eventPlayer.tmp0 = getLastCreatedEntity()
     eventPlayer.tmp0 = eventPlayer.tmp0[0]
     eventPlayer.tmp0.startForcingName(f"Ally bot {eventPlayer.tmp0.getSlot()}")
+    eventPlayer.tmp0.setRespawnTime(PLAYER_RESPAWN_TIME)
     wait()
     heal(eventPlayer.tmp0, null, INFINITY)
     UpdateCombatantsSub()
