@@ -155,7 +155,6 @@ playervar zomIsHacked
 playervar zomForceHeroOnRespawn
 playervar botMeleeAttackTargets
 playervar botWallPhase
-playervar zomLastMeleeAttackTimeArr
 playervar botWantsWallPhasePoints
 playervar botTarget
 playervar zomAIstep

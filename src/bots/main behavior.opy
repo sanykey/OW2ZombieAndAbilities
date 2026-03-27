@@ -10,8 +10,6 @@
 #!define BOT_IN_LOS_SEARCH_TARGET_DISTANCE 40
 #!define BOX_FAR_DISTANCE_MAX_POINTS 15 
 
-#!define ZOM_MELEE_ATTACK_CACHE_TIME 1.5
-
 playervar botTargetLos
 playervar borFarDistancePoints
 
@@ -20,10 +18,6 @@ macro Player.getDistanceToBotTarget(self):
 
 macro Player.isInLoSBotTarget(self):
   self.botTargetLos + BOT_LOS_TARGET_CACHE_TIME > getTotalTimeElapsed()
-
-# todo: ??
-macro Player.isRecentlyDealMeleeDemage(self, target):
-  eventPlayer.zomLastMeleeAttackTimeArr[target.getSlot()] > getTotalTimeElapsed() - ZOM_MELEE_ATTACK_CACHE_TIME
 
 def TeleportToRandomSpawnPointSub():
   @Name "TeleportToRandomSpawnPointSub"

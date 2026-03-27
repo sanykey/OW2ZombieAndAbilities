@@ -245,13 +245,11 @@ rule "Player took damage":
     eventPlayer.isInvisible = false 
 
   if eventAbility == Button.MELEE:
-    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed() # todo: ???
     attacker.resetBotStuckTimes()
     # [ZombieTeam Roadhog] chance to hack player when melee:
     if attacker.getHero() == Hero.ROADHOG and random.randint(1, 100) <= 40:
       eventPlayer.setStatusEffect(null, Status.HACKED, 1.5)
   elif eventAbility == Button.PRIMARY_FIRE:
-    attacker.zomLastMeleeAttackTimeArr[eventPlayer.getSlot()] = getTotalTimeElapsed() # todo: ???
     attacker.resetBotStuckTimes()
 
   # [ZombieTeam Mauga] Burning players
