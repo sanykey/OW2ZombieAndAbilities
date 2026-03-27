@@ -13,7 +13,6 @@
 
 playervar botTargetLos
 
-
 macro Player.getDistanceToBotTarget(self):
   distance(self, self.botTarget)
 
@@ -23,7 +22,6 @@ macro Player.isInLoSBotTarget(self):
 # todo: ??
 macro Player.isRecentlyDealMeleeDemage(self, target):
   eventPlayer.zomLastMeleeAttackTimeArr[target.getSlot()] > getTotalTimeElapsed() - ZOM_MELEE_ATTACK_CACHE_TIME
-
 
 def TeleportToRandomSpawnPointSub():
   @Name "TeleportToRandomSpawnPointSub"
@@ -70,7 +68,7 @@ rule "bot targeting polling ":
   @Condition eventPlayer.isAlive()
 
   SearchTargetsSub()
-  wait(1.5, Wait.ABORT_WHEN_FALSE)
+  wait(0.7, Wait.ABORT_WHEN_FALSE)
   if ruleCondition:
     loop()
 

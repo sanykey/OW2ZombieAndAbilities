@@ -9,7 +9,7 @@ rule "Player joined setup":
   @Condition not eventPlayer.isDummy()
 
   eventPlayer.setRespawnTime(PLAYER_RESPAWN_TIME)
-  eventPlayer.healthBoostPercent = 100 + (5 * roundNumber)
+  eventPlayer.healthBoostPercent = 100 + (6 * roundNumber)
   eventPlayer.damageBoostPercent = 100 + (3 * roundNumber)
   eventPlayer.healingBoostPercent = 100 + (3 * roundNumber)
 
@@ -35,7 +35,7 @@ rule "Player spawned setup":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.hasSpawned()
-  @Condition not eventPlayer.isDummy() or (eventPlayer.isDummy() and eventPlayer.getHero() == Hero.ORISA)
+  @Condition not eventPlayer.isDummy()
 
   eventPlayer.addHealthPool(Health.ARMOR, teamArmor, true)
   eventPlayer.boostStats[PV_TEAM_ARMOR_POOL] = getLastCreatedHealthPool()

@@ -65,6 +65,13 @@ const vectors = [
     ]
   },
 
+  { // [3rd person Camera]
+    list: [
+      ["vect(-0.1, 0.8, -0.3)", "VL_CAMERA_CLOSE"],
+      ["vect(-0.3, 1, -0.5)", "VL_CAMERA_FAR"],
+    ]
+  },
+
   // [Secret shop]
   { 
     offset: "VL_SECRET_SHOP_OFFSET",

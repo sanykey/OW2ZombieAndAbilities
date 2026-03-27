@@ -53,12 +53,12 @@ rule "[3rd person camera] Change state":
   eventPlayer.prevCameraState = eventPlayer.cameraState
   if eventPlayer.cameraState == Camera.CLOSE:
     eventPlayer.startCamera(
-      eventPlayer + worldVector(vect(-0.1, 0.8, -0.3), eventPlayer, Transform.ROTATION) + Vector.UP * 1.25 + eventPlayer.getFacingDirection() * -1.7,
+      eventPlayer + worldVector(vectList[VL_CAMERA_CLOSE], eventPlayer, Transform.ROTATION) + Vector.UP * 1.25 + eventPlayer.getFacingDirection() * -1.7,
       eventPlayer + eventPlayer.getFacingDirection() * 60
     )
   elif eventPlayer.cameraState == Camera.FAR:
     eventPlayer.startCamera(
-      eventPlayer + worldVector(vect(-0.3, 1, -0.5), eventPlayer, Transform.ROTATION) + Vector.UP * 1.45 + eventPlayer.getFacingDirection() * -1.9,
+      eventPlayer + worldVector(vectList[VL_CAMERA_FAR], eventPlayer, Transform.ROTATION) + Vector.UP * 1.45 + eventPlayer.getFacingDirection() * -1.9,
       eventPlayer + eventPlayer.getFacingDirection() * 60
     )
   else:

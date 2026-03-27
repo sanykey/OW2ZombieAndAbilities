@@ -76,7 +76,6 @@ enum Team:
 #####################################################
 # When checking isInLoS(), use a position slightly above the distant target to avoid false positives through the floor:
 globalvar LosHeightCheckVectConst = vect(false, 1.2, false)
-
 globalvar OffmapPositionConst = vect(false, 500, false)
 
 #####################################################

@@ -36,7 +36,7 @@ rule "[Sombra] Invisible detect":
   
   wait(0.8, Wait.ABORT_WHEN_FALSE)
   eventPlayer.isInvisible = getTotalTimeElapsed() + 5
-  waitUntil(eventPlayer.isFiringPrimaryFire() or eventPlayer.isUsingAbility1() or eventPlayer.isMeleeing(), 5)
+  waitUntil(eventPlayer.isUsingUltimate() or any([eventPlayer.isHoldingButton(i) and eventPlayer.getAbilityCooldown(i) == 0 for i in [Button.PRIMARY_FIRE, Button.ABILITY_1, Button.MELEE]]), 5)
   eventPlayer.isInvisible = false
 
 rule "[Sombre] Stop invisible when hacking":

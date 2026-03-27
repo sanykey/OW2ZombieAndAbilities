@@ -83,7 +83,7 @@ rule "[debug] Activate selected action for Players mode":
     eventPlayer.tmp0.startForcingName(f"Ally bot {eventPlayer.tmp0.getSlot()}")
     wait()
     heal(eventPlayer.tmp0, null, INFINITY)
-
+    UpdateCombatantsSub()
     debugAllyBotCreated = true
     if not debugSelectedTeam1Player:
       wait(0.1)
@@ -99,6 +99,7 @@ rule "[debug] Activate selected action for Players mode":
       destroyDummy(Team.1, debugSelectedTeam1Player.getSlot())
       NextPlayersub()
     debugAllyBotCreated = any([player for player in getPlayers(Team.1) if player.isDummy()])
+    UpdateCombatantsSub()
   elif debugSelectedAction == 6: # Health upgrade (heal)
     heal(debugSelectedTeam1Player, null, INFINITY)
   elif debugSelectedAction == 7: # Healing upgrade (ressurect)
