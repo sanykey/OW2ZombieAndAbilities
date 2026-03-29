@@ -19,6 +19,7 @@ rule "Player joined setup":
 
   eventPlayer.earnMoney(wSettingsStartMoney + (2500 * roundNumber))
   eventPlayer.purchasedHeroes = [Hero.DVA]
+  eventPlayer.setUltEnabled(false)
   
   # grant develop privileges
   if "{0}".format(eventPlayer) in devPlayers:

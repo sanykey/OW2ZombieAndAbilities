@@ -7,22 +7,17 @@ rule "[Sombra] Init":
 
   wait(1) # waiting for the previous hero to clear hero data
   eventPlayer.heroInfoVertFix0 = 1
-  eventPlayer.heroInfoText0 = "{} <fg765dbdFF>Sombra</fg>:\n
+  eventPlayer.heroInfoText0 = f"{heroIcon(Hero.SOMBRA)} <fg765dbdFF>Sombra</fg>:\n
   <TX C0000000000A6B6> <fg765dbdFF>Stealth:</fg>
       - Enemies will see you if you get too close in their line of sight
         (you can approach from behind undetected).
-      - A melee stuns enemies and steals ${}\n\n
-  {} <fg765dbdFF>Hack:</fg>
+      - A melee stuns enemies and steals ${SOMBRA_STEAL_MONEY}\n\n
+  {abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE)} <fg765dbdFF>Hack:</fg>
       - Allies and Sombra deal an additional 30% damage to hacked targets
-      - Killing hacked enemies gives attackers an extra ${}\n\n
+      - Killing hacked enemies gives attackers an extra ${70}\n\n
   About vanilla Perks:
       - Minor <fg765dbdFF>Uncripted upload</fg> is useless, doesn't work in this mode
-  ".format(
-    heroIcon(Hero.SOMBRA),
-    SOMBRA_STEAL_MONEY,
-    abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE),
-    70 # todo
-  )
+  "
 
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)
   clearHeroInfo()

@@ -28,7 +28,7 @@
 #!include "player joined.opy"
 #!include "player revive.opy"
 #!include "interact button.opy" 
-##!include "rayIntersectionsWithSphere.opy"
+#!include "rayIntersectionsWithSphere.opy"
 #!include "barriers damage.opy"
 #*/
 

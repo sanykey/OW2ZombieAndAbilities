@@ -32,7 +32,7 @@ rule "Buy hero":
   for I in range(len(heroesShopData)):
     wait()
     if (
-      distance(eventPlayer, heroesShopData[I][1]) <= 1.7 and
+      distance(eventPlayer, heroesShopData[I][1]) <= 1.8 and
       (eventPlayer.getCurrentHero() != heroesShopData[I][0] or heroesShopData[I][0] == Hero.DVA)
     ):
 
@@ -53,9 +53,11 @@ rule "Buy hero":
       eventPlayer.tmp0 = heroesShopData[I][0] in eventPlayer.purchasedHeroes
       if eventPlayer.tmp0 or eventPlayer.money__botStuckTimes >= heroesShopData[I][2]:
         eventPlayer.startForcingHero(heroesShopData[I][0])
+        eventPlayer.setUltEnabled(true)
         wait(0.1)
 
         SetHeroTypeSub()
+        ShowHeroTalentsHintSub()
 
         playEffect(getPlayers(Team.1), DynamicEffect.BAD_PICKUP_EFFECT, Color.AQUA, eventPlayer, 10)
         playEffect(getPlayers(Team.1), DynamicEffect.BUFF_IMPACT_SOUND, Color.AQUA, eventPlayer, 50)

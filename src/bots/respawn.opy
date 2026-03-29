@@ -122,6 +122,7 @@ def RessurectZombieBotSub():
     eventPlayer.setUltCharge(100)
 
   wait()
+  ActivateBotMovementSub()
   heal(eventPlayer, null, INFINITY)
 
 def TeleportWithAnimationSub():
@@ -131,7 +132,11 @@ def TeleportWithAnimationSub():
   # eventPlayer.disablePlayerCollision()
   # eventPlayer.teleport(eventPlayer.teleportPos + vect(0, -1.5, 0))
   eventPlayer.teleport(eventPlayer.teleportPos)
-  eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, 1.5)
+
+  if eventPlayer.isDead() and eventPlayer.isReady__isBotRespawning:
+    RessurectZombieBotSub()
+
+  eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, 1)
 
   if eventPlayer.respawnNearFallback:
     eventPlayer.setStatusEffect(null, Status.STUNNED, 2.5)
@@ -200,6 +205,9 @@ rule "Setup new bots":
     IconReeval.VISIBILITY_AND_POSITION,
     Color.RED
   )
+  wait(0.5)
+  GetSpawnPointSub()
+  TeleportWithAnimationSub()
 
 rule "Zombie died":
   @Event playerDied
@@ -209,7 +217,6 @@ rule "Zombie died":
   ResetCrowdControlTimeSub()
   eventPlayer.isReady__isBotRespawning = false
   eventPlayer.botTargetLastPosition = null
-  eventPlayer.botWallPhase = false
   eventPlayer.stopForcingThrottle()
   eventPlayer.stopFacing()
   roundRemainingBots -= 1
@@ -277,7 +284,6 @@ rule "Respawn bot":
   @Condition roundRemainingBots > getNumberOfLivingPlayers(Team.ZOMBIES)
   
   GetSpawnPointSub()
-  async(RessurectZombieBotSub, AsyncBehavior.NOOP)
   TeleportWithAnimationSub()
 
 #!define NUMBER_OF_LAST_ZOMBIES_FOR_ICON 4

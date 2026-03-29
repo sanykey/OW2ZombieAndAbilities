@@ -12,7 +12,7 @@ rule "[debug] init Common debug mode":
   wait(0.1)
 
   debugSelectedAction = 0
-  debugMaxAction = 13
+  debugMaxAction = 14
 
   hudSubheader(
     localPlayer if localPlayer.developer or localPlayer == hostPlayer else null,
@@ -30,10 +30,12 @@ rule "[debug] init Common debug mode":
     {debugSelectedActionText(11)}Kill me</fg>
     {debugSelectedActionText(12)}Inspector: <fg84c951FF>{enabledInspector}</fg></fg>
     {debugSelectedActionText(13)}Ressurect all</fg>
+    {debugSelectedActionText(14)}Restart match</fg>
     ----------
     Entities: {getNumberOfEntityIds()}
     Texts: {getNumberOfTextIds()}
     Failed Respawn Points: {debugFailedRespawnPoints}
+    Combatants: {arrayToString(combatants)}
     <fg94a0a544>Open/Close: [INTERACT] + [ABILITY_1] + [ABILITY_2]
     Navigate: [INTERACT] + [↑/↓/←/→]
     Change x10/x100: [←/→] + [Crouch/Space]
@@ -125,6 +127,9 @@ rule "[debug] Activate selected action for Common mode":
 
   elif debugSelectedAction == 13: # Ressurect all
     ReviveAllPlayersSub()
+
+  elif debugSelectedAction == 14: # Restart match
+    restartMatch()
   
 rule "[debug] Unlimit ultimates":
   @Event eachPlayer

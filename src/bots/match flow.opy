@@ -100,6 +100,6 @@ rule "Round start":
   #   wSettingsMaxZombieBots + roundNumber if (wSettingsMaxZombieBots + roundNumber) < MAX_REMAINING_ZOMBIES_IN_ROUND else MAX_REMAINING_ZOMBIES_IN_ROUND
   # )
 
-  roundRemainingBots = wSettingsMaxZombieBots + roundNumber
+  roundRemainingBots = wSettingsMaxZombieBots + round(roundNumber * 1.5)
   roundMaxBots = roundRemainingBots
 

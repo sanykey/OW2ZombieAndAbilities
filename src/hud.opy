@@ -60,7 +60,7 @@ rule "Init huds":
   # Hero info
   createInWorldText(
     localPlayer if localPlayer.isHeroDescriptionOpened == true and localPlayer.heroInfoText0 else null,
-    localPlayer.heroInfoText0,
+    f"{localPlayer.heroInfoText0}\nPress [{inputBindingString(Button.INTERACT)}] to close this hint.\nHold [{inputBindingString(Button.INTERACT)}] + [{inputBindingString(Button.CROUCH)}] to open hero abilities hint again" if not localPlayer.heroInfoText1 else localPlayer.heroInfoText0,
     updateEveryFrame(
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
@@ -76,7 +76,7 @@ rule "Init huds":
   # Hero info part 2
   createInWorldText(
     localPlayer if localPlayer.isHeroDescriptionOpened == true and localPlayer.heroInfoText1 else null,
-    localPlayer.heroInfoText1,
+    f"{localPlayer.heroInfoText1}\nPress [{inputBindingString(Button.INTERACT)}] to close this hint.\nHold [{inputBindingString(Button.INTERACT)}] + [{inputBindingString(Button.CROUCH)}] to open hero abilities hint again",
     updateEveryFrame(
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
@@ -103,6 +103,11 @@ rule "Init huds":
     HudReeval.VISIBILITY
   )
 
+def ShowHeroTalentsHintSub():
+  @Name "Sub: Show hero talents info hud"
+  eventPlayer.disableHeroHud()
+  eventPlayer.isHeroDescriptionOpened = true
+
 rule "Open hero talents info hud":
   @Event eachPlayer
   @Team 1
@@ -115,8 +120,7 @@ rule "Open hero talents info hud":
   @Condition not eventPlayer.isHoldingButton(Button.JUMP)
   
   wait(HERO_INFO_HOLD_DURATION, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.disableHeroHud()
-  eventPlayer.isHeroDescriptionOpened = true
+  ShowHeroTalentsHintSub()
 
 rule "Close hero talents info hud":
   @Event eachPlayer
