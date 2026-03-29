@@ -63,6 +63,7 @@ rule "[debug] Activate selected action for Common mode":
 
   elif debugSelectedAction == 2: # Open switch hero menu
     eventPlayer.purchasedHeroes = getAllHeroes()
+    eventPlayer.setUltEnabled(true)
     OpenSwitchHeroMenuSub()
 
   elif debugSelectedAction == 3: # Invincible

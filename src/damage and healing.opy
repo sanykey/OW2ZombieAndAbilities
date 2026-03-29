@@ -206,6 +206,10 @@ rule "Player deal damage":
         attacker.earnMoney(50)
       break
 
+    case Hero.REINHARDT: # [Reinhardt] Ultimate knocks down enemies for 5 seconds
+      if eventAbility == Button.ULTIMATE:
+        victim.setStatusEffect(attacker, Status.KNOCKED_DOWN, REINHARDT_ULT_KNOCKED_DOWN_TIME_SEC)
+
 macro Player.setDelayedHealingOverTime(self, time):
   self.state[SI.START_AUTO_HEAL_TIME] = getTotalTimeElapsed() + time
 

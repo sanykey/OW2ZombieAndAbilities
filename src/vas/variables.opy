@@ -59,6 +59,8 @@ enum Team:
 #!define INFINITY 99999
 
 # Heroest talents
+#!define REINHARDT_ULT_KNOCKED_DOWN_TIME_SEC 5
+
 #!define ANA_NANO_SPEEDBOOST 135
 #!define ANA_NANO_SPEEDBOOST_TIME 8
 #!define ANA_AOE_SLEEP_RADIUS 4
@@ -233,6 +235,7 @@ playervar list1
 playervar list2
 
 ## hero state vars:
+playervar asyncI0
 playervar abilPos0
 playervar abilPos1
 playervar abilPos2

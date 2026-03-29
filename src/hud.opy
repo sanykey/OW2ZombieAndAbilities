@@ -60,7 +60,7 @@ rule "Init huds":
   # Hero info
   createInWorldText(
     localPlayer if localPlayer.isHeroDescriptionOpened == true and localPlayer.heroInfoText0 else null,
-    f"{localPlayer.heroInfoText0}\nPress [{inputBindingString(Button.INTERACT)}] to close this hint.\nHold [{inputBindingString(Button.INTERACT)}] + [{inputBindingString(Button.CROUCH)}] to open hero abilities hint again" if not localPlayer.heroInfoText1 else localPlayer.heroInfoText0,
+    f"{localPlayer.heroInfoText0}\nPress [INTERACT] button to close this hint." if not localPlayer.heroInfoText1 else localPlayer.heroInfoText0,
     updateEveryFrame(
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
@@ -76,7 +76,7 @@ rule "Init huds":
   # Hero info part 2
   createInWorldText(
     localPlayer if localPlayer.isHeroDescriptionOpened == true and localPlayer.heroInfoText1 else null,
-    f"{localPlayer.heroInfoText1}\nPress [{inputBindingString(Button.INTERACT)}] to close this hint.\nHold [{inputBindingString(Button.INTERACT)}] + [{inputBindingString(Button.CROUCH)}] to open hero abilities hint again",
+    f"{localPlayer.heroInfoText1}\nPress [INTERACT] button to close this hint.",
     updateEveryFrame(
       localPlayer.getEyePosition() +
       localPlayer.getFacingDirection() * 12 +
