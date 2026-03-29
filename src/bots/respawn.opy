@@ -12,6 +12,7 @@ playervar respawnNearFallback
 #!define PLAYERS_VANILLA_SPAWN_POINT_VECT vect(101.77, 14.62, -113.01)
 #!define PLAYERS_VANILLA_SPAWN_POINT_RADIUS 16.74
 
+
 # #!define MAX_DUMMY_BOTS 18
 # Checks whether any dummy bot needs to be removed from the zombies team in order to create a dummy bot in team1. 
 #   This is necessary due to the limitation on the number of bots in the workshop.
@@ -75,9 +76,11 @@ def GetRandomTeleportPosSub():
     )
 
     if distance(eventPlayer.tmp3, PLAYERS_VANILLA_SPAWN_POINT_VECT) < PLAYERS_VANILLA_SPAWN_POINT_RADIUS:
+      debugFailedRespawnPoints += true
       continue
 
     if getRealPlayersInRadius(eventPlayer.tmp3, ZOMBIE_RESPAWN_MIN_DISTANCE, Team.PLAYERS, LosCheck.OFF):
+      debugFailedRespawnPoints += true
       continue
 
     if getRealPlayersInRadius(eventPlayer.tmp3 + LosHeightCheckVectConst, BOT_MAX_TARGET_DISTANCE, Team.PLAYERS, LosCheck.SURFACES):
@@ -86,6 +89,7 @@ def GetRandomTeleportPosSub():
       eventPlayer.respawnNearFallback = false
       break
     else:
+      debugFailedRespawnPoints += true
       eventPlayer.tmp5 = eventPlayer.tmp3
       eventPlayer.respawnNearFallback = false
 
@@ -114,9 +118,6 @@ def RessurectZombieBotSub():
   else:
     eventPlayer.resurrect()
 
-  if eventPlayer.getHero() != Hero.WIDOWMAKER and eventPlayer.getHero() != Hero.ECHO:
-    eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
-
   if zomInstantUltimates and eventPlayer.getHero() == Hero.TORBJORN:
     eventPlayer.setUltCharge(100)
 
@@ -125,35 +126,40 @@ def RessurectZombieBotSub():
 
 def TeleportWithAnimationSub():
   @Name "TeleportWithAnimationSub"
-  eventPlayer.isReady__isBotRespawning = true
-  eventPlayer.disableEnvironmentCollision(true)
-  eventPlayer.disablePlayerCollision()
-  eventPlayer.teleport(eventPlayer.teleportPos + vect(0, -1.5, 0))
-
-  wait()
-
-  # "rising from underground" spawn animation:
+  # eventPlayer.isReady__isBotRespawning = true
+  # eventPlayer.disableEnvironmentCollision(true)
+  # eventPlayer.disablePlayerCollision()
+  # eventPlayer.teleport(eventPlayer.teleportPos + vect(0, -1.5, 0))
+  eventPlayer.teleport(eventPlayer.teleportPos)
   eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, 1.5)
-  wait(0.2)
-  playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
-  playEffect(getPlayersInRadius(eventPlayer, 10, Team.1), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 80)
-  eventPlayer.isReady__isBotRespawning = getTotalTimeElapsed()
-  eventPlayer.startForcingPosition(eventPlayer.teleportPos + vect(0, -1.2 + (getTotalTimeElapsed() - eventPlayer.isReady__isBotRespawning), 0))
-  wait()
-  while eventPlayer.getPosition().y <= eventPlayer.teleportPos.y:
-    wait(0.1)
-  eventPlayer.stopForcingPosition()
-  
-  eventPlayer.enableEnvironmentCollision()
-  eventPlayer.enablePlayerCollision()
 
-  eventPlayer.isReady__isBotRespawning = false
-
-  # STUNNED is a safety buffer when a bot had to spawn too close to players.
   if eventPlayer.respawnNearFallback:
-    wait(0.85)
-    if eventPlayer.isAlive():
-      eventPlayer.setStatusEffect(null, Status.STUNNED, 2)
+    eventPlayer.setStatusEffect(null, Status.STUNNED, 2.5)
+  eventPlayer.isReady__isBotRespawning = false
+  # wait()
+
+  # # "rising from underground" spawn animation:
+  # eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, 1.5)
+  # wait(0.2)
+  # playEffect(getPlayers(Team.1), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, eventPlayer, 1)
+  # playEffect(getPlayersInRadius(eventPlayer, 10, Team.1), DynamicEffect.DEBUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 80)
+  # eventPlayer.isReady__isBotRespawning = getTotalTimeElapsed()
+  # eventPlayer.startForcingPosition(eventPlayer.teleportPos + vect(0, -1.2 + (getTotalTimeElapsed() - eventPlayer.isReady__isBotRespawning), 0))
+  # wait()
+  # while eventPlayer.getPosition().y <= eventPlayer.teleportPos.y:
+  #   wait(0.1)
+  # eventPlayer.stopForcingPosition()
+  
+  # eventPlayer.enableEnvironmentCollision()
+  # eventPlayer.enablePlayerCollision()
+
+  # eventPlayer.isReady__isBotRespawning = false
+
+  # # STUNNED is a safety buffer when a bot had to spawn too close to players.
+  # if eventPlayer.respawnNearFallback:
+  #   wait(0.85)
+  #   if eventPlayer.isAlive():
+  #     eventPlayer.setStatusEffect(null, Status.STUNNED, 2)
 
 
 macro filterIsCommonBot(player):
@@ -168,13 +174,13 @@ def GetCandidateForEliteZombieSub():
     [player for player in getPlayers(Team.ZOMBIES) if filterIsCommonBot(player)]
   )
 
-macro setZombieHero(zomPlayer, zomHero):
-  if zomPlayer.isAlive():
-    zomPlayer.startForcingHero(zomHero)
-    if zomHero == commonZombieHero:
-      zomPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
-  else:
-    zomPlayer.zomForceHeroOnRespawn = zomHero
+# macro setZombieHero(zomPlayer, zomHero):
+#   if zomPlayer.isAlive():
+#     zomPlayer.startForcingHero(zomHero)
+#     if zomHero == commonZombieHero:
+#       zomPlayer.activateBot()
+#   else:
+#     zomPlayer.zomForceHeroOnRespawn = zomHero
 
 rule "Setup new bots": 
   @Event playerJoined
@@ -186,7 +192,6 @@ rule "Setup new bots":
   eventPlayer.setDamageDealt(zomDamagePct)
   eventPlayer.startModifyingVoicelinePitch(0.3)
   eventPlayer.setRespawnTime(INFINITY)
-  eventPlayer.startForcingThrottle(1, 1, 0, 1, 0, 1)
 
   createIcon(
     combatants if eventPlayer.botWallPhase else null,
@@ -202,13 +207,14 @@ rule "Zombie died":
 
   ResetBotStuckTimesSub()
   ResetCrowdControlTimeSub()
+  eventPlayer.isReady__isBotRespawning = false
   eventPlayer.botTargetLastPosition = null
   eventPlayer.botWallPhase = false
   eventPlayer.stopForcingThrottle()
+  eventPlayer.stopFacing()
   roundRemainingBots -= 1
   eventPlayer.setUltCharge(0)
   eventPlayer.money__botStuckTimes = 0
-  # eventPlayer.resetCrowdControlAttack() # todo: fix?
   teamScore += 1
   if eventPlayer.effectsIds[ZOMBIE_LAST_ICON]:
     destroyIcon(eventPlayer.effectsIds[ZOMBIE_LAST_ICON])
@@ -258,7 +264,7 @@ rule "Respawn bots loop":
 
   if tmp0.isDead() and roundRemainingBots > getNumberOfLivingPlayers(Team.ZOMBIES):
     tmp0.isReady__isBotRespawning = true
-  wait(0.2 if getAverageServerLoad() < 200 else 0.8, Wait.ABORT_WHEN_FALSE)
+  wait(0.4 if getAverageServerLoad() < 200 else 1, Wait.ABORT_WHEN_FALSE)
 
   if ruleCondition:
     loop()
@@ -268,6 +274,7 @@ rule "Respawn bot":
   @Team 2
   @Condition eventPlayer.isDead()
   @Condition eventPlayer.isReady__isBotRespawning
+  @Condition roundRemainingBots > getNumberOfLivingPlayers(Team.ZOMBIES)
   
   GetSpawnPointSub()
   async(RessurectZombieBotSub, AsyncBehavior.NOOP)

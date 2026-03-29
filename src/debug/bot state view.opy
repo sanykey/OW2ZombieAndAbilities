@@ -18,7 +18,7 @@ rule "[debug] init Bot state view mode":
 
   wait(0.1)
   debugSelectedAction = 0
-  debugMaxAction = 9
+  debugMaxAction = 10
 
   if not debugSelectedPlayer:
     debugSelectedPlayer = getPlayersInSlot(0, Team.ZOMBIES)
@@ -45,6 +45,7 @@ rule "[debug] init Bot state view mode":
     {debugSelectedActionText(7)}Kill all bots</fg>
     {debugSelectedActionText(8)}Common bots (replace): {leftArrowForMenuItem(8)} <fg84c951FF>{heroIcon(debugCommonBotsList[debugCommonBotIndex])}</fg> {rightArrowForMenuItem(8)}</fg>
     {debugSelectedActionText(9)}Random heroes</fg>
+    {debugSelectedActionText(10)}Disable bot moverment:</fg> <fg84c951FF>{debugDisableBotMoverment}</fg>
     --------------------
     Total Time Elapsed: <fg84c951FF>{getTotalTimeElapsed()}</fg>
     health: <fg84c951FF>{debugSelectedPlayer.getHealth()}</fg>
@@ -216,6 +217,8 @@ rule "[debug] Activate selected action for Common mode":
     eventPlayer.list0 = getPlayers(Team.ZOMBIES)
     for I in range(len(eventPlayer.list0) - 1):
       eventPlayer.list0[I].startForcingHero(random.choice(getAllHeroes()))
+  elif debugSelectedAction == 10: # Disable bot moverment
+    debugDisableBotMoverment = not debugDisableBotMoverment
 
 rule "[debug] effect for debugZombieBotsSpawnPoint":
   @Condition debugZombieBotsSpawnPoint

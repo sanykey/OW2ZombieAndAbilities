@@ -31,7 +31,9 @@ rule "[debug] init Common debug mode":
     {debugSelectedActionText(12)}Inspector: <fg84c951FF>{enabledInspector}</fg></fg>
     {debugSelectedActionText(13)}Ressurect all</fg>
     ----------
-    Entities: {getNumberOfEntityIds()}, Texts: {getNumberOfTextIds()}
+    Entities: {getNumberOfEntityIds()}
+    Texts: {getNumberOfTextIds()}
+    Failed Respawn Points: {debugFailedRespawnPoints}
     <fg94a0a544>Open/Close: [INTERACT] + [ABILITY_1] + [ABILITY_2]
     Navigate: [INTERACT] + [↑/↓/←/→]
     Change x10/x100: [←/→] + [Crouch/Space]

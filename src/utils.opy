@@ -1,7 +1,23 @@
 #!mainFile "main.opy"
 
+macro Player.activateBot(self):
+  #!optimizeForSize
+  self.startForcingThrottle(1, 1, 0, 1, 0, 1)
+  self.startFacing(directionTowards(self.getEyePosition(), self.botTarget.getEyePosition()), BOT_FACING_SPEED, Relativity.TO_WORLD, FacingReeval.DIRECTION_AND_TURN_RATE)
+
+macro Player.deactivateBot(self):
+  self.stopForcingThrottle()
+  self.stopFacing()
+
+def ActivateBotMovementSub():
+  eventPlayer.activateBot()
+
+def DeactivateBotMovementSub():
+  eventPlayer.deactivateBot()
+
 def UpdateCombatantsSub():
   @Name "Sub: Update combatants"
+  tmp0 = combatants
   combatants = [player for player in getPlayers(Team.1) if player.isAlive() and player.hasSpawned() and not player.isInSecretShop]
 
 # from [attach p2p.opy]
@@ -26,6 +42,8 @@ def DetachP2PSub():
 macro Player.resetBotStuckTimes(self):
   self.money__botStuckTimes = false
   self.botWantsWallPhasePoints = false
+  self.borFarDistancePoints = false
+  self.botWallPhase = false
 
 def ResetBotStuckTimesSub():
   @Name "ResetBotStuckTimesSub"

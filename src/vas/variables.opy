@@ -7,7 +7,7 @@ enum Team:
   PLAYERS = Team.1
 	ZOMBIES = Team.2
 
-#!define MODE_VERSION "v0.10.2 beta (03.01.2026)"
+#!define MODE_VERSION "v0.11.0 beta (29.03.2026)"
 
 # [shop]:
 #!define UPGRADE_PRICE 2500
@@ -38,6 +38,7 @@ enum Team:
 #!define ZOMBIE_MAX_SPEED_PCT 100
 #!define BOT_MAX_INACTIVITY_DURATION 60
 #!define LAST_CC_ATTACK_DURATION 5
+#!define BOT_FACING_SPEED 150
 
 # [Bot fake death]
 #!define BOT_FAKE_DIE_HP_THRESHOLD 10
@@ -88,11 +89,6 @@ globalvar roundNumber = 0
 globalvar roundMaxBots
 # Buy hero
 globalvar heroesShopData = [] # [hero, buy_place_vector, price, buy_text_vector]
-#!define BUY_HERO_OFFSET_A 0
-#!define BUY_HERO_OFFSET_B VL_BUY_HERO_SPOTS_A_LEN
-#!define BUY_HERO_OFFSET_E BUY_HERO_OFFSET_B + VL_BUY_HERO_SPOTS_B_LEN
-#!define BUY_HERO_OFFSET_I BUY_HERO_OFFSET_E + VL_BUY_HERO_SPOTS_E_LEN
-#!define BUY_HERO_OFFSET_H BUY_HERO_OFFSET_I + VL_BUY_HERO_SPOTS_I_LEN
 
 # [sectet shop]:
 globalvar shopEffects = []
@@ -142,10 +138,10 @@ globalvar wSettingsMaxZombieBots
 globalvar debugVectsArr
 globalvar debugCurrentVectNum
 globalvar debugCurrentVectEffectArr
-
-# debug
+globalvar debugFailedRespawnPoints
 globalvar debugMenuIsOpened
 globalvar debugZombieBotsSpawnPoint
+globalvar debugDisableBotMoverment
 
 ##################################################
 ############## Player variables: #################
@@ -157,6 +153,7 @@ playervar botMeleeAttackTargets
 playervar botWallPhase
 playervar botWantsWallPhasePoints
 playervar botTarget
+playervar borFarDistancePoints
 playervar zomAIstep
 globalvar botWidowmakerAvaliableSpawnSpots
 playervar botTargetLastPosition

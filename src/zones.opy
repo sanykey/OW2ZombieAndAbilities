@@ -18,6 +18,12 @@ globalvar isZoneActiveG
 #!define ZONE_H_SIZE 50
 #!define ZONE_I_SIZE 27
 
+#!define BUY_HERO_OFFSET_A 0
+#!define BUY_HERO_OFFSET_B VL_BUY_HERO_SPOTS_A_LEN
+#!define BUY_HERO_OFFSET_E BUY_HERO_OFFSET_B + VL_BUY_HERO_SPOTS_B_LEN
+#!define BUY_HERO_OFFSET_I BUY_HERO_OFFSET_E + VL_BUY_HERO_SPOTS_E_LEN
+#!define BUY_HERO_OFFSET_H BUY_HERO_OFFSET_I + VL_BUY_HERO_SPOTS_I_LEN
+
 rule "Init buyHeroUpgradesData":
   buyHeroUpgradesData = [
     [f"HP (+{HEALTH_UPGRADE_AMOUNT}%): ${UPGRADE_PRICE}", Color.LIME_GREEN, vectList[VL_BUY_HP]],
