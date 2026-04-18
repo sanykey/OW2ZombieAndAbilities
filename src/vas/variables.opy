@@ -128,6 +128,12 @@ globalvar tmp3
 globalvar list
 globalvar playerTmp
 
+## common subroutine params/result vars
+globalvar param1
+globalvar param2
+globalvar param3
+globalvar subroutineResult
+
 globalvar isGameStarted
 globalvar highloadServerPause
 
@@ -147,6 +153,7 @@ globalvar debugFailedRespawnPoints
 globalvar debugMenuIsOpened
 globalvar debugZombieBotsSpawnPoint
 globalvar debugDisableBotMoverment
+
 
 ##################################################
 ############## Player variables: #################
@@ -226,6 +233,8 @@ playervar barrierDamageFrom
 playervar barrierDamageDir
 playervar barrierDamageStack
 playervar isActiveBarrier
+
+
 
 playervar tmp0
 playervar tmp1

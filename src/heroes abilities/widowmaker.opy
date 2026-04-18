@@ -103,119 +103,119 @@ rule "[Widowmaker] init":
   clearHeroInfoSub()
 
 
-rule "[Widowmaker] Deplete hook charge":
-  @Event eachPlayer
-  @Hero widowmaker
-  @Team 1
-  @Condition eventPlayer.isUsingAbility1()
+# rule "[Widowmaker] Deplete hook charge":
+#   @Event eachPlayer
+#   @Hero widowmaker
+#   @Team 1
+#   @Condition eventPlayer.isUsingAbility1()
   
-  waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
-  if not eventPlayer.getAbilityCooldown(Button.ABILITY_1):
-    return
+#   waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
+#   if not eventPlayer.getAbilityCooldown(Button.ABILITY_1):
+#     return
 
-  if eventPlayer.abilState0 > 0:
-    eventPlayer.abilState0 -= 1
-    eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
+#   if eventPlayer.abilState0 > 0:
+#     eventPlayer.abilState0 -= 1
+#     eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
 
 
-rule "[Widowmaker] Recharge hook":
-  @Event eachPlayer
-  @Hero widowmaker
-  @Team 1
-  @Condition eventPlayer.abilState0 < 1
-  @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
+# rule "[Widowmaker] Recharge hook":
+#   @Event eachPlayer
+#   @Hero widowmaker
+#   @Team 1
+#   @Condition eventPlayer.abilState0 < 1
+#   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
   
-  wait(0.4, Wait.ABORT_WHEN_FALSE)
+#   wait(0.4, Wait.ABORT_WHEN_FALSE)
 
-  eventPlayer.abilityCD = 12
-  waitUntil(not eventPlayer.abilityCD, 12)
+#   eventPlayer.abilityCD = 12
+#   waitUntil(not eventPlayer.abilityCD, 12)
 
-  eventPlayer.abilState0 += 1
-  if ruleCondition:
-    loop()
-  wait(0.25)
-  if ruleCondition:
-    loop()
+#   eventPlayer.abilState0 += 1
+#   if ruleCondition:
+#     loop()
+#   wait(0.25)
+#   if ruleCondition:
+#     loop()
 
-# Falling stars: 
-rule "[Widowmaker] Falling stars":
-  @Event eachPlayer
-  @Hero widowmaker
-  @Team 1
-  @Condition eventPlayer.isUsingAbility1()
-  @Condition eventPlayer.getSpeed() >= 20
+# # Falling stars: 
+# rule "[Widowmaker] Falling stars":
+#   @Event eachPlayer
+#   @Hero widowmaker
+#   @Team 1
+#   @Condition eventPlayer.isUsingAbility1()
+#   @Condition eventPlayer.getSpeed() >= 20
   
-  while eventPlayer.isUsingAbility1():
-    createProjectile(
-      Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE,
-      eventPlayer,
-      null,
-      Vector.UP,
-      Relativity.TO_WORLD,
-      ModifyHealth.DAMAGE,
-      Team.ZOMBIES,
-      30,
-      1,
-      4,
-      DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION,
-      DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND,
-      0,
-      10,
-      3,
-      0,
-      0,
-      35
-    )
-    wait(0.15)
-  for eventPlayer.abilTemp1 in range(4):
-    wait(0.05)
-    createProjectile(
-      Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE,
-      eventPlayer,
-      null,
-      Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.abilTemp1 * 90, 0)),
-      Relativity.TO_WORLD,
-      ModifyHealth.DAMAGE,
-      Team.ZOMBIES,
-      30,
-      1,
-      3,
-      DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND,
-      0,
-      8,
-      3,
-      0,
-      0,
-      45
-    )
+#   while eventPlayer.isUsingAbility1():
+#     createProjectile(
+#       Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE,
+#       eventPlayer,
+#       null,
+#       Vector.UP,
+#       Relativity.TO_WORLD,
+#       ModifyHealth.DAMAGE,
+#       Team.ZOMBIES,
+#       30,
+#       1,
+#       4,
+#       DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION,
+#       DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND,
+#       0,
+#       10,
+#       3,
+#       0,
+#       0,
+#       35
+#     )
+#     wait(0.15)
+#   for eventPlayer.abilTemp1 in range(4):
+#     wait(0.05)
+#     createProjectile(
+#       Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE,
+#       eventPlayer,
+#       null,
+#       Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.abilTemp1 * 90, 0)),
+#       Relativity.TO_WORLD,
+#       ModifyHealth.DAMAGE,
+#       Team.ZOMBIES,
+#       30,
+#       1,
+#       3,
+#       DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION, DynamicEffect.WIDOWMAKER_VENOM_MINE_EXPLOSION_SOUND,
+#       0,
+#       8,
+#       3,
+#       0,
+#       0,
+#       45
+#     )
 
-rule "[Widowmaker] When grappling hook ends, latch onto any nearby wall":
-  @Event eachPlayer
-  @Hero widowmaker
-  @Team 1
-  @Condition eventPlayer.isUsingAbility1() == true
+# rule "[Widowmaker] When grappling hook ends, latch onto any nearby wall":
+#   @Event eachPlayer
+#   @Hero widowmaker
+#   @Team 1
+#   @Condition eventPlayer.isUsingAbility1() == true
   
-  waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
-  if not eventPlayer.isHoldingButton(Button.CROUCH):
-    return
-  if eventPlayer.getAltitude() < 1:
-    return
+#   waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
+#   if not eventPlayer.isHoldingButton(Button.CROUCH):
+#     return
+#   if eventPlayer.getAltitude() < 1:
+#     return
 
-  eventPlayer.abilState1 = true
-  eventPlayer.applyImpulse(eventPlayer.getVelocity(), -0.01, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  eventPlayer.setGravity(0)
-  eventPlayer.startForcingThrottle(0, 0, 0, 0, 0, 0)
+#   eventPlayer.abilState1 = true
+#   eventPlayer.applyImpulse(eventPlayer.getVelocity(), -0.01, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+#   eventPlayer.setGravity(0)
+#   eventPlayer.startForcingThrottle(0, 0, 0, 0, 0, 0)
 
-  waitUntil( # todo: hasBadStatus?
-    eventPlayer.isHoldingButton(Button.JUMP) or true in [
-      eventPlayer.hasStatus(Status.HACKED),
-      eventPlayer.isCrowdControlled()
-    ],
-    10
-  )
-  eventPlayer.setGravity(100)
-  eventPlayer.stopForcingThrottle()
-  eventPlayer.abilState1 = false
+#   waitUntil( # todo: hasBadStatus?
+#     eventPlayer.isHoldingButton(Button.JUMP) or true in [
+#       eventPlayer.hasStatus(Status.HACKED),
+#       eventPlayer.isCrowdControlled()
+#     ],
+#     10
+#   )
+#   eventPlayer.setGravity(100)
+#   eventPlayer.stopForcingThrottle()
+#   eventPlayer.abilState1 = false
 
   # todo: remove or replace:
   # playEffect(eventPlayer, DynamicEffect.DOOMFIST_RISING_UPPERCUT_IMPACT_SOUND, Color.WHITE, eventPlayer.getPosition(), 75)
@@ -289,7 +289,7 @@ rule "[Widowmaker] damage through walls":
         ZOMBIE_HEAD_HITBOX_RADIUS
       )
 
-      if eventPlayer.rayIntersectsSphere[RESULT]:
+      if subroutineResult:
         damage(
           eventPlayer.list0[eventPlayer.tmp1],
           eventPlayer,
@@ -307,7 +307,7 @@ rule "[Widowmaker] damage through walls":
           ZOMBIE_BODY_HITBOX_RADIUS
         )
 
-        if eventPlayer.rayIntersectsSphere[RESULT]:
+        if subroutineResult:
           damage(
             eventPlayer.list0[eventPlayer.tmp1],
             eventPlayer,
@@ -323,7 +323,7 @@ rule "[Widowmaker] damage through walls":
       getAllPlayers(),
       Beam.BAD,
       eventPlayer.getEyePosition() + vect(0, -0.45, 0),
-      eventPlayer.rayIntersectsSphere[RESULT],
+      subroutineResult,
       Color.VIOLET,
       EffectReeval.COLOR
     )
@@ -332,18 +332,18 @@ rule "[Widowmaker] damage through walls":
     destroyEffect(eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_BEAM])
   
 
-rule "[Widowmaker] Felt More Alive":
-  @Event eachPlayer
-  @Hero widowmaker
-  @Team 1
-  @Condition eventPlayer.isFiringSecondaryFire() == true
-  @Condition eventPlayer.isInAir() == true
-  @Condition eventPlayer.abilState1 == false
+# rule "[Widowmaker] Felt More Alive":
+#   @Event eachPlayer
+#   @Hero widowmaker
+#   @Team 1
+#   @Condition eventPlayer.isFiringSecondaryFire() == true
+#   @Condition eventPlayer.isInAir() == true
+#   @Condition eventPlayer.abilState1 == false
   
-  wait(0.333, Wait.ABORT_WHEN_FALSE)
-  eventPlayer.setGravity(30)
-  waitUntil(not eventPlayer.isFiringSecondaryFire() or not eventPlayer.isInAir(), INFINITY)
-  eventPlayer.setGravity(100)
+#   wait(0.333, Wait.ABORT_WHEN_FALSE)
+#   eventPlayer.setGravity(30)
+#   waitUntil(not eventPlayer.isFiringSecondaryFire() or not eventPlayer.isInAir(), INFINITY)
+#   eventPlayer.setGravity(100)
 
 rule "[Widowmaker] Wallhack shot charge":
   @Event eachPlayer
