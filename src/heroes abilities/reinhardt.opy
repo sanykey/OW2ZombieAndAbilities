@@ -26,7 +26,7 @@ rule "[Reinhardt] init":
   ", 3)
 
   waitUntil(eventPlayer.getHero() != Hero.REINHARDT, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 # abilPos0   - Epicenter center position

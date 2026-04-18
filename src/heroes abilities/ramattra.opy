@@ -30,7 +30,7 @@ rule "[Ramattra] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.RAMATTRA, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 rule "[Ramattra] Barrier up":

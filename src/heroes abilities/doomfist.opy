@@ -23,7 +23,7 @@ rule "[Doomfist] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.DOOMFIST, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 rule "[Doomfist] Uppercut":
   @Event eachPlayer

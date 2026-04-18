@@ -111,7 +111,7 @@ rule "[Cassydy] Init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.CASSIDY, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
   destroyHudText(eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_HUD])
   for eventPlayer.I in range(9):
     destroyEffect(eventPlayer.heroEffectsIds[eventPlayer.I])

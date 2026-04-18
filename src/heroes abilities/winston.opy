@@ -19,7 +19,7 @@ rule "[Winston] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.WINSTON, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
   
 
 #!define WIN_INNER_CHECK_RADIUS 4.9

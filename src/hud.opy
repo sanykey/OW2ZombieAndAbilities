@@ -22,8 +22,7 @@ macro setHeroInfoText1(text, vert = 3.5, horFix = 9):
   eventPlayer.heroInfoHorFix1 = horFix
   eventPlayer.heroInfoText1 = text
 
-# todo: rename -> ClearHeroInfoSub
-def clearHeroInfo():
+def clearHeroInfoSub():
   @Name "Subroutine: Clear hero info"
   eventPlayer.heroInfoText0 = null
   eventPlayer.heroInfoText1 = null
@@ -142,7 +141,7 @@ rule "Create players effects":
 
   setObjectiveDescription(eventPlayer, "Round: {}".format(roundNumber), HudReeval.SORT_ORDER_AND_STRING)
 
-  clearHeroInfo()
+  clearHeroInfoSub()
 
   # Players list, upgrades and money
   hudText(

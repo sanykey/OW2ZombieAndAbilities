@@ -58,7 +58,7 @@ rule "[Ana] init":
   # eventPlayer.heroEffectsIds[false] = getLastCreatedText()
 
   waitUntil(eventPlayer.getHero() != Hero.ANA, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
   destroyHudText(eventPlayer.heroEffectsIds[false])
 
 rule "[Ana] Sleep effect":

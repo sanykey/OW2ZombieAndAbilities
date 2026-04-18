@@ -25,7 +25,7 @@ rule "[Mauga] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.MAUGA, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 rule "[Mauga] Create barrier (ultimate)":

@@ -15,7 +15,7 @@ rule "[Vendetta] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.VENDETTA, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 rule "[Vendetta] Swirlwind without dash [Ability_1] + [Crouch]":

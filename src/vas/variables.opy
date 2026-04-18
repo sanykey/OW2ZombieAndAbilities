@@ -119,11 +119,14 @@ globalvar isBotsDisabled
 globalvar lockedAreaEffectsArr
 
 globalvar teamScore
+
+# temp vars
 globalvar tmp0
 globalvar tmp1
 globalvar tmp2
 globalvar tmp3
 globalvar list
+globalvar playerTmp
 
 globalvar isGameStarted
 globalvar highloadServerPause

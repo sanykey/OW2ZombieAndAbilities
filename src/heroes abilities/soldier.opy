@@ -17,7 +17,7 @@ rule "[Soldier] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SOLDIER, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 rule "[Soldier] Helix rockets with ultimate":
   @Event eachPlayer

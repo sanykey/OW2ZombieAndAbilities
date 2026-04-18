@@ -26,7 +26,7 @@ rule "[Symmetra] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SYMMETRA, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 # variables:

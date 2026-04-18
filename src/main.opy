@@ -63,7 +63,7 @@
 #!include "heroes abilities/orisa.opy"
 #!include "heroes abilities/symmetra.opy"
 #!include "heroes abilities/vendetta.opy"
-##!include "heroes abilities/widowmaker.opy"
+#!include "heroes abilities/widowmaker.opy"
 #!include "heroes abilities/winston.opy"
 #!include "heroes abilities/wuyang.opy"
 #*/

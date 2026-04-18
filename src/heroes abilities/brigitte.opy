@@ -56,7 +56,7 @@ rule "[Brigitte] init":
 
   waitUntil(eventPlayer.getHero() != Hero.BRIGITTE, INFINITY)
 
-  clearHeroInfo()
+  clearHeroInfoSub()
   destroyHudText(eventPlayer.heroEffectsIds[BRI_I.WHIP_SHOT_CHARGES_HUD])
 
 rule "[Brigitte] Whip shot charge":

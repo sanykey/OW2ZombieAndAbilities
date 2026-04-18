@@ -172,6 +172,8 @@ rule "[debug] add Ballistics debug mode":
   debugProjectile[DePE.MAX_TIME] = 10
   debugProjectile[DePE.LANDING_POSITION] = vect(0, 0, 0)
   debugProjectile[DePE.LAST_HIT_POSITION] = vect(0, 0, 0)
+
+  # table with known presets https://docs.google.com/spreadsheets/d/1dSwYRCoLo5utIMTa139u4AtAzrHwE9_bctpm3t3b-yc/edit?gid=0#gid=0
   debugBallisticsPresets = [
     [Hero.JUNKRAT, DePrT.ABILITY_1, 25, 20.3, 0.09, 0],
     [Hero.JUNKRAT, DePrT.PRIMARY_FIRE, 25, 12.327, 0.074, 0],
@@ -182,6 +184,7 @@ rule "[debug] add Ballistics debug mode":
     [Hero.JUNKER_QUEEN, DePrT.SECONDARY_FIRE, 35, 8.5, 0.02, 0],
     [Hero.BASTION, DePrT.SECONDARY_FIRE, 40, 9.75, 0, 0],
     [Hero.ORISA, DePrT.SECONDARY_FIRE, 70, 7.5, 0, 0.3],
+    [Hero.ORISA, DePrT.ABILITY_2, 25, 9.84, 0, 0.128, "Barrier perk"], # barrier perk
     [Hero.CASSIDY, DePrT.ABILITY_2, 25, 12, 0.025, 0],
     [Hero.SIGMA, DePrT.ABILITY_2, 37.4, 18.45, 0.1, 0.656],
     [Hero.RAMATTRA, DePrT.ABILITY_2, 30, 9.75, 0, 0],

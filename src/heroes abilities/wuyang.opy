@@ -15,7 +15,7 @@ rule "[Wuyang] init":
   )
 
   waitUntil(not ruleCondition, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 rule "[Wuyang] Double jump":
   @Event eachPlayer

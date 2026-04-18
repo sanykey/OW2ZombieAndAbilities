@@ -45,7 +45,7 @@ rule "[DVA] Init":
 
   waitUntil(eventPlayer.getHero() != Hero.DVA, INFINITY)
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  clearHeroInfo()
+  clearHeroInfoSub()
   destroyHudText(eventPlayer.heroEffectsIds[DVA_I.SLIDE_HUD])
   if not eventPlayer.isDvaUltBought:
     eventPlayer.setUltEnabled(true)

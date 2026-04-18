@@ -100,7 +100,7 @@ rule "[Widowmaker] init":
   destroyHudText(eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_CHARGE_HUD])
   destroyInWorldText(eventPlayer.heroEffectsIds[WID_I.WALLHACK_SHOT_HIT_HUD])
 
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 rule "[Widowmaker] Deplete hook charge":

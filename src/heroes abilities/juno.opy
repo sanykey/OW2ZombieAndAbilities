@@ -114,7 +114,7 @@ rule "[Juno] init":
 
 
   waitUntil(eventPlayer.getHero() != Hero.JUNO, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
   destroyHudText(eventPlayer.heroEffectsIds[JUN_I.RIFT_HUD])
   destroyEffect(eventPlayer.heroEffectsIds[JUN_I.RIFT0_EFFECT0])

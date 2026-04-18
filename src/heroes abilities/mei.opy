@@ -17,7 +17,7 @@ rule "[Mei] init":
   )
   
   waitUntil(eventPlayer.getHero() != Hero.MEI, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 rule "[Mei] Freeze nearby opponents after Cryo-freeze":
   @Event eachPlayer

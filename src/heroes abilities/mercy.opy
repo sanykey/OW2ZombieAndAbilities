@@ -21,7 +21,7 @@
 #   )
   
 #   waitUntil(eventPlayer.getHero() != Hero.MERCY, INFINITY)
-#   clearHeroInfo()
+#   clearHeroInfoSub()
 
 
 rule "[Mercy] Immune during revive":

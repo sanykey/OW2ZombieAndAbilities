@@ -17,7 +17,7 @@ rule "[Kiriko] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.KIRIKO, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 rule "[Kiriko] Teleport":

@@ -20,7 +20,7 @@ rule "[Sombra] Init":
   "
 
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 rule "[Sombra] Invisible detect":

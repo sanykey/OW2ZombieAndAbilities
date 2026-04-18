@@ -21,7 +21,7 @@ rule "[Sigma] init":
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SIGMA, INFINITY)
-  clearHeroInfo()
+  clearHeroInfoSub()
 
 
 rule "[Sigma] start barrier":
