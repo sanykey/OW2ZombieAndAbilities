@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 globalvar botWidowmakerSpawnCD
 #!define ZOM_WINDOW_RESPAWN_CD 40

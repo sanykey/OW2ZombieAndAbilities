@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 #!define ZOM_ROADHOG_SCALING_SIZE 0.7
 

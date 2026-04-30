@@ -214,9 +214,9 @@ rule "[debug] Activate selected action for Common mode":
     commonZombieHero = debugCommonBotsList[debugCommonBotIndex]
 
   elif debugSelectedAction == 9: # Random heroes
-    eventPlayer.list0 = getPlayers(Team.ZOMBIES)
-    for I in range(len(eventPlayer.list0) - 1):
-      eventPlayer.list0[I].startForcingHero(random.choice(getAllHeroes()))
+    list0 = getPlayers(Team.ZOMBIES)
+    for I in range(len(list0) - 1):
+      list0[I].startForcingHero(random.choice(getAllHeroes()))
   elif debugSelectedAction == 10: # Disable bot moverment
     debugDisableBotMoverment = not debugDisableBotMoverment
 

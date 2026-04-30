@@ -1,5 +1,16 @@
 #!mainFile "main.opy"
 
+def FailedBarrierDeploySub():
+  @Name "Subroutine: FailedBarrierDeploy"
+  smallMessage(eventPlayer, "Barrier deploy failed! Try again")
+  ClearBarrierStateSub()
+
+macro Player.damageBarrier(self, damage):
+  self.barrierDamageStack = damage * TORBJORN_HAMMER_BASE_DMG * (zomDamagePct / 100)
+
+macro Player.damageFromBarrier(self, targetPlayers):
+  damage(targetPlayers, self, 0.1)
+
 rule "[Ramattra][Reinhardt][Sigma][Winston] Damage barrier":
   @Event eachPlayer
   @Team 1
@@ -9,8 +20,8 @@ rule "[Ramattra][Reinhardt][Sigma][Winston] Damage barrier":
     createProjectile(
       Projectile.ORISA_FUSION_DRIVER, # proj type
       null, # owner
-      eventPlayer.barrierDamageFrom, # start position
-      eventPlayer.barrierDamageDir , # direction
+      eventPlayer.barrierCheckVectA, # start position
+      normalize(eventPlayer.barrierCheckVectB - eventPlayer.barrierCheckVectA), # direction
       Relativity.TO_WORLD, # position relative to
       ModifyHealth.DAMAGE, # damage or heal
       Team.ALL, # affectedTeam
@@ -38,9 +49,7 @@ rule "[Reinhardt] [Brigitte] Сheck if the barrier is on":
 
   eventPlayer.isActiveBarrier = true
   waitUntil(not eventPlayer.isFiringSecondaryFire(), INFINITY)
-  eventPlayer.isActiveBarrier = false
-  eventPlayer.barrierDamageStack = false
-
+  ClearBarrierStateSub()
 
 #!define REI_BARRIER_PUSH_ENENT_WAIT 0.1
 rule "[Reinhardt] [Brigitte] Barrier push enemies":
@@ -49,7 +58,7 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
   @Condition eventPlayer.getHero() == Hero.REINHARDT or eventPlayer.getHero() == Hero.BRIGITTE
   @Condition eventPlayer.isFiringSecondaryFire()
 
-  eventPlayer.list0 = (
+  list0 = (
     [player for player in getRealPlayersInRadius(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * -1, 6, Team.ZOMBIES) if (
       distance(player, eventPlayer.getPosition() + eventPlayer.getFacingDirection()) < 2 or 
       (
@@ -59,26 +68,13 @@ rule "[Reinhardt] [Brigitte] Barrier push enemies":
     )]
   )
 
-  eventPlayer.list0.pushInFacingDirectionAndUp(eventPlayer, 6)
+  list0.pushInFacingDirectionAndUp(eventPlayer, 6)
+  list0.setCrowdControlAttack(eventPlayer)
+  eventPlayer.damageFromBarrier(list0) # Deal a small amount of damage to earn assist money while holding a shield
+  eventPlayer.damageBarrier((3 if eventPlayer.getHero() == Hero.BRIGITTE else 3.65) * REI_BARRIER_PUSH_ENENT_WAIT * len(list0))
 
-  # eventPlayer.list0.applyImpulse(
-  #   normalize(eventPlayer.getFacingDirection() + barrierPushVectUpFix),
-  #   6,
-  #   Relativity.TO_WORLD
-  # )
-
-  damage(eventPlayer.list0, eventPlayer, 0.1) # Deal a small amount of damage to earn assist money while holding a shield
-  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-
-  eventPlayer.barrierDamageStack += (
-    len(eventPlayer.list0) *
-    (TORBJORN_HAMMER_BASE_DMG * REI_BARRIER_PUSH_ENENT_WAIT) *
-    (3 if eventPlayer.getHero() == Hero.BRIGITTE else 3.65) *
-    (zomDamagePct / 100)
-  )
-
-  eventPlayer.barrierDamageFrom = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
-  eventPlayer.barrierDamageDir = normalize(eventPlayer.getEyePosition() - eventPlayer.barrierDamageFrom)
+  eventPlayer.barrierCheckVectA = eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2
+  eventPlayer.barrierCheckVectB = eventPlayer.getEyePosition()
 
   wait(REI_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:

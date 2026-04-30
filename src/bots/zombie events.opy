@@ -1,4 +1,6 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
+
 globalvar commonZombieHero = Hero.TORBJORN
 globalvar commonBotsHeroes = [Hero.TORBJORN, Hero.JUNKRAT, Hero.SYMMETRA]
 
@@ -76,8 +78,8 @@ rule "[ZombieTeam] special waves":
   if roundMaxBotsSlots > wSettingsMaxZombieBots:
     roundMaxBotsSlots = wSettingsMaxZombieBots
 
-  list = [player for player in getPlayers(Team.ZOMBIES) if (player.getCurrentHero() in commonBotsHeroes or player.zomForceHeroOnRespawn in commonBotsHeroes)]
-  list.zomForceHeroOnRespawn = commonZombieHero
+  list0 = [player for player in getPlayers(Team.ZOMBIES) if (player.getCurrentHero() in commonBotsHeroes or player.zomForceHeroOnRespawn in commonBotsHeroes)]
+  list0.zomForceHeroOnRespawn = commonZombieHero
 
 rule "[ZombieTeam SYMMETRA] throw turrents":
   @Condition commonZombieHero == Hero.SYMMETRA

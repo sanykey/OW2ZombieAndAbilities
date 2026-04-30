@@ -1,7 +1,14 @@
 #!mainFile "main.opy"
+#!optimizeForSize
+
+def ClearBarrierStateSub():
+  @Name "Subroutine: ClearBarrierStateSub"
+  eventPlayer.isActiveBarrier = false
+  eventPlayer.barrierDamageStack = null
+  eventPlayer.barrierCheckVectA = null
+  eventPlayer.barrierCheckVectB = null
 
 macro Player.activateBot(self):
-  #!optimizeForSize
   self.startForcingThrottle(1, 1, 0, 1, 0, 1)
   self.startFacing(directionTowards(self.getEyePosition(), self.botTarget.getEyePosition()), BOT_FACING_SPEED, Relativity.TO_WORLD, FacingReeval.DIRECTION_AND_TURN_RATE)
 
@@ -24,20 +31,20 @@ def UpdateCombatantsSub():
 def DetachP2PSub():
   @Name "Sub: [Ana][Orisa][attach p2p] Detach P2P"
   if eventPlayer.attach2p[Attach2P.CHILD]:
-    eventPlayer.tmp0 = eventPlayer.attach2p[Attach2P.CHILD]
-    eventPlayer.tmp1 = eventPlayer
+    tmp0 = eventPlayer.attach2p[Attach2P.CHILD]
+    tmp1 = eventPlayer
   else:
-    eventPlayer.tmp0 = eventPlayer
-    eventPlayer.tmp1 = eventPlayer.attach2p[Attach2P.PARENT]
+    tmp0 = eventPlayer
+    tmp1 = eventPlayer.attach2p[Attach2P.PARENT]
 
   # clear child
-  eventPlayer.tmp0.detach()
-  eventPlayer.tmp0.clearStatusEffect(Status.INVINCIBLE)
-  smallMessage(eventPlayer.tmp0, "You have detached")
-  eventPlayer.tmp0.attach2p = []
+  tmp0.detach()
+  tmp0.clearStatusEffect(Status.INVINCIBLE)
+  smallMessage(tmp0, "You have detached")
+  tmp0.attach2p = []
 
   # clear parent
-  eventPlayer.tmp1.attach2p[Attach2P.CHILD] = null
+  tmp1.attach2p[Attach2P.CHILD] = null
 
 macro Player.resetBotStuckTimes(self):
   self.money__botStuckTimes = false

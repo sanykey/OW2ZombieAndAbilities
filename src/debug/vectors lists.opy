@@ -141,11 +141,11 @@ def DebugRefreshMainVectTextSub():
   if not debugShowVectors:
     return
 
-  eventPlayer.tmp0 = debugVectorsIndex - debugVectorsLists[debugVectorsListIndex][true]
-  if eventPlayer.tmp0 < 0 or eventPlayer.tmp0 >= len(debugVectorsListsEffects):
+  tmp0 = debugVectorsIndex - debugVectorsLists[debugVectorsListIndex][true]
+  if tmp0 < 0 or tmp0 >= len(debugVectorsListsEffects):
     return
 
-  destroyInWorldText(debugVectorsListsEffects[eventPlayer.tmp0])
+  destroyInWorldText(debugVectorsListsEffects[tmp0])
   createInWorldText(
     localPlayerVisibilityForDevelopers(),
     "{}".format(debugVectorsIndex),
@@ -155,7 +155,7 @@ def DebugRefreshMainVectTextSub():
     WorldTextReeval.VISIBILITY_AND_COLOR,
     Color.ORANGE if debugVectorsIndex == evalOnce(debugVectorsIndex) else Color.WHITE
   )
-  debugVectorsListsEffects[eventPlayer.tmp0] = getLastCreatedText()
+  debugVectorsListsEffects[tmp0] = getLastCreatedText()
 
 def DebugRefreshCustomVectTextSub():
   @Name "SUB: [debug] Refresh selected custom vector text"
@@ -228,10 +228,10 @@ rule "[debug] Activate selected action for VectorsLists mode":
     if not len(debugCustomVectors):
       logToInspector("custom vectors list is empty")
     else:
-      eventPlayer.tmp0 = ""
+      tmp0 = ""
       for I in range(0, len(debugCustomVectors)):
-        eventPlayer.tmp0 = f"{eventPlayer.tmp0}- {debugCustomVectors[I]}\n"
-      logToInspector(eventPlayer.tmp0)
+        tmp0 = f"{tmp0}- {debugCustomVectors[I]}\n"
+      logToInspector(tmp0)
 
 rule "[debug] (RIGHT) VectorsLists":
   RuleHeaderForDebugMenuInputThrottle(Vector.RIGHT)

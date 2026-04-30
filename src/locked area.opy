@@ -1,13 +1,14 @@
 #!mainFile "main.opy"
+#!optimizeForSize
 
 def randomStatUpgrade():
   @Name "Subroutine: Random stat upgrade"
 
-  eventPlayer.damageBoostPercent += eventPlayer.tmp1
+  eventPlayer.damageBoostPercent += param1
   eventPlayer.setDamageDealt(eventPlayer.damageBoostPercent)
-  eventPlayer.healthBoostPercent += eventPlayer.tmp1
+  eventPlayer.healthBoostPercent += param1
   eventPlayer.setMaxHealth(eventPlayer.healthBoostPercent)
-  smallMessage(eventPlayer, "+{}% damage dealt and hp".format(eventPlayer.tmp1))
+  smallMessage(eventPlayer, "+{}% damage dealt and hp".format(param1))
 
 rule "Create location buy positions":
   # Create buy location positions and effects. lockedAreaEffectsArr [0-7] indexes
@@ -36,7 +37,6 @@ rule "Locked area 0":
   @Condition unlockedLocations == 0
   @Condition matchIsOver == false
   @Condition distance(eventPlayer, vectList[4]) < 10
-
   
   eventPlayer.applyImpulse(directionTowards(vectList[4], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
@@ -95,7 +95,7 @@ rule "Locked area 4":
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Locked area 5":
@@ -108,7 +108,7 @@ rule "Locked area 5":
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Locked area 6":
@@ -122,7 +122,7 @@ rule "Locked area 6":
   eventPlayer.applyImpulse(directionTowards(vectList[9], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Locked area 7":
@@ -136,7 +136,7 @@ rule "Locked area 7":
   eventPlayer.applyImpulse(directionTowards(vectList[11], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Locked area 8":
@@ -150,7 +150,7 @@ rule "Locked area 8":
   eventPlayer.applyImpulse(directionTowards(vectList[12], eventPlayer), 25, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait(0.25)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 rule "Teleport from restricted area 0":
   @Event eachPlayer
@@ -162,7 +162,7 @@ rule "Teleport from restricted area 0":
   eventPlayer.teleport(vectList[31])
   wait(1)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Teleport from restricted area 1":
@@ -175,7 +175,7 @@ rule "Teleport from restricted area 1":
   eventPlayer.teleport(vectList[32])
   wait(1)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Teleport from restricted area 2":
@@ -187,7 +187,7 @@ rule "Teleport from restricted area 2":
   eventPlayer.teleport(vectList[33])
   wait(1)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Teleport from restricted area 3":
@@ -199,7 +199,7 @@ rule "Teleport from restricted area 3":
   eventPlayer.teleport(vectList[34])
   wait(1)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Teleport from restricted area 4":
@@ -211,7 +211,7 @@ rule "Teleport from restricted area 4":
   eventPlayer.teleport(vectList[35])
   wait(1)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Teleport from restricted area 5":
@@ -224,7 +224,7 @@ rule "Teleport from restricted area 5":
   eventPlayer.teleport(vectList[36])
   wait(1)
   if RULE_CONDITION:
-      goto RULE_START
+    goto RULE_START
 
 
 rule "Unlock next location A":
@@ -248,7 +248,7 @@ rule "Unlock next location A":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money__botStuckTimes -= 2500
-  eventPlayer.tmp1 = 5
+  param1 = 5
   randomStatUpgrade()
 
 rule "Unlock next location B":
@@ -272,7 +272,7 @@ rule "Unlock next location B":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money__botStuckTimes -= 5000
-  eventPlayer.tmp1 = 10
+  param1 = 10
   randomStatUpgrade()
 
 
@@ -296,7 +296,7 @@ rule "Unlock next location C":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money__botStuckTimes -= 7500
-  eventPlayer.tmp1 = 15
+  param1 = 15
   randomStatUpgrade()
 
 
@@ -319,7 +319,7 @@ rule "Unlock next location D":
   playEffect(getAllPlayers(), DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 100)
   bigMessage(getAllPlayers(), l"{0} {1} {2}".format(l"Next", l"Location", l"{0}!".format(l"Unlocked")))
   eventPlayer.money__botStuckTimes -= 10000
-  eventPlayer.tmp1 = 20
+  param1 = 20
   randomStatUpgrade()
 
 rule "Clear locked areas data when everything is open":

@@ -1,4 +1,11 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
+
+#!define WIN_INNER_CHECK_RADIUS 4.8
+#!define WIN_OUTER_CHECK_RADIUS 5.2
+#!define WIN_BARRIER_PUSH_ENENT_WAIT 0.1
+
+# globalvar winstonBarrierCheckDirections = [Vector.UP, vect(0, 1, 1), vect(0, 1, -1), vect(1, 1, 0), vect(-1, 1, 0)]
 
 rule "[Winston] init":
   @Event eachPlayer
@@ -6,25 +13,18 @@ rule "[Winston] init":
   @Condition eventPlayer.getHero() == Hero.WINSTON
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.heroInfoVertFix0 = -3
-  eventPlayer.heroInfoText0 = "{} <fga0a9baFF>Winston</fg>:\n
-  {} {}Barrier projector{}:
+
+  setHeroInfoText0(
+    f"{heroIcon(Hero.WINSTON)} <fga0a9baFF>Winston</fg>:\n
+    {abilityIconString(Hero.WINSTON, Button.ABILITY_2)} <fga0a9baFF>Barrier projector</fg>:
       - Pushes out enemies and takes damage on contact.
       - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.
-  ".format(
-    heroIcon(Hero.WINSTON),
-    abilityIconString(Hero.WINSTON, Button.ABILITY_2),
-    "<fga0a9baFF>",
-    "</fg>"
+    ", -3
   )
 
   waitUntil(eventPlayer.getHero() != Hero.WINSTON, INFINITY)
   clearHeroInfoSub()
   
-
-#!define WIN_INNER_CHECK_RADIUS 4.9
-#!define WIN_OUTER_CHECK_RADIUS 5.1
-
 rule "[Winston] Create barrier and save position":
   @Event eachPlayer
   @Team 1
@@ -32,87 +32,86 @@ rule "[Winston] Create barrier and save position":
   @Condition eventPlayer.isUsingAbility2()
   @SuppressWarnings w_chased_var_in_for w_ow2_rule_condition_chase
 
-  eventPlayer.abilTemp1 = false
-  eventPlayer.abilPos0 = eventPlayer.getEyePosition() # current Barrier projectile position
+  # todo: предполагаемый фикс бага:
+  # stopChasingVariable(eventPlayer.heroState2)
+  # stopChasingVariable(eventPlayer.heroState0)
+
+  eventPlayer.heroState2 = null
+  eventPlayer.heroState0 = eventPlayer.getEyePosition() # current Barrier projectile position
 
   # Barrier projectile drop location:
-  eventPlayer.abilPos1 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + Vector.DOWN * 50, null, getAllPlayers(), false).getHitPosition()
+  eventPlayer.heroState1 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + Vector.DOWN * 50, null, getAllPlayers(), false).getHitPosition()
 
-  chaseAtRate(eventPlayer.abilTemp1, 10000, 9.8)
+  # Waiting for the barrier projectile to reach the drop location:
+  chaseAtRate(eventPlayer.heroState2, 10000, 9.8)
   chaseAtRate(
-    eventPlayer.abilPos0,
-    eventPlayer.abilPos1,
-    eventPlayer.abilTemp1
+    eventPlayer.heroState0,
+    eventPlayer.heroState1,
+    eventPlayer.heroState2
   )
-
-  waitUntil(eventPlayer.abilPos0 == eventPlayer.abilPos1, 12)
-  stopChasingVariable(eventPlayer.abilTemp1)
-  stopChasingVariable(eventPlayer.abilPos0)
+  waitUntil(eventPlayer.heroState0 == eventPlayer.heroState1, 12)
+  stopChasingVariable(eventPlayer.heroState2)
+  stopChasingVariable(eventPlayer.heroState0)
   wait(0.1)
 
-  eventPlayer.barrierDamageFrom = null
-  eventPlayer.list0 = [Vector.UP, vect(0, 1, 1), vect(0, 1, -1), vect(1, 1, 0), vect(-1, 1, 0)]
-
-  for eventPlayer.I in range(len(eventPlayer.list0)):
-    eventPlayer.barrierDamageDir = eventPlayer.list0[eventPlayer.I]
-    eventPlayer.abilPos1 = eventPlayer.abilPos0 + eventPlayer.barrierDamageDir * WIN_INNER_CHECK_RADIUS
+  # checking several positions to place vectors for detecting the barrier:
+  # [Vector.UP, vect(0, 1, 1), vect(0, 1, -1), vect(1, 1, 0), vect(-1, 1, 0)]
+  list0 = [Vector.UP, Vector.UP + Vector.FORWARD, Vector.UP + Vector.BACKWARD, Vector.UP + Vector.LEFT, Vector.UP + Vector.RIGHT, Vector.UP + Vector.BACKWARD]
+  for I in range(len(list0)):
+    tmp0 = list0[I]
+    tmp1 = eventPlayer.heroState0 + tmp0 * WIN_INNER_CHECK_RADIUS
+    tmp2 = eventPlayer.heroState0 + tmp0 * WIN_OUTER_CHECK_RADIUS
     if (
       not isInLoS(
-        eventPlayer.abilPos1,
-        eventPlayer.abilPos1 + eventPlayer.barrierDamageDir,
+        tmp1,
+        tmp2,
         BarrierLos.BLOCKED_BY_ALL_BARRIERS
       ) and isInLoS(
-        eventPlayer.abilPos1,
-        eventPlayer.abilPos1 + eventPlayer.barrierDamageDir,
+        tmp1,
+        tmp2,
         BarrierLos.PASS_THROUGH_BARRIERS
       )
     ):
-      eventPlayer.barrierDamageFrom = eventPlayer.abilPos1
+      eventPlayer.barrierCheckVectA = tmp1
+      eventPlayer.barrierCheckVectB = tmp2
       break
 
-  if not eventPlayer.barrierDamageFrom:
-    smallMessage(eventPlayer, "Barrier deploy failed! Try again")
+  if not eventPlayer.barrierCheckVectA:
+    FailedBarrierDeploySub()
     eventPlayer.setAbilityCooldown(Button.ABILITY_2, 0)
+    return
 
   eventPlayer.isActiveBarrier = true
 
   waitUntil(
     isInLoS(
-      eventPlayer.barrierDamageFrom,
-      eventPlayer.barrierDamageFrom + eventPlayer.barrierDamageDir,
+      eventPlayer.barrierCheckVectA,
+      eventPlayer.barrierCheckVectB,
       BarrierLos.BLOCKED_BY_ALL_BARRIERS
     ),
     8
   )
-
-  eventPlayer.isActiveBarrier = false
-  eventPlayer.barrierDamageStack = false
+  ClearBarrierStateSub()
 
 
-#!define WIN_BARRIER_PUSH_ENENT_WAIT 0.1
 rule "[Winston] Barrier push enemies":
   @Event eachPlayer
   @Team 1
   @Hero winston
   @Condition eventPlayer.isActiveBarrier
 
-  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.abilPos0, 6, Team.ZOMBIES)
+  list0 = getRealPlayersInRadius(eventPlayer.heroState0, 6, Team.ZOMBIES)
 
-  for eventPlayer.I in range(len(eventPlayer.list0)):
-    eventPlayer.list0[eventPlayer.I].applyImpulse(
-      horDirectionTowards(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I].getPosition()) + barrierPushVectUpFix,
-      10 if distance(eventPlayer.abilPos0, eventPlayer.list0[eventPlayer.I]) < 5 else 4,
+  for I in range(len(list0)):
+    list0[I].applyImpulse(
+      horDirectionTowards(eventPlayer.heroState0, list0[I].getPosition()) + BarrierPushVectUpFixConst,
+      10 if distance(eventPlayer.heroState0, list0[I]) < 5 else 4,
       Relativity.TO_WORLD
     )
 
-  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-  damage(eventPlayer.list0, eventPlayer, 0.1)
-
-  eventPlayer.barrierDamageStack += (
-    len(eventPlayer.list0) *
-    (TORBJORN_HAMMER_BASE_DMG * WIN_BARRIER_PUSH_ENENT_WAIT * 2.3) * 
-    (zomDamagePct / 100)
-  )
+  list0.setCrowdControlAttack(eventPlayer)
+  eventPlayer.damageFromBarrier(list0)
+  eventPlayer.damageBarrier(2.3 * WIN_BARRIER_PUSH_ENENT_WAIT * len(list0))
 
   wait(WIN_BARRIER_PUSH_ENENT_WAIT)
   if ruleCondition:
@@ -123,14 +122,14 @@ rule "[Winston] Barrier push enemies":
 #   @Team 1
 #   @Hero winston 
 
-#   debug(eventPlayer.barrierDamageFrom)
-#   debug(eventPlayer.barrierDamageDir)
+#   debug(eventPlayer.barrierCheckVectA)
+#   debug(eventPlayer.barrierCheckVectB)
 
 #   createEffect(
 #     hostPlayer,
 #     Effect.SPHERE,
 #     Color.BLUE,
-#     eventPlayer.barrierDamageFrom,
+#     eventPlayer.barrierCheckVectA,
 #     0.05,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )
@@ -139,7 +138,7 @@ rule "[Winston] Barrier push enemies":
 #     hostPlayer,
 #     Effect.SPHERE,
 #     Color.LIGHT_RED,
-#     eventPlayer.barrierDamageFrom + eventPlayer.barrierDamageDir,
+#     eventPlayer.barrierCheckVectB,
 #     0.05,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )
@@ -148,7 +147,7 @@ rule "[Winston] Barrier push enemies":
 #     hostPlayer,
 #     Effect.SPHERE,
 #     Color.GREEN,
-#     eventPlayer.abilPos0,
+#     eventPlayer.heroState0,
 #     0.5,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )

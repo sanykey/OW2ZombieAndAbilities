@@ -4,7 +4,7 @@
 def AttachP2PSub():
   @Name "Sub: [Ana][Orisa][attach p2p] Attach P2P"
   # Ana can attach to any tank. All players except tanks can attach to Orisa
-  eventPlayer.tmp0 = [
+  tmp0 = [
     player for player in combatants.exclude(eventPlayer) if (
       not player.attach2p[Attach2P.IS_ATTACHED]
       and (
@@ -16,12 +16,12 @@ def AttachP2PSub():
     )
   ]
   
-  if not eventPlayer.tmp0:
+  if not tmp0:
     return
 
   #Select parent
   eventPlayer.attach2p[Attach2P.PARENT] = sorted(
-    eventPlayer.tmp0,
+    tmp0,
     lambda i: angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i.getEyePosition()))
   )[0]
 

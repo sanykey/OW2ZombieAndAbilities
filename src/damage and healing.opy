@@ -180,9 +180,9 @@ rule "Player deal damage":
       elif eventAbility == Button.ABILITY_1:
         playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.BLACK, victim, 3)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION, Color.BLACK, victim, 6)
-        eventPlayer.list0 = getPlayersInRadius(victim.getEyePosition(), ANA_AOE_SLEEP_RADIUS, Team.ZOMBIES, LosCheck.SURFACES)
-        eventPlayer.list0.setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
-        eventPlayer.list0.setCrowdControlAttack(attacker, false, ANA_AOE_SLEEP_TIME)
+        list0 = getPlayersInRadius(victim.getEyePosition(), ANA_AOE_SLEEP_RADIUS, Team.ZOMBIES, LosCheck.SURFACES)
+        list0.setStatusEffect(attacker, Status.ASLEEP, ANA_AOE_SLEEP_TIME)
+        list0.setCrowdControlAttack(attacker, false, ANA_AOE_SLEEP_TIME)
       elif eventAbility == Button.ABILITY_2: # slowdown nade
         victim.setSpeedState(ANA_NADE_SLOWDOWN, ANA_NADE_SLOWDOWN_TIME)
       elif eventAbility == Button.MELEE and (not eventPlayer.abilityCD or eventPlayer.abilityCD == ANA_PARALYZING_STRIKE_CD):

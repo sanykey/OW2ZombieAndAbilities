@@ -1,16 +1,11 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 enum WID_I:
   GRAPPLING_HOOK_HUD
   WALLHACK_SHOT_BEAM
   WALLHACK_SHOT_CHARGE_HUD
   WALLHACK_SHOT_HIT_HUD
-
-# eventPlayer.abilState0 - Grappling Hook charges
-# eventPlayer.abilState1 - is hooked to the wall after the grappling hook
-# eventPlayer.abilState2 - Wallhack shot charge
-# eventPlayer.abilState3 - Wallhack shot last headshot time
-# eventPlayer.abilDir0   - Facing direction before shoot
 
 rule "[Widowmaker] init":
   @Event eachPlayer
@@ -20,28 +15,20 @@ rule "[Widowmaker] init":
   wait(1) # waiting for the previous hero to clear hero data
 
   # Hero info:
-  eventPlayer.heroInfoVertFix0 = 3
-  eventPlayer.heroInfoText0 = "{} <fgA686ABFF>Widowmaker</fg>:\n
-  {} <fgA686ABFF>Widow's Kiss</fg>:
-      - Scoped shots reveals enemies ({} seconds).
-      - Fully charged scoped shots pierce through walls and one enemy.
-      - Improved aerial scoping control.\n\n
-  {} <fgA686ABFF>Grappling Hook</fg>:
-      - Gain a second hook charge.
-      - Drop venom grenades while grappling.
-      - Hold the crouch button at the end of a grapple to briefly cling to nearby walls.\n\n
-  {} <fgA686ABFF>Venom Mine</fg>:
-      - Slows and reveals enemies hit for {} seconds.\n\n
-  ".format(
-    heroIcon(Hero.WIDOWMAKER),
-    abilityIconString(Hero.WIDOWMAKER, Button.PRIMARY_FIRE),
-    REVEAL_DURATION,
-    abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1),
-    abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2),
-    REVEAL_DURATION
+  setHeroInfoText0(
+    f"{heroIcon(Hero.WIDOWMAKER)} <fgA686ABFF>Widowmaker</fg>:\n
+    {abilityIconString(Hero.WIDOWMAKER, Button.PRIMARY_FIRE)} <fgA686ABFF>Widow's Kiss</fg>:
+        - Scoped shots reveals enemies ({REVEAL_DURATION} seconds).
+        - Fully charged scoped shots pierce through walls and one enemy.
+        - Improved aerial scoping control.\n\n
+    {abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1)} <fgA686ABFF>Grappling Hook</fg>:
+        - Gain a second hook charge.
+        - Drop venom grenades while grappling.
+        - Hold the crouch button at the end of a grapple to briefly cling to nearby walls.\n\n
+    {abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_2)} <fgA686ABFF>Venom Mine</fg>:
+        - Slows and reveals enemies hit for {REVEAL_DURATION} seconds.\n\n
+    ", 3
   )
-  # {} <fgA686ABFF>Infra sight</fg>:
-  #     - Allows shots to pierce through multiple enemies and walls.
 
   # Grappling Hook charges hud
   hudText(
@@ -52,7 +39,7 @@ rule "[Widowmaker] init":
       abilityIconString(Hero.WIDOWMAKER, Button.ABILITY_1),
       floor(eventPlayer.abilityCD)
     ),
-    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.abilState0]),
+    "{0}{1}".format(ABILITI_TEXT_INTEND, ["□", "<fgFFFFFFFF>■</fg>"][eventPlayer.heroState1]),
     HudPosition.TOP,
     2.5,
     null,
@@ -61,11 +48,11 @@ rule "[Widowmaker] init":
   )
   eventPlayer.heroEffectsIds[WID_I.GRAPPLING_HOOK_HUD] = getLastCreatedText()
 
-  eventPlayer.abilState0 = 1
+  eventPlayer.heroState1 = 1 # Grappling Hook charges
 
   # Wallhack huds
   createInWorldText(
-    eventPlayer if eventPlayer.abilState3 > getTotalTimeElapsed() else null,
+    eventPlayer if eventPlayer.heroState3 > getTotalTimeElapsed() else null,
     "X headshot",
     updateEveryFrame(
       localPlayer.getEyePosition() + (100 * (0 * worldVector(Vector.RIGHT, localPlayer, Transform.ROTATION) + ((-0.1 - 0.2) * (directionFromAngles(horizontalAngleOfDirection(localPlayer.getFacingDirection()), verticalAngleOfDirection(localPlayer.getFacingDirection()) - 190))) + 3 * localPlayer.getFacingDirection()))
@@ -82,9 +69,9 @@ rule "[Widowmaker] init":
     null,
     "{0}{1} Phantom bullet charge: <fg00FF00FF>100%</fg>".format(
       ABILITI_TEXT_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE)
-    ) if eventPlayer.abilState2 == 100 else
+    ) if eventPlayer.heroState2 == 100 else
     "{0}{1} Phantom bullet charge: {2}%".format(
-      ABILITI_CHARGES_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE), floor(eventPlayer.abilState2)
+      ABILITI_CHARGES_INTEND, abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE), floor(eventPlayer.heroState2)
     ),
     null,
     HudPosition.TOP,
@@ -113,8 +100,8 @@ rule "[Widowmaker] init":
 #   if not eventPlayer.getAbilityCooldown(Button.ABILITY_1):
 #     return
 
-#   if eventPlayer.abilState0 > 0:
-#     eventPlayer.abilState0 -= 1
+#   if eventPlayer.heroState1 > 0:
+#     eventPlayer.heroState1 -= 1
 #     eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
 
 
@@ -122,7 +109,7 @@ rule "[Widowmaker] init":
 #   @Event eachPlayer
 #   @Hero widowmaker
 #   @Team 1
-#   @Condition eventPlayer.abilState0 < 1
+#   @Condition eventPlayer.heroState1 < 1
 #   @Condition not eventPlayer.getAbilityCooldown(Button.ABILITY_1)
   
 #   wait(0.4, Wait.ABORT_WHEN_FALSE)
@@ -130,7 +117,7 @@ rule "[Widowmaker] init":
 #   eventPlayer.abilityCD = 12
 #   waitUntil(not eventPlayer.abilityCD, 12)
 
-#   eventPlayer.abilState0 += 1
+#   eventPlayer.heroState1 += 1
 #   if ruleCondition:
 #     loop()
 #   wait(0.25)
@@ -167,13 +154,13 @@ rule "[Widowmaker] init":
 #       35
 #     )
 #     wait(0.15)
-#   for eventPlayer.abilTemp1 in range(4):
+#   for eventPlayer.I0 in range(4):
 #     wait(0.05)
 #     createProjectile(
 #       Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE,
 #       eventPlayer,
 #       null,
-#       Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.abilTemp1 * 90, 0)),
+#       Vector.UP + (directionFromAngles(eventPlayer.getHorizontalFacingAngle() + eventPlayer.I0 * 90, 0)),
 #       Relativity.TO_WORLD,
 #       ModifyHealth.DAMAGE,
 #       Team.ZOMBIES,
@@ -201,7 +188,7 @@ rule "[Widowmaker] init":
 #   if eventPlayer.getAltitude() < 1:
 #     return
 
-#   eventPlayer.abilState1 = true
+#   eventPlayer.abilState1 = true # Is hooked to the wall after the grappling hook
 #   eventPlayer.applyImpulse(eventPlayer.getVelocity(), -0.01, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
 #   eventPlayer.setGravity(0)
 #   eventPlayer.startForcingThrottle(0, 0, 0, 0, 0, 0)
@@ -228,19 +215,21 @@ rule "[Widowmaker] Aiming through walls":
   @Team 1
   @Condition eventPlayer.isFiringSecondaryFire()
   @Condition not eventPlayer.isFiringPrimaryFire()
-  @Condition eventPlayer.abilState2 >= 100
+  @Condition eventPlayer.heroState2 >= 100
   @Condition any([
     player for player in getLivingPlayers(Team.ZOMBIES) if eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
   ])
   
-  eventPlayer.abilDir0 = eventPlayer.getFacingDirection()
-  wait(0.016)
+  # Facing direction before shooting. Saving this variable because aim shifts due to recoil:
+  eventPlayer.heroState0 = eventPlayer.getFacingDirection() 
+
+  wait()
   if (
     not eventPlayer.isFiringSecondaryFire() or
-    eventPlayer.abilState2 < 100 or
+    eventPlayer.heroState2 < 100 or
     not eventPlayer.isInViewAngle(eventPlayer.getRealPlayerClosestToReticle(Team.ZOMBIES), WALLHACK_SHOT_IN_VIEW_ANGLE)
   ):
-    eventPlayer.abilDir0 = false
+    eventPlayer.heroState0 = false
     return
 
   if (eventPlayer.isFiringPrimaryFire()):
@@ -253,72 +242,71 @@ rule "[Widowmaker] damage through walls":
   @Team 1
   @Condition eventPlayer.isFiringSecondaryFire() == true
   @Condition eventPlayer.isFiringPrimaryFire() == true
-  @Condition eventPlayer.abilDir0 == true
+  @Condition eventPlayer.heroState0 == true
 
   # rule triggers only when the weapon is fully charged
-  if eventPlayer.abilState2 < 100:
+  if eventPlayer.heroState2 < 100:
     return
 
   # determine the target that received direct damage
-  eventPlayer.tmp2 = raycast(
+  tmp2 = raycast(
     eventPlayer.getEyePosition(),
-    eventPlayer.getEyePosition() + eventPlayer.abilDir0 * 200,
+    eventPlayer.getEyePosition() + eventPlayer.heroState0 * 200,
     getPlayers(Team.ZOMBIES),
     eventPlayer,
     true
   ).getPlayerHit()
 
-  eventPlayer.tmp3 = false
-  eventPlayer.list0 = [
+  tmp3 = false
+  list0 = [
     player for player in getPlayers(Team.ZOMBIES) if player.isAlive() and eventPlayer.isInViewAngle(player, WALLHACK_SHOT_IN_VIEW_ANGLE)
   ]
 
-  for eventPlayer.tmp1 in range(len(eventPlayer.list0)):
+  for I in range(len(list0)):
     # If true, it means there's already been a hit through a wall or an enemy. Cancel damage to others if no widowmaker's ultimate are present:
-    if not eventPlayer.isUsingUltimate() and eventPlayer.tmp3: 
+    if not eventPlayer.isUsingUltimate() and tmp3: 
       break
 
-    # a direct hit prevents wall penetration damage for this target
-    if eventPlayer.tmp2 == eventPlayer.list0[eventPlayer.tmp1]:
+    if tmp2 == list0[I]: # a direct hit prevents wall penetration damage for this target
       # do nothing
-    else:
-      # Check for headshot through obstacles
+
+    else: # Check for headshot through obstacles 
       eventPlayer.calcRayIntersectsSphere(
-        eventPlayer.abilDir0,
-        eventPlayer.list0[eventPlayer.tmp1].getEyePosition() + (eventPlayer.list0[eventPlayer.tmp1].getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
+        eventPlayer.heroState0,
+        list0[I].getEyePosition() + (list0[I].getFacingDirection() + vect(0, 0, -0.5)) * 0.25,
         ZOMBIE_HEAD_HITBOX_RADIUS
       )
 
       if subroutineResult:
         damage(
-          eventPlayer.list0[eventPlayer.tmp1],
+          list0[I],
           eventPlayer,
           300
         )
-        if not eventPlayer.tmp3:
+        if not tmp3:
           # Store hit info to show the effect and prevent redundant penetrations
-          eventPlayer.tmp3 = eventPlayer.abilDir0
-        eventPlayer.abilState3 = 0.5 + getTotalTimeElapsed() # for headshot message
+          tmp3 = eventPlayer.heroState0
+        eventPlayer.heroState3 = 0.5 + getTotalTimeElapsed() # Wallhack shot last headshot time for headshot message
       else:
         # Check for bodyshot through obstacles
         eventPlayer.calcRayIntersectsSphere(
-          eventPlayer.abilDir0,
-          eventPlayer.list0[eventPlayer.tmp1].getPosition() + vect(0, 0.6, 0),
+          eventPlayer.heroState0,
+          list0[I].getPosition() + vect(0, 0.6, 0),
           ZOMBIE_BODY_HITBOX_RADIUS
         )
 
         if subroutineResult:
           damage(
-            eventPlayer.list0[eventPlayer.tmp1],
+            list0[I],
             eventPlayer,
             120
           )
-          if not eventPlayer.tmp3:
+          if not tmp3:
             # Store hit info to show the effect and prevent redundant penetrations
-            eventPlayer.tmp3 = eventPlayer.abilDir0
+            tmp3 = eventPlayer.heroState0
 
   # Create a beam effect if there was a hit through obstacles
-  if eventPlayer.tmp3:
+  if tmp3:
     createBeam(
       getAllPlayers(),
       Beam.BAD,
@@ -351,21 +339,21 @@ rule "[Widowmaker] Wallhack shot charge":
   @Hero widowmaker
   @Condition eventPlayer.isFiringSecondaryFire() and not eventPlayer.isFiringPrimaryFire()
   
-  eventPlayer.abilState2 = 0
+  eventPlayer.heroState2 = 0 # Wallhack shot charge
   wait(0.27)
   if not ruleCondition:
     return
 
-  chaseAtRate(eventPlayer.abilState2, 100, 100, ChaseRateReeval.NONE)
+  chaseAtRate(eventPlayer.heroState2, 100, 100, ChaseRateReeval.NONE)
   waitUntil(eventPlayer.isFiringSecondaryFire() == false or eventPlayer.isFiringPrimaryFire() == true)
-  stopChasingVariable(eventPlayer.abilState2)
-  eventPlayer.abilState2 = 0
+  stopChasingVariable(eventPlayer.heroState2)
+  eventPlayer.heroState2 = 0
   
   if (eventPlayer.isFiringSecondaryFire() == true and eventPlayer.isFiringPrimaryFire() == true):
-    eventPlayer.abilState2 = 0
+    eventPlayer.heroState2 = 0
     wait(0.27)
-    chaseAtRate(eventPlayer.abilState2, 100, 100, ChaseRateReeval.NONE)
+    chaseAtRate(eventPlayer.heroState2, 100, 100, ChaseRateReeval.NONE)
     waitUntil(eventPlayer.isFiringSecondaryFire() == false or eventPlayer.isFiringPrimaryFire() == false)
-    stopChasingVariable(eventPlayer.abilState2)
-    eventPlayer.abilState2 = 0
+    stopChasingVariable(eventPlayer.heroState2)
+    eventPlayer.heroState2 = 0
     goto RULE_START

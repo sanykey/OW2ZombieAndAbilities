@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 #!define DEFAULT_STARTING_MONEY 3500
 ##!define DEFAULT_MAX_ZOMBIES 14

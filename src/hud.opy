@@ -30,12 +30,17 @@ def clearHeroInfoSub():
   eventPlayer.heroInfoHorFix0 = 9
   eventPlayer.heroInfoVertFix1 = 3.5
   eventPlayer.heroInfoHorFix1 = 11
-  eventPlayer.abilPos0 = null
-  eventPlayer.abilPos1 = null
-  eventPlayer.abilPos2 = null
-  eventPlayer.abilPos3 = null
-  eventPlayer.abilPos4 = null
+
   eventPlayer.abilityCD = null
+  eventPlayer.heroState0 = null
+  eventPlayer.heroState1 = null
+  eventPlayer.heroState2 = null
+  eventPlayer.heroState3 = null
+  eventPlayer.heroState4 = null
+  eventPlayer.heroState5 = null
+  eventPlayer.heroState6 = null
+  
+  ClearBarrierStateSub()
 
 rule "Init huds":
   # zombies status hud (stats and remaining)

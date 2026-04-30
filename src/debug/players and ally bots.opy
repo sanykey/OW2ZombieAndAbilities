@@ -57,35 +57,34 @@ rule "[debug] init Players debug mode":
 
 def NextPlayersub():
   @Name "Sub: next player"
-  eventPlayer.list0 = sorted(
+  list0 = sorted(
     getPlayers(Team.1),
     lambda i: i.getSlot()
   )
-  eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedTeam1Player or player.getSlot() > debugSelectedTeam1Player.getSlot()][false]
-  debugSelectedTeam1Player = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0[false]
+  tmp0 = [player for player in list0 if not debugSelectedTeam1Player or player.getSlot() > debugSelectedTeam1Player.getSlot()][false]
+  debugSelectedTeam1Player = tmp0 if tmp0 else list0[false]
 
 def PrevPlayersub():
   @Name "Sub: prev player"
-  eventPlayer.list0 = sorted(
+  list0 = sorted(
     getPlayers(Team.1),
     lambda i: i.getSlot()
   )
-  eventPlayer.tmp0 = [player for player in eventPlayer.list0 if not debugSelectedTeam1Player or player.getSlot() < debugSelectedTeam1Player.getSlot()].last()
-  debugSelectedTeam1Player = eventPlayer.tmp0 if eventPlayer.tmp0 else eventPlayer.list0.last()
+  tmp0 = [player for player in list0 if not debugSelectedTeam1Player or player.getSlot() < debugSelectedTeam1Player.getSlot()].last()
+  debugSelectedTeam1Player = tmp0 if tmp0 else list0.last()
 
 rule "[debug] Activate selected action for Players mode":
   ConditionForActivateSelectedAction("Players")
 
   if debugSelectedAction == 1: # Add ally bot in my position
     createDummy(getAllHeroes()[debugHeroForBotIndex], Team.1, -1, eventPlayer.getPosition(), eventPlayer.getFacingDirection())
-    eventPlayer.tmp0 = getLastCreatedEntity()
-    eventPlayer.tmp0 = eventPlayer.tmp0[0]
-    eventPlayer.tmp0.startForcingName(f"Ally bot {eventPlayer.tmp0.getSlot()}")
-    eventPlayer.tmp0.setRespawnTime(PLAYER_RESPAWN_TIME)
+    debugAllyBotCreated = getLastCreatedEntity()
+    debugAllyBotCreated = debugAllyBotCreated[0]
+    debugAllyBotCreated.startForcingName(f"Ally bot {debugAllyBotCreated.getSlot()}")
+    debugAllyBotCreated.setRespawnTime(PLAYER_RESPAWN_TIME)
     wait()
-    heal(eventPlayer.tmp0, null, INFINITY)
+    heal(debugAllyBotCreated, null, INFINITY)
     UpdateCombatantsSub()
-    debugAllyBotCreated = true
     if not debugSelectedTeam1Player:
       wait(0.1)
       NextPlayersub()
@@ -93,8 +92,8 @@ rule "[debug] Activate selected action for Players mode":
     kill(debugSelectedTeam1Player)
   elif debugSelectedAction == 4: # Remove ally bot
     if eventPlayer.isHoldingButton(Button.CROUCH):
-      eventPlayer.tmp0 = getNumberOfPlayers(Team.PLAYERS)
-      for I in range(eventPlayer.tmp0):
+      tmp0 = getNumberOfPlayers(Team.PLAYERS)
+      for I in range(tmp0):
         destroyDummy(Team.1, I)
     elif debugSelectedTeam1Player.isDummy():
       destroyDummy(Team.1, debugSelectedTeam1Player.getSlot())
@@ -221,24 +220,24 @@ rule "[debug] Fast prev ally bot":
 #   eventPlayer.startForcingName("Ally bot {}".format(eventPlayer.getSlot()))
 
 macro getAllyBotTarget():
-  eventPlayer.tmp1 = false      # current target distance
-  eventPlayer.tmp2 = false      # distance to best canditate to target
+  tmp1 = false      # current target distance
+  tmp2 = false      # distance to best canditate to target
   eventPlayer.botTarget = false # target being pursued by the zombie
 
-  eventPlayer.list0 = getPlayers(Team.ZOMBIES)
-  for eventPlayer.I in range(len(eventPlayer.list0)):
-    eventPlayer.tmp0 = eventPlayer.list0[eventPlayer.I]
-    if not eventPlayer.tmp0 or eventPlayer.tmp0.isDead():
+  list0 = getPlayers(Team.ZOMBIES)
+  for I in range(len(list0)):
+    tmp0 = list0[I]
+    if not tmp0 or tmp0.isDead():
       continue
 
-    eventPlayer.tmp1 = distance(eventPlayer, eventPlayer.tmp0)
+    tmp1 = distance(eventPlayer, tmp0)
 
-    if eventPlayer.tmp1 > 40 or (eventPlayer.tmp2 and eventPlayer.tmp1 > eventPlayer.tmp2):
+    if tmp1 > 40 or (tmp2 and tmp1 > tmp2):
       continue
 
-    if isInLoS(eventPlayer, eventPlayer.tmp0):
-      eventPlayer.botTarget = eventPlayer.tmp0
-      eventPlayer.tmp2 = eventPlayer.tmp1
+    if isInLoS(eventPlayer, tmp0):
+      eventPlayer.botTarget = tmp0
+      tmp2 = tmp1
     
 
 rule "[debug] Ally bot: Find Target and attack":

@@ -43,18 +43,17 @@ playervar roundStatsText
 
 def CalcRoundStatSub():
   @Name "Sub: Calc Round Stat"
-  eventPlayer.roundStats[eventPlayer.tmp1] = eventPlayer.tmp2 - eventPlayer.prevRoundStats[eventPlayer.tmp1]
-  eventPlayer.earnMoney(eventPlayer.roundStats[eventPlayer.tmp1] * rewardsList[eventPlayer.tmp1])
-  eventPlayer.prevRoundStats[eventPlayer.tmp1] = eventPlayer.tmp2
-  eventPlayer.tmp1++
+  eventPlayer.roundStats[tmp1] = tmp2 - eventPlayer.prevRoundStats[tmp1]
+  eventPlayer.earnMoney(eventPlayer.roundStats[tmp1] * rewardsList[tmp1])
+  eventPlayer.prevRoundStats[tmp1] = tmp2
+  tmp1++
 
 def CalcRoundCustomStatSub():
   @Name "Sub: Calc Custom Round Stat"
-  eventPlayer.roundStats[eventPlayer.tmp1] = eventPlayer.prevRoundStats[eventPlayer.tmp1]
-  eventPlayer.earnMoney(eventPlayer.roundStats[eventPlayer.tmp1] * eventPlayer.tmp3)
-  eventPlayer.prevRoundStats[eventPlayer.tmp1] = null
-
-  eventPlayer.tmp1++
+  eventPlayer.roundStats[tmp1] = eventPlayer.prevRoundStats[tmp1]
+  eventPlayer.earnMoney(eventPlayer.roundStats[tmp1] * rewardsList[tmp1])
+  eventPlayer.prevRoundStats[tmp1] = null
+  tmp1++
 
 def IncrementReviveStatSub():
   eventPlayer.prevRoundStats[RoundStats.REVIVES] += 1
@@ -69,27 +68,27 @@ rule "Calculate player round stats":
 
   eventPlayer.roundStatsText = "\n\nRound statistics:"
 
-  eventPlayer.tmp1 = false # reset the array iteration counter
+  tmp1 = false # reset the array iteration counter
 
-  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.ELIMINATIONS)
+  tmp2 = eventPlayer.getStatistic(Stat.ELIMINATIONS)
   CalcRoundStatSub()
 
-  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
+  tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_DEALT)
   CalcRoundStatSub()
 
-  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
+  tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_BLOCKED)
   CalcRoundStatSub()
 
-  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
+  tmp2 = eventPlayer.getStatistic(Stat.DAMAGE_TAKEN)
   CalcRoundStatSub()
 
-  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
+  tmp2 = eventPlayer.getStatistic(Stat.OFFENSIVE_ASSISTS)
   CalcRoundStatSub()
 
-  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
+  tmp2 = eventPlayer.getStatistic(Stat.DEFENSIVE_ASSISTS)
   CalcRoundStatSub()
 
-  eventPlayer.tmp2 = eventPlayer.getStatistic(Stat.DEATHS)
+  tmp2 = eventPlayer.getStatistic(Stat.DEATHS)
   CalcRoundStatSub()
   eventPlayer.earnMoney(MONEY_FOR_ZERO_DEATHS if not eventPlayer.roundStats[RoundStats.DEATHS] else null)
   
@@ -105,8 +104,8 @@ rule "Calculate player round stats":
 
   CalcRoundCustomStatSub() # REVIVES
 
-  eventPlayer.roundStats[eventPlayer.tmp1] = roundMaxBots # ELIMINATIONS_TEAM
-  eventPlayer.earnMoney(roundMaxBots * rewardsList[eventPlayer.tmp1])
+  eventPlayer.roundStats[tmp1] = roundMaxBots # ELIMINATIONS_TEAM
+  eventPlayer.earnMoney(roundMaxBots * rewardsList[tmp1])
 
 macro getStatText(text, type):
   "\n{}: <fgecbe52FF>{}</fg>, <fg84c951FF>+${}</fg>".format(

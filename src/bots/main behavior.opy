@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 #!define BOT_WALL_PHASE_POINTS 15
 #!define BOT_MAX_NOT_LOS_TARGET_DISTANCE 25
@@ -26,19 +27,19 @@ def TeleportToRandomSpawnPointSub():
 def SearchTargetsSub():
   @Name "SearchTargetsSub"
 
-  eventPlayer.list0 = [
+  list0 = [
     player for player in getPlayersInRadius(eventPlayer.getEyePosition(), BOT_IN_LOS_SEARCH_TARGET_DISTANCE, Team.PLAYERS, LosCheck.SURFACES)
     if player.isAlive() and player.hasSpawned()
   ]
 
-  eventPlayer.tmp0 = sorted(
+  tmp0 = sorted(
     [
       player for player in combatants
       if player.hasSpawned() and not player.isInvisible and player.isAlive()
     ],
     lambda sortedPlayer: (
       distance(eventPlayer, sortedPlayer)
-      + (8 if not sortedPlayer in eventPlayer.list0 else 0) # Low priority for targets behind walls
+      + (8 if not sortedPlayer in list0 else 0) # Low priority for targets behind walls
       + ( # for sombra invisible:
         100 if sortedPlayer.isInvisible > getTotalTimeElapsed() and (distance(eventPlayer, sortedPlayer) > 4 or not eventPlayer.isInViewAngle(sortedPlayer.getPosition(), 90)) else 0
       ) - ( # High priority for tank targets (except Baby D.Va):
@@ -51,19 +52,19 @@ def SearchTargetsSub():
   )[0]
 
   if debugDisableBotMoverment:
-    eventPlayer.tmp0 = null
+    tmp0 = null
 
-  if eventPlayer.tmp0 != eventPlayer.botTarget: # If the target has changed
+  if tmp0 != eventPlayer.botTarget: # If the target has changed
     # Disable bot movement when no target is present to prevent unnecessary falls into pits
-    if not eventPlayer.botTarget and eventPlayer.tmp0:
+    if not eventPlayer.botTarget and tmp0:
       ActivateBotMovementSub()
-    elif eventPlayer.botTarget and not eventPlayer.tmp0:
+    elif eventPlayer.botTarget and not tmp0:
       ResetBotStuckTimesSub()
       DeactivateBotMovementSub()
 
     eventPlayer.botTargetLastPosition = null # delete the information about the last visible position of the previous target.
-    eventPlayer.botTarget = eventPlayer.tmp0
-    eventPlayer.botTargetLos = getTotalTimeElapsed() if eventPlayer.botTarget in eventPlayer.list0 else null
+    eventPlayer.botTarget = tmp0
+    eventPlayer.botTargetLos = getTotalTimeElapsed() if eventPlayer.botTarget in list0 else null
 
 rule "bot targeting polling ":
   @Event eachPlayer
@@ -77,19 +78,19 @@ rule "bot targeting polling ":
     loop()
 
 macro botAntifall():
-  eventPlayer.tmp0 = false
+  tmp0 = false
   # For the starting location. Which is the lowest and the height of the fatal fall into the abyss starts noticeably lower:
   if eventPlayer.getPosition().x < 0 and eventPlayer.getPosition().z > -35: 
     if eventPlayer.getPosition().y < -6:
-      eventPlayer.tmp0 = true
+      tmp0 = true
   elif eventPlayer.getPosition().x > 43: # ZONE B
     if eventPlayer.getPosition().y < 4.7:
-      eventPlayer.tmp0 = true
+      tmp0 = true
   else:
     if eventPlayer.getPosition().y < 0: # Other
-      eventPlayer.tmp0 = true
+      tmp0 = true
 
-  if not eventPlayer.tmp0:
+  if not tmp0:
     goto lbl_1
 
   # If the player was dealing cc damage before the bot fell, then try to deal damage to the bot from the fall
@@ -113,13 +114,13 @@ macro botAntifall():
 
 macro botUnstuck():
   if eventPlayer.isOnGround():
-    eventPlayer.tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
+    tmp0 = vect(eventPlayer.getPosition().x, 0, eventPlayer.getPosition().y)
     if eventPlayer.getDistanceToBotTarget() > 1.5 and eventPlayer.getHorizontalSpeed() < ((5.5 / 100 * zomSpeedPct) - 2):
       # eventPlayer.forceButtonPress(Button.MELEE) # todo: нужна задержка до прыжка??
       eventPlayer.forceButtonPress(Button.JUMP) # try to jump if the movement has slowed down:
       if (
         eventPlayer.moneyTotal__botOldPosition and
-        distance(eventPlayer.moneyTotal__botOldPosition, eventPlayer.tmp0) < BOT_OLD_POS_STUCK_DISTANCE
+        distance(eventPlayer.moneyTotal__botOldPosition, tmp0) < BOT_OLD_POS_STUCK_DISTANCE
       ):
         eventPlayer.money__botStuckTimes += 5
         if eventPlayer.money__botStuckTimes > 25:
@@ -127,10 +128,10 @@ macro botUnstuck():
         elif eventPlayer.money__botStuckTimes > 10:
           eventPlayer.applyImpulse(Vector.UP, 20, Relativity.TO_PLAYER, Impulse.CANCEL_CONTRARY_MOTION)
       else:
-        eventPlayer.moneyTotal__botOldPosition = eventPlayer.tmp0
+        eventPlayer.moneyTotal__botOldPosition = tmp0
         eventPlayer.money__botStuckTimes = 0
     elif eventPlayer.money__botStuckTimes > 0:
-      if distance(eventPlayer.moneyTotal__botOldPosition, eventPlayer.tmp0) > BOT_OLD_POS_STUCK_RESET_DISTANCE:
+      if distance(eventPlayer.moneyTotal__botOldPosition, tmp0) > BOT_OLD_POS_STUCK_RESET_DISTANCE:
         eventPlayer.money__botStuckTimes = 0
       else:
         eventPlayer.money__botStuckTimes -= 1
@@ -154,27 +155,27 @@ macro botUnderPlayerImpulse():
 
 macro checkVendettaCounterAttack():
   # [Vendetta] pushes in front of her if an attack was blocked by her guard
-  eventPlayer.tmp0 = [ # find Vendetta player with block stance
+  tmp0 = [ # find Vendetta player with block stance
     player for player in eventPlayer.botMeleeAttackTargets if (
       Hero.VENDETTA == player.getCurrentHero()
       and player.isFiringSecondaryFire()
-      and player.abilState0 < getTotalTimeElapsed()
+      and player.heroState0 < getTotalTimeElapsed()
       and player.isInViewAngle(eventPlayer.getPosition(), 90)
     )
   ][0]
 
-  if eventPlayer.tmp0:
-    eventPlayer.tmp0.list0 = [
+  if tmp0:
+    list0 = [
       player for player in getPlayers(Team.ZOMBIES) if (
-        distance(player, eventPlayer.tmp0) <= 4
-        and eventPlayer.tmp0.isInViewAngle(player.getPosition(), 90)
+        distance(player, tmp0) <= 4
+        and tmp0.isInViewAngle(player.getPosition(), 90)
       )
     ]
 
-    eventPlayer.tmp0.abilState0 = 1 + getTotalTimeElapsed() # set talent cooldown
-    eventPlayer.tmp0.list0.pushInFacingDirectionAndUp(eventPlayer.tmp0, 10)
-    eventPlayer.tmp0.list0.setCrowdControlAttack(eventPlayer.tmp0)
-    damage(eventPlayer.tmp0.list0, eventPlayer.tmp0, 0.1) # Deal a small amount of damage to earn assist money while holding guard
+    tmp0.heroState0 = 1 + getTotalTimeElapsed() # set talent cooldown
+    list0.pushInFacingDirectionAndUp(tmp0, 10)
+    list0.setCrowdControlAttack(tmp0)
+    damage(list0, tmp0, 0.1) # Deal a small amount of damage to earn assist money while holding guard
 
 macro flyThroughWallsPoints():
   if eventPlayer.isInLoSBotTarget(): # todo: Crowd controlled
@@ -183,14 +184,14 @@ macro flyThroughWallsPoints():
     eventPlayer.botWantsWallPhasePoints++
 
 macro botTargetLosAndObstacleWaipoint():
-  eventPlayer.tmp0 = getTotalTimeElapsed() if isInLoS(eventPlayer.botTarget.getEyePosition(), eventPlayer.getEyePosition() + vect(0, LosHeightCheckVectConst, 0)) else null
+  tmp0 = getTotalTimeElapsed() if isInLoS(eventPlayer.botTarget.getEyePosition(), eventPlayer.getEyePosition() + LosHeightCheckVectConst) else null
 
   # If the target disappears from view by moving behind an obstacle - save a position that allows the bot to navigate around the obstacle.
-  if not eventPlayer.tmp0 and eventPlayer.botTargetLos:
+  if not tmp0 and eventPlayer.botTargetLos:
     eventPlayer.botTargetLastPosition = eventPlayer.botTarget.getPosition() + normalize(
       worldVector(eventPlayer.botTarget.getThrottle(), eventPlayer.botTarget, Transform.ROTATION)
     ) * -2
-  eventPlayer.botTargetLos = eventPlayer.tmp0
+  eventPlayer.botTargetLos = tmp0
 
   if eventPlayer.botTargetLastPosition and distance(eventPlayer, eventPlayer.botTargetLastPosition) < 1 or eventPlayer.botTargetLos:
     eventPlayer.botTargetLastPosition = null

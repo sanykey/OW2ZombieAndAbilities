@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 def botEchoFlyToPlayer():
   @Name "[ZombieTeam Echo] Fly to player"
@@ -69,12 +70,12 @@ rule "[ZombieTeam Echo] respawn":
   @Hero echo
   @Condition eventPlayer.hasSpawned() and eventPlayer.isAlive()
 
-  eventPlayer.list0 = (
+  list0 = (
     [player for player in botSniperPositions if isInLoS(player, getPlayers(Team.1))]
   )
 
-  if eventPlayer.list0:
-    eventPlayer.abilPos0 = eventPlayer.list0[random.randint(0, len(eventPlayer.list0) - 1)]
+  if list0:
+    eventPlayer.abilPos0 = list0[random.randint(0, len(list0) - 1)]
     botEchoRespawn()
 
   wait(15, Wait.ABORT_WHEN_FALSE)
@@ -159,7 +160,7 @@ rule "[ZombieTeam Echo] main logic loop":
   if not isInLoS(eventPlayer.getEyePosition(), eventPlayer.targetPlayer1.getEyePosition()):
     botEchoDetachPlayer()
 
-  eventPlayer.tmp0 = (
+  tmp0 = (
     sorted(
       [player for player in getLivingPlayers(Team.ZOMBIES).exclude(eventPlayer) if (
         player.hasSpawned() and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition())
@@ -168,17 +169,17 @@ rule "[ZombieTeam Echo] main logic loop":
     )
   )[0]
 
-  if eventPlayer.tmp0:
+  if tmp0:
     eventPlayer.stopForcingButton(Button.JUMP)
     
-    if distance(eventPlayer, eventPlayer.tmp0) < 3:
+    if distance(eventPlayer, tmp0) < 3:
       eventPlayer.stopThrottleInDirection()
       eventPlayer.stopFacing()
       eventPlayer.setStatusEffect(null, Status.ROOTED, 0.5)
     else:
-      eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.tmp0.getEyePosition() + Vector.UP), 100)
+      eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), tmp0.getEyePosition() + Vector.UP), 100)
       eventPlayer.startThrottleInDirection(
-        directionTowards(eventPlayer.getEyePosition(), eventPlayer.tmp0.getEyePosition() + Vector.UP * 1), 1, Relativity.TO_WORLD
+        directionTowards(eventPlayer.getEyePosition(), tmp0.getEyePosition() + Vector.UP * 1), 1, Relativity.TO_WORLD
       )
   else:
     eventPlayer.startForcingButton(Button.JUMP)

@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 rule "[Sombra] Init":
   @Event eachPlayer
@@ -6,18 +7,20 @@ rule "[Sombra] Init":
   @Condition eventPlayer.getHero() == Hero.SOMBRA
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.heroInfoVertFix0 = 1
-  eventPlayer.heroInfoText0 = f"{heroIcon(Hero.SOMBRA)} <fg765dbdFF>Sombra</fg>:\n
-  <TX C0000000000A6B6> <fg765dbdFF>Stealth:</fg>
-      - Enemies will see you if you get too close in their line of sight
-        (you can approach from behind undetected).
-      - A melee stuns enemies and steals ${SOMBRA_STEAL_MONEY}\n\n
-  {abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE)} <fg765dbdFF>Hack:</fg>
-      - Allies and Sombra deal an additional 30% damage to hacked targets
-      - Killing hacked enemies gives attackers an extra ${70}\n\n
-  About vanilla Perks:
-      - Minor <fg765dbdFF>Uncripted upload</fg> is useless, doesn't work in this mode
-  "
+
+  setHeroInfoText0(
+    f"{heroIcon(Hero.SOMBRA)} <fg765dbdFF>Sombra</fg>:\n
+    <TX C0000000000A6B6> <fg765dbdFF>Stealth:</fg>
+        - Enemies will see you if you get too close in their line of sight
+          (you can approach from behind undetected).
+        - A melee stuns enemies and steals ${SOMBRA_STEAL_MONEY}\n\n
+    {abilityIconString(Hero.SOMBRA, Button.SECONDARY_FIRE)} <fg765dbdFF>Hack:</fg>
+        - Allies and Sombra deal an additional 30% damage to hacked targets
+        - Killing hacked enemies gives attackers an extra ${70}\n\n
+    About vanilla Perks:
+        - Minor <fg765dbdFF>Uncripted upload</fg> is useless, doesn't work in this mode
+    ", 1
+  )
 
   waitUntil(eventPlayer.getHero() != Hero.SOMBRA, INFINITY)
   clearHeroInfoSub()

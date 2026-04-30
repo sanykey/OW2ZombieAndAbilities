@@ -1,4 +1,5 @@
 #!mainFile "./main.opy"
+#!optimizeForSize
 
 # [Widowmaker] hitbox position for wallhack shots
 #!define ZOMBIE_BODY_HITBOX_RADIUS 0.65
@@ -7,7 +8,7 @@
 
 def RayIntersectionsWithSphereSub():
   @Name "Subroutine: Сalculate the intersections of the ray with the sphere"
-  #!optimizeForSize
+  
 
   # params:
   # param1 - ray direction

@@ -1,5 +1,5 @@
 #!mainFile "../main.opy"
-
+#!optimizeForSize
 
 playervar crowdControlled
 playervar targeting
@@ -49,7 +49,7 @@ def selectTarget():
     eventPlayer.potentialTargets = [player for player in eventPlayer.potentialTargets]
     for eventPlayer.pPowerUpCount_bTeleCount in range(len(eventPlayer.potentialTargets)):
         eventPlayer.testTarget = eventPlayer.potentialTargets[eventPlayer.pPowerUpCount_bTeleCount]
-        if isInLoS(eventPlayer.testTarget.getEyePosition(), eventPlayer.getPosition() + vect(0, LosHeightCheckVectConst, 0)):
+        if isInLoS(eventPlayer.testTarget.getEyePosition(), eventPlayer.getPosition() + LosHeightCheckVectConst):
             break
         #wait()
     if eventPlayer.isAlive():
@@ -84,7 +84,7 @@ rule "BOT TARGET VISIBLE":
     @Condition eventPlayer.isAlive()
     @Condition eventPlayer.hasSpawned()
     @Condition (not eventPlayer.botTarget or any([distance(i.getPosition(), eventPlayer.getPosition()) < 7.5 for i in combatants.exclude(eventPlayer.botTarget)]))
-    @Condition (any([distance(eventPlayer.getPosition(), player.getPosition()) < 150 and isInLoS(player.getEyePosition(), eventPlayer.getPosition() + vect(0, LosHeightCheckVectConst, 0)) for player in combatants]))
+    @Condition (any([distance(eventPlayer.getPosition(), player.getPosition()) < 150 and isInLoS(player.getEyePosition(), eventPlayer.getPosition() + LosHeightCheckVectConst) for player in combatants]))
     
     wait(0.016, Wait.ABORT_WHEN_FALSE)
     async(selectTarget, AsyncBehavior.RESTART)
@@ -108,7 +108,7 @@ rule "DESELECT BOT TARGET":
     @Event eachPlayer
     @Team 2
     @Condition eventPlayer.botTarget != null
-    @Condition (not eventPlayer.botTarget in combatants or not isInLoS(eventPlayer.botTarget.getEyePosition(), eventPlayer.getPosition() + vect(0, LosHeightCheckVectConst, 0))) == true
+    @Condition (not eventPlayer.botTarget in combatants or not isInLoS(eventPlayer.botTarget.getEyePosition(), eventPlayer.getPosition() + LosHeightCheckVectConst)) == true
     
     eventPlayer.botTarget = null
     eventPlayer.startThrottleInDirection(directionTowards(eventPlayer.getPosition(), eventPlayer.lastTarget.getPosition() + normalize(worldVector(eventPlayer.lastTarget.getThrottle(), eventPlayer.lastTarget, Transform.ROTATION)) * -2), getCurrentZomSpeed(), Relativity.TO_WORLD, Throttle.REPLACE_EXISTING, ThrottleReeval.NONE)
@@ -189,7 +189,7 @@ rule "BOTS MELEE":
 #     @Condition not eventPlayer.targeting
 #     @Condition not eventPlayer.botTarget
 #     @Condition eventPlayer.isAlive()
-#     @Condition (all([not isInLoS(i.getEyePosition(), eventPlayer.getPosition() + vect(0, LosHeightCheckVectConst, 0)) for i in [player for player in combatants if player.invisible]])) == true
+#     @Condition (all([not isInLoS(i.getEyePosition(), eventPlayer.getPosition() + LosHeightCheckVectConst) for i in [player for player in combatants if player.invisible]])) == true
     
 #     if eventPlayer.successfullyTeleported:
 #       wait(5, Wait.ABORT_WHEN_FALSE)
@@ -288,7 +288,7 @@ rule "BOTS MELEE":
 #     updateBotSpawnPoints()
 #     enterExitTeleport()
 #     eventPlayer.successfullyTeleported = false
-#     waitUntil(eventPlayer.canTeleport, 99999)
+#     waitUntil(eventPlayer.canTeleport, INFINITY)
 #     if eventPlayer.customTelePos == null:
 #         while eventPlayer.teleporting:
 #             botTeleportCenter()
@@ -307,7 +307,7 @@ rule "BOTS MELEE":
 #                 else:
 #                     eventPlayer.telePos = nearestWalkablePosition(eventPlayer.averagePlayersPos + directionFromAngles(random.uniform(0, 360), random.uniform(-20, 10)) * random.uniform(0, botMaxTeleportRange[1]))
 #                 wait(0.25)
-#             if all([distance(eventPlayer.telePos, player.getPosition()) > 10 for player in combatants]) and all([not isInLoS(i.getEyePosition(), eventPlayer.telePos + vect(0, LosHeightCheckVectConst, 0)) for i in [player for player in combatants if player.isInViewAngle(eventPlayer.telePos, 55)]]):
+#             if all([distance(eventPlayer.telePos, player.getPosition()) > 10 for player in combatants]) and all([not isInLoS(i.getEyePosition(), eventPlayer.telePos + LosHeightCheckVectConst) for i in [player for player in combatants if player.isInViewAngle(eventPlayer.telePos, 55)]]):
 #                 eventPlayer.teleport(eventPlayer.telePos)
 #                 eventPlayer.teleporting = false
 #                 #Teleport was unsuccessful due to line of sight and view angle
@@ -434,5 +434,5 @@ rule "BOTS MELEE":
 #     @Name "entityFloat"
     
 #     #Entities that will be floated
-#     eventPlayer.botSpecialPotentialTargets = [player for player in getLivingPlayers(Team.ALL) if player != eventPlayer and distance(eventPlayer.getPosition(), player.getPosition()) < 12 * eventPlayer.size and isInLoS(player.getPosition() + vect(0, LosHeightCheckVectConst, 0), eventPlayer.getPosition() + vect(0, LosHeightCheckVectConst, 0), BarrierLos.BLOCKED_BY_ENEMY_BARRIERS)]
+#     eventPlayer.botSpecialPotentialTargets = [player for player in getLivingPlayers(Team.ALL) if player != eventPlayer and distance(eventPlayer.getPosition(), player.getPosition()) < 12 * eventPlayer.size and isInLoS(player.getPosition() + LosHeightCheckVectConst, eventPlayer.getPosition() + LosHeightCheckVectConst, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS)]
 

@@ -1,7 +1,5 @@
 #!mainFile "../main.opy"
-
-enum BRI_I:
-  WHIP_SHOT_CHARGES_HUD
+#!optimizeForSize
 
 rule "[Brigitte] init":
   @Event eachPlayer
@@ -9,32 +7,32 @@ rule "[Brigitte] init":
   @Condition eventPlayer.getHero() == Hero.BRIGITTE
 
   setHeroInfoText0(
-    "
-    {} <fg8b625eFF>Brigitte</fg>:\n
-    {} <fg8b625eFF>Barrier shield</fg>:
+    f"{heroIcon(Hero.BRIGITTE)} <fg8b625eFF>Brigitte</fg>:\n
+    {abilityIconString(Hero.BRIGITTE, Button.SECONDARY_FIRE)} <fg8b625eFF>Barrier shield</fg>:
       - Pushes back enemies and takes damage on contact.\n\n
     <TX C00000000003339> <fg8b625eFF>Shield bash</fg>:
       - Stuns the target and nearby enemies within a 2-meter radius for 2 seconds.\n\n
-    {} <fg8b625eFF>Repair pack</fg>
+    {abilityIconString(Hero.BRIGITTE, Button.ABILITY_2)} <fg8b625eFF>Repair pack</fg>
       - Can be used on yourself if no ally is in your crosshair.\n\n
-    ".format(
-      heroIcon(Hero.BRIGITTE),
-      abilityIconString(Hero.BRIGITTE, Button.SECONDARY_FIRE),
-      abilityIconString(Hero.BRIGITTE, Button.ABILITY_2)
-    )
+    "
   )
 
   setHeroInfoText1(
-    "
-    {} <fg8b625eFF>Whip shot</fg>:
+    f"{abilityIconString(Hero.BRIGITTE, Button.ABILITY_1)} <fg8b625eFF>Whip shot</fg>:
       - Hold the Whip Shot button while activating to launch forward.
       - Gain an additional charge.
-    ".format(
-      abilityIconString(Hero.BRIGITTE, Button.ABILITY_1)
-    ),
+    ",
     4, 10
   )
 
+  # eventPlayer.abilityCDHud(
+  #   "{}{} Next Charge in: {}".format(
+  #     ABILITI_TEXT_INTEND,
+  #     abilityIconString(Hero.BRIGITTE, Button.ABILITY_1),
+  #     ceil(eventPlayer.abilityCD)
+  #   ),
+  #   eventPlayer.heroEffectsIds[0]
+  # )
 
   # Grappling Hook charges hud
   hudText(
@@ -45,19 +43,18 @@ rule "[Brigitte] init":
       abilityIconString(Hero.BRIGITTE, Button.ABILITY_1),
       ceil(eventPlayer.abilityCD)
     ),
-    "{0}{1}".format(ABILITI_CHARGES_INTEND, ["□□", "<fgFFFFFFFF>■</fg>□", "<fgFFFFFFFF>■■</fg>"][eventPlayer.abilState0]),
+    "{0}{1}".format(ABILITI_CHARGES_INTEND, ["□□", "<fgFFFFFFFF>■</fg>□", "<fgFFFFFFFF>■■</fg>"][eventPlayer.heroState0]),
     HudPosition.TOP,
     2.5,
     null,
     Color.YELLOW, Color.ORANGE
   )
-  eventPlayer.heroEffectsIds[BRI_I.WHIP_SHOT_CHARGES_HUD] = getLastCreatedText()
-  eventPlayer.abilState0 = 2
+  eventPlayer.heroEffectsIds[0] = getLastCreatedText()
+  eventPlayer.heroState0 = 2 # Whip shot ability charges
 
   waitUntil(eventPlayer.getHero() != Hero.BRIGITTE, INFINITY)
-
   clearHeroInfoSub()
-  destroyHudText(eventPlayer.heroEffectsIds[BRI_I.WHIP_SHOT_CHARGES_HUD])
+  destroyHudText(eventPlayer.heroEffectsIds[0])
 
 rule "[Brigitte] Whip shot charge":
   @Event eachPlayer
@@ -66,23 +63,23 @@ rule "[Brigitte] Whip shot charge":
   @Condition eventPlayer.isUsingAbility1()
   
   waitUntil(not eventPlayer.isUsingAbility1(), INFINITY)
-  eventPlayer.abilState0 -= 1
+  eventPlayer.heroState0 -= 1
 
-  if eventPlayer.abilState0 > 0:
+  if eventPlayer.heroState0 > 0:
     eventPlayer.setAbilityCooldown(Button.ABILITY_1, 0)
 
 rule "[Brigitte] Recharge whip shot":
   @Event eachPlayer
   @Hero brigitte
   @Team 1
-  @Condition eventPlayer.abilState0 < 2
+  @Condition eventPlayer.heroState0 < 2
   
   wait(0.4, Wait.ABORT_WHEN_FALSE)
 
   eventPlayer.abilityCD = 4
   waitUntil(not eventPlayer.abilityCD, 4)
 
-  eventPlayer.abilState0 += 1
+  eventPlayer.heroState0 += 1
   if ruleCondition:
     loop()
 
@@ -92,11 +89,11 @@ rule "[Brigitte] Whip Shot position":
   @Condition eventPlayer.isUsingAbility1()
   
   wait(0.2)
-  eventPlayer.abilPos0 = eventPlayer.getEyePosition()
-  eventPlayer.abilPos1 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 20, null, eventPlayer, false).getHitPosition()
-  chaseAtRate(eventPlayer.abilPos0, eventPlayer.abilPos1, 80)
-  waitUntil(eventPlayer.abilPos0 == eventPlayer.abilPos1, INFINITY)
-  stopChasingVariable(eventPlayer.abilPos0)
+  eventPlayer.heroState1 = eventPlayer.getEyePosition()
+  eventPlayer.heroState2 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 20, null, eventPlayer, false).getHitPosition()
+  chaseAtRate(eventPlayer.heroState1, eventPlayer.heroState2, 80)
+  waitUntil(eventPlayer.heroState1 == eventPlayer.heroState2, INFINITY)
+  stopChasingVariable(eventPlayer.heroState1)
 
 rule "[Brigitte] Whip shot - apply impulse forward":
   @Event eachPlayer
@@ -107,14 +104,14 @@ rule "[Brigitte] Whip shot - apply impulse forward":
   if not eventPlayer.isHoldingButton(Button.ABILITY_1):
     return
   wait(0.08)
-  if eventPlayer.isHoldingButton(Button.ABILITY_1) == false:
+  if not eventPlayer.isHoldingButton(Button.ABILITY_1):
     return
   eventPlayer.setGravity(0)
   eventPlayer.applyImpulse(Vector.UP, 4, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
   wait()
   eventPlayer.applyImpulse(
-    directionTowards(eventPlayer, eventPlayer.abilPos1),
-    28 - min(65, abs(verticalAngleTowards(eventPlayer, eventPlayer.abilPos1))) / 4 if verticalAngleTowards(eventPlayer, eventPlayer.abilPos1) < 0 else 28,
+    directionTowards(eventPlayer, eventPlayer.heroState2),
+    28 - min(65, abs(verticalAngleTowards(eventPlayer, eventPlayer.heroState2))) / 4 if verticalAngleTowards(eventPlayer, eventPlayer.heroState2) < 0 else 28,
     Relativity.TO_WORLD,
     Impulse.CANCEL_CONTRARY_MOTION
   )

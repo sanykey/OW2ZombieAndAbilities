@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 enum RAM_I:
   BARRIER_CENTER
@@ -17,16 +18,13 @@ rule "[Ramattra] init":
   @Condition eventPlayer.getHero() == Hero.RAMATTRA
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.heroInfoVertFix0 = -3
-  eventPlayer.heroInfoText0 = "{} <fg9d8cd0FF>Rammatra</fg>:\n
-  {} {}Void barrier{}:
-      - Pushes back enemies and takes damage on contact.
-      - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.
-  ".format(
-    heroIcon(Hero.RAMATTRA),
-    abilityIconString(Hero.RAMATTRA, Button.SECONDARY_FIRE),
-    "<fg9d8cd0FF>",
-    "</fg>"
+
+  setHeroInfoText0(
+    f"{heroIcon(Hero.RAMATTRA)} <fg9d8cd0FF>Rammatra</fg>:\n
+    {abilityIconString(Hero.RAMATTRA, Button.SECONDARY_FIRE)} <fg9d8cd0FF>Void barrier</fg>:
+        - Pushes back enemies and takes damage on contact.
+        - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.
+    ", -3
   )
 
   waitUntil(eventPlayer.getHero() != Hero.RAMATTRA, INFINITY)
@@ -40,37 +38,37 @@ rule "[Ramattra] Barrier up":
   @Condition eventPlayer.isFiringSecondaryFire()
   @Condition not (eventPlayer.isUsingAbility1() or eventPlayer.isUsingUltimate())
 
-  waitUntil(not eventPlayer.isFiringSecondaryFire(), 99999)
+  waitUntil(not eventPlayer.isFiringSecondaryFire(), INFINITY)
   if eventPlayer.isHoldingButton(Button.PRIMARY_FIRE):
     return
 
-  eventPlayer.tmp1 = raycast(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0) - vect(0, 3, 0), null, eventPlayer, true).getHitPosition()
+  tmp1 = raycast(raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0), raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 35, null, eventPlayer, true).getHitPosition() + vect(0, 0.01, 0) - vect(0, 3, 0), null, eventPlayer, true).getHitPosition()
   
-  # eventPlayer.tmp2 = getPlayersInRadius(eventPlayer.tmp1, 3.5, Team.ZOMBIES)
+  # tmp2 = getPlayersInRadius(tmp1, 3.5, Team.ZOMBIES)
   # #Barrier launches away
-  # eventPlayer.tmp2.applyImpulse(vectorTowards(eventPlayer.getPosition(), eventPlayer.tmp1) + vect(0, 5, 0), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  # playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.PURPLE, eventPlayer.tmp1, 3)
+  # tmp2.applyImpulse(vectorTowards(eventPlayer.getPosition(), tmp1) + vect(0, 5, 0), 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  # playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.PURPLE, tmp1, 3)
 
-  eventPlayer.tmp2 = eventPlayer.tmp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.1 + Vector.UP * 1.5
-  eventPlayer.tmp3 = eventPlayer.tmp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.8 + Vector.UP * 1.5
+  tmp2 = tmp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.1 + Vector.UP * 1.5
+  tmp3 = tmp1 + normalize(vect(eventPlayer.getFacingDirection().x, 0, eventPlayer.getFacingDirection().z)) * 0.8 + Vector.UP * 1.5
 
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CENTER] = eventPlayer.tmp2
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] = eventPlayer.tmp2
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] = eventPlayer.tmp3
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK] = eventPlayer.tmp2 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_FORWARD] = eventPlayer.tmp3 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK] = eventPlayer.tmp2 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
-  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_FORWARD] = eventPlayer.tmp3 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CENTER] = tmp2
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] = tmp2
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] = tmp3
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK] = tmp2 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_FORWARD] = tmp3 + normalize(crossProduct(Vector.UP, eventPlayer.getFacingDirection())) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK] = tmp2 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
+  eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_FORWARD] = tmp3 + normalize(crossProduct(eventPlayer.getFacingDirection(), Vector.UP)) * 1.5
   
   eventPlayer.heroEffectsIds[RAM_I.BARRIER_PUSH_DIRECTION] = (
     normalize(
-      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] + barrierPushVectUpFix
+      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] + BarrierPushVectUpFixConst
     )
   )
 
   eventPlayer.heroEffectsIds[RAM_I.BARRIER_PUSH_BACK_DIRECTION] = (
     normalize(
-      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] + barrierPushVectUpFix
+      eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD] + BarrierPushVectUpFixConst
     )
   )
 
@@ -94,14 +92,13 @@ rule "[Ramattra] Barrier up":
         isInLoS(eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD], eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK], BarrierLos.BLOCKED_BY_ALL_BARRIERS) or
         not isInLoS(eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD], eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK], BarrierLos.PASS_THROUGH_BARRIERS)
       ):
-        smallMessage(eventPlayer, "Barrier deploy failed! Try again")
+        FailedBarrierDeploySub()
         eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 0)
         return
 
   eventPlayer.isActiveBarrier = true
-
-  eventPlayer.barrierDamageFrom = eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD]
-  eventPlayer.barrierDamageDir = normalize(eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK] - eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD])
+  eventPlayer.barrierCheckVectA = eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD]
+  eventPlayer.barrierCheckVectB = eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK]
 
 #!define RAM_BARRIER_PUSH_ENENT_WAIT 0.1
 rule "[Ramattra] Barrier push enemies":
@@ -110,13 +107,14 @@ rule "[Ramattra] Barrier push enemies":
   @Hero ramattra
   @Condition eventPlayer.isActiveBarrier
 
-  eventPlayer.list0 = getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK], 3, Team.ZOMBIES)
-  eventPlayer.list0.append([player for player in getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK], 3, Team.ZOMBIES) if player not in eventPlayer.list0])
+  list0 = getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_RIGHT_BACK], 3, Team.ZOMBIES)
+  list0.append([player for player in getRealPlayersInRadius(eventPlayer.heroEffectsIds[RAM_I.BARRIER_LEFT_BACK], 3, Team.ZOMBIES) if player not in list0])
 
-  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-  damage(eventPlayer.list0, eventPlayer, 0.1)
+  list0.setCrowdControlAttack(eventPlayer)
+  eventPlayer.damageFromBarrier(list0)
+  eventPlayer.damageBarrier(2.2 * RAM_BARRIER_PUSH_ENENT_WAIT * len(list0))
 
-  [player for player in eventPlayer.list0 if (
+  [player for player in list0 if (
     distance(player, eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK]) > 
     distance(player, eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD])
   )].applyImpulse(
@@ -124,20 +122,14 @@ rule "[Ramattra] Barrier push enemies":
     3,
     Relativity.TO_WORLD
   )
-  wait(0.016)
-  [player for player in eventPlayer.list0 if (
+
+  [player for player in list0 if (
     distance(player, eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_BACK]) < 
     distance(player, eventPlayer.heroEffectsIds[RAM_I.BARRIER_CHECK_FORWARD])
   )].applyImpulse(
     eventPlayer.heroEffectsIds[RAM_I.BARRIER_PUSH_BACK_DIRECTION],
     3,
     Relativity.TO_WORLD
-  )
-  
-  eventPlayer.barrierDamageStack += (
-    len(eventPlayer.list0) *
-    (TORBJORN_HAMMER_BASE_DMG  * RAM_BARRIER_PUSH_ENENT_WAIT * 2.2) *
-    (zomDamagePct / 100)
   )
 
   wait(RAM_BARRIER_PUSH_ENENT_WAIT)
@@ -158,8 +150,7 @@ rule "[Ramattra] Check is barrier exists":
     ),
     10
   )
-  eventPlayer.isActiveBarrier = false
-  eventPlayer.barrierDamageStack = false
+  ClearBarrierStateSub()
 
 
 # rule "[debug]":

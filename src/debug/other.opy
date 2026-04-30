@@ -31,8 +31,8 @@
 #   @Condition eventPlayer.isHoldingButton(Button.INTERACT) == true
 #   @Condition eventPlayer.isHoldingButton(Button.SECONDARY_FIRE) == true
   
-#   eventPlayer.tmp1 = random.choice([player for player in getLivingPlayers(Team.1) if player.isDummy()])
-#   destroyDummy(Team.1, eventPlayer.tmp1.getSlot())
+#   tmp1 = random.choice([player for player in getLivingPlayers(Team.1) if player.isDummy()])
+#   destroyDummy(Team.1, tmp1.getSlot())
 
 
 # rule "[debug] debug objects":
@@ -42,7 +42,6 @@
 #   debug(getPlayersInSlot(0, Team.ZOMBIES).abilTemp1)
 #   debug(getTotalTimeElapsed())
 #   debug(getPlayersInSlot(0, Team.ZOMBIES).abilPos0)
-#   debug(isInLoS(getPlayersInSlot(0, Team.ZOMBIES), getPlayersInSlot(0, Team.ZOMBIES).target0))
 
   # debug(secretShopZoneEffects)
   # debug(zonesHeroBuyLen)
@@ -55,8 +54,8 @@
 #   @Condition eventPlayer == hostPlayer
 #   @Condition eventPlayer.isHoldingButton(Button.RELOAD) == true
   
-#   eventPlayer.tmp1 = random.choice(getLivingPlayers(Team.ZOMBIES))
-#   damage(eventPlayer.tmp1, eventPlayer, 99999)
+#   tmp1 = random.choice(getLivingPlayers(Team.ZOMBIES))
+#   damage(tmp1, eventPlayer, INFINITY)
 
 # rule "[debug] show current position":
   # hudSubtext(

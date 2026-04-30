@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 globalvar deadZombieTeamPlayers
 globalvar roundRemainingBotsToRespawn
@@ -55,47 +56,47 @@ def GetRandomTeleportPosSub():
 
   eventPlayer.respawnNearFallback = true
   eventPlayer.teleportPos = null
-  eventPlayer.tmp5 = null
+  tmp4 = null
 
   for I in range(ZOMBIE_RESPAWN_SEARCH_ATTEMPTS):
-    eventPlayer.tmp1 = random.choice(combatants)
-    eventPlayer.tmp2 = (random.randint(0, 359) + (I * ZOMBIE_RESPAWN_ANGLE_STEP)) % 360
+    tmp1 = random.choice(combatants)
+    tmp2 = (random.randint(0, 359) + (I * ZOMBIE_RESPAWN_ANGLE_STEP)) % 360
 
-    eventPlayer.tmp3 = nearestWalkablePosition(
+    tmp3 = nearestWalkablePosition(
       (
-        eventPlayer.tmp1 + worldVector(
+        tmp1 + worldVector(
           vect(
-            ZOMBIE_RESPAWN_DISTANCE * cos(eventPlayer.tmp2),
+            ZOMBIE_RESPAWN_DISTANCE * cos(tmp2),
             0,
-            ZOMBIE_RESPAWN_DISTANCE * sin(eventPlayer.tmp2)
+            ZOMBIE_RESPAWN_DISTANCE * sin(tmp2)
           ),
-          eventPlayer.tmp1,
+          tmp1,
           Transform.ROTATION
         )
       ).getPosition()
     )
 
-    if distance(eventPlayer.tmp3, PLAYERS_VANILLA_SPAWN_POINT_VECT) < PLAYERS_VANILLA_SPAWN_POINT_RADIUS:
+    if distance(tmp3, PLAYERS_VANILLA_SPAWN_POINT_VECT) < PLAYERS_VANILLA_SPAWN_POINT_RADIUS:
       debugFailedRespawnPoints += true
       continue
 
-    if getRealPlayersInRadius(eventPlayer.tmp3, ZOMBIE_RESPAWN_MIN_DISTANCE, Team.PLAYERS, LosCheck.OFF):
+    if getRealPlayersInRadius(tmp3, ZOMBIE_RESPAWN_MIN_DISTANCE, Team.PLAYERS, LosCheck.OFF):
       debugFailedRespawnPoints += true
       continue
 
-    if getRealPlayersInRadius(eventPlayer.tmp3 + LosHeightCheckVectConst, BOT_MAX_TARGET_DISTANCE, Team.PLAYERS, LosCheck.SURFACES):
-      eventPlayer.teleportPos = eventPlayer.tmp3
+    if getRealPlayersInRadius(tmp3 + LosHeightCheckVectConst, BOT_MAX_TARGET_DISTANCE, Team.PLAYERS, LosCheck.SURFACES):
+      eventPlayer.teleportPos = tmp3
 
       eventPlayer.respawnNearFallback = false
       break
     else:
       debugFailedRespawnPoints += true
-      eventPlayer.tmp5 = eventPlayer.tmp3
+      tmp4 = tmp3
       eventPlayer.respawnNearFallback = false
 
   if not eventPlayer.teleportPos:
-    if eventPlayer.tmp5:
-      eventPlayer.teleportPos = eventPlayer.tmp5
+    if tmp4:
+      eventPlayer.teleportPos = tmp4
     else:
       eventPlayer.teleportPos = nearestWalkablePosition(eventPlayer.getPosition())
 
@@ -236,7 +237,7 @@ rule "Recreate bots":
 
   # Delete unnecessary bots:
   if getNumberOfPlayers(Team.ZOMBIES) > roundMaxBotsSlots: 
-    tmp0 = sorted(
+    list0 = sorted(
       getPlayers(Team.ZOMBIES),
       lambda sortedPlayer: (
         (0 if sortedPlayer in commonBotsHeroes else 2)
@@ -246,7 +247,7 @@ rule "Recreate bots":
 
     createDummyQuantity = getNumberOfPlayers(Team.ZOMBIES) - roundMaxBotsSlots
     for I in range(createDummyQuantity):
-      destroyDummy(Team.ZOMBIES, tmp0[I].getSlot())
+      destroyDummy(Team.ZOMBIES, list0[I].getSlot())
   
   # Or add missing bots:
   else:

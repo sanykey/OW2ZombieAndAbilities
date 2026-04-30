@@ -292,7 +292,7 @@ rule "[debug] Activate selected action for Ballistics mode":
     debugProjectile[DePE.SHOOT_DELAY] = debugBallisticsPresets[debugBallisticsPresetIndex][DeBPrE.SHOOT_DELAY]
 
   elif debugSelectedAction == 3: # Save spot
-    eventPlayer.tmp0 = [
+    debugBallisticsSpots[len(debugBallisticsSpots)] = [
       eventPlayer.getHero(),
       eventPlayer.getPosition(),
       eventPlayer.getFacingDirection(),
@@ -305,7 +305,6 @@ rule "[debug] Activate selected action for Ballistics mode":
       debugProjectile[DePE.STEP_TIME],
       debugProjectile[DePE.MAX_TIME]
     ]
-    debugBallisticsSpots[len(debugBallisticsSpots)] = eventPlayer.tmp0
     debugBallisticsSpotIndex = len(debugBallisticsSpots) - 1
 
   elif debugSelectedAction == 4: # Load spot

@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 enum CASSIDY_I:
   LASSO_0
@@ -14,7 +15,6 @@ enum CASSIDY_I:
   SMOKE_0
   SMOKE_1
   SMOKE_2
-  
 
 rule "[Cassydy] Init":
   @Event eachPlayer
@@ -22,81 +22,73 @@ rule "[Cassydy] Init":
   @Condition eventPlayer.getHero() == Hero.CASSIDY
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.heroInfoVertFix0 = 3
-  eventPlayer.heroInfoHorFix0 = 8
-  eventPlayer.heroInfoText0 = "{} <fgad5a5fFF>Cassidy</fg>:\n
-  {} <fgad5a5fFF>Peacekeeper</fg>:
+
+  setHeroInfoText0(
+    f"{heroIcon(Hero.CASSIDY)} <fgad5a5fFF>Cassidy</fg>:\n
+    {abilityIconString(Hero.CASSIDY, Button.SECONDARY_FIRE)} <fgad5a5fFF>Peacekeeper</fg>:
       - Alternate fire pushes enemies back.\n\n
-  {} <fgad5a5fFF>Combat Roll</fg>:
+    {abilityIconString(Hero.CASSIDY, Button.ABILITY_1)} <fgad5a5fFF>Combat Roll</fg>:
       - Detonates a flashbang at the starting point of the roll, stunning enemies for 0.5 second. 
       - Hold the button to jump at the end of the roll.\n\n
-  {} <fgad5a5fFF>Flashbang</fg>:
+    {abilityIconString(Hero.CASSIDY, Button.ABILITY_2)} <fgad5a5fFF>Flashbang</fg>:
       - Stuns enemies for 1 second.
-      - Throwing it at your feet creates a smoke screen that lowers enemy attack priority.\n\n
-
-  ".format(
-    heroIcon(Hero.CASSIDY),
-    abilityIconString(Hero.CASSIDY, Button.SECONDARY_FIRE),
-    abilityIconString(Hero.CASSIDY, Button.ABILITY_1),
-    abilityIconString(Hero.CASSIDY, Button.ABILITY_2)
+      - Throwing it at your feet creates a smoke screen that lowers enemy attack priority.
+    ", 3, 8
   )
 
-  eventPlayer.heroInfoVertFix1 = 4.7
-  eventPlayer.heroInfoHorFix1 = 9.5
-  eventPlayer.heroInfoText1 = "
-  {} <fgad5a5fFF>Deadeye</fg>:
+  setHeroInfoText1(
+    f"
+    {abilityIconString(Hero.CASSIDY, Button.ULTIMATE)} <fgad5a5fFF>Deadeye</fg>:
       - On activation, freezes enemies in your line of sight for 2.5 seconds.\n\n
-  {} NEW! <fgad5a5fFF>Lasso</fg>:
+    {abilityIconString(Hero.ROADHOG, Button.ABILITY_1)} NEW! <fgad5a5fFF>Lasso</fg>:
       - Hold the <fgdb9342FF>Melee</fg> button to pull and knock down the caught enemy.
-  ".format(
-    abilityIconString(Hero.CASSIDY, Button.ULTIMATE),
-    abilityIconString(Hero.ROADHOG, Button.ABILITY_1)
+    ", 4.7, 9.5
   )
 
   # lasso effects
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null, 
-    Beam.GRAPPLE, eventPlayer, vect(1, 0, 0) + ((eventPlayer + eventPlayer.abilPos0) / 2), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null, 
+    Beam.GRAPPLE, eventPlayer, vect(1, 0, 0) + ((eventPlayer + eventPlayer.heroState0) / 2), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_0] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, vect(1, 0, 0) + ((eventPlayer.abilPos0 + eventPlayer) / 2), eventPlayer.abilPos0, Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, vect(1, 0, 0) + ((eventPlayer.heroState0 + eventPlayer) / 2), eventPlayer.heroState0, Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_1] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, eventPlayer.abilPos0, eventPlayer.abilPos0 + vect(1, 0, 0.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, eventPlayer.heroState0, eventPlayer.heroState0 + vect(1, 0, 0.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_2] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, eventPlayer.abilPos0 + vect(1, 0, 0.5), eventPlayer.abilPos0 + vect(1, 0, 1), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, eventPlayer.heroState0 + vect(1, 0, 0.5), eventPlayer.heroState0 + vect(1, 0, 1), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_3] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, eventPlayer.abilPos0 + vect(1, 0, 1), eventPlayer.abilPos0 + vect(0.1, 0, 1.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, eventPlayer.heroState0 + vect(1, 0, 1), eventPlayer.heroState0 + vect(0.1, 0, 1.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_4] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, eventPlayer.abilPos0 + vect(0.1, 0, 1.5), eventPlayer.abilPos0 + vect(-0.6, 0, 1.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, eventPlayer.heroState0 + vect(0.1, 0, 1.5), eventPlayer.heroState0 + vect(-0.6, 0, 1.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_5] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, eventPlayer.abilPos0 + vect(-0.6, 0, 1.5), eventPlayer.abilPos0 + vect(-1, 0, 1), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, eventPlayer.heroState0 + vect(-0.6, 0, 1.5), eventPlayer.heroState0 + vect(-1, 0, 1), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_6] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, eventPlayer.abilPos0 + vect(-1, 0, 1), eventPlayer.abilPos0 + vect(-1, 0, 0.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, eventPlayer.heroState0 + vect(-1, 0, 1), eventPlayer.heroState0 + vect(-1, 0, 0.5), Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_7] = getLastCreatedEntity()
   createBeam(
-    getPlayers(Team.1) if eventPlayer.abilPos0 else null,
-    Beam.GRAPPLE, eventPlayer.abilPos0 + vect(-1, 0, 0.5), eventPlayer.abilPos0, Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
+    getPlayers(Team.1) if eventPlayer.heroState0 else null,
+    Beam.GRAPPLE, eventPlayer.heroState0 + vect(-1, 0, 0.5), eventPlayer.heroState0, Color.ORANGE, EffectReeval.VISIBILITY_POSITION_AND_RADIUS
   )
   eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_8] = getLastCreatedEntity()
 
@@ -113,17 +105,17 @@ rule "[Cassydy] Init":
   waitUntil(eventPlayer.getHero() != Hero.CASSIDY, INFINITY)
   clearHeroInfoSub()
   destroyHudText(eventPlayer.heroEffectsIds[CASSIDY_I.LASSO_HUD])
-  for eventPlayer.I in range(9):
-    destroyEffect(eventPlayer.heroEffectsIds[eventPlayer.I])
+  for I in range(9):
+    destroyEffect(eventPlayer.heroEffectsIds[I])
 
 rule "[Cassydy] throw the lasso":
   @Event eachPlayer
   @Hero cassidy
   @Condition eventPlayer.isAlive()
   @Condition eventPlayer.isHoldingButton(Button.MELEE)
-  @Condition not eventPlayer.abilPos0
-  @Condition not eventPlayer.target0
-  @Condition not eventPlayer.abilDir0
+  @Condition not eventPlayer.heroState0
+  @Condition not eventPlayer.heroState1 # target
+  @Condition not eventPlayer.heroState2 # direction
 
   if eventPlayer.abilityCD:
     return
@@ -136,69 +128,69 @@ rule "[Cassydy] throw the lasso":
   if not eventPlayer.isHoldingButton(Button.MELEE):
     return
 
-  eventPlayer.abilPos0 = raycast(eventPlayer, eventPlayer + vect(0, 5, 0), null, eventPlayer, true).getHitPosition() + vect(0, -1, 0)
-  stopChasingVariable(eventPlayer.abilPos0)
-  stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.target0 = false
-  chaseAtRate(eventPlayer.abilPos0, raycast(eventPlayer, eventPlayer + vect(0, 5, 0), null, eventPlayer, true).getHitPosition() + vect(0, -1, 0), 10)
-  eventPlayer.abilDir0 = false
-  eventPlayer.abilState0 = false
+  eventPlayer.heroState0 = raycast(eventPlayer, eventPlayer + vect(0, 5, 0), null, eventPlayer, true).getHitPosition() + vect(0, -1, 0)
+  stopChasingVariable(eventPlayer.heroState0)
+  stopChasingVariable(eventPlayer.heroState2)
+  eventPlayer.heroState1 = false
+  chaseAtRate(eventPlayer.heroState0, raycast(eventPlayer, eventPlayer + vect(0, 5, 0), null, eventPlayer, true).getHitPosition() + vect(0, -1, 0), 10)
+  eventPlayer.heroState2 = false
+  eventPlayer.heroState5 = false
 
-  eventPlayer.abilDir0 = eventPlayer.getFacingDirection()
-  chaseAtRate(eventPlayer.abilDir0, vect(0, -100, 0), 1)
-  chaseAtRate(eventPlayer.abilPos0, eventPlayer.abilPos0 + eventPlayer.abilDir0 * 10, 30)
-  eventPlayer.target0 = false
-  eventPlayer.abilState0 = true
+  eventPlayer.heroState2 = eventPlayer.getFacingDirection()
+  chaseAtRate(eventPlayer.heroState2, vect(0, -100, 0), 1)
+  chaseAtRate(eventPlayer.heroState0, eventPlayer.heroState0 + eventPlayer.heroState2 * 10, 30)
+  eventPlayer.heroState1 = false
+  eventPlayer.heroState5 = true
 
   waitUntil(
-    distance(eventPlayer.abilPos0, raycast(eventPlayer.abilPos0, eventPlayer.abilPos0 + eventPlayer.abilDir0 * 10, null, eventPlayer, true).getHitPosition()) <= 1, # lasso hit a wall
+    distance(eventPlayer.heroState0, raycast(eventPlayer.heroState0, eventPlayer.heroState0 + eventPlayer.heroState2 * 10, null, eventPlayer, true).getHitPosition()) <= 1, # lasso hit a wall
     3
   )
-  stopChasingVariable(eventPlayer.abilPos0)
-  stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.abilState0 = false
+  stopChasingVariable(eventPlayer.heroState0)
+  stopChasingVariable(eventPlayer.heroState2)
+  eventPlayer.heroState5 = false
   eventPlayer.abilityCD = CASSIDY_LASSO_CD
   wait(0.5)
-  eventPlayer.abilPos0 = false
-  eventPlayer.abilDir0 = false
-  eventPlayer.abilState0 = true
+  eventPlayer.heroState0 = false
+  eventPlayer.heroState2 = false
+  eventPlayer.heroState5 = true
   
 
 rule "[Cassydy] lasso hit a player":
   @Event eachPlayer
   @Hero cassidy
-  @Condition eventPlayer.abilPos0
-  @Condition eventPlayer.abilState0
-  @Condition not eventPlayer.target0
-  @Condition distance(eventPlayer.abilPos0, getRealClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))) <= 3
+  @Condition eventPlayer.heroState0
+  @Condition eventPlayer.heroState5
+  @Condition not eventPlayer.heroState1
+  @Condition distance(eventPlayer.heroState0, getRealClosestPlayer(eventPlayer.heroState0, getOppositeTeam(eventPlayer.getTeam()))) <= 3
   @Condition getNumberOfPlayers(getOppositeTeam(eventPlayer.getTeam())) != 0
-  @Condition getRealClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam())).isDead() != true
+  @Condition getRealClosestPlayer(eventPlayer.heroState0, getOppositeTeam(eventPlayer.getTeam())).isDead() != true
 
-  stopChasingVariable(eventPlayer.abilPos0)
-  stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.target0 = getRealClosestPlayer(eventPlayer.abilPos0, getOppositeTeam(eventPlayer.getTeam()))
-  eventPlayer.target0.setGravity(0)
-  eventPlayer.abilPos0 = eventPlayer.target0.getPosition()
-  chaseAtRate(eventPlayer.abilPos0, vect(0, 1, -1) + eventPlayer.target0.getPosition(), 300)
-  eventPlayer.target0.setStatusEffect(eventPlayer, Status.STUNNED, 1)
-  eventPlayer.target0.applyImpulse(directionTowards(eventPlayer.target0, eventPlayer), 40, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-  damage(eventPlayer.target0, eventPlayer, 10)
+  stopChasingVariable(eventPlayer.heroState0)
+  stopChasingVariable(eventPlayer.heroState2)
+  eventPlayer.heroState1 = getRealClosestPlayer(eventPlayer.heroState0, getOppositeTeam(eventPlayer.getTeam()))
+  eventPlayer.heroState1.setGravity(0)
+  eventPlayer.heroState0 = eventPlayer.heroState1.getPosition()
+  chaseAtRate(eventPlayer.heroState0, vect(0, 1, -1) + eventPlayer.heroState1.getPosition(), 300)
+  eventPlayer.heroState1.setStatusEffect(eventPlayer, Status.STUNNED, 1)
+  eventPlayer.heroState1.applyImpulse(directionTowards(eventPlayer.heroState1, eventPlayer), 40, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+  damage(eventPlayer.heroState1, eventPlayer, 10)
 
-  eventPlayer.target0.setCrowdControlAttack(eventPlayer)
+  eventPlayer.heroState1.setCrowdControlAttack(eventPlayer)
 
-  eventPlayer.target0.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 5)
+  eventPlayer.heroState1.setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 5)
 
-  waitUntil(distance(eventPlayer, eventPlayer.target0) <= 8, 2)
-  eventPlayer.target0.setGravity(100)
-  eventPlayer.target0.stopAcceleration()
-  # eventPlayer.target0.clearStatusEffect(Status.STUNNED)
+  waitUntil(distance(eventPlayer, eventPlayer.heroState1) <= 8, 2)
+  eventPlayer.heroState1.setGravity(100)
+  eventPlayer.heroState1.stopAcceleration()
+  # eventPlayer.heroState1.clearStatusEffect(Status.STUNNED)
 
-  stopChasingVariable(eventPlayer.abilPos0)
-  stopChasingVariable(eventPlayer.abilDir0)
-  eventPlayer.target0 = false
-  eventPlayer.abilPos0 = false
-  eventPlayer.abilState0 = false
-  eventPlayer.abilDir0 = false
+  stopChasingVariable(eventPlayer.heroState0)
+  stopChasingVariable(eventPlayer.heroState2)
+  eventPlayer.heroState1 = false
+  eventPlayer.heroState0 = false
+  eventPlayer.heroState5 = false
+  eventPlayer.heroState2 = false
   eventPlayer.abilityCD = CASSIDY_LASSO_CD
 
 
@@ -207,16 +199,16 @@ rule "[Cassydy] Detonates a flashbang while rolling":
   @Hero cassidy
   @Condition eventPlayer.isUsingAbility1()
 
-  eventPlayer.abilPos1 = eventPlayer.getPosition()
+  eventPlayer.heroState3 = eventPlayer.getPosition()
   wait(0.1)
-  playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.abilPos1, 1)
+  playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.heroState3, 1)
 
   # todo: remove or replace:
-  # playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.WHITE, eventPlayer.abilPos1, 100)
-  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos1, 3, Team.ZOMBIES)
+  # playEffect(getAllPlayers(), DynamicEffect.WRECKING_BALL_MINEFIELD_EXPLOSION_SOUND, Color.WHITE, eventPlayer.heroState3, 100)
+  list0 = getPlayersInRadius(eventPlayer.heroState3, 3, Team.ZOMBIES)
 
-  damage(eventPlayer.list0, eventPlayer, 15)
-  eventPlayer.list0.setStatusEffect(eventPlayer, Status.STUNNED, 1.5)
+  damage(list0, eventPlayer, 15)
+  list0.setStatusEffect(eventPlayer, Status.STUNNED, 1.5)
 
 rule "[Cassydy] Roll leap":
   @Event eachPlayer
@@ -230,32 +222,31 @@ rule "[Cassydy] Roll leap":
 rule "[Cassidy] Smoke Bomb":
   @Event eachPlayer
   @Hero cassidy
-  @Condition eventPlayer.isUsingAbility2() == true
+  @Condition eventPlayer.isUsingAbility2()
   @Condition eventPlayer.getVerticalFacingAngle() > 60
   
-  eventPlayer.abilPos2 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 7, getLivingPlayers(Team.ALL), eventPlayer, true).getHitPosition()
+  eventPlayer.heroState4 = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 7, getLivingPlayers(Team.ALL), eventPlayer, true).getHitPosition()
   wait(0.25)
-  playEffect(getAllPlayers(), DynamicEffect.WINSTON_JUMP_PACK_LANDING, Color.TEAM_1, eventPlayer.abilPos2, 1)
-  createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.abilPos2, 6)
+  playEffect(getAllPlayers(), DynamicEffect.WINSTON_JUMP_PACK_LANDING, Color.TEAM_1, eventPlayer.heroState4, 1)
+  createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.heroState4, 6)
   eventPlayer.heroEffectsIds[CASSIDY_I.SMOKE_0] = getLastCreatedEntity()
-  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, eventPlayer.abilPos2, 6)
+  createEffect(getAllPlayers(), Effect.RING, Color.WHITE, eventPlayer.heroState4, 6)
   eventPlayer.heroEffectsIds[CASSIDY_I.SMOKE_1] = getLastCreatedEntity()
-  createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.abilPos2 + Vector.UP * 0.5, 6)
+  createEffect(getAllPlayers(), Effect.CLOUD, Color.WHITE, eventPlayer.heroState4 + Vector.UP * 0.5, 6)
   eventPlayer.heroEffectsIds[CASSIDY_I.SMOKE_2] = getLastCreatedEntity()
-  eventPlayer.abilState2 = true
+  eventPlayer.heroState6 = true
   wait(4)
   destroyEffect(eventPlayer.heroEffectsIds[CASSIDY_I.SMOKE_0])
   destroyEffect(eventPlayer.heroEffectsIds[CASSIDY_I.SMOKE_1])
   destroyEffect(eventPlayer.heroEffectsIds[CASSIDY_I.SMOKE_2])
-  eventPlayer.abilState2 = false
+  eventPlayer.heroState6 = false
 
 rule "[Cassidy] Smoke Bomb - Hide":
   @Event eachPlayer
   @Hero cassidy
-  @Condition eventPlayer.abilState2
+  @Condition eventPlayer.heroState6
   
-  eventPlayer.list0 = getPlayersInRadius(eventPlayer.abilPos2, 6, Team.1)
-  eventPlayer.list0.isInvisible = getTotalTimeElapsed() + 0.25
+  getPlayersInRadius(eventPlayer.heroState4, 6, Team.1).isInvisible = getTotalTimeElapsed() + 0.25
 
   wait(0.2)
   if ruleCondition:
@@ -266,7 +257,7 @@ rule "[Cassidy] Ultimate root":
   @Event eachPlayer
   @Team 1
   @Hero cassidy
-  @Condition eventPlayer.isUsingUltimate() == true
+  @Condition eventPlayer.isUsingUltimate()
   
   wait(0.02)
   eventPlayer.getPlayersInViewAngle(Team.ZOMBIES, 90).setStatusEffect(null, Status.ROOTED, 4)

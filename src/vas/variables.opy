@@ -80,6 +80,7 @@ enum Team:
 # When checking isInLoS(), use a position slightly above the distant target to avoid false positives through the floor:
 globalvar LosHeightCheckVectConst = vect(false, 1.2, false)
 globalvar OffmapPositionConst = vect(false, 500, false)
+globalvar BarrierPushVectUpFixConst = vect(false, 0.2679, false) # When pushing characters horizontally, we add a bit of upward displacement so that the pushing is not hindered by the floor
 
 #####################################################
 ################ Global variables ###################
@@ -125,8 +126,11 @@ globalvar tmp0
 globalvar tmp1
 globalvar tmp2
 globalvar tmp3
-globalvar list
-globalvar playerTmp
+globalvar tmp4
+globalvar tmp5
+globalvar list0
+globalvar list1
+globalvar list2
 
 ## common subroutine params/result vars
 globalvar param1
@@ -221,47 +225,24 @@ playervar revealed
 playervar money__botStuckTimes
 playervar moneyTotal__botOldPosition
 
-playervar abilTemp1 # tmp var use for loops with "wait" per hero
 playervar isInvisible
 playervar isReady__isBotRespawning
 
 playervar isHeroDescriptionOpened
 
 # new barriers damage took and push logic
-globalvar barrierPushVectUpFix = vect(0, 0.2679, 0) # When pushing characters horizontally, we add a bit of upward displacement so that the pushing is not hindered by the floor
-playervar barrierDamageFrom
-playervar barrierDamageDir
+playervar barrierCheckVectA
+playervar barrierCheckVectB
 playervar barrierDamageStack
 playervar isActiveBarrier
 
-
-
-playervar tmp0
-playervar tmp1
-playervar tmp2
-playervar tmp3
-playervar tmp4
-playervar tmp5
-playervar list0
-playervar list1
-playervar list2
-
 ## hero state vars:
-playervar asyncI0
-playervar abilPos0
-playervar abilPos1
-playervar abilPos2
-playervar abilPos3
-playervar abilPos4
-playervar abilState0 # also zombie bots antifall state
-playervar abilState1
-playervar abilState2
-playervar abilState3
-playervar abilState4
-playervar abilDir0
-playervar abilDir1
-playervar abilDir2
-playervar abilDir3
-playervar target0
-playervar targetPlayer1
+playervar I0
+playervar heroState0
+playervar heroState1
+playervar heroState2
+playervar heroState3
+playervar heroState4
+playervar heroState5
+playervar heroState6
 playervar abilityCD

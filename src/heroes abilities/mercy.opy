@@ -1,28 +1,5 @@
 #!mainFile "../main.opy"
-
-# rule "[Mercy] init":
-#   @Event eachPlayer
-#   @Team 1
-#   @Condition eventPlayer.getHero() == Hero.MERCY
-
-#   setHeroInfoText0(
-#     "
-#     {} <fgece9bdFF>Mercy</fg>:\n
-#     {} <fgece9bdFF>Endothermic blaster</fg>
-#       - While in the air, slightly pushes Mei in the opposite direction of the shot.\n\n
-#     {} <fgece9bdFF>Cryo-freeze</fg>:
-#       - instantly freeze nearby enemies once cryo-freeze breaks.\n\n
-#     - All heroes deal double damage to frozen enemies.
-#     ".format(
-#       heroIcon(Hero.MERCY),
-#       abilityIconString(Hero.MERCY, Button.PRIMARY_FIRE),
-#       abilityIconString(Hero.MERCY, Button.ABILITY_1)
-#     )
-#   )
-  
-#   waitUntil(eventPlayer.getHero() != Hero.MERCY, INFINITY)
-#   clearHeroInfoSub()
-
+#!optimizeForSize
 
 rule "[Mercy] Immune during revive":
   @Event eachPlayer
@@ -36,8 +13,9 @@ rule "[Mercy] Immune during revive":
   smallMessage(eventPlayer, "Temporarily Immune (4s) during revive")
   wait(1.7)
   if not RULE_CONDITION:
-      return
+    return
   getPlayersInRadius(eventPlayer, 5, Team.ZOMBIES).setStatusEffect(null, Status.STUNNED, 2)
+
 
 rule "[Mercy] revive":
   @Event eachPlayer
@@ -45,19 +23,19 @@ rule "[Mercy] revive":
   @Hero mercy
   @Condition eventPlayer.isUsingAbility2()
   
-  eventPlayer.target0 = (
+  eventPlayer.heroState0 = (
     sorted([
       player for player in getPlayersInRadius(eventPlayer, 8, Team.1) if player.isDead() and eventPlayer.isInViewAngle(player, 45)
     ], 
     lambda i: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i)))
   ).last()
 
-  if not eventPlayer.target0:
+  if not eventPlayer.heroState0:
     return
 
   waitUntil(not eventPlayer.isUsingAbility2(), 2)
 
-  if eventPlayer.target0.isAlive():
+  if eventPlayer.heroState0.isAlive():
     IncrementReviveStatSub()
 
 

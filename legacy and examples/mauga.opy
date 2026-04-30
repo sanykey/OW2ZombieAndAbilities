@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 rule "[ZombieTeam Mauga] Add Mauga to Team.ZOMBIES":
   @Condition roundNumber >= ADD_MAUGA_ROUND

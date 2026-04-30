@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 #!define ROUND_START_DELAY 7
 #!define MAX_REMAINING_ZOMBIES_IN_ROUND 80

@@ -1,19 +1,17 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 rule "[Mei] init":
   @Event eachPlayer
   @Team 1
   @Condition eventPlayer.getHero() == Hero.MEI
 
-  setHeroInfoText0("
-    {} <fg6dabebFF>Mei</fg>:\n
-    {} <fg6dabebFF>Cryo-freeze</fg>:
+  setHeroInfoText0(
+    f"{heroIcon(Hero.MEI)} <fg6dabebFF>Mei</fg>:\n
+    {abilityIconString(Hero.MEI, Button.ABILITY_1)} <fg6dabebFF>Cryo-freeze</fg>:
       - instantly freeze nearby enemies once cryo-freeze breaks.\n\n
-    - All heroes deal double damage to frozen enemies.
-    ".format(
-      heroIcon(Hero.MEI),
-      abilityIconString(Hero.MEI, Button.ABILITY_1)
-    )
+      - All heroes deal double damage to frozen enemies.
+    "
   )
   
   waitUntil(eventPlayer.getHero() != Hero.MEI, INFINITY)
@@ -30,7 +28,7 @@ rule "[Mei] Freeze nearby opponents after Cryo-freeze":
   unpause3PCamera()
   getPlayersInRadius(eventPlayer.getEyePosition(), 10, Team.ZOMBIES, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.FROZEN, 3)
 
-rule "[Mei] all team.1 heroes deal double damage to frozen enemies:":
+rule "[Mei] all team.1 heroes deal double damage to frozen enemies":
   @Event eachPlayer
   @Team 2
   @Condition eventPlayer.hasStatus(Status.FROZEN)

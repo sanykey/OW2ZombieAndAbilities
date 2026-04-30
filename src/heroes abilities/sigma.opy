@@ -1,4 +1,5 @@
 #!mainFile "../main.opy"
+#!optimizeForSize
 
 rule "[Sigma] init":
   @Event eachPlayer
@@ -6,18 +7,15 @@ rule "[Sigma] init":
   @Condition eventPlayer.getHero() == Hero.SIGMA
 
   wait(1) # waiting for the previous hero to clear hero data
-  eventPlayer.heroInfoVertFix0 = -2
-  eventPlayer.heroInfoText0 = "{} <fg94a0a5FF>Sigma</fg>:\n
-  {} {}Experimental barrier{}:
+
+  setHeroInfoText0(
+    f"{heroIcon(Hero.SIGMA)} <fg94a0a5FF>Sigma</fg>:\n
+    {abilityIconString(Hero.SIGMA, Button.SECONDARY_FIRE)} <fg94a0a5FF>Experimental barrier</fg>:
       - Pushes back enemies when stationary, taking damage on contact.
       - Pushes enemies back while flying, but takes increased damage during flight.
       - HP upgrades do not increase the barrier's health, but reduce the damage it receives.
       - If the barrier malfunctions, a message will appear and the ability cooldown is refunded.
-  ".format(
-    heroIcon(Hero.SIGMA),
-    abilityIconString(Hero.SIGMA, Button.SECONDARY_FIRE),
-    "<fg94a0a5FF>",
-    "</fg>"
+    ", -2
   )
 
   waitUntil(eventPlayer.getHero() != Hero.SIGMA, INFINITY)
@@ -31,20 +29,20 @@ rule "[Sigma] start barrier":
   @Condition updateEveryFrame(eventPlayer.isFiringSecondaryFire())
 
   eventPlayer.isActiveBarrier = true
-  eventPlayer.barrierDamageFrom = raycast(
+  eventPlayer.barrierCheckVectA = raycast(
     eventPlayer.getEyePosition(),
     eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 2.25,
     null,
     eventPlayer,
     true
   ).getHitPosition()
-  eventPlayer.abilDir0 = eventPlayer.getFacingDirection()
+  eventPlayer.heroState0 = eventPlayer.getFacingDirection() # Barrier movement direction
   
   chaseAtRate(
-    eventPlayer.barrierDamageFrom,
+    eventPlayer.barrierCheckVectA,
     raycast(
-      eventPlayer.barrierDamageFrom,
-      eventPlayer.barrierDamageFrom + evalOnce(eventPlayer.getFacingDirection()),
+      eventPlayer.barrierCheckVectA,
+      eventPlayer.barrierCheckVectA + evalOnce(eventPlayer.getFacingDirection()),
       null,
       eventPlayer,
       true
@@ -53,18 +51,18 @@ rule "[Sigma] start barrier":
   )
 
   waitUntil(not eventPlayer.isFiringSecondaryFire(), INFINITY)
-  stopChasingVariable(eventPlayer.barrierDamageFrom)
+  stopChasingVariable(eventPlayer.barrierCheckVectA)
 
-  eventPlayer.abilPos0 = eventPlayer.barrierDamageFrom
+  eventPlayer.heroState1 = eventPlayer.barrierCheckVectA # barrier position
+
   # calculate position for barier damaging. place barrier damage points above the center of the barrier to avoid accidentally damaging players and bots on both teams
-  eventPlayer.barrierDamageFrom = eventPlayer.barrierDamageFrom + normalize(crossProduct(eventPlayer.abilDir0, crossProduct(Vector.UP, eventPlayer.abilDir0))) * 1.8
-  eventPlayer.barrierDamageDir = eventPlayer.abilDir0
-  eventPlayer.abilPos1 = eventPlayer.barrierDamageFrom + eventPlayer.abilDir0
+  eventPlayer.barrierCheckVectA = eventPlayer.barrierCheckVectA + normalize(crossProduct(eventPlayer.heroState0, crossProduct(Vector.UP, eventPlayer.heroState0))) * 1.8
+  eventPlayer.barrierCheckVectB = eventPlayer.heroState0
+  eventPlayer.heroState2 = eventPlayer.barrierCheckVectA + eventPlayer.heroState0
 
 
   waitUntil(updateEveryFrame(eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE)) != null, INFINITY)
-  eventPlayer.isActiveBarrier = false
-  eventPlayer.barrierDamageStack = false
+  ClearBarrierStateSub()
 
 
 #!define SIG_BARRIER_PUSH_ENENT_WAIT 0.2
@@ -74,21 +72,16 @@ rule "[Sigma] Barrier Effect":
   @Hero sigma
   @Condition eventPlayer.isActiveBarrier
   
-  eventPlayer.list0 = [player for player in getRealPlayersInRadius(eventPlayer.abilPos0, 3.5, Team.ZOMBIES) if player.isAlive()]
-  eventPlayer.list0.setCrowdControlAttack(eventPlayer)
-  damage(eventPlayer.list0, eventPlayer, 0.1)
+  list0 = [player for player in getRealPlayersInRadius(eventPlayer.heroState1, 3.5, Team.ZOMBIES) if player.isAlive()]
+  list0.setCrowdControlAttack(eventPlayer)
+  eventPlayer.damageFromBarrier(list0)
 
   # calculate damage to barrier
-  eventPlayer.barrierDamageStack += (
-    len(eventPlayer.list0) *
-    (TORBJORN_HAMMER_BASE_DMG * SIG_BARRIER_PUSH_ENENT_WAIT * 1.5)
-    * (zomDamagePct / 100)
-    * (100 / eventPlayer.healthBoostPercent)
-  )
+  eventPlayer.damageBarrier(1.5 * SIG_BARRIER_PUSH_ENENT_WAIT * len(list0) * (100 / eventPlayer.healthBoostPercent))
 
   if eventPlayer.isHoldingButton(Button.SECONDARY_FIRE):
-    eventPlayer.list0.applyImpulse(
-      normalize(vect(eventPlayer.abilDir0.x, 0.2679, eventPlayer.abilDir0.z)), 16, Relativity.TO_WORLD
+    list0.applyImpulse(
+      normalize(vect(eventPlayer.heroState0.x, 0.2679, eventPlayer.heroState0.z)), 16, Relativity.TO_WORLD
     )
     eventPlayer.barrierDamageStack *= 1.5 # more damage when mooving 
 
@@ -97,32 +90,30 @@ rule "[Sigma] Barrier Effect":
     if (
       eventPlayer.getAbilityCooldown(Button.SECONDARY_FIRE) == null and (
         isInLoS(
-          eventPlayer.barrierDamageFrom,
-          eventPlayer.abilPos1,
+          eventPlayer.barrierCheckVectA,
+          eventPlayer.heroState2,
           BarrierLos.BLOCKED_BY_ALL_BARRIERS
         ) or 
         not isInLoS(
-          eventPlayer.barrierDamageFrom,
-          eventPlayer.abilPos1,
+          eventPlayer.barrierCheckVectA,
+          eventPlayer.heroState2,
           BarrierLos.PASS_THROUGH_BARRIERS
         )
       )
     ):
-      smallMessage(eventPlayer, "Barrier deploy failed! Try again")
-      eventPlayer.isActiveBarrier = false
-      eventPlayer.barrierDamageStack = false
+      FailedBarrierDeploySub()
       wait(0.2)
       eventPlayer.forceButtonPress(Button.SECONDARY_FIRE)
       wait()
       eventPlayer.setAbilityCooldown(Button.SECONDARY_FIRE, 0)
       return
 
-    for eventPlayer.I in range(len(eventPlayer.list0)):
-      eventPlayer.list0[eventPlayer.I].applyImpulse(
+    for I in range(len(list0)):
+      list0[I].applyImpulse(
         normalize(
-          vect(eventPlayer.abilDir0.x, 0, eventPlayer.abilDir0.z) *
-          (-1 if isInLoS(eventPlayer.list0[eventPlayer.I], eventPlayer.abilPos0, BarrierLos.BLOCKED_BY_ALL_BARRIERS) else 1)
-          + barrierPushVectUpFix
+          vect(eventPlayer.heroState0.x, 0, eventPlayer.heroState0.z) *
+          (-1 if isInLoS(list0[I], eventPlayer.heroState1, BarrierLos.BLOCKED_BY_ALL_BARRIERS) else 1)
+          + BarrierPushVectUpFixConst
         ), 
         4,
         Relativity.TO_WORLD
@@ -142,7 +133,7 @@ rule "[Sigma] Barrier Effect":
 #     hostPlayer,
 #     Effect.SPHERE,
 #     Color.BLUE,
-#     eventPlayer.abilPos0,
+#     eventPlayer.heroState1,
 #     0.05,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )
@@ -151,7 +142,7 @@ rule "[Sigma] Barrier Effect":
 #     hostPlayer,
 #     Effect.SPHERE,
 #     Color.LIGHT_RED,
-#     eventPlayer.barrierDamageFrom,
+#     eventPlayer.barrierCheckVectA,
 #     0.05,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )
@@ -160,7 +151,7 @@ rule "[Sigma] Barrier Effect":
 #     hostPlayer,
 #     Effect.SPHERE,
 #     Color.GREEN,
-#     eventPlayer.abilPos1,
+#     eventPlayer.heroState2,
 #     0.05,
 #     EffectReeval.VISIBILITY_POSITION_AND_RADIUS
 #   )
