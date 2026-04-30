@@ -211,6 +211,7 @@ rule "Zombie bots main polling":
     or eventPlayer.isReady__isBotRespawning
     or eventPlayer.isCrowdControlled()
     or eventPlayer.hasStatus(Status.HACKED)
+    or eventPlayer.state[SI.CHANGED_SPEED_TIME] > getTotalTimeElapsed()
   ):
     ResetBotStuckTimesSub()
     
