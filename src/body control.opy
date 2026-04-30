@@ -10,9 +10,9 @@ playervar controlledBodyBy
 #     @Condition getPlayersInSlot(eventPlayer.getSlot(), Team.1).hasSpawned() == false
     
 #     if MirrorAxis == vect(-1, 1, -1):
-#         getPlayersInSlot(eventPlayer.getSlot(), Team.1).startThrottleInDirection(eventPlayer.getThrottle(), distance(vect(0, 0, 0), eventPlayer.getThrottle()) * 1, Relativity.TO_PLAYER)
+#         getPlayersInSlot(eventPlayer.getSlot(), Team.1).startThrottleInDirection(eventPlayer.getThrottle(), distance(ZeroVectConst, eventPlayer.getThrottle()) * 1, Relativity.TO_PLAYER)
 #     else:
-#         getPlayersInSlot(eventPlayer.getSlot(), Team.1).startThrottleInDirection(eventPlayer.getThrottle() * vect(-1, 1, 1), distance(vect(0, 0, 0), eventPlayer.getThrottle()) * 1, Relativity.TO_PLAYER)
+#         getPlayersInSlot(eventPlayer.getSlot(), Team.1).startThrottleInDirection(eventPlayer.getThrottle() * vect(-1, 1, 1), distance(ZeroVectConst, eventPlayer.getThrottle()) * 1, Relativity.TO_PLAYER)
 #     getPlayersInSlot(eventPlayer.getSlot(), Team.1).startFacing(eventPlayer.getFacingDirection() * MirrorAxis, 1000)
 
 

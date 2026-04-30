@@ -78,7 +78,7 @@ rule "[DVA] Init":
 #       eventPlayer,
 #       Transform.ROTATION_AND_TRANSLATION)
 #     ),
-#     vect(0, 0, 0)
+#     ZeroVectConst
 #   )
 #   eventPlayer.heroEffectsIds[DVA_I.SLIDE_EFFECT3] = getLastCreatedEntity()
 

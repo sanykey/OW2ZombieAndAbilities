@@ -170,8 +170,8 @@ rule "[debug] add Ballistics debug mode":
   debugProjectile[DePE.SHOW_TRAJECTORY] = true
   debugProjectile[DePE.STEP_TIME] = 0.08
   debugProjectile[DePE.MAX_TIME] = 10
-  debugProjectile[DePE.LANDING_POSITION] = vect(0, 0, 0)
-  debugProjectile[DePE.LAST_HIT_POSITION] = vect(0, 0, 0)
+  debugProjectile[DePE.LANDING_POSITION] = ZeroVectConst
+  debugProjectile[DePE.LAST_HIT_POSITION] = ZeroVectConst
 
   # table with known presets https://docs.google.com/spreadsheets/d/1dSwYRCoLo5utIMTa139u4AtAzrHwE9_bctpm3t3b-yc/edit?gid=0#gid=0
   debugBallisticsPresets = [

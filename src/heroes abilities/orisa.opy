@@ -65,7 +65,7 @@ def ClearOrisaBeamsSub():
 #     Projectile.ORB,
 #     eventPlayer,
 #     updateEveryFrame(eventPlayer.heroState4),
-#     vect(0, 0, 0)
+#     ZeroVectConst
 #   )
 #   eventPlayer.heroEffectsIds[ORI_I.HALT_PROJECTILE] = getLastCreatedEntity()
 #   createEffect(

@@ -10,7 +10,6 @@ globalvar debugIsNoclip
 globalvar debugNoclipPrevHero
 
 globalvar debugNoCD
-globalvar defaultVector = vect(0, 0, 0)
 playervar inputThrottle
 globalvar debugAllowInput
 
@@ -25,7 +24,7 @@ def ConvertThrottleSub():
 rule "[debug] Option throttle check":
   @Event eachPlayer
   @Condition debugMenuIsOpened
-  @Condition eventPlayer.getThrottle() != defaultVector
+  @Condition eventPlayer.getThrottle() != ZeroVectConst
   @Condition magnitude(eventPlayer.getThrottle()) >= 0.5
   
   ConvertThrottleSub()
@@ -33,7 +32,7 @@ rule "[debug] Option throttle check":
   wait()
   if ruleCondition:
     loop()
-  eventPlayer.inputThrottle = defaultVector
+  eventPlayer.inputThrottle = ZeroVectConst
 
 rule "[debug] holding Interact while debug menu opened":
   @Event eachPlayer
@@ -50,7 +49,7 @@ rule "[debug] holding Interact while debug menu opened":
   eventPlayer.disallowButton(Button.ABILITY_1)
   eventPlayer.disallowButton(Button.ABILITY_2)
   
-  waitUntil(eventPlayer.inputThrottle == defaultVector or not eventPlayer.isHoldingButton(Button.INTERACT), INFINITY)
+  waitUntil(eventPlayer.inputThrottle == ZeroVectConst or not eventPlayer.isHoldingButton(Button.INTERACT), INFINITY)
   if eventPlayer.isHoldingButton(Button.INTERACT):
     debugAllowInput = true
   waitUntil(not eventPlayer.isHoldingButton(Button.INTERACT), INFINITY)

@@ -81,6 +81,7 @@ enum Team:
 globalvar LosHeightCheckVectConst = vect(false, 1.2, false)
 globalvar OffmapPositionConst = vect(false, 500, false)
 globalvar BarrierPushVectUpFixConst = vect(false, 0.2679, false) # When pushing characters horizontally, we add a bit of upward displacement so that the pushing is not hindered by the floor
+globalvar ZeroVectConst = vect(0, 0, 0)
 
 #####################################################
 ################ Global variables ###################

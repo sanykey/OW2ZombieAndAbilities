@@ -126,10 +126,10 @@ rule "[debug] Activate selected action for Players mode":
     debugPerkLevelUp = getLastCreatedEntity()
     debugPerkLevelUp = debugPerkLevelUp[0]
     wait()
-    debugPerkLevelUp.setMaxHealth(7000)
+    debugPerkLevelUp.setMaxHealth(10000)
     wait()
-    heal(debugPerkLevelUp, null, 7000)
-    damage(debugPerkLevelUp, debugSelectedTeam1Player, 7000)
+    heal(debugPerkLevelUp, null, 10000)
+    damage(debugPerkLevelUp, debugSelectedTeam1Player, 10000)
     wait()
     destroyDummy(Team.2, debugPerkLevelUp.getSlot())
   elif debugSelectedAction == 12: # Teleport to me
